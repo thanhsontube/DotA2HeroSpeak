@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import son.nt.dota2.R;
@@ -20,10 +22,12 @@ public class AdapterHeroList extends ArrayAdapter <HeroDto> {
 
     private List<HeroDto> list;
     LayoutInflater inflater;
+    Context context;
     public AdapterHeroList(Context context, List<HeroDto> list){
         super(context, 0, list);
         this.list = list;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.context = context;
     }
 
     @Override
@@ -40,6 +44,12 @@ public class AdapterHeroList extends ArrayAdapter <HeroDto> {
             holder = (Holder) v.getTag();
         }
         HeroDto dto = list.get(position);
+        if(dto.name != null) {
+            holder.text.setText(dto.name);
+        }
+        if(dto.avatarThubmail != null) {
+            Picasso.with(context).load(dto.avatarThubmail).into(holder.img);
+        }
         return v;
     }
 

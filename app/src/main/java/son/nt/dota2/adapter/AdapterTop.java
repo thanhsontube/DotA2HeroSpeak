@@ -3,6 +3,7 @@ package son.nt.dota2.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
+import son.nt.dota2.MsConst;
 import son.nt.dota2.base.BasePagerAdapter;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.fragment.HeroListFragment;
@@ -20,10 +21,26 @@ public class AdapterTop extends BasePagerAdapter {
         this.herodata = herodata;
 
     }
+    public void update(HeroData data) {
+        this.herodata = data;
+        notifyDataSetChanged();
+    }
 
     @Override
     public Fragment getItem(int position) {
-        return HeroListFragment.newInstance(herodata);
+        String group = MsConst.GROUP_STR;
+        switch (position) {
+            case 0:
+                group = MsConst.GROUP_STR;
+                break;
+            case 1:
+                group = MsConst.GROUP_AGI;
+                break;
+            case 2:
+                group = MsConst.GROUP_INTEL;
+                break;
+        }
+        return HeroListFragment.newInstance(herodata, group);
     }
 
     @Override
@@ -33,7 +50,7 @@ public class AdapterTop extends BasePagerAdapter {
 
     @Override
     public int getCount() {
-        return  herodata.groups.length;
+        return herodata.groups.length;
     }
 
     @Override

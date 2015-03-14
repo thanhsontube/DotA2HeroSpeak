@@ -12,11 +12,14 @@ import android.view.ViewGroup;
 
 import com.viewpagerindicator.TitlePageIndicator;
 
+import org.apache.http.client.methods.HttpGet;
+
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.BaseFragment;
+import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.HeroData;
-import son.nt.dota2.dto.HeroDto;
+import son.nt.dota2.loader.DataLoader;
 import son.nt.dota2.utils.FilterLog;
 
 
@@ -31,12 +34,13 @@ public class TopFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private static final String TAG = "FragmentOffline";
+    private static final String TAG = "TopFragment";
     FilterLog log = new FilterLog(TAG);
 
     private ViewPager pager;
     private AdapterTop adapter;
-    private HeroData herodata;
+    private HeroData herodata = new HeroData();
+    private View view;
     //titlepage indicator
     TitlePageIndicator indicator;
 
@@ -72,17 +76,19 @@ public class TopFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initData();
-        initLayout(view);
-        initListener();
+//        initData();
+//        initLayout(view);
+//        initListener();
+        this.view = view;
+        controllerHeroList.load();
     }
 
     private void initData() {
         herodata = new HeroData();
-        for (int i = 0; i < 50; i++) {
-
-            herodata.listHeros.add(new HeroDto());
-        }
+//        for (int i = 0; i < 50; i++) {
+//
+//            herodata.listHeros.add(new HeroDto());
+//        }
 
     }
 
@@ -127,5 +133,37 @@ public class TopFragment extends BaseFragment {
         indicator.setSelectedBold(true);
         indicator.setSelectedColor(Color.RED);
     }
+
+    Controller controllerHeroList = new Controller() {
+        @Override
+        public void load() {
+            HttpGet httpGet = new HttpGet(mypath.getHerosListPath());
+            contentManager.load(new DataLoader(httpGet, true) {
+                @Override
+                public void onContentLoaderStart() {
+                    log.d("log>>>" + "onContentLoaderStart");
+                }
+
+                @Override
+                public void onContentLoaderSucceed(HeroData entity) {
+                    log.d("log>>>" + "onContentLoaderSucceed :" + entity.listHeros.size());
+                    herodata.listHeros.clear();
+                    herodata.listHeros.addAll(entity.listHeros);
+//                    adapter.notifyDataSetChanged();
+//                    adapter.update(entity);
+
+//                    initData();
+                    initLayout(view);
+                    initListener();
+
+                }
+
+                @Override
+                public void onContentLoaderFailed(Throwable e) {
+                    log.e("log>>>" + "onContentLoaderFailed:" + e);
+                }
+            });
+        }
+    };
 
 }

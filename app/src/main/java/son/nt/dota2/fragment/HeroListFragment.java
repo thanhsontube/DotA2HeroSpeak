@@ -9,10 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterHeroList;
 import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.dto.HeroData;
+import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.utils.FilterLog;
 
 /**
@@ -34,14 +39,17 @@ public class HeroListFragment extends BaseFragment {
     private HeroData herodata;
     private GridView gridView;
     private AdapterHeroList adapter;
+    private List<HeroDto> listHero = new ArrayList<>();
+    private String group;
 
     private OnFragmentInteractionListener mListener;
     FilterLog log = new FilterLog(TAG);
 
-    public static HeroListFragment newInstance(HeroData herodata) {
+    public static HeroListFragment newInstance(HeroData herodata, String group) {
         HeroListFragment fragment = new HeroListFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARAM1, herodata);
+        args.putString(ARG_PARAM2, group);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,6 +62,7 @@ public class HeroListFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             herodata = (HeroData) getArguments().getSerializable(ARG_PARAM1);
+            group = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -74,12 +83,12 @@ public class HeroListFragment extends BaseFragment {
     }
 
     private void initData() {
-
-
+        listHero.clear();
+        listHero.addAll(getListHeros(group));
     }
     private void initLayout(View view) {
         gridView = (GridView) view.findViewById(R.id.top_grid_view);
-        adapter = new AdapterHeroList(context, herodata.listHeros);
+        adapter = new AdapterHeroList(context, listHero);
         gridView.setAdapter(adapter);
     }
 
@@ -91,6 +100,31 @@ public class HeroListFragment extends BaseFragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    private List<HeroDto> getListHeros(String group) {
+        List<HeroDto> list = new ArrayList<>();
+        if (group.equals(MsConst.GROUP_STR)) {
+            for (HeroDto dto : herodata.listHeros) {
+                if (dto.group.equals(MsConst.GROUP_STR)) {
+                    list.add(dto);
+                }
+            }
+        } else if (group.equals(MsConst.GROUP_AGI) ){
+            for (HeroDto dto : herodata.listHeros) {
+                if (dto.group.equals(MsConst.GROUP_AGI)) {
+                    list.add(dto);
+                }
+            }
+        } else if (group.equals(MsConst.GROUP_INTEL) ){
+            for (HeroDto dto : herodata.listHeros) {
+                if (dto.group.equals(MsConst.GROUP_INTEL)) {
+                    list.add(dto);
+                }
+            }
+        }
+        return list;
+
     }
 
 }
