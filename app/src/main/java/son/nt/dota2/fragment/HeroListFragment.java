@@ -1,12 +1,14 @@
 package son.nt.dota2.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.List;
 
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
+import son.nt.dota2.activity.MainActivity;
 import son.nt.dota2.adapter.AdapterHeroList;
 import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.dto.HeroData;
@@ -91,9 +94,17 @@ public class HeroListFragment extends BaseFragment {
         adapter = new AdapterHeroList(context, listHero);
         gridView.setAdapter(adapter);
     }
+    AdapterView.OnItemClickListener onClickGrid = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.putExtra("data","data");
+            startActivity(intent);
+        }
+    };
 
     private void initListener() {
-
+        gridView.setOnItemClickListener(onClickGrid);
     }
 
 
