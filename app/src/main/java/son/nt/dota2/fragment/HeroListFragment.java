@@ -7,8 +7,10 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 
 import son.nt.dota2.R;
+import son.nt.dota2.adapter.AdapterHeroList;
 import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.utils.FilterLog;
@@ -30,6 +32,8 @@ public class HeroListFragment extends BaseFragment {
 
     // TODO: Rename and change types of parameters
     private HeroData herodata;
+    private GridView gridView;
+    private AdapterHeroList adapter;
 
     private OnFragmentInteractionListener mListener;
     FilterLog log = new FilterLog(TAG);
@@ -64,7 +68,25 @@ public class HeroListFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         log.d("log>>>" + "onViewCreated herodata");
+        initData();
+        initLayout(view);
+        initListener();
     }
+
+    private void initData() {
+
+
+    }
+    private void initLayout(View view) {
+        gridView = (GridView) view.findViewById(R.id.top_grid_view);
+        adapter = new AdapterHeroList(context, herodata.listHeros);
+        gridView.setAdapter(adapter);
+    }
+
+    private void initListener() {
+
+    }
+
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

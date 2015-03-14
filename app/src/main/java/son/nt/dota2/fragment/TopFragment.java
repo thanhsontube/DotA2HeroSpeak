@@ -79,11 +79,13 @@ public class TopFragment extends BaseFragment {
 
     private void initData() {
         herodata = new HeroData();
-        herodata.listHeros.add(new HeroDto());
-        herodata.listHeros.add(new HeroDto());
-        herodata.listHeros.add(new HeroDto());
+        for (int i = 0; i < 50; i++) {
+
+            herodata.listHeros.add(new HeroDto());
+        }
 
     }
+
     private void initLayout(View view) {
         pager = (ViewPager) view.findViewById(R.id.pager);
         indicator = (TitlePageIndicator) view.findViewById(R.id.indicator);
@@ -117,7 +119,8 @@ public class TopFragment extends BaseFragment {
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
     }
-    public void initIndicator(){
+
+    public void initIndicator() {
         indicator.setViewPager(pager);
         indicator.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
         indicator.setTextColor(Color.WHITE);

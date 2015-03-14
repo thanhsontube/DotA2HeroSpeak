@@ -33,20 +33,11 @@ public class AdapterTop extends BasePagerAdapter {
 
     @Override
     public int getCount() {
-        return herodata.listHeros.size();
+        return  herodata.groups.length;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return "Strength";
-            case 1:
-                return "Agility";
-            case 2:
-                return "Intelligence";
-            default:
-                return "DotA2";
-        }
+        return herodata.groups[position];
     }
 }
