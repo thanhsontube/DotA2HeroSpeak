@@ -3,6 +3,7 @@ package son.nt.dota2.activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.WindowManager;
 
 import son.nt.dota2.R;
 import son.nt.dota2.base.BaseFragmentActivity;
@@ -14,6 +15,7 @@ public class TopActivity extends BaseFragmentActivity implements TopFragment.OnF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_top);
     }
 
