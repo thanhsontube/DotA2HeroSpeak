@@ -8,13 +8,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-public abstract class MyFragmentPagerAdapter extends PagerAdapter {
+public abstract class BasePagerAdapter extends PagerAdapter {
     private static final String TAG = "MyFragmentPagerAdapter";
     private FragmentManager fm;
     private FragmentTransaction ft;
     private Fragment mCurrentPrimaryItem = null;
 
-    public MyFragmentPagerAdapter(FragmentManager fragmentManager) {
+    public BasePagerAdapter(FragmentManager fragmentManager) {
         this.fm = fragmentManager;
     }
 

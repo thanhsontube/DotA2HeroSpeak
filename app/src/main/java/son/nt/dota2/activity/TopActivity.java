@@ -17,6 +17,7 @@ public class TopActivity extends BaseFragmentActivity implements TopFragment.OnF
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_top);
+        getActionBar().hide();
     }
 
     @Override
