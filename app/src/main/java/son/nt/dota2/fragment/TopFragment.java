@@ -1,6 +1,7 @@
 package son.nt.dota2.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.loader.DataLoader;
+import son.nt.dota2.service.PrefetchService;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.FilterLog;
 
@@ -92,6 +94,7 @@ public class TopFragment extends BaseFragment {
                 herodata = FileUtil.readHeroList(context);
                 initLayout(view);
                 initListener();
+                context.startService(new Intent(context, PrefetchService.class));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -178,6 +181,8 @@ public class TopFragment extends BaseFragment {
 //                    initData();
                     initLayout(view);
                     initListener();
+
+                    context.startService(new Intent(context, PrefetchService.class));
 
                 }
 

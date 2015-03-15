@@ -27,10 +27,10 @@ public abstract class HeroSpeakLoader extends ContentLoader<HeroData> {
     @Override
     protected HeroData handleStream(InputStream in) throws IOException {
         HeroData herodata = new HeroData();
-        HeroDto hetoDto = new HeroDto();
-        List<SpeakDto> listSpeaks = hetoDto.listSpeaks;
+        HeroDto heroDto = new HeroDto();
+        List<SpeakDto> listSpeaks = heroDto.listSpeaks;
         SpeakDto speakDto;
-        herodata.listHeros.add(hetoDto);
+        herodata.listHeros.add(heroDto);
         try {
             HtmlCleaner cleaner = new HtmlCleaner();
             CleanerProperties props = cleaner.getProperties();

@@ -25,6 +25,11 @@
             android:name=".activity.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
+
+        <service
+            android:name=".service.PrefetchService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>
