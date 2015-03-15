@@ -14,12 +14,16 @@ import com.viewpagerindicator.TitlePageIndicator;
 
 import org.apache.http.client.methods.HttpGet;
 
+import java.io.File;
+import java.io.IOException;
+
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.loader.DataLoader;
+import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.FilterLog;
 
 
@@ -80,7 +84,21 @@ public class TopFragment extends BaseFragment {
 //        initLayout(view);
 //        initListener();
         this.view = view;
-        controllerHeroList.load();
+        //check herolist file
+        File file = new File(resource.fileHeroList);
+        if (file.exists()) {
+            log.d("log>>>" + "hero list exists");
+            try {
+                herodata = FileUtil.readHeroList(context);
+                initLayout(view);
+                initListener();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            controllerHeroList.load();
+        }
     }
 
     private void initData() {
@@ -149,6 +167,11 @@ public class TopFragment extends BaseFragment {
                     log.d("log>>>" + "onContentLoaderSucceed :" + entity.listHeros.size());
                     herodata.listHeros.clear();
                     herodata.listHeros.addAll(entity.listHeros);
+                    try {
+                        FileUtil.saveHeroList(context, herodata);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 //                    adapter.notifyDataSetChanged();
 //                    adapter.update(entity);
 

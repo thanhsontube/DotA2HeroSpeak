@@ -98,7 +98,7 @@ public class HeroListFragment extends BaseFragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.putExtra("data","data");
+            intent.putExtra("data",listHero.get(position));
             startActivity(intent);
         }
     };

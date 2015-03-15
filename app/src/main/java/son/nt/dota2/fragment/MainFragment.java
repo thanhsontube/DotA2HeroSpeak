@@ -16,6 +16,7 @@ import android.widget.ListView;
 import org.apache.http.client.methods.HttpGet;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.loader.HeroSpeakLoader;
 import son.nt.dota2.loader.MediaLoader;
+import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.FilterLog;
 
 public class MainFragment extends BaseFragment {
@@ -49,15 +51,16 @@ public class MainFragment extends BaseFragment {
     private ListView listview;
     private List<SpeakDto> list = new ArrayList<>();
     private AdapterSpeak adapter;
+    private HeroDto heroDto;
 
     private OnFragmentInteractionListener mListener;
 
     // TODO: Rename and change types and number of parameters
-    public static MainFragment newInstance(String param1, String param2) {
+    public static MainFragment newInstance(String param1, HeroDto param2) {
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,7 +74,7 @@ public class MainFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            heroDto = (HeroDto) getArguments().getSerializable(ARG_PARAM2);
         }
 
         mParam1 = linkPaSpeak;
@@ -90,7 +93,20 @@ public class MainFragment extends BaseFragment {
         initData();
         initLayout(view);
         initListener();
-        controllerLoadSpeak.load();
+        try {
+            HeroDto dto = FileUtil.readHeroSpeak(context, heroDto.name);
+            if (dto != null) {
+                heroDto = dto;
+                list.clear();
+                list.addAll(heroDto.listSpeaks);
+                adapter.notifyDataSetChanged();
+            } else {
+                controllerLoadSpeak.load();
+            }
+        } catch(Exception e) {
+
+        }
+
     }
 
     private void initData() {
@@ -156,7 +172,9 @@ public class MainFragment extends BaseFragment {
         @Override
         public void load() {
             {
-                HttpGet httpGet = new HttpGet(mParam1);
+                String pathSpeak = String.format("http://dota2.gamepedia.com/%s_responses",heroDto.name);
+                log.d("log>>>" + "pathSpeak:" + pathSpeak);
+                HttpGet httpGet = new HttpGet(pathSpeak);
                 contentManager.load(new HeroSpeakLoader(httpGet, true) {
                     @Override
                     public void onContentLoaderStart() {
@@ -166,7 +184,13 @@ public class MainFragment extends BaseFragment {
                     @Override
                     public void onContentLoaderSucceed(HeroData entity) {
                         log.d("log>>>" + "onContentLoaderSucceed :" + entity.listHeros.size());
-                        HeroDto heroDto = entity.listHeros.get(0);
+                        heroDto.listSpeaks.clear();
+                        heroDto.listSpeaks.addAll(entity.listHeros.get(0).listSpeaks);
+                        try {
+                            FileUtil.saveHeroSpeak(context, heroDto, heroDto.name);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         log.d("log>>>" + "list speaks:" + heroDto.listSpeaks.size());
                         list.clear();
                         list.addAll(heroDto.listSpeaks);
