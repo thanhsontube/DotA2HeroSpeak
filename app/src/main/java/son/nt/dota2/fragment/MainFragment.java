@@ -1,16 +1,21 @@
 package son.nt.dota2.fragment;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.apache.http.client.methods.HttpGet;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +27,7 @@ import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.loader.HeroSpeakLoader;
+import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.utils.FilterLog;
 
 public class MainFragment extends BaseFragment {
@@ -98,8 +104,31 @@ public class MainFragment extends BaseFragment {
     }
 
     private void initListener() {
-
+        listview.setOnItemClickListener(itemClick);
     }
+
+    AdapterView.OnItemClickListener itemClick = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            SpeakDto dto = list.get(position);
+            if (dto.isTitle) {
+                return;
+            }
+            File folderPath = new File(Environment.getExternalStorageDirectory(), "/00-save/");
+            if (!folderPath.exists()) {
+                folderPath.mkdirs();
+            }
+            String linkSpeak = dto.link;
+            File file = new File(folderPath, File.separator + createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
+            if (file.exists()) {
+                log.d("log>>>" + "File exist");
+                MediaPlayer player = MediaPlayer.create(context, Uri.parse(file.getPath()));
+                player.start();
+            } else {
+                loadSpeak(linkSpeak);
+            }
+        }
+    };
 
     @Override
     public void onAttach(Activity activity) {
@@ -152,6 +181,48 @@ public class MainFragment extends BaseFragment {
             }
         }
     };
+
+    private void loadSpeak(final String linkSpeak) {
+        try {
+
+            HttpGet httpGet = new HttpGet(linkSpeak);
+
+            MediaLoader dataLoader = new MediaLoader(httpGet, false) {
+
+                @Override
+                public void onContentLoaderSucceed(File entity) {
+                    Log.v(TAG, "log>>>" + "onContentLoaderSucceed:" + entity.getPath());
+                    try {
+                        File file = new File(entity.getParent(), File.separator + createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
+                        Log.v(TAG, "log>>>" + "file:" + file.getPath());
+                        entity.renameTo(file);
+                        MediaPlayer player = MediaPlayer.create(context, Uri.parse(file.getPath()));
+                        player.start();
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+                }
+
+                @Override
+                public void onContentLoaderStart() {
+                    Log.v(TAG, "log>>>" + "onContentLoaderStart");
+                }
+
+                @Override
+                public void onContentLoaderFailed(Throwable e) {
+                    Log.v(TAG, "log>>>" + "onContentLoaderFailed");
+                }
+            };
+
+            contentManager.load(dataLoader);
+        } catch (Exception e) {
+        }
+    }
+
+    private String createPathFromUrl(String url) {
+        String path = url.replaceAll("[|?*<\":>+\\[\\]/']", "_");
+        return path;
+    }
 
 
 }
