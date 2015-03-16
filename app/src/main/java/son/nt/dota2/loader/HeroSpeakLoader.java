@@ -15,10 +15,13 @@ import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.loader.base.ContentLoader;
+import son.nt.dota2.utils.FilterLog;
 
 
 public abstract class HeroSpeakLoader extends ContentLoader<HeroData> {
     private static final String TAG = "HeroSpeakLoader";
+    private String lastTitle = "";
+    FilterLog log = new FilterLog(TAG);
 
     public HeroSpeakLoader(HttpUriRequest httpRequest, boolean isCache) {
         super(httpRequest, isCache);
@@ -48,8 +51,11 @@ public abstract class HeroSpeakLoader extends ContentLoader<HeroData> {
             List<TagNode> listNodes = (List<TagNode>) tagNode.getAllElementsList(false);
             int i = 0;
             TagNode headerTag;
-            StringBuilder builder;
+            StringBuilder builder = new StringBuilder();
+            String linkImage = "";
+            String link =  "";
             for (TagNode tag : listNodes) {
+
 
                 //title
                 xPath = "./span[@class='mw-headline']";
@@ -63,33 +69,84 @@ public abstract class HeroSpeakLoader extends ContentLoader<HeroData> {
                     speakDto.title = builder.toString();
                     speakDto.isTitle = true;
                     listSpeaks.add(speakDto);
+                    lastTitle = builder.toString();
                 } else {
-                    //speak text and link
-                    xPath = "./li/a[@href]";
-                    data = tag.evaluateXPath(xPath);
+                    // speak text and link
 
-                    //content speak
-                    String xPathContent = "./li";
-                    Object[] dataContent = tag.evaluateXPath(xPathContent);
-                    TagNode tagContent;
+                    // normal
+                    if (lastTitle.contains("Purchasing a Specific Item")  ||lastTitle.contains("Killing a Rival")
+                            || lastTitle.contains("Meeting an Ally") ) {
+                        log.d("log>>>" + "Purchasing a Specific Item");
+                        // xPath = "./li";
+                        /*xPath = "./li/a";
+                        data = tag.evaluateXPath(xPath);
 
+                        String xPathContent = "./li";
+                        Object[] dataContent = tag.evaluateXPath(xPathContent);
+                        TagNode tagContent;
+                        if (data != null && data.length > 0) {
+                            int countName = 0;
+                            for (int j = 0; j < data.length; j++) {
+                                headerTag = (TagNode) data[j];
 
-                    xPath = "./li";
-                    if (data != null && data.length > 0) {
-                        Log.v(TAG, "log>>>" + "data:" + data.length);
-                        for (int j = 0; j < data.length; j++) {
-                            speakDto = new SpeakDto();
-                            headerTag = (TagNode) data[j];
-                            tagContent = (TagNode) dataContent[j];
-                            String link = headerTag.getAttributeByName("href");
-                            Log.v(TAG, "log>>>" + "LINK:" + link);
-                            builder = (StringBuilder) tagContent.getText();
-                            Log.v(TAG, "log>>>" + "what:" + builder.toString());
-                            speakDto.link = link;
-                            speakDto.text = builder.toString().replace("Play", "").trim();
-                            listSpeaks.add(speakDto);
+                                if (j % 2 == 0) {
+                                     link = headerTag.getAttributeByName("href");
+                                    Log.v(TAG, "log>>>" + "LINK:" + link);
+
+                                    tagContent = (TagNode) dataContent[countName];
+                                    countName ++;
+                                    builder = (StringBuilder) tagContent.getText();
+                                    Log.v(TAG, "log>>>" + "what:" + builder.toString());
+
+                                } else {
+                                    xPath = "./img";
+                                    Object[] myData = headerTag.evaluateXPath(xPath);
+                                    if (myData != null && myData.length > 0) {
+                                        TagNode nodeMyData = (TagNode) myData[0];
+                                        linkImage = nodeMyData.getAttributeByName("src").replace("22", "44");
+                                        linkImage = linkImage.substring(0, linkImage.indexOf("?version"));
+                                        Log.v(TAG, "log>>>" + "linkImage:" + linkImage);
+                                    }
+                                }
+//                                speakDto = new SpeakDto();
+//                                speakDto.link = link;
+//                                speakDto.text = builder.toString().replace("Play", "").trim();
+//                                speakDto.imageItem = linkImage;
+//
+//                                listSpeaks.add(speakDto);
+                            }
+                        }*/
+                    } else {
+
+                        xPath = "./li/a[@href]";
+                        data = tag.evaluateXPath(xPath);
+
+                        // content speak
+                        String xPathContent = "./li";
+                        Object[] dataContent = tag.evaluateXPath(xPathContent);
+                        TagNode tagContent;
+
+                        xPath = "./li";
+                        if (data != null && data.length > 0) {
+                            Log.v(TAG, "log>>>" + "data:" + data.length);
+
+                            for (int j = 0; j < data.length; j++) {
+                                headerTag = (TagNode) data[j];
+                                tagContent = (TagNode) dataContent[j];
+                                link = headerTag.getAttributeByName("href");
+                                Log.v(TAG, "log>>>" + "LINK:" + link);
+                                builder = (StringBuilder) tagContent.getText();
+                                Log.v(TAG, "log>>>" + "what:" + builder.toString());
+
+                                speakDto = new SpeakDto();
+                                speakDto.link = link;
+                                speakDto.text = builder.toString().replace("Play", "").trim();
+                                listSpeaks.add(speakDto);
+                            }
+
                         }
                     }
+
                 }
 
 
@@ -100,5 +157,9 @@ public abstract class HeroSpeakLoader extends ContentLoader<HeroData> {
         }
         return herodata;
     }
+
+//    speakDto.link = link;
+//    speakDto.text = builder.toString().replace("Play", "").trim();
+//    listSpeaks.add(speakDto);
 
 }

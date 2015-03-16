@@ -46,17 +46,17 @@ public class ResourceManager {
             folderSave = file.getPath();
             fileHeroList = folderSave +File.separator + "hero_list.dat";
 
-            file =new File(Environment.getExternalStorageDirectory(), File.separator + "00-save" + File.separator + "audio" + File.separator);
-            if (!file.exists()) {
-                file.mkdirs();
+            File fileAudio =new File(Environment.getExternalStorageDirectory(), File.separator + "00-save" + File.separator + "audio" + File.separator);
+            if (!fileAudio.exists()) {
+                fileAudio.mkdirs();
             }
-            folderAudio = file.getPath();
+            folderAudio = fileAudio.getPath();
 
-            file =new File(Environment.getExternalStorageDirectory(), File.separator + "00-save" + File.separator + "hero" + File.separator);
-            if (!file.exists()) {
-                file.mkdirs();
+            File fileHeroes =new File(Environment.getExternalStorageDirectory(), File.separator + "00-save" + File.separator + "hero" + File.separator);
+            if (!fileHeroes.exists()) {
+                fileHeroes.mkdirs();
             }
-            folderHero = file.getPath();
+            folderHero = fileHeroes.getPath();
 
 
         }catch (Exception e) {

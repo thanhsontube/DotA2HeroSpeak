@@ -1,10 +1,12 @@
 package son.nt.dota2.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -55,6 +57,7 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
                 case TYPE_SPEAK:
                     v = inflater.inflate(R.layout.row_speak, parent, false);
                     holder.text = (TextView) v.findViewById(R.id.row_text);
+                    holder.imgItem = (ImageView) v.findViewById(R.id.row_item);
                     break;
             }
             v.setTag(holder);
@@ -73,6 +76,14 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
                 if (dto.text != null) {
                     holder.text.setText(dto.text);
                 }
+
+                if(dto.imageItem != null) {
+                    holder.imgItem.setVisibility(View.VISIBLE);
+                    Log.v("", "log>>>" + "Image:" + dto.imageItem);
+//                    Picasso.with(context).load(dto.imageItem).into(holder.imgItem);
+                } else {
+                    holder.imgItem.setVisibility(View.GONE);
+                }
                 break;
         }
         return v;
@@ -81,5 +92,6 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
     static class Holder {
         TextView title;
         TextView text;
+        ImageView imgItem;
     }
 }

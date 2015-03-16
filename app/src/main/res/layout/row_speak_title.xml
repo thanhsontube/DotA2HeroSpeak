@@ -10,7 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Moving"
-        style="@style/txt_red_18"
+        style="@style/txt_white_18"
+        android:textSize="26sp"
         android:layout_gravity="center"/>
 
 </LinearLayout>

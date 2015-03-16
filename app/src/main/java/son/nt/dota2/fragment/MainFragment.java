@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import android.widget.ListView;
 import org.apache.http.client.methods.HttpGet;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,12 +128,8 @@ public class MainFragment extends BaseFragment {
             if (dto.isTitle) {
                 return;
             }
-            File folderPath = new File(Environment.getExternalStorageDirectory(), "/00-save/");
-            if (!folderPath.exists()) {
-                folderPath.mkdirs();
-            }
             String linkSpeak = dto.link;
-            File file = new File(folderPath, File.separator + createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
+            File file = new File(resource.folderAudio, File.separator + createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
             if (file.exists()) {
                 log.d("log>>>" + "File exist");
                 MediaPlayer player = MediaPlayer.create(context, Uri.parse(file.getPath()));
@@ -187,8 +181,8 @@ public class MainFragment extends BaseFragment {
                         heroDto.listSpeaks.clear();
                         heroDto.listSpeaks.addAll(entity.listHeros.get(0).listSpeaks);
                         try {
-                            FileUtil.saveHeroSpeak(context, heroDto, heroDto.name);
-                        } catch (IOException e) {
+//                            FileUtil.saveHeroSpeak(context, heroDto, heroDto.name);
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                         log.d("log>>>" + "list speaks:" + heroDto.listSpeaks.size());
@@ -217,7 +211,7 @@ public class MainFragment extends BaseFragment {
                 public void onContentLoaderSucceed(File entity) {
                     Log.v(TAG, "log>>>" + "onContentLoaderSucceed:" + entity.getPath());
                     try {
-                        File file = new File(entity.getParent(), File.separator + createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
+                        File file = new File(resource.folderAudio, File.separator + createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
                         Log.v(TAG, "log>>>" + "file:" + file.getPath());
                         entity.renameTo(file);
                         MediaPlayer player = MediaPlayer.create(context, Uri.parse(file.getPath()));
