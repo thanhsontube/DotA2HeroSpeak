@@ -20,6 +20,7 @@ public class ResourceManager {
     public String folderSave;
     public String folderAudio;
     public String folderHero;
+    public String folderBlur;
 
     public String fileHeroList;
 
@@ -57,6 +58,12 @@ public class ResourceManager {
                 fileHeroes.mkdirs();
             }
             folderHero = fileHeroes.getPath();
+
+            File fileBlur =new File(Environment.getExternalStorageDirectory(), File.separator + "00-save" + File.separator + "blur" + File.separator);
+            if (!fileBlur.exists()) {
+                fileBlur.mkdirs();
+            }
+            folderBlur = fileBlur.getPath();
 
 
         }catch (Exception e) {

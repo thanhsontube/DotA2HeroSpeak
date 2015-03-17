@@ -2,6 +2,8 @@ package son.nt.dota2.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,13 +19,18 @@ import org.apache.http.client.methods.HttpGet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Random;
 
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.base.Controller;
+import son.nt.dota2.customview.KenBurnsView;
 import son.nt.dota2.dto.HeroData;
+import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.loader.DataLoader;
+import son.nt.dota2.loader.HeroBgLoader;
 import son.nt.dota2.service.PrefetchService;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.FilterLog;
@@ -47,6 +54,7 @@ public class TopFragment extends BaseFragment {
     private AdapterTop adapter;
     private HeroData herodata = new HeroData();
     private View view;
+    private KenBurnsView kenburns;
     //titlepage indicator
     TitlePageIndicator indicator;
 
@@ -86,15 +94,23 @@ public class TopFragment extends BaseFragment {
 //        initLayout(view);
 //        initListener();
         this.view = view;
+
+        //kenburns
+        kenburns = (KenBurnsView) view.findViewById(R.id.top_ken_burns);
+        int[] ids = new int[]{R.mipmap.ken2, R.mipmap.ken2};
+        kenburns.setResourceIds(ids);
+        kenburns.startLayoutAnimation();
+
         //check herolist file
         File file = new File(resource.fileHeroList);
         if (file.exists()) {
-            log.d("log>>>" + "hero list exists");
             try {
                 herodata = FileUtil.readHeroList(context);
+                log.d("log>>>" + "===========Hero list exists size:" + herodata.listHeros.size());
                 initLayout(view);
                 initListener();
                 context.startService(new Intent(context, PrefetchService.class));
+                updateKensBurns();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -106,11 +122,6 @@ public class TopFragment extends BaseFragment {
 
     private void initData() {
         herodata = new HeroData();
-//        for (int i = 0; i < 50; i++) {
-//
-//            herodata.listHeros.add(new HeroDto());
-//        }
-
     }
 
     private void initLayout(View view) {
@@ -149,7 +160,7 @@ public class TopFragment extends BaseFragment {
 
     public void initIndicator() {
         indicator.setViewPager(pager);
-        indicator.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
+        indicator.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         indicator.setTextColor(Color.WHITE);
         indicator.setSelectedBold(true);
         indicator.setSelectedColor(Color.RED);
@@ -162,36 +173,111 @@ public class TopFragment extends BaseFragment {
             contentManager.load(new DataLoader(httpGet, true) {
                 @Override
                 public void onContentLoaderStart() {
-                    log.d("log>>>" + "onContentLoaderStart");
+                    log.d("log>>>" + "controllerHeroList start");
                 }
 
                 @Override
                 public void onContentLoaderSucceed(HeroData entity) {
-                    log.d("log>>>" + "onContentLoaderSucceed :" + entity.listHeros.size());
+                    log.d("log>>>" + "controllerHeroList Success :" + entity.listHeros.size());
                     herodata.listHeros.clear();
                     herodata.listHeros.addAll(entity.listHeros);
+//                    try {
+//                        FileUtil.saveHeroList(context, herodata);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    initLayout(view);
+//                    initListener();
+                    context.startService(new Intent(context, PrefetchService.class));
+                    controllerLoadBg.load();
+                }
+
+                @Override
+                public void onContentLoaderFailed(Throwable e) {
+                    log.e("log>>>" + "controllerHeroList fail:" + e);
+                }
+            });
+        }
+    };
+
+    HeroData bgHeroData;
+    Controller controllerLoadBg = new Controller() {
+        @Override
+        public void load() {
+            HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Model_pictures");
+            contentManager.load(new HeroBgLoader(httpGet, true) {
+                @Override
+                public void onContentLoaderStart() {
+                    log.d("log>>>" + "controllerLoadBg start");
+                }
+
+                @Override
+                public void onContentLoaderSucceed(HeroData entity) {
+                    log.d("log>>>" + "controllerLoadBg success :" + entity.listHeros.size());
+
+                    bgHeroData = entity;
+                    addBgToList(entity.listHeros);
                     try {
                         FileUtil.saveHeroList(context, herodata);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-//                    adapter.notifyDataSetChanged();
-//                    adapter.update(entity);
-
-//                    initData();
                     initLayout(view);
                     initListener();
-
-                    context.startService(new Intent(context, PrefetchService.class));
-
                 }
 
                 @Override
                 public void onContentLoaderFailed(Throwable e) {
-                    log.e("log>>>" + "onContentLoaderFailed:" + e);
+                    log.e("log>>>" + "controllerLoadBg fail:" + e);
                 }
             });
         }
     };
+
+    private void addBgToList(List<HeroDto> listBg) {
+        String bgName;
+        int i = 0;
+        for (HeroDto dto : listBg) {
+            bgName = dto.bgName;
+            HeroDto hero = hasName(bgName);
+            if (hero != null) {
+                log.d("log>>>" + i + "heroname:" + hero.name);
+                i++;
+                hero.bgName = bgName;
+                hero.bgLink = dto.bgLink;
+            }
+        }
+    }
+
+    private HeroDto hasName(String name) {
+        int i = 0;
+        for (HeroDto dto : herodata.listHeros) {
+            if (dto.name.contains(name)) {
+                return dto;
+            }
+        }
+        return null;
+    }
+
+    private void updateKensBurns() {
+        log.d("log>>>" + "updateKensBurns");
+        Random random = new Random();
+        int pos = random.nextInt(herodata.listHeros.size());
+
+        HeroDto dto = herodata.listHeros.get(pos);
+        File file = aq.getCachedFile(dto.bgLink);
+        if (file != null) {
+            try {
+                log.d("log>>>" + "update kenburns OK");
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                Bitmap bitmap = BitmapFactory.decodeFile(file.getPath(), options);
+                kenburns.setResourceBitmap(new Bitmap[]{bitmap, bitmap});
+                kenburns.startLayoutAnimation();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }

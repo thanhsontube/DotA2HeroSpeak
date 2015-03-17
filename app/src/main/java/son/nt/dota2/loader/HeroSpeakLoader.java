@@ -75,7 +75,7 @@ public abstract class HeroSpeakLoader extends ContentLoader<HeroData> {
 
                     // normal
                     if (lastTitle.contains("Purchasing a Specific Item")  ||lastTitle.contains("Killing a Rival")
-                            || lastTitle.contains("Meeting an Ally") ) {
+                            || lastTitle.contains("Meeting an Ally") || lastTitle.contains("Removed from game") ) {
                         log.d("log>>>" + "Purchasing a Specific Item");
                         // xPath = "./li";
                         /*xPath = "./li/a";

@@ -1,17 +1,38 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.viewpagerindicator.TitlePageIndicator
-        android:id="@+id/indicator"
+    <son.nt.dota2.customview.KenBurnsView
+        android:id="@+id/top_ken_burns"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
+    </son.nt.dota2.customview.KenBurnsView>
+
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        android:src="@mipmap/layer_image"
+        android:scaleType="fitXY" />
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <com.viewpagerindicator.TitlePageIndicator
+            android:textSize="24dp"
+            android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.support.v4.view.ViewPager
+            android:layout_marginTop="16dp"
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</FrameLayout>

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -15,12 +14,10 @@ import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.SpeakDto;
@@ -50,6 +47,13 @@ public class PrefetchService extends IntentService {
         super("PrefetchService");
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        log.e("log>>>" + "-------------INTENT SERVICE onDestroy---------------------");
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         log.d("log>>>" + "-------------INTENT SERVICE START---------------------");
@@ -59,38 +63,25 @@ public class PrefetchService extends IntentService {
                 if (herodata == null) {
                     return;
                 }
+                int i = 0;
+                for (HeroDto heroDto : herodata.listHeros) {
+                    String name = heroDto.name;
+                    HeroDto dto = FileUtil.readHeroSpeak(this, name);
+                    if (dto == null) {
+                        //load here
 
-                HeroDto heroDto = herodata.listHeros.get(0);
-                String name = heroDto.name;
-                HeroDto dto = FileUtil.readHeroSpeak(this, name);
-                if (dto == null) {
-                    //load here
-                    int i = 0;
-                    String pathSpeak = String.format("http://dota2.gamepedia.com/%s_responses", heroDto.name);
-                    if (saveHeroToCache(pathSpeak, name)) {
-                        log.d("log>>>" + i + "-Down success:" + name);
-                        i++;
+                        String pathSpeak = String.format("http://dota2.gamepedia.com/%s_responses", heroDto.name);
+                        if (saveHeroToCache(pathSpeak, name)) {
+                            log.e("log>>>" + i + "-prefetch success:" + name );
+                        } else {
+                            log.e("log>>>" + i + "-prefetch error:" + name + ";path:" + pathSpeak);
+                        }
                     } else {
-                        i++;
-                        log.e("log>>>" + i + "-Error download:" + name);
+                        log.d("log>>>" + i + "-prefetch catch-ed:"  + name);
                     }
+                    i++;
+
                 }
-//                for (HeroDto heroDto : herodata.listHeros) {
-//                    String name = heroDto.name;
-//                    HeroDto dto = FileUtil.readHeroSpeak(this, name);
-//                    if (dto == null) {
-//                        //load here
-//                        int i = 0;
-//                        String pathSpeak = String.format("http://dota2.gamepedia.com/%s_responses", heroDto.name);
-//                        if (saveHeroToCache(pathSpeak, name)) {
-//                            log.d("log>>>" + i + "-Down success:" + name);
-//                            i++;
-//                        } else {
-//                            i++;
-//                            log.e("log>>>" + i + "-Error download:" + name);
-//                        }
-//                    }
-//                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -103,21 +94,25 @@ public class PrefetchService extends IntentService {
         if (TextUtils.isEmpty(urlString) || urlString.contains("null") || urlString.contains("NULL")) {
             return false;
         }
+
+        if (urlString.contains("Natures_Prophet")) {
+            urlString = urlString.replace("Natures", "Nature's");
+        }
         HeroData herodata = new HeroData();
         HeroDto heroDto = new HeroDto();
         List<SpeakDto> listSpeaks = heroDto.listSpeaks;
         SpeakDto speakDto;
         herodata.listHeros.add(heroDto);
+        String lastTitle = "";
         try {
-            String path = ResourceManager.getInstance().folderHero + File.separator + fileName;
             HttpClient httpClient = new DefaultHttpClient();
             HttpResponse httpResponse = httpClient.execute(new HttpGet(urlString));
             StatusLine status = httpResponse.getStatusLine();
-            if (status.getStatusCode() == HttpStatus.SC_OK) {
-                log.d("log>>>" + "HttpStatus.SC_OK");
-            } else {
-                log.e("log>>>" + "HttpStatus ERROR");
-            }
+//            if (status.getStatusCode() == HttpStatus.SC_OK) {
+//                log.d("log>>>" + "HttpStatus.SC_OK");
+//            } else {
+//                log.e("log>>>" + "HttpStatus ERROR");
+//            }
             InputStream in = httpResponse.getEntity().getContent();
 
 
@@ -132,16 +127,17 @@ public class PrefetchService extends IntentService {
             TagNode tagNode = cleaner.clean(in);
             String xPath = "//div[@id='mw-content-text']";
             Object[] data = tagNode.evaluateXPath(xPath);
-            log.d("log>>>" + "data:" + data.length);
             tagNode = (TagNode) data[0];
             // Log.e("", "log>>>" + "data HeroSpeakLoader:" + data.length);
 
             List<TagNode> listNodes = (List<TagNode>) tagNode.getAllElementsList(false);
-            log.d("log>>>" + "listNodes:" + listNodes.size());
             int i = 0;
             TagNode headerTag;
-            StringBuilder builder;
+            StringBuilder builder = new StringBuilder();
+            String linkImage = "";
+            String link =  "";
             for (TagNode tag : listNodes) {
+
 
                 //title
                 xPath = "./span[@class='mw-headline']";
@@ -151,47 +147,53 @@ public class PrefetchService extends IntentService {
                     i++;
                     headerTag = (TagNode) data[0];
                     builder = (StringBuilder) headerTag.getText();
-                    Log.e("", "log>>>" + i + " data HeroSpeakLoader header:" + builder.toString());
+//                    Log.v("", "log>>>" + i + " ====data HeroSpeakLoader header:" + builder.toString());
                     speakDto.title = builder.toString();
                     speakDto.isTitle = true;
                     listSpeaks.add(speakDto);
+                    lastTitle = builder.toString();
                 } else {
-                    //speak text and link
-                    xPath = "./li/a[@href]";
-                    data = tag.evaluateXPath(xPath);
+                    // speak text and link
 
-                    //content speak
-                    String xPathContent = "./li";
-                    Object[] dataContent = tag.evaluateXPath(xPathContent);
-                    TagNode tagContent;
+                    // normal
+                    if (lastTitle.contains("Purchasing a Specific Item")  ||lastTitle.contains("Killing a Rival")
+                            || lastTitle.contains("Meeting an Ally") || lastTitle.contains("Removed from game") ) {
+                        log.d("log>>>" + "Purchasing a Specific Item");
+                    } else {
 
+                        xPath = "./li/a[@href]";
+                        data = tag.evaluateXPath(xPath);
 
-                    xPath = "./li";
-                    if (data != null && data.length > 0) {
-//                        Log.v(TAG, "log>>>" + "data:" + data.length);
-                        for (int j = 0; j < data.length; j++) {
-                            speakDto = new SpeakDto();
-                            headerTag = (TagNode) data[j];
-                            tagContent = (TagNode) dataContent[j];
-                            String link = headerTag.getAttributeByName("href");
-                            Log.v(TAG, "log>>>" + "LINK:" + link);
-                            builder = (StringBuilder) tagContent.getText();
-                            Log.v(TAG, "log>>>" + "what:" + builder.toString());
-                            speakDto.link = link;
-                            speakDto.text = builder.toString().replace("Play", "").trim();
-                            listSpeaks.add(speakDto);
+                        // content speak
+                        String xPathContent = "./li";
+                        Object[] dataContent = tag.evaluateXPath(xPathContent);
+                        TagNode tagContent;
+
+                        xPath = "./li";
+                        if (data != null && data.length > 0) {
+                            for (int j = 0; j < data.length; j++) {
+                                headerTag = (TagNode) data[j];
+                                tagContent = (TagNode) dataContent[j];
+                                link = headerTag.getAttributeByName("href");
+//                                Log.i(TAG, "log>>>" + "LINK:" + link);
+                                builder = (StringBuilder) tagContent.getText();
+//                                Log.i(TAG, "log>>>" + "what:" + builder.toString());
+
+                                speakDto = new SpeakDto();
+                                speakDto.link = link;
+                                speakDto.text = builder.toString().replace("Play", "").trim();
+                                listSpeaks.add(speakDto);
+                            }
+
                         }
                     }
+
                 }
 
 
             }
-
             Log.e("", "log>>>" + "data HeroSpeakLoader listNodes:" + listNodes.size());
             FileUtil.saveHeroSpeak(this, heroDto, fileName);
-//            File fileFrom = new File(pathTemp);
-//            File fileTo = new File(path);
-//            fileFrom.renameTo(fileTo);
             return true;
         } catch (final Exception e) {
             e.printStackTrace();

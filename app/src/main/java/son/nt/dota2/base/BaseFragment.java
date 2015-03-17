@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.androidquery.AQuery;
+
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.loader.MyPath;
 import son.nt.dota2.loader.base.ContentManager;
@@ -20,6 +22,7 @@ public class BaseFragment extends Fragment {
     protected ResourceManager resource;
     protected ContentManager contentManager;
     protected MyPath mypath;
+    protected AQuery aq;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,7 @@ public class BaseFragment extends Fragment {
         resource = ResourceManager.getInstance();
         contentManager = resource.getContentManager();
         mypath = resource.getMyPath();
+        aq = new AQuery(context);
     }
 
     @Override

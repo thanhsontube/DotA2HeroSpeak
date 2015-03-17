@@ -1,12 +1,47 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="son.nt.dota2.fragment.MainFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="son.nt.dota2.fragment.MainFragment">
 
-   <ListView
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:id="@+id/main_listview">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_scroll_view"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
-       </ListView>
+        <FrameLayout
+            android:id="@+id/bg_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:src="@mipmap/image"
+                android:id="@+id/orginal_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:src="@mipmap/image"
+                android:id="@+id/blured_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.0"
+                android:scaleType="fitXY" />
+        </FrameLayout>
+    </ScrollView>
+
+    <ListView
+        android:background="@mipmap/layer_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_listview">
+
+    </ListView>
 
 </FrameLayout>

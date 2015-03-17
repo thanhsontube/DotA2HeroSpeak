@@ -13,6 +13,9 @@ public class HeroDto implements Serializable{
     public String avatarThubmail;
     public String avatarLarge;
 
+    public String bgLink;
+    public String bgName;
+
     public List<SpeakDto> listSpeaks = new ArrayList<SpeakDto>();
     
     
