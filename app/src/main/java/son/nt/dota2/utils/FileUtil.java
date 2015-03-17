@@ -60,4 +60,9 @@ public class FileUtil {
         return wo;
     }
 
+    public static String createPathFromUrl(String url) {
+        String path = url.replaceAll("[|?*<\":>+\\[\\]/']", "_");
+        return path;
+    }
+
 }

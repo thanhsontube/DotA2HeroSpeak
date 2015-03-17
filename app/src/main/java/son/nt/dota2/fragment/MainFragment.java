@@ -1,11 +1,16 @@
 package son.nt.dota2.fragment;
 
 import android.app.Activity;
+import android.app.Service;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -39,6 +44,7 @@ import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.loader.HeroSpeakLoader;
 import son.nt.dota2.loader.MediaLoader;
+import son.nt.dota2.service.DownloadService;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.FilterLog;
 
@@ -106,6 +112,7 @@ public class MainFragment extends BaseFragment {
             heroDto = (HeroDto) getArguments().getSerializable(ARG_PARAM2);
             heroName = heroDto.name;
             log.d("log>>>" + "hero:" + heroName  + ";background link:" + heroDto.bgLink);
+            context.bindService(new Intent(context, DownloadService.class), serviceConnection, Service.BIND_AUTO_CREATE);
         }
         mParam1 = linkPaSpeak;
     }
@@ -131,6 +138,8 @@ public class MainFragment extends BaseFragment {
                 list.clear();
                 list.addAll(heroDto.listSpeaks);
                 adapter.notifyDataSetChanged();
+                isLoaded = true;
+                startPrefetch();
             } else {
                 controllerLoadSpeak.load();
             }
@@ -148,7 +157,9 @@ public class MainFragment extends BaseFragment {
         screenHeightShift =  displayMetrics.heightPixels + BACKGROUND_SHIFT;
 //        log.d("log>>>" + "screenHeightShift:" + screenHeightShift);
 
-        fileBlur = new File(resource.folderBlur, File.separator + createPathFromUrl(heroDto.bgLink));
+        if(heroDto.bgLink != null) {
+            fileBlur = new File(resource.folderBlur, File.separator + createPathFromUrl(heroDto.bgLink));
+        }
 
     }
 
@@ -259,6 +270,8 @@ public class MainFragment extends BaseFragment {
                         list.clear();
                         list.addAll(heroDto.listSpeaks);
                         adapter.notifyDataSetChanged();
+                        isLoaded = true;
+                        startPrefetch();
                     }
 
                     @Override
@@ -344,7 +357,7 @@ public class MainFragment extends BaseFragment {
     }
 
     private void loadBlurImage() {
-        if (fileBlur.exists()) {
+        if (fileBlur != null && fileBlur.exists()) {
             log.d("log>>>" + "BLUR Image exists");
             aq.id(blurredImageView).image(fileBlur, 0);
             aq.id(nonBlurImageView).image(heroDto.bgLink, true, true);
@@ -390,5 +403,37 @@ public class MainFragment extends BaseFragment {
         }
     }
 
+    //prefetch all audio
 
+    DownloadService downloadService;
+    boolean isBind = false;
+    boolean isLoaded = false;
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            DownloadService.LocalBinder binder = (DownloadService.LocalBinder) service;
+            downloadService = binder.getService();
+            isBind = true;
+            startPrefetch();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBind = true;
+        }
+    };
+
+    private void startPrefetch() {
+        if (isBind && isLoaded) {
+            downloadService.addLinkDto(list);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(downloadService != null) {
+            context.unbindService(serviceConnection);
+        }
+    }
 }
