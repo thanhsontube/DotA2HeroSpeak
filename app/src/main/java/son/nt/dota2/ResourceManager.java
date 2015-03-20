@@ -40,24 +40,29 @@ public class ResourceManager {
         try {
             myPath = new MyPath(context);
             contentManager = new ContentManager(context, 100);
-            File file = new File(Environment.getExternalStorageDirectory(), File.separator + "00-save" + File.separator);
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-            folderSave = file.getPath();
+//            File file = new File(Environment.getExternalStorageDirectory(), File.separator + "00-save" + File.separator);
+//            if (!file.exists()) {
+//                file.mkdirs();
+//            }
+//            folderSave = file.getPath();
+//            fileHeroList = folderSave +File.separator + "hero_list.dat";
+
+//            File fileHeroes =new File(Environment.getExternalStorageDirectory(), File.separator + "00-save" + File.separator + "hero" + File.separator);
+//            if (!fileHeroes.exists()) {
+//                fileHeroes.mkdirs();
+//            }
+//            folderHero = fileHeroes.getPath();
+
+            //list heroes will save in app package and can delete.
+            folderSave = getContext().getFilesDir().getPath();
             fileHeroList = folderSave +File.separator + "hero_list.dat";
+            folderHero = getContext().getFilesDir().getPath()+ File.separator + "hero" + File.separator;
 
             File fileAudio =new File(Environment.getExternalStorageDirectory(), File.separator + "00-save" + File.separator + "audio" + File.separator);
             if (!fileAudio.exists()) {
                 fileAudio.mkdirs();
             }
             folderAudio = fileAudio.getPath();
-
-            File fileHeroes =new File(Environment.getExternalStorageDirectory(), File.separator + "00-save" + File.separator + "hero" + File.separator);
-            if (!fileHeroes.exists()) {
-                fileHeroes.mkdirs();
-            }
-            folderHero = fileHeroes.getPath();
 
             File fileBlur =new File(Environment.getExternalStorageDirectory(), File.separator + "00-save" + File.separator + "blur" + File.separator);
             if (!fileBlur.exists()) {

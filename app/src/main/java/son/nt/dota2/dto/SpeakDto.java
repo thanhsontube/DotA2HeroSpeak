@@ -11,4 +11,5 @@ public class SpeakDto implements Serializable{
     public String text;
     public boolean isTitle = false;
     public String imageItem;
+    public boolean isPlaying = false;
 }

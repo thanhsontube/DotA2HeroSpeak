@@ -1,16 +1,19 @@
 package son.nt.dota2.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.SpeakDto;
 
@@ -57,7 +60,15 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
                 case TYPE_SPEAK:
                     v = inflater.inflate(R.layout.row_speak, parent, false);
                     holder.text = (TextView) v.findViewById(R.id.row_text);
-                    holder.imgItem = (ImageView) v.findViewById(R.id.row_item);
+                    holder.imgPlaying = (ImageView) v.findViewById(R.id.row_img_playing);
+                    holder.imgMore = (ImageView) v.findViewById(R.id.row_img_more);
+                    holder.imgMore.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            createPopupMenu(v);
+                        }
+                    });
+                    holder.txtNo = (TextView) v.findViewById(R.id.row_txt_no);
                     break;
             }
             v.setTag(holder);
@@ -68,30 +79,89 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
         switch (type) {
             case TYPE_TITLE:
 
+
                 if (dto.title != null) {
                     holder.title.setText(dto.title);
                 }
                 break;
             case TYPE_SPEAK:
+                String no = String.valueOf(position).trim();
+                if (no.length() == 1) {
+                    no = no + "  ";
+                } else if (no.length() == 2) {
+                    no = no + " ";
+                }
+                holder.txtNo.setText(no);
                 if (dto.text != null) {
                     holder.text.setText(dto.text);
                 }
 
-                if(dto.imageItem != null) {
-                    holder.imgItem.setVisibility(View.VISIBLE);
-                    Log.v("", "log>>>" + "Image:" + dto.imageItem);
-//                    Picasso.with(context).load(dto.imageItem).into(holder.imgItem);
+                if (dto.isPlaying) {
+                    v.setBackgroundResource(R.drawable.d_row_speaking);
+                    holder.imgPlaying.setVisibility(View.VISIBLE);
                 } else {
-                    holder.imgItem.setVisibility(View.GONE);
+                    holder.imgPlaying.setVisibility(View.GONE);
+//                    v.setBackgroundResource(R.drawable.d_row_speak);
+                    v.setBackgroundResource(android.R.color.transparent);
+//                    if (position % 2 == 0) {
+//                    } else {
+//                        v.setBackgroundResource(R.drawable.d_row_speak_disable);
+//
+//                    }
                 }
+
                 break;
         }
         return v;
     }
 
     static class Holder {
+        TextView txtNo;
         TextView title;
         TextView text;
-        ImageView imgItem;
+        ImageView imgPlaying;
+        ImageView imgMore;
+    }
+
+    private void createPopupMenu(View v) {
+        PopupMenu popupMenu = new PopupMenu(context, v);
+        popupMenu.inflate(R.menu.menu_more);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Toast.makeText(context.getApplicationContext(), "click:" + item.getItemId(), Toast.LENGTH_SHORT).show();
+                switch (item.getItemId()) {
+                    case R.id.more_share:
+                        action = MsConst.MenuSelect.FB_SHARE;
+                        break;
+                    case R.id.more_save:
+                        action = MsConst.MenuSelect.FAVORITE;
+                        break;
+                    case R.id.more_copy:
+                        action = MsConst.MenuSelect.COPY;
+                        break;
+                    case R.id.more_set_ringtone:
+                        action = MsConst.MenuSelect.RINGTONE;
+                        break;
+
+                }
+                if (mListener != null) {
+                    mListener.onMenuClick(action);
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
+    }
+
+    MsConst.MenuSelect action;
+    IAdapterListener mListener;
+
+    public interface IAdapterListener {
+        void onMenuClick(MsConst.MenuSelect action);
+    }
+
+    public void setOnIAdapterListener(IAdapterListener callback) {
+        this.mListener = callback;
     }
 }

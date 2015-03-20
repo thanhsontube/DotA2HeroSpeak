@@ -6,16 +6,22 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -23,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
@@ -33,22 +40,26 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterSpeak;
 import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.base.Controller;
 import son.nt.dota2.customview.blur.Blur;
 import son.nt.dota2.customview.blur.ImageUtils;
+import son.nt.dota2.dialog.DialogSetting;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.loader.HeroSpeakLoader;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.service.DownloadService;
+import son.nt.dota2.service.ServiceMedia;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.FilterLog;
+import son.nt.dota2.utils.NetworkUtils;
 
-public class MainFragment extends BaseFragment {
+public class MainFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = "MainFragment";
     FilterLog log = new FilterLog(TAG);
     // TODO: Rename parameter arguments, choose names that match
@@ -71,6 +82,10 @@ public class MainFragment extends BaseFragment {
 
     private String heroName;
 
+    private ImageView btnPaused;
+    private ImageView btnPlayed;
+    private TextView txtPos;
+
 
     // Blur
     private static final int LIMIT_TRANSFORM_STOP_VIEW = 200;
@@ -90,6 +105,8 @@ public class MainFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
 
+    Drawable drawable;
+
     // TODO: Rename and change types and number of parameters
     public static MainFragment newInstance(String param1, HeroDto param2) {
         MainFragment fragment = new MainFragment();
@@ -107,14 +124,22 @@ public class MainFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         log.d("log>>>" + "===============MAIN onCreate--------------");
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             heroDto = (HeroDto) getArguments().getSerializable(ARG_PARAM2);
             heroName = heroDto.name;
-            log.d("log>>>" + "hero:" + heroName  + ";background link:" + heroDto.bgLink);
+            log.d("log>>>" + "hero:" + heroName + ";background link:" + heroDto.bgLink);
             context.bindService(new Intent(context, DownloadService.class), serviceConnection, Service.BIND_AUTO_CREATE);
+            context.bindService(new Intent(context, ServiceMedia.class), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
         }
         mParam1 = linkPaSpeak;
+
+
+
+//        drawable = getResources().getDrawable(R.color.red_400);
+//        drawable.setAlpha(255);
+//        getActivity().getActionBar().setBackgroundDrawable(drawable);
     }
 
     @Override
@@ -139,11 +164,15 @@ public class MainFragment extends BaseFragment {
                 list.addAll(heroDto.listSpeaks);
                 adapter.notifyDataSetChanged();
                 isLoaded = true;
-                startPrefetch();
+                prepareMedia();
+
+                if (NetworkUtils.isConnected(context)) {
+                    startPrefetch();
+                }
             } else {
                 controllerLoadSpeak.load();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -154,10 +183,10 @@ public class MainFragment extends BaseFragment {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         display.getMetrics(displayMetrics);
 
-        screenHeightShift =  displayMetrics.heightPixels + BACKGROUND_SHIFT;
+        screenHeightShift = displayMetrics.heightPixels + BACKGROUND_SHIFT;
 //        log.d("log>>>" + "screenHeightShift:" + screenHeightShift);
 
-        if(heroDto.bgLink != null) {
+        if (heroDto.bgLink != null) {
             fileBlur = new File(resource.folderBlur, File.separator + createPathFromUrl(heroDto.bgLink));
         }
 
@@ -171,13 +200,26 @@ public class MainFragment extends BaseFragment {
 
         listview = (ListView) view.findViewById(R.id.main_listview);
         adapter = new AdapterSpeak(context, list);
+        adapter.setOnIAdapterListener(adapterListener);
         listview.setAdapter(adapter);
+
+        btnPaused = (ImageView) view.findViewById(R.id.main_btn_paused);
+        btnPlayed = (ImageView) view.findViewById(R.id.main_btn_played);
+        btnPaused.setOnClickListener(this);
+        btnPlayed.setOnClickListener(this);
+        txtPos = (TextView) view.findViewById(R.id.main_txt_pos);
     }
 
     private void updateLayout() {
+//        if(actionBar != null) {
+//            actionBar.setTitle(heroDto.name);
+//        }
+        txtPos.setVisibility(View.GONE);
+        btnPaused.setVisibility(View.GONE);
+        btnPlayed.setVisibility(View.GONE);
         setViewHeight(nonBlurImageView, screenHeightShift);
         setViewHeight(blurredImageView, screenHeightShift);
-        if(aq.getCachedFile(heroDto.bgLink) != null) {
+        if (aq.getCachedFile(heroDto.bgLink) != null) {
             aq.id(nonBlurImageView).image(heroDto.bgLink, true, true);
             loadBlurImage();
         } else {
@@ -206,15 +248,20 @@ public class MainFragment extends BaseFragment {
             if (dto.isTitle) {
                 return;
             }
-            String linkSpeak = dto.link;
-            File file = new File(resource.folderAudio, File.separator + createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
-            if (file.exists()) {
-                log.d("log>>>" + "File audio exist");
-                MediaPlayer player = MediaPlayer.create(context, Uri.parse(file.getPath()));
-                player.start();
-            } else {
-                loadSpeak(linkSpeak);
-            }
+            btnPaused.setVisibility(View.GONE);
+            btnPlayed.setVisibility(View.VISIBLE);
+            txtPos.setVisibility(View.GONE);
+            mediaService.playSong(position, true);
+//            String linkSpeak = dto.link;
+//            File file = new File(resource.folderAudio, File.separator + createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
+//            if (file.exists()) {
+//                log.d("log>>>" + "File audio exist");
+//                MediaPlayer player = MediaPlayer.create(context, Uri.parse(file.getPath()));
+//                player.start();
+//                mediaService.playSong(position);
+//            } else {
+//                loadSpeak(linkSpeak);
+//            }
         }
     };
 
@@ -243,10 +290,10 @@ public class MainFragment extends BaseFragment {
         @Override
         public void load() {
             {
-                String pathSpeak = String.format("http://dota2.gamepedia.com/%s_responses",heroDto.name);
+                String pathSpeak = String.format("http://dota2.gamepedia.com/%s_responses", heroDto.name);
                 log.d("log>>>" + "pathSpeak:" + pathSpeak);
                 if (pathSpeak.contains("Natures_Prophet")) {
-                    pathSpeak = pathSpeak.replace("Natures", "Nature's") ;
+                    pathSpeak = pathSpeak.replace("Natures", "Nature's");
                     log.d("log>>>" + "pathSpeak 2:" + pathSpeak);
                 }
                 HttpGet httpGet = new HttpGet(pathSpeak);
@@ -272,6 +319,7 @@ public class MainFragment extends BaseFragment {
                         adapter.notifyDataSetChanged();
                         isLoaded = true;
                         startPrefetch();
+                        prepareMedia();
                     }
 
                     @Override
@@ -300,7 +348,7 @@ public class MainFragment extends BaseFragment {
                         MediaPlayer player = MediaPlayer.create(context, Uri.parse(file.getPath()));
                         player.start();
                     } catch (Exception e) {
-                        // TODO: handle exception
+                        e.printStackTrace();
                     }
                 }
 
@@ -319,10 +367,13 @@ public class MainFragment extends BaseFragment {
         } catch (Exception e) {
         }
     }
+
     private String createPathFromUrl(String url) {
         String path = url.replaceAll("[|?*<\":>+\\[\\]/']", "_");
         return path;
     }
+
+    int lastY = -1;
 
     AbsListView.OnScrollListener onScrollListener = new AbsListView.OnScrollListener() {
         @Override
@@ -333,6 +384,13 @@ public class MainFragment extends BaseFragment {
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             int scrollY = getScrollY();
+
+//            final int headerHeight = DISTANCE;
+//            final float ratio = (float) Math.min(Math.max(scrollY, 0), headerHeight) / headerHeight;
+//            final int newAlpha = (int) (ratio * 255);
+//            drawable.setAlpha(newAlpha);
+//            lastY = scrollY;
+
 
             if (scrollY < DISTANCE && scrollY >= 0) {
                 float val = scrollY * (1f / DISTANCE);
@@ -345,6 +403,7 @@ public class MainFragment extends BaseFragment {
             }
         }
     };
+
     public int getScrollY() {
         View c = listview.getChildAt(0);
         if (c == null) {
@@ -353,7 +412,7 @@ public class MainFragment extends BaseFragment {
 
         int firstVisiblePosition = listview.getFirstVisiblePosition();
         int top = c.getTop();
-        return -top + firstVisiblePosition * c.getHeight() ;
+        return -top + firstVisiblePosition * c.getHeight();
     }
 
     private void loadBlurImage() {
@@ -432,8 +491,106 @@ public class MainFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(downloadService != null) {
+        if (downloadService != null) {
+            downloadService.isQuit = true;
             context.unbindService(serviceConnection);
         }
+        if (mediaService != null) {
+            mediaService.stop();
+            context.unbindService(serviceConnectionMedia);
+        }
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+
+                DialogSetting dialog = DialogSetting.newInstance("Save", "Cancel");
+                dialog.setCancelable(true);
+                dialog.setOnIDialogListener(new DialogSetting.IDialogListener() {
+                    @Override
+                    public void onIDialogCancel(MsConst.RepeatMode repeatMode, int currentVolume) {
+//                        Toast.makeText(context, "Mode:" + repeatMode, Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                dialog.show(ft, "setting");
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //MEDIA MUSIC service
+    private ServiceMedia mediaService;
+    ServiceConnection serviceConnectionMedia = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            log.d("log>>>" + "MediaService serviceConnectionMedia Connected");
+            ServiceMedia.LocalBinder binder = (ServiceMedia.LocalBinder) service;
+            mediaService = binder.getService();
+            prepareMedia();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            try {
+                mediaService.stop();
+                mediaService = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private void prepareMedia() {
+        if (mediaService != null && isLoaded) {
+            mediaService.setAdapter(adapter);
+            mediaService.setActionBar(txtPos, heroName);
+            mediaService.setListData(heroDto.listSpeaks);
+            btnPlayed.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.main_btn_paused:
+                btnPaused.setVisibility(View.GONE);
+                btnPlayed.setVisibility(View.VISIBLE);
+                mediaService.pause();
+                txtPos.setVisibility(View.GONE);
+                break;
+            case R.id.main_btn_played:
+                btnPaused.setVisibility(View.VISIBLE);
+                btnPlayed.setVisibility(View.GONE);
+                mediaService.play();
+                txtPos.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    AdapterSpeak.IAdapterListener adapterListener = new AdapterSpeak.IAdapterListener() {
+        @Override
+        public void onMenuClick(MsConst.MenuSelect action) {
+            switch (action) {
+                case FB_SHARE:
+                    break;
+                case FAVORITE:
+                    break;
+                case COPY:
+                    break;
+                case RINGTONE:
+                    break;
+            }
+        }
+    };
 }

@@ -1,23 +1,88 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:id="@+id/drawer_layout"
+    android:fitsSystemWindows="true">
+
 
     <FrameLayout
-        android:id="@+id/ll_main_hero"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"></FrameLayout>
+        android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/ll_ads"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <!--Main layout and ads-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <View
-            android:layout_width="320dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:background="#ff00ff" />
+            <FrameLayout
+                android:id="@+id/ll_main_hero"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/ll_ads"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_width="320dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="#ff00ff" />
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+        <!--Toolbar-->
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/toolbar"
+            android:elevation="4dp" />
     </FrameLayout>
-</LinearLayout>
+
+
+    <!--left-->
+   <!-- <ListView
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@null"
+        android:background="@mipmap/layer_image"
+        android:id="@+id/left_drawer"></ListView>
+-->
+    <android.support.v7.widget.RecyclerView
+        android:scrollbars="vertical"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@mipmap/layer_image"
+        android:id="@+id/left_drawer">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <!--right-->
+    <FrameLayout
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:background="@mipmap/layer_image">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ken2"
+            android:scaleType="centerCrop" />
+    </FrameLayout>
+
+</android.support.v4.widget.DrawerLayout>
+
+
+
+

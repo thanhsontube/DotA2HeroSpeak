@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/more_share"
+        android:title="FB Share"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/more_save"
+        android:title="Favorite"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/more_copy"
+        android:title="Copy"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/more_set_ringtone"
+        android:title="Make Ringtone"
+        android:showAsAction="always" />
+
+</menu>

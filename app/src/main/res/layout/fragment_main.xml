@@ -20,14 +20,14 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:src="@mipmap/image"
+                android:src="@mipmap/ken2"
                 android:id="@+id/orginal_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY" />
 
             <ImageView
-                android:src="@mipmap/image"
+                android:src="@mipmap/ken2"
                 android:id="@+id/blured_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -43,5 +43,35 @@
         android:id="@+id/main_listview">
 
     </ListView>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:padding="4dp">
+
+        <ImageView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_paused"
+            android:id="@+id/main_btn_paused" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_played"
+            android:id="@+id/main_btn_played" />
+    </FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(12)"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="8dp"
+        style="@style/txt_white_18"
+        android:id="@+id/main_txt_pos"/>
 
 </FrameLayout>

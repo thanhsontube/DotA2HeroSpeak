@@ -1,9 +1,12 @@
 package son.nt.dota2.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,13 @@ public class BaseFragment extends Fragment {
     protected ContentManager contentManager;
     protected MyPath mypath;
     protected AQuery aq;
+    protected ActionBar actionBar;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        actionBar = ((ActionBarActivity)activity).getSupportActionBar();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

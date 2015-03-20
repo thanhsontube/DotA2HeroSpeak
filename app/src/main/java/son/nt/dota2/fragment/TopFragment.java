@@ -6,22 +6,28 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.viewpagerindicator.TitlePageIndicator;
 
 import org.apache.http.client.methods.HttpGet;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Random;
 
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.BaseFragment;
@@ -90,9 +96,7 @@ public class TopFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        initData();
-//        initLayout(view);
-//        initListener();
+
         this.view = view;
 
         //kenburns
@@ -100,28 +104,78 @@ public class TopFragment extends BaseFragment {
         int[] ids = new int[]{R.mipmap.ken2, R.mipmap.ken2};
         kenburns.setResourceIds(ids);
         kenburns.startLayoutAnimation();
+        loadingTask.execute();
 
-        //check herolist file
-        File file = new File(resource.fileHeroList);
-        if (file.exists()) {
-            try {
-                herodata = FileUtil.readHeroList(context);
-                log.d("log>>>" + "===========Hero list exists size:" + herodata.listHeros.size());
-                initLayout(view);
-                initListener();
-                context.startService(new Intent(context, PrefetchService.class));
-                updateKensBurns();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            controllerHeroList.load();
-        }
+//        File file = new File(resource.fileHeroList);
+//        if (file.exists()) {
+//            try {
+//                herodata = FileUtil.readHeroList(context);
+//                log.d("log>>>" + "===========Hero list exists size:" + herodata.listHeros.size());
+//                initLayout(view);
+//                initListener();
+//                context.startService(new Intent(context, PrefetchService.class));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//        } else {
+//            controllerHeroList.load();
+//        }
     }
 
+    AsyncTask<Void, Void, Void> loadingTask = new AsyncTask<Void, Void, Void>() {
+        @Override
+        protected Void doInBackground(Void... params) {
+            initData();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(MsConst.IS_HANDSOME) {
+                initLayout(view);
+                initListener();
+            }
+        }
+    };
+
     private void initData() {
-        herodata = new HeroData();
+        try {
+            File fOut = new File(resource.folderSave, File.separator + "data.zip");
+            if (fOut.exists()) {
+                log.d("log>>>" + "initData Exist....");
+                herodata = FileUtil.readHeroList(context);
+                return;
+            }
+            log.d("log>>>" + "start copy....");
+            InputStream in = context.getAssets().open("data.zip");
+            OutputStream out = new FileOutputStream(fOut, false);
+            int read;
+            byte []buffer = new byte[1024];
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+
+            out.flush();
+            out.close();
+            in.close();
+            log.d("log>>>" + "Write file OK");
+
+            //unzip
+            boolean isUnzip = FileUtil.unpackZip(resource.folderSave + File.separator, "data.zip");
+            if (isUnzip) {
+                log.d("log>>>" + "Unzip OK");
+                herodata = FileUtil.readHeroList(context);
+
+            } else {
+                log.e("log>>>" + "Unzip FAIL");
+                Toast.makeText(context, "Sorry, can not initialize data", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.e("log>>>" + "Write file ERROR:" + e.toString());
+        }
     }
 
     private void initLayout(View view) {
@@ -188,7 +242,7 @@ public class TopFragment extends BaseFragment {
 //                    }
 //                    initLayout(view);
 //                    initListener();
-                    context.startService(new Intent(context, PrefetchService.class));
+
                     controllerLoadBg.load();
                 }
 
@@ -219,6 +273,7 @@ public class TopFragment extends BaseFragment {
                     addBgToList(entity.listHeros);
                     try {
                         FileUtil.saveHeroList(context, herodata);
+                        context.startService(new Intent(context, PrefetchService.class));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -280,4 +335,13 @@ public class TopFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            updateKensBurns();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -51,8 +50,8 @@ public class AdapterHeroList extends ArrayAdapter <HeroDto> {
             holder.text.setText(dto.name);
         }
         if(dto.avatarThubmail != null) {
-//            aq.id(holder.img).image(dto.avatarThubmail, true, true);
-            Picasso.with(context).load(dto.avatarThubmail).into(holder.img);
+            aq.id(holder.img).image(dto.avatarThubmail, true, true, 0, 0, null, AQuery.FADE_IN);
+//            Picasso.with(context).load(dto.avatarThubmail).into(holder.img);
         }
         return v;
     }

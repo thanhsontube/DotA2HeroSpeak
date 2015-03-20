@@ -35,6 +35,11 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+        <service
+            android:name=".service.ServiceMedia"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

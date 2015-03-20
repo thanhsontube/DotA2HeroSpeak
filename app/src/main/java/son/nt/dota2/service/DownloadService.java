@@ -32,6 +32,8 @@ public class DownloadService extends Service {
 
     LocalBinder binder = new LocalBinder();
 
+    public boolean isQuit = false;
+
     public class LocalBinder extends Binder {
 
         public DownloadService getService() {
@@ -82,11 +84,14 @@ public class DownloadService extends Service {
             log.d("log>>>" + "addLinkDto:" + list.size());
             int i = 0;
             for (SpeakDto dto : list) {
-                log.d("log>>>" + "=============download:" + i + "============");
+//                log.d("log>>>" + "=============download:" + i + "============");
+                if(isQuit) {
+                    return -1;
+                }
                 downloadLink(dto.link);
                 i++;
             }
-            return null;
+            return 0;
         }
 
         @Override
@@ -98,13 +103,13 @@ public class DownloadService extends Service {
     }
 
     public void downloadLink(String linkSpeak) {
-        log.d("log>>>" + "downloadLink:" + linkSpeak);
+//        log.d("log>>>" + "downloadLink:" + linkSpeak);
         if(TextUtils.isEmpty(linkSpeak)) {
             return;
         }
         File fileTo = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
         if (fileTo.exists()) {
-            log.d("log>>>" + "downloadLink exist");
+//            log.d("log>>>" + "downloadLink exist");
             return;
         }
 

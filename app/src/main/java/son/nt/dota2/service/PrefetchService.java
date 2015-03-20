@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -61,17 +62,16 @@ public class PrefetchService extends IntentService {
             try {
                 HeroData herodata = FileUtil.readHeroList(this);
                 if (herodata == null) {
+                    log.d("log>>>" + "herodata == null");
                     return;
                 }
                 int i = 0;
                 for (HeroDto heroDto : herodata.listHeros) {
                     String name = heroDto.name;
-                    HeroDto dto = FileUtil.readHeroSpeak(this, name);
-                    if (dto == null) {
+                    if (FileUtil.readHeroSpeak(this, name) == null) {
                         //load here
-
                         String pathSpeak = String.format("http://dota2.gamepedia.com/%s_responses", heroDto.name);
-                        if (saveHeroToCache(pathSpeak, name)) {
+                        if (saveHeroToCache(pathSpeak, name, heroDto)) {
                             log.e("log>>>" + i + "-prefetch success:" + name );
                         } else {
                             log.e("log>>>" + i + "-prefetch error:" + name + ";path:" + pathSpeak);
@@ -80,42 +80,42 @@ public class PrefetchService extends IntentService {
                         log.d("log>>>" + i + "-prefetch catch-ed:"  + name);
                     }
                     i++;
-
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.e("log>>>" + "Error Prefetch :" + e);
             }
         }
     }
 
 
 
-    private boolean saveHeroToCache(String urlString, String fileName) {
+    private boolean saveHeroToCache(String urlString, String fileName, HeroDto heroDto) {
+        boolean isReturn = false;
+        boolean isNetWorkOK = false;
         if (TextUtils.isEmpty(urlString) || urlString.contains("null") || urlString.contains("NULL")) {
+            log.d("log>>>" + "urlString empty");
             return false;
         }
 
         if (urlString.contains("Natures_Prophet")) {
             urlString = urlString.replace("Natures", "Nature's");
         }
-        HeroData herodata = new HeroData();
-        HeroDto heroDto = new HeroDto();
         List<SpeakDto> listSpeaks = heroDto.listSpeaks;
         SpeakDto speakDto;
-        herodata.listHeros.add(heroDto);
         String lastTitle = "";
         try {
             HttpClient httpClient = new DefaultHttpClient();
             HttpResponse httpResponse = httpClient.execute(new HttpGet(urlString));
+
             StatusLine status = httpResponse.getStatusLine();
-//            if (status.getStatusCode() == HttpStatus.SC_OK) {
-//                log.d("log>>>" + "HttpStatus.SC_OK");
-//            } else {
-//                log.e("log>>>" + "HttpStatus ERROR");
-//            }
+            if (status.getStatusCode() != HttpStatus.SC_OK) {
+                log.e("log>>>" + "HttpStatus ERROR");
+                isNetWorkOK = false;
+                return false;
+            }
+            isNetWorkOK = true;
+            log.d("log>>>" + "HttpStatus.SC_OK");
             InputStream in = httpResponse.getEntity().getContent();
-
-
 
             HtmlCleaner cleaner = new HtmlCleaner();
             CleanerProperties props = cleaner.getProperties();
@@ -193,16 +193,19 @@ public class PrefetchService extends IntentService {
 
             }
             Log.e("", "log>>>" + "data HeroSpeakLoader listNodes:" + listNodes.size());
-            FileUtil.saveHeroSpeak(this, heroDto, fileName);
-            return true;
+            isReturn = true;
         } catch (final Exception e) {
-            e.printStackTrace();
+            isReturn = false;
+        } finally {
+            try {
+                if(isNetWorkOK) {
+                    FileUtil.saveHeroSpeak(this, heroDto, fileName);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return isReturn;
         }
-        try {
-            FileUtil.saveHeroSpeak(this, heroDto, fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+
     }
 }

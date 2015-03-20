@@ -3,21 +3,57 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp">
-    <ImageView
-        android:id="@+id/row_item"
-        android:layout_gravity="center_vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="@drawable/d_row_speak"
+    android:minHeight="70dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/row_txt_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="99"
+            style="@style/txt_white_18"
+            android:layout_gravity="center_vertical" />
+
+        <TextView
+            android:layout_marginLeft="8dp"
+            android:id="@+id/row_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="My List Has 5 names on it"
+            style="@style/txt_white_18"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"/>
-    <TextView
-        android:layout_marginLeft="16dp"
-        android:id="@+id/row_text"
-        android:layout_margin="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Moving"
-        style="@style/txt_white_18"
-        android:layout_gravity="center_vertical"/>
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/row_img_playing"
+            android:layout_marginLeft="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_playing" />
+
+        <ImageView
+            android:id="@+id/row_img_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_more" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

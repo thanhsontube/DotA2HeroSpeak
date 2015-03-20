@@ -1,8 +1,9 @@
 <resources>
 
-    <style name="ts_theme_overlay" parent="@android:style/Theme.Material.Light.DarkActionBar">
+    <!--<style name="ts_theme_overlay" parent="android:Theme.Material.NoActionBar">
+        <item name="colorPrimary">@color/red_A700</item>
+        <item name="colorPrimaryDark">@color/red1</item>
         <item name="android:windowBackground">@color/blue_A400</item>
-        <item name="android:windowActionBarOverlay">true</item>
         <item name="android:actionBarStyle">@style/ts_actionbar_overlay_style</item>
     </style>
 
@@ -11,5 +12,5 @@
         <item name="android:displayOptions">showHome|homeAsUp</item>
         <item name="android:icon">@android:color/transparent</item>
         <item name="android:titleTextStyle">@style/title_text_style</item>
-    </style>
+    </style>-->
 </resources>

@@ -16,7 +16,11 @@ public class HeroDto implements Serializable{
     public String bgLink;
     public String bgName;
 
-    public List<SpeakDto> listSpeaks = new ArrayList<SpeakDto>();
+    public List<SpeakDto> listSpeaks;
+
+    public HeroDto() {
+        listSpeaks = new ArrayList<SpeakDto>();
+    }
     
     
 }
