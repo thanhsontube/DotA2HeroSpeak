@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -62,10 +61,12 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
                     holder.text = (TextView) v.findViewById(R.id.row_text);
                     holder.imgPlaying = (ImageView) v.findViewById(R.id.row_img_playing);
                     holder.imgMore = (ImageView) v.findViewById(R.id.row_img_more);
+                    holder.imgMore.setTag(position);
                     holder.imgMore.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            createPopupMenu(v);
+                            int position = (int) v.getTag();
+                            createPopupMenu(v, position);
                         }
                     });
                     holder.txtNo = (TextView) v.findViewById(R.id.row_txt_no);
@@ -101,13 +102,7 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
                     holder.imgPlaying.setVisibility(View.VISIBLE);
                 } else {
                     holder.imgPlaying.setVisibility(View.GONE);
-//                    v.setBackgroundResource(R.drawable.d_row_speak);
                     v.setBackgroundResource(android.R.color.transparent);
-//                    if (position % 2 == 0) {
-//                    } else {
-//                        v.setBackgroundResource(R.drawable.d_row_speak_disable);
-//
-//                    }
                 }
 
                 break;
@@ -123,13 +118,12 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
         ImageView imgMore;
     }
 
-    private void createPopupMenu(View v) {
+    private void createPopupMenu(View v, final int position) {
         PopupMenu popupMenu = new PopupMenu(context, v);
         popupMenu.inflate(R.menu.menu_more);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(context.getApplicationContext(), "click:" + item.getItemId(), Toast.LENGTH_SHORT).show();
                 switch (item.getItemId()) {
                     case R.id.more_share:
                         action = MsConst.MenuSelect.FB_SHARE;
@@ -146,7 +140,7 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
 
                 }
                 if (mListener != null) {
-                    mListener.onMenuClick(action);
+                    mListener.onMenuClick(action, position);
                 }
                 return false;
             }
@@ -158,7 +152,7 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
     IAdapterListener mListener;
 
     public interface IAdapterListener {
-        void onMenuClick(MsConst.MenuSelect action);
+        void onMenuClick(MsConst.MenuSelect action, int position);
     }
 
     public void setOnIAdapterListener(IAdapterListener callback) {

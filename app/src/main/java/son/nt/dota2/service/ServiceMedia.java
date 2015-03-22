@@ -12,6 +12,7 @@ import android.widget.TextView;
 import org.apache.http.client.methods.HttpGet;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,7 +140,6 @@ public class ServiceMedia extends Service {
     //TODO play song at index
     public void playSong(int index) {
         currentPosition = index;
-//        log.d("log>>>" + "MediaService playSong index:" + index);
         try {
             player.reset();
             if (list.size() >= currentPosition) {
@@ -157,16 +157,12 @@ public class ServiceMedia extends Service {
                 prePos = currentPosition;
                 File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(list.get(index).link).replace(".mp3", ".dat"));
                 if (file.exists()) {
-//                    log.d("log>>>" + "MediaService File audio exist");
                     player.setDataSource(file.getPath());
                     player.prepare();
                     player.start();
                 } else {
-                    //
-//                    log.d("log>>>" + "MediaService Need download File audio");
                     loadSpeak(list.get(index).link);
                 }
-//                player.setDataSource(list.get(index).path);
 
 
             }
@@ -263,6 +259,23 @@ public class ServiceMedia extends Service {
 
             ResourceManager.getInstance().getContentManager().load(dataLoader);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void play (String link) {
+        isPlayAndStopOne = true;
+        try {
+            File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat"));
+            if (file.exists()) {
+                player.reset();
+                player.setDataSource(file.getPath());
+                player.prepare();
+                player.start();
+            } else {
+                loadSpeak(link);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
@@ -47,6 +48,8 @@ import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.base.Controller;
 import son.nt.dota2.customview.blur.Blur;
 import son.nt.dota2.customview.blur.ImageUtils;
+import son.nt.dota2.data.SaveDto;
+import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.dialog.DialogSetting;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
@@ -55,6 +58,7 @@ import son.nt.dota2.loader.HeroSpeakLoader;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.service.DownloadService;
 import son.nt.dota2.service.ServiceMedia;
+import son.nt.dota2.utils.DatetimeUtils;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.FilterLog;
 import son.nt.dota2.utils.NetworkUtils;
@@ -252,16 +256,6 @@ public class MainFragment extends BaseFragment implements View.OnClickListener {
             btnPlayed.setVisibility(View.VISIBLE);
             txtPos.setVisibility(View.GONE);
             mediaService.playSong(position, true);
-//            String linkSpeak = dto.link;
-//            File file = new File(resource.folderAudio, File.separator + createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
-//            if (file.exists()) {
-//                log.d("log>>>" + "File audio exist");
-//                MediaPlayer player = MediaPlayer.create(context, Uri.parse(file.getPath()));
-//                player.start();
-//                mediaService.playSong(position);
-//            } else {
-//                loadSpeak(linkSpeak);
-//            }
         }
     };
 
@@ -580,15 +574,30 @@ public class MainFragment extends BaseFragment implements View.OnClickListener {
 
     AdapterSpeak.IAdapterListener adapterListener = new AdapterSpeak.IAdapterListener() {
         @Override
-        public void onMenuClick(MsConst.MenuSelect action) {
+        public void onMenuClick(MsConst.MenuSelect action, int position) {
+            SpeakDto dto = list.get(position);
             switch (action) {
                 case FB_SHARE:
                     break;
                 case FAVORITE:
+                    SaveDto saveDto = new SaveDto(heroDto.name, heroDto.avatarThubmail, dto.text, dto.link, DatetimeUtils.getTimeCurrent());
+                    long i = TsSqlite.getInstance().insert(saveDto);
+                    if (i == -2) {
+                        Toast.makeText(getActivity(), "This sentence was saved before!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(),dto.text + " saved successful", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    List<SaveDto> listSaved = TsSqlite.getInstance().getList();
+                    log.d("log>>>" + "List save size:" + listSaved.size());
                     break;
                 case COPY:
+                    FileUtil.copy(context, dto.text, dto.text);
+                    Toast.makeText(getActivity(), "copied:" + dto.text, Toast.LENGTH_SHORT).show();
                     break;
                 case RINGTONE:
+                    FileUtil.setRingtone(context, dto.link, heroName);
                     break;
             }
         }

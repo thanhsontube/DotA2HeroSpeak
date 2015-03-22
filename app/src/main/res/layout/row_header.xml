@@ -7,6 +7,8 @@
 
 
     <LinearLayout
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="vertical"

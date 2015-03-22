@@ -3,6 +3,7 @@ package son.nt.dota2.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,15 @@ public class AdapterDrawerLeft extends RecyclerView.Adapter<AdapterDrawerLeft.Ho
     private Context context;
     List<LeftDrawerDto> list;
     AQuery aq;
-    int oldPos = 1;
+    public interface IAdapterCallback {
+        void onClick(int position, LeftDrawerDto leftDrawerDto);
+    }
+
+    IAdapterCallback listenerAdapter;
+
+    public void setOnCallback(IAdapterCallback callback) {
+        this.listenerAdapter = callback;
+    }
 
     public AdapterDrawerLeft(Context context, List<LeftDrawerDto> list) {
         this.context = context;
@@ -33,7 +42,7 @@ public class AdapterDrawerLeft extends RecyclerView.Adapter<AdapterDrawerLeft.Ho
 
     }
 
-    public static class Holder extends RecyclerView.ViewHolder  implements View.OnClickListener {
+    public static class Holder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView txtText;
         ImageView imgIcon;
@@ -48,11 +57,11 @@ public class AdapterDrawerLeft extends RecyclerView.Adapter<AdapterDrawerLeft.Ho
             super(view);
             this.mListener = callback;
             this.view = view;
+            this.view.setOnClickListener(this);
             holderId = viewType;
             if (viewType == 0) {
                 txtText = (TextView) view.findViewById(R.id.left_drawer_text);
                 imgIcon = (ImageView) view.findViewById(R.id.left_drawer_icon);
-                this.view.setOnClickListener(this);
 
             } else {
                 txtHeroName = (TextView) view.findViewById(R.id.header_name);
@@ -67,7 +76,9 @@ public class AdapterDrawerLeft extends RecyclerView.Adapter<AdapterDrawerLeft.Ho
                 mListener.onClick(v, getPosition());
             }
         }
+
         IHolderListener mListener;
+
         public static interface IHolderListener {
             void onClick(View v, int position);
         }
@@ -80,10 +91,10 @@ public class AdapterDrawerLeft extends RecyclerView.Adapter<AdapterDrawerLeft.Ho
         View view;
         if (viewType == 0) {
             view = inflater.inflate(R.layout.row_drawer_main, viewGroup, false);
-            holder = new Holder(view, viewType,listener);
+            holder = new Holder(view, viewType, listener);
         } else {
             view = inflater.inflate(R.layout.row_header, viewGroup, false);
-            holder = new Holder(view, viewType, null);
+            holder = new Holder(view, viewType, listener);
         }
         return holder;
     }
@@ -91,11 +102,21 @@ public class AdapterDrawerLeft extends RecyclerView.Adapter<AdapterDrawerLeft.Ho
     Holder.IHolderListener listener = new Holder.IHolderListener() {
         @Override
         public void onClick(View v, int position) {
+            Log.v("", "log>>>" + "Click at:" + position);
             for (LeftDrawerDto dto : list) {
                 dto.isSelected = false;
             }
-            list.get(position).isSelected = true;
+            if(position == 0) {
+                list.get(1).isSelected = true;
+            } else {
+
+                list.get(position).isSelected = true;
+            }
             notifyDataSetChanged();
+
+            if (listenerAdapter != null) {
+                listenerAdapter.onClick(position, list.get(position));
+            }
         }
     };
 
@@ -130,5 +151,8 @@ public class AdapterDrawerLeft extends RecyclerView.Adapter<AdapterDrawerLeft.Ho
 //        return list.get(position).isHeader ? 1 : 0;
         return position == 0 ? 1 : 0;
     }
+
+
+
 
 }

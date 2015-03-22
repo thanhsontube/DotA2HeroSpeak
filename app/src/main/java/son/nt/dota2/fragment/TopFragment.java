@@ -133,7 +133,7 @@ public class TopFragment extends BaseFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if(MsConst.IS_HANDSOME) {
+            if (MsConst.IS_HANDSOME) {
                 initLayout(view);
                 initListener();
             }
@@ -152,7 +152,7 @@ public class TopFragment extends BaseFragment {
             InputStream in = context.getAssets().open("data.zip");
             OutputStream out = new FileOutputStream(fOut, false);
             int read;
-            byte []buffer = new byte[1024];
+            byte[] buffer = new byte[1024];
             while ((read = in.read(buffer)) != -1) {
                 out.write(buffer, 0, read);
             }
@@ -317,10 +317,18 @@ public class TopFragment extends BaseFragment {
     private void updateKensBurns() {
         log.d("log>>>" + "updateKensBurns");
         Random random = new Random();
-        int pos = random.nextInt(herodata.listHeros.size());
 
-        HeroDto dto = herodata.listHeros.get(pos);
-        File file = aq.getCachedFile(dto.bgLink);
+        File file = new File(resource.folderBlur, File.separator);
+        if (!file.exists()) {
+            return;
+        }
+        File[] listFiles = file.listFiles();
+        int pos = random.nextInt(listFiles.length);
+        file = listFiles[pos];
+
+
+//        HeroDto dto = herodata.listHeros.get(pos);
+//        File file = aq.getCachedFile(dto.bgLink);
         if (file != null) {
             try {
                 log.d("log>>>" + "update kenburns OK");

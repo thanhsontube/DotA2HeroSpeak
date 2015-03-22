@@ -3,7 +3,9 @@ package son.nt.dota2.activity;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,8 +23,11 @@ import son.nt.dota2.base.BaseFragmentActivity;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.LeftDrawerDto;
 import son.nt.dota2.fragment.MainFragment;
+import son.nt.dota2.fragment.SavedFragment;
+import son.nt.dota2.utils.TsFeedback;
 
-public class MainActivity extends BaseFragmentActivity implements MainFragment.OnFragmentInteractionListener {
+public class MainActivity extends BaseFragmentActivity implements MainFragment.OnFragmentInteractionListener,
+        SavedFragment.OnFragmentInteractionListener {
     HeroDto heroDto;
 
     private DrawerLayout drawerLayout;
@@ -31,7 +36,7 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
 
     private RecyclerView leftDrawer;
     private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapterLeft;
+    private AdapterDrawerLeft adapterLeft;
 
     private List<LeftDrawerDto> list = new ArrayList<>();
 
@@ -82,8 +87,42 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
         leftDrawer.setAdapter(adapterLeft);
     }
 
+    private Handler handler = new Handler();
+
     private void initListener() {
-//        leftDrawer.setoni
+        adapterLeft.setOnCallback(new AdapterDrawerLeft.IAdapterCallback() {
+            @Override
+            public void onClick(int position, LeftDrawerDto leftDrawerDto) {
+                switch (position) {
+                    case 0:
+                    case 1:
+                        FragmentManager fm = getSupportFragmentManager();
+                        while (mFragmentTagStack.size() > 0) {
+                            fm.popBackStackImmediate();
+                        }
+                        break;
+                    case 2:
+                        SavedFragment f = SavedFragment.newInstance("", "");
+                        showFragment(f, true);
+                        break;
+
+
+                    case 3:
+                        TsFeedback.sendEmailbyGmail(getApplicationContext(), "thanhsontube@gmail.com", "FeedBack for DotA 2 Heros Speak", "Hi, ...");
+                        break;
+                }
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawerLayout.closeDrawer(leftDrawer);
+                    }
+                }, 250L);
+
+            }
+        });
+
+
+
     }
 
     @Override
