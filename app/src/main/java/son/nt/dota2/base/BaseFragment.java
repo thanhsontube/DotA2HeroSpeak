@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.androidquery.AQuery;
 
 import son.nt.dota2.ResourceManager;
+import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.loader.MyPath;
 import son.nt.dota2.loader.base.ContentManager;
 
@@ -27,6 +28,7 @@ public class BaseFragment extends Fragment {
     protected MyPath mypath;
     protected AQuery aq;
     protected ActionBar actionBar;
+    protected TsSqlite sqlite;
 
     @Override
     public void onAttach(Activity activity) {
@@ -42,6 +44,7 @@ public class BaseFragment extends Fragment {
         contentManager = resource.getContentManager();
         mypath = resource.getMyPath();
         aq = new AQuery(context);
+        sqlite = TsSqlite.getInstance();
     }
 
     @Override

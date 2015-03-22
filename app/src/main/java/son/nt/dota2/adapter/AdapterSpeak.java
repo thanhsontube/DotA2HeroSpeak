@@ -61,12 +61,11 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
                     holder.text = (TextView) v.findViewById(R.id.row_text);
                     holder.imgPlaying = (ImageView) v.findViewById(R.id.row_img_playing);
                     holder.imgMore = (ImageView) v.findViewById(R.id.row_img_more);
-                    holder.imgMore.setTag(position);
                     holder.imgMore.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            int position = (int) v.getTag();
-                            createPopupMenu(v, position);
+                            Integer pos = (Integer) v.getTag();
+                            createPopupMenu(v, pos);
                         }
                     });
                     holder.txtNo = (TextView) v.findViewById(R.id.row_txt_no);
@@ -76,6 +75,7 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
         } else {
             holder = (Holder) v.getTag();
         }
+
         SpeakDto dto = list.get(position);
         switch (type) {
             case TYPE_TITLE:
@@ -86,6 +86,7 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
                 }
                 break;
             case TYPE_SPEAK:
+                holder.imgMore.setTag(new Integer(position));
                 String no = String.valueOf(position).trim();
                 if (no.length() == 1) {
                     no = no + "  ";

@@ -26,6 +26,8 @@ import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.data.SaveDto;
 import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.service.ServiceMedia;
+import son.nt.dota2.utils.FileUtil;
+import son.nt.dota2.utils.FilterLog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +42,7 @@ public class SavedFragment extends BaseFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "SavedFragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -48,6 +51,8 @@ public class SavedFragment extends BaseFragment {
     private RecyclerView recyclerView;
     private List<SaveDto> list;
     private AdapterSaved adapter;
+
+    FilterLog log = new FilterLog(TAG);
 
     private OnFragmentInteractionListener mListener;
 
@@ -123,6 +128,18 @@ public class SavedFragment extends BaseFragment {
 
             @Override
             public void onMenuClick(MsConst.MenuSelect action, int position) {
+                SaveDto dto = list.get(position);
+                switch (action) {
+                    case FAVORITE:
+                        sqlite.remove(list.get(position));
+                        list.remove(position);
+                        adapter.notifyDataSetChanged();
+                        break;
+                    case COPY:
+                        FileUtil.copy(context, dto.speakContent, dto.speakContent);
+                        break;
+                }
+
 
             }
         });

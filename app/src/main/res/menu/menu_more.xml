@@ -1,5 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:visible="false"
         android:id="@+id/more_share"
         android:title="FB Share"
          />
@@ -12,6 +13,7 @@
         android:title="Copy"
         />
     <item
+        android:visible="false"
         android:id="@+id/more_set_ringtone"
         android:title="Make Ringtone"
         />

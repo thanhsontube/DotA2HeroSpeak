@@ -46,13 +46,29 @@ public class TsSqlite {
     }
 
     public boolean isInsert (SaveDto dto) {
-        String selection = "speak_content = ?";
-        String []selectionArgs = {dto.speakContent};
-        Cursor cursor = database.query(TABLE, null, selection, selectionArgs, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            return true;
+        try {
+            String selection = "speak_content = ?";
+            String []selectionArgs = {dto.speakContent};
+            Cursor cursor = database.query(TABLE, null, selection, selectionArgs, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
+    }
+
+    public int remove(SaveDto dto) {
+        try {
+            String selection = "speak_content = ?";
+            String []selectionArgs = {dto.speakContent};
+            return database.delete(TABLE, selection, selectionArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -2;
+
     }
 
     public int delete(int id) {

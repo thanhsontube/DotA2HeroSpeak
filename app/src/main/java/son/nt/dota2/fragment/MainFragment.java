@@ -191,7 +191,7 @@ public class MainFragment extends BaseFragment implements View.OnClickListener {
 //        log.d("log>>>" + "screenHeightShift:" + screenHeightShift);
 
         if (heroDto.bgLink != null) {
-            fileBlur = new File(resource.folderBlur, File.separator + createPathFromUrl(heroDto.bgLink));
+            fileBlur = new File(resource.folderBlur, File.separator + FileUtil.createPathFromUrl(heroDto.bgLink));
         }
 
     }
@@ -336,7 +336,7 @@ public class MainFragment extends BaseFragment implements View.OnClickListener {
                 public void onContentLoaderSucceed(File entity) {
                     Log.v(TAG, "log>>>" + "onContentLoaderSucceed:" + entity.getPath());
                     try {
-                        File file = new File(resource.folderAudio, File.separator + createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
+                        File file = new File(resource.folderAudio, File.separator + FileUtil.createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
                         Log.v(TAG, "log>>>" + "file:" + file.getPath());
                         entity.renameTo(file);
                         MediaPlayer player = MediaPlayer.create(context, Uri.parse(file.getPath()));
@@ -362,10 +362,6 @@ public class MainFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
-    private String createPathFromUrl(String url) {
-        String path = url.replaceAll("[|?*<\":>+\\[\\]/']", "_");
-        return path;
-    }
 
     int lastY = -1;
 
@@ -575,6 +571,7 @@ public class MainFragment extends BaseFragment implements View.OnClickListener {
     AdapterSpeak.IAdapterListener adapterListener = new AdapterSpeak.IAdapterListener() {
         @Override
         public void onMenuClick(MsConst.MenuSelect action, int position) {
+            log.d("log>>>" + "onMenuClick position:" + position);
             SpeakDto dto = list.get(position);
             switch (action) {
                 case FB_SHARE:
