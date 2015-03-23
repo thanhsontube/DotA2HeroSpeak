@@ -22,6 +22,7 @@ import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.utils.FilterLog;
+import son.nt.dota2.utils.TsGaTools;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,6 +98,7 @@ public class HeroListFragment extends BaseFragment {
     AdapterView.OnItemClickListener onClickGrid = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            TsGaTools.trackPages("/" + listHero.get(position).name);
             Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.putExtra("data",listHero.get(position));
             startActivity(intent);
