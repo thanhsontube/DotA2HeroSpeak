@@ -38,11 +38,7 @@
                     ads:adSize="BANNER"
                     ads:adUnitId="@string/banner_ad_unit_id"></com.google.android.gms.ads.AdView>
 
-               <!-- <View
-                    android:layout_width="320dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="#ff00ff" />-->
+
             </FrameLayout>
 
 
@@ -75,11 +71,65 @@
         android:layout_gravity="right"
         android:background="@mipmap/layer_image">
 
-        <ImageView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@mipmap/ken2"
-            android:scaleType="centerCrop" />
+            android:orientation="vertical">
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/right_swipe_refresh"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/right_img_hero"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/phantom_assassin_full" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/right_recycle_view">
+
+                        </android.support.v7.widget.RecyclerView>
+                </LinearLayout>
+
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <!--comment view-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/right_txt_comments"
+                    android:layout_margin="4dp"
+                    android:layout_gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Say about this hero" />
+
+                <ImageView
+                    android:background="?android:attr/selectableItemBackground"
+                    android:id="@+id/right_img_send"
+                    android:layout_gravity="center"
+                    android:layout_margin="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_content_send" />
+            </LinearLayout>
+        </LinearLayout>
     </FrameLayout>
 
 </android.support.v4.widget.DrawerLayout>

@@ -3,10 +3,10 @@
     xmlns:apps="http://schemas.android.com/apk/res-auto"
     tools:context="son.nt.dota2.activity.MainActivity">
     <item
-        android:id="@+id/action_chat"
+        android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        android:orderInCategory="10"
-        android:icon="@drawable/ic_emoticon"
+        android:orderInCategory="5"
+        android:icon="@mipmap/ic_action_settings"
         apps:showAsAction="always" />
 
 </menu>

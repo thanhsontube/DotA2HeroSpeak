@@ -1,5 +1,6 @@
 package son.nt.dota2.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,42 +8,82 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.ImageOptions;
+import com.facebook.FacebookRequestError;
+import com.facebook.HttpMethod;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
+import com.facebook.widget.FacebookDialog;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterDrawerLeft;
+import son.nt.dota2.adapter.AdapterDrawerRight;
 import son.nt.dota2.base.BaseFragmentActivity;
+import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.LeftDrawerDto;
+import son.nt.dota2.facebook.UserDto;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.SavedFragment;
+import son.nt.dota2.utils.CommonUtil;
+import son.nt.dota2.utils.FilterLog;
 import son.nt.dota2.utils.TsFeedback;
 import son.nt.dota2.utils.TsGaTools;
 
 public class MainActivity extends BaseFragmentActivity implements MainFragment.OnFragmentInteractionListener,
         SavedFragment.OnFragmentInteractionListener {
+    private static final String TAG = "MainActivity";
+    private static final String PERMISSION = "publish_actions";
     HeroDto heroDto;
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolBar;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private RecyclerView leftDrawer;
+    private RecyclerView rightDrawer;
     private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.LayoutManager layoutManagerR;
     private AdapterDrawerLeft adapterLeft;
+    private AdapterDrawerRight adapterRight;
 
     private List<LeftDrawerDto> list = new ArrayList<>();
+    private List<UserDto> listCmts = new ArrayList<UserDto>();
+    FilterLog log = new FilterLog(TAG);
 
 
     @Override
@@ -56,9 +97,12 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
 //        getSupportActionBar().show();
         initData();
         initLayout();
+        setupDrawerRight();
         initListener();
         updateLayout();
         adMob();
+		uiLifecycleHelper = new UiLifecycleHelper(this, statusCallback);
+        uiLifecycleHelper.onCreate(savedInstanceState);
     }
 
     private void adMob() {
@@ -178,11 +222,398 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_chat, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
+
+        if(item.getItemId() == R.id.action_chat) {
+            drawerLayout.openDrawer(Gravity.RIGHT);
+        }
         return super.onOptionsItemSelected(item);
     }
 
+    //facebook login
+    private enum PendingAction {
+        NONE, LOGIN, REQUESTING_POST_PER, SHARE, WAIT_LOGIN_RESULT, GET_INFO
+    }
+
+    private UiLifecycleHelper uiLifecycleHelper;
+    SessionState state = SessionState.CLOSED;
+    private PendingAction pendingAction = PendingAction.NONE;
+    private static final String PERMISSION_PUSHLISH_ACTIONS = "publish_actions";
+    private static final String PERMISSION_BIRTHDAY = "user_birthday";
+    private static final String PERMISSION_LOCATION = "user_location";
+    private static final String PERMISSION_HOMETOWN = "user_hometown";
+    //facebook login
+    String fbId;
+    String fbName;
+    String gender;
+    String email;
+    String dob;
+    String photo;
+    String zip;
+
+
+    boolean isPost = false;
+
+
+    private Session.StatusCallback statusCallback = new Session.StatusCallback() {
+
+        @Override
+        public void call(Session session, SessionState state, Exception exception) {
+            log.d("log>>>" + "statusCallback state:" + state + ";session:" + session.getState());
+            onCallbackStatus(session, state, exception);
+        }
+    };
+
+    private void handlePendingAction() {
+        PendingAction prevPendingAction = pendingAction;
+        log.d("log>>>" + "handlePendingAction state:" + state + ";PendingAction:" + prevPendingAction);
+        if (state == SessionState.OPENED) {
+            controllerLoadCmt.load();
+        }
+        switch (prevPendingAction) {
+            case LOGIN:
+                if(pendingAction == PendingAction.LOGIN && !isLogin())  {
+                    pendingAction = PendingAction.WAIT_LOGIN_RESULT;
+                }
+                break;
+
+            case WAIT_LOGIN_RESULT:
+                log.d("log>>>" + "WAIT_LOGIN_RESULT");
+                if(isLogin()) {
+                    log.d("log>>>" + "login success isPost:" + isPost);
+                    pendingAction = PendingAction.NONE;
+                    if(isPost) {
+                        isPost = false;
+                    }
+                } else {
+                    log.d("log>>>" + "login false");
+                }
+                isPost = false;
+                break;
+
+            case REQUESTING_POST_PER:
+                log.d("log>>>" + "REQUESTING_POST_PER");
+                // requestPostPermission();
+
+                //check is cancel
+                if (!hasPostFacebookPermission()){
+                    log.d("log>>>" + "Cancel per");
+                } else {
+                    postComment();
+                }
+                if(pendingAction == PendingAction.REQUESTING_POST_PER) {
+                    pendingAction = PendingAction.WAIT_LOGIN_RESULT;
+                }
+                break;
+
+
+            default:
+                break;
+        }
+
+    }
+
+    private void onCallbackStatus(Session session, SessionState state, Exception exception) {
+        this.state = state;
+        handlePendingAction();
+    }
+
+    private FacebookDialog.Callback dialogCallback = new FacebookDialog.Callback() {
+        @Override
+        public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
+            Log.d("HelloFacebook", String.format(">>> dialogCallback Error: %s", error.toString()));
+        }
+
+        @Override
+        public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
+            Log.d("HelloFacebook", ">>> dialogCallback Success!");
+        }
+    };
+
+
+    public void getInfoFB() {
+        Session session = Session.getActiveSession();
+        if (isLogin()) {
+            Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
+                @Override
+                public void onCompleted(GraphUser user, Response response) {
+                    pendingAction = PendingAction.NONE;
+                    if (response.getError() != null) {
+                        Toast.makeText(getApplicationContext(), "Error login:" + response.getError(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    fbId = user.getId();
+                    fbName = user.getName();
+                    dob = user.getBirthday();
+                    photo = String.format(Locale.US, "https://graph.facebook.com/%s/picture?width=200", fbId);
+
+                    email = " ";
+                    zip = " ";
+                    gender = " ";
+                    try {
+                        if (user.asMap().containsKey("email")) {
+                            email = user.asMap().get("email").toString();
+                        }
+
+                        if (user.asMap().containsKey("gender")) {
+                            gender = user.asMap().get("gender").toString();
+                        }
+
+                        if (user.asMap().containsKey("location")) {
+                            zip = (new JSONObject(user.asMap().get("location").toString()).getString("name"));
+                        } else if (user.asMap().containsKey("hometown")) {
+                            zip = (new JSONObject(user.asMap().get("hometown").toString()).getString("name"));
+                        } else {
+                            zip = "";
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            request.executeAsync();
+
+        } else {
+            facebookLogin();
+        }
+    }
+
+    private boolean isLogin() {
+        Session session = Session.getActiveSession();
+        if (session != null && session.isOpened()) {
+            return true;
+        }
+        return false;
+    }
+
+    public void facebookLogin() {
+        Session session = Session.getActiveSession();
+        log.d("log>>>" + "facebookLogin:" + session);
+        if (session != null) {
+            pendingAction = PendingAction.LOGIN;
+            Session.openActiveSession(this, true, null, statusCallback);
+//            Session.openActiveSession(this, true, Arrays.asList("email", PERMISSION_BIRTHDAY, PERMISSION_BIRTHDAY, PERMISSION_LOCATION, PERMISSION_HOMETOWN), statusCallback);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        uiLifecycleHelper.onResume();
+        facebookLogin();
+//        controllerLoadCmt.load();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        uiLifecycleHelper.onActivityResult(requestCode, resultCode, data, dialogCallback);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        uiLifecycleHelper.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        uiLifecycleHelper.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        uiLifecycleHelper.onSaveInstanceState(outState);
+
+    }
+
+    Controller controllerLoadCmt = new Controller() {
+        @Override
+        public void load() {
+            Bundle params = new Bundle();
+            params.putBoolean("summary", true);
+            params.putString("filter", "toplevel");
+            params.putString("limit", "500");
+            Session session = Session.getActiveSession();
+            swipeRefreshLayout.setRefreshing(true);
+
+            new Request(
+                    session,
+                    "/1637431773159881/comments",
+                    params,
+                    HttpMethod.GET,
+                    new Request.Callback() {
+                        public void onCompleted(Response response) {
+                            try {
+                                swipeRefreshLayout.setRefreshing(false);
+                                FacebookRequestError err = response.getError();
+                                log.d("log>>>" + "FacebookRequestError:" + err);
+                                if (err != null) {
+                                    return;
+                                }
+
+                                String tl = response.getGraphObject().toString();
+                                log.d("log>>>" + "Facebook object:" + tl.toString());
+                                JSONObject jsonObject = response.getGraphObject().getInnerJSONObject();
+                                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                List <UserDto> listCmt = new ArrayList<UserDto>();
+                                UserDto dto = null;
+                                String id = "-1";
+                                String name = "";
+                                String cmt = "";
+                                String timePost = "";
+                                for (int i = 0; i < jsonArray.length(); i ++) {
+                                    JSONObject jChild = jsonArray.getJSONObject(i);
+                                    try {
+                                        timePost = jChild.getString("created_time");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        cmt = jChild.getString("message");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        JSONObject jChild2 = jChild.getJSONObject("from");
+                                        name = jChild2.getString("name");
+                                        id = jChild2.getString("id");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    dto = new UserDto(id, name, cmt, timePost);
+                                    if (!id.equals("-1")) {
+                                        listCmt.add(dto);
+                                    }
+
+                                }
+
+                                log.d("log>>>" + "List cmt:" + listCmt.size());
+                                listCmts.clear();
+                                listCmts.addAll(listCmt);
+                                adapterRight.notifyDataSetChanged();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+            ).executeAsync();
+
+
+        }
+    };
+    private ImageView imgSend;
+    private ImageView imgHeroRight;
+    private EditText edtCmt;
+    private void setupDrawerRight() {
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.right_swipe_refresh);
+        imgSend = (ImageView) findViewById(R.id.right_img_send);
+        imgHeroRight = (ImageView) findViewById(R.id.right_img_hero);
+        ImageOptions options = new ImageOptions();
+        options.round = 30;
+        AQuery aq = new AQuery(this);
+        aq.id(imgHeroRight).image(heroDto.avatarThubmail, options);
+        edtCmt = (EditText) findViewById(R.id.right_txt_comments);
+
+        rightDrawer = (RecyclerView) findViewById(R.id.right_recycle_view);
+        layoutManagerR = new LinearLayoutManager(this);
+        rightDrawer.setLayoutManager(layoutManagerR);
+        rightDrawer.setHasFixedSize(true);
+
+        adapterRight = new AdapterDrawerRight(this, listCmts);
+        rightDrawer.setAdapter(adapterRight);
+
+
+        //swipe
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+//                swipeRefreshLayout.setRefreshing(true);
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        swipeRefreshLayout.setRefreshing(false);
+//                    }
+//                }, 5000);
+                controllerLoadCmt.load();
+            }
+        });
+
+        //send btn
+        imgSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isPost = true;
+                sendCmt(edtCmt.getText().toString());
+            }
+        });
+
+    }
+
+
+    String message;
+    private void sendCmt (String message) {
+        this.message = message;
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
+        if(!hasPostFacebookPermission()) {
+            pendingAction = PendingAction.REQUESTING_POST_PER;
+            Session.getActiveSession().requestNewPublishPermissions(new Session.NewPermissionsRequest(this, Arrays
+                    .asList(PERMISSION)));
+        } else {
+            postComment();
+        }
+
+    }
+
+    private boolean hasPostFacebookPermission () {
+        Session session = Session.getActiveSession();
+        if (session != null && session.isPermissionGranted(PERMISSION))  {
+            return true;
+        }
+        return false;
+
+    }
+
+    private void postComment() {
+        CommonUtil.hideKeyboard(this);
+        Session session = Session.getActiveSession();
+        log.d("log>>>" + "postComment");
+        Bundle params = new Bundle();
+        params.putString("message", message);
+/* make the API call */
+        new Request(
+                session,
+                "/1637431773159881/comments",
+                params,
+                HttpMethod.POST,
+                new Request.Callback() {
+                    public void onCompleted(Response response) {
+                        edtCmt.setText("");
+                        edtCmt.clearFocus();
+
+                        controllerLoadCmt.load();
+                    }
+                }
+        ).executeAsync();
+    }
 }

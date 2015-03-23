@@ -5,6 +5,7 @@ import android.os.Environment;
 
 import java.io.File;
 
+import son.nt.dota2.facebook.FbLoaderManager;
 import son.nt.dota2.loader.MyPath;
 import son.nt.dota2.loader.base.ContentManager;
 
@@ -16,6 +17,8 @@ public class ResourceManager {
     private Context context;
     private MyPath myPath;
     private ContentManager contentManager;
+
+    public FbLoaderManager fbLoaderManager;
 
     public String folderSave;
     public String folderAudio;
@@ -55,6 +58,8 @@ public class ResourceManager {
                 fileBlur.mkdirs();
             }
             folderBlur = fileBlur.getPath();
+
+            fbLoaderManager = new FbLoaderManager();
 
 
         }catch (Exception e) {
