@@ -185,6 +185,17 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
             }
         });
 
+        leftDrawer.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int i, int i2) {
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
 
 
     }
@@ -236,6 +247,8 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
 
         if(item.getItemId() == R.id.action_chat) {
             drawerLayout.openDrawer(Gravity.RIGHT);
+        }else  if(item.getItemId() == R.id.action_remove_fb) {
+            removePermission();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -546,13 +559,6 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                swipeRefreshLayout.setRefreshing(true);
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        swipeRefreshLayout.setRefreshing(false);
-//                    }
-//                }, 5000);
                 controllerLoadCmt.load();
             }
         });
@@ -615,5 +621,27 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
                     }
                 }
         ).executeAsync();
+    }
+
+    private void removePermission() {
+        log.d("log>>>" + "removePermission");
+        Bundle bundle = new Bundle();
+        Request request = new Request(Session.getActiveSession(), "me/permissions", bundle, HttpMethod.DELETE,
+                new Request.Callback() {
+
+                    @Override
+                    public void onCompleted(Response response) {
+                        log.d("log>>>" + "response:" + response.getError());
+                        Session.getActiveSession().refreshPermissions();
+                        if (response.getError() == null) {
+                            Toast.makeText(getApplicationContext(), "Logout success", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "logout fail", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+        request.executeAsync();
     }
 }
