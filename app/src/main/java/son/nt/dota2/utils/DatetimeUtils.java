@@ -4,6 +4,8 @@ import android.content.Context;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class DatetimeUtils {
     // SimpleDateFormat can be used to control the date/time display format:
@@ -32,8 +34,6 @@ public class DatetimeUtils {
         }
         return s;
     }
-
-
 
 
     public static String getTimeCurrent() {
@@ -72,6 +72,21 @@ public class DatetimeUtils {
             return "yesterday";
         } else {
             return diff / DAY + " days ago";
+        }
+    }
+
+
+    public static String convertFbTime(String time) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+SSSS");
+            long when = dateFormat
+                    .parse(time)
+                    .getTime();
+            Date localDate = new Date(when + TimeZone.getDefault().getRawOffset() + (TimeZone.getDefault().inDaylightTime(new Date()) ? TimeZone.getDefault().getDSTSavings() : 0));
+            return getTimeFromLongTime(MY_DATE_FORMAT, localDate.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return time;
         }
     }
 

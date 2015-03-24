@@ -7,11 +7,12 @@
     <item
         android:id="@+id/action_chat"
         android:title="@string/action_settings"
-        android:orderInCategory="3"
+        android:orderInCategory="13"
         android:icon="@drawable/ic_emoticon"
         apps:showAsAction="always" />
 
     <item
+        android:visible="false"
         android:id="@+id/action_remove_fb"
         android:title="@string/action_settings"
         android:orderInCategory="4"

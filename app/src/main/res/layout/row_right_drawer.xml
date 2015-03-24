@@ -9,8 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <ImageView
-            android:visibility="gone"
+        <son.nt.dota2.customview.RoundedImageView
             android:tag="icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -43,6 +42,7 @@
 
 
             <TextView
+                android:gravity="right"
                 android:tag="time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

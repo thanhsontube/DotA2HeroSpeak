@@ -28,6 +28,7 @@
                 android:id="@+id/ll_ads"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <com.google.android.gms.ads.AdView
                     android:layout_gravity="center_horizontal"
                     android:id="@+id/adView"
@@ -66,7 +67,7 @@
 
     <!--right-->
     <FrameLayout
-        android:layout_width="240dp"
+        android:layout_width="@dimen/right_drawer_margin"
         android:layout_height="match_parent"
         android:layout_gravity="right"
         android:background="@mipmap/layer_image">
@@ -88,18 +89,48 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:visibility="gone"
+                        android:layout_margin="8dp"
                         android:id="@+id/right_img_hero"
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
-                        android:scaleType="fitXY"
+                        android:scaleType="centerCrop"
                         android:src="@mipmap/phantom_assassin_full" />
 
-                    <android.support.v7.widget.RecyclerView
-                        android:layout_width="match_parent"
+                    <com.facebook.widget.LikeView
+                        android:layout_gravity="right"
+                        android:layout_margin="8dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/right_recycle_view">
+                        android:id="@+id/right_fb_like_view">
 
-                        </android.support.v7.widget.RecyclerView>
+                    </com.facebook.widget.LikeView>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <son.nt.dota2.customview.FixedRecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/right_recycle_view">
+
+                        </son.nt.dota2.customview.FixedRecyclerView>
+
+                        <TextView
+                            android:padding="4dp"
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:text="Click to reload and see comments of another people"
+                            android:id="@+id/right_txt_reload"
+                            style="@style/txt_white_18"
+                            android:textStyle="bold" />
+
+
+                    </FrameLayout>
+
+
                 </LinearLayout>
 
 

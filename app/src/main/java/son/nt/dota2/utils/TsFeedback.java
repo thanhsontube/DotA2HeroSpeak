@@ -50,4 +50,12 @@ public class TsFeedback {
         context.startActivity(i);
     }
 
+    public static void installFB(Context context) {
+        Intent i = new Intent(android.content.Intent.ACTION_VIEW);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK
+        );
+        i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.facebook.katana"));
+        context.startActivity(i);
+    }
+
 }

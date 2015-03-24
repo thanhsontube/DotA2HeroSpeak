@@ -182,6 +182,12 @@ public class TopFragment extends BaseFragment {
         pager = (ViewPager) view.findViewById(R.id.pager);
         indicator = (TitlePageIndicator) view.findViewById(R.id.indicator);
         adapter = new AdapterTop(getActivity().getSupportFragmentManager(), herodata);
+//        for (HeroDto dto : herodata.listHeros) {
+//            String link = dto.bgLink;
+//            if (TextUtils.isEmpty(link)) {
+//                log.e("log>>>" + "ERR hero:" + dto.name );
+//            }
+//        }
         pager.setAdapter(adapter);
         initIndicator();
     }
