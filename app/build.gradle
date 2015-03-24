@@ -4,9 +4,16 @@ repositories {
     mavenCentral()
 }
 android {
+    signingConfigs {
+        config {
+            keyAlias 'alias_necvn'
+            keyPassword 'android'
+            storeFile file('D:/05-Working/03-Dota2HeroSpeak/publish/necvn.keystore')
+            storePassword 'android'
+        }
+    }
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
-
     defaultConfig {
         applicationId "son.nt.dota2"
         minSdkVersion 14
@@ -18,6 +25,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 }
