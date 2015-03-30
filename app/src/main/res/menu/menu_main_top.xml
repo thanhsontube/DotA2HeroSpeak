@@ -5,19 +5,12 @@
 
 
     <item
-        android:id="@+id/action_chat"
+        android:id="@+id/action_playlist"
         android:title="Chat"
         android:orderInCategory="13"
-        android:icon="@drawable/ic_emoticon"
+        android:icon="@drawable/icon_repeat_one"
         apps:showAsAction="always" />
 
-    <item
-        android:visible="false"
-        android:id="@+id/action_remove_fb"
-        android:title="Logout"
-        android:orderInCategory="4"
-        android:icon="@mipmap/icon_paused"
-        apps:showAsAction="always" />
 
 
 

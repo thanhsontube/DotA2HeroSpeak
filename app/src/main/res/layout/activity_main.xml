@@ -55,15 +55,30 @@
 
 
     <!--left-->
-    <android.support.v7.widget.RecyclerView
-        android:scrollbars="vertical"
+    <FrameLayout
+        android:layout_gravity="start"
+        android:id="@+id/left_view"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@mipmap/layer_image"
-        android:id="@+id/left_drawer">
+        android:orientation="vertical">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/layer_image"
+            android:id="@+id/left_drawer" />
+
+        <com.facebook.widget.LikeView
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="80dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/right_fb_like_view">
+
+        </com.facebook.widget.LikeView>
+    </FrameLayout>
+
 
     <!--right-->
     <FrameLayout
@@ -97,14 +112,6 @@
                         android:scaleType="centerCrop"
                         android:src="@mipmap/phantom_assassin_full" />
 
-                    <com.facebook.widget.LikeView
-                        android:layout_gravity="right"
-                        android:layout_margin="8dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/right_fb_like_view">
-
-                    </com.facebook.widget.LikeView>
 
                     <FrameLayout
                         android:layout_width="match_parent"
@@ -117,15 +124,31 @@
 
                         </son.nt.dota2.customview.FixedRecyclerView>
 
-                        <TextView
-                            android:padding="4dp"
-                            android:layout_gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="50dp"
-                            android:text="Click to reload and see comments of another people"
-                            android:id="@+id/right_txt_reload"
-                            style="@style/txt_white_18"
-                            android:textStyle="bold" />
+                        <LinearLayout
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:id="@+id/right_ll_cmt">
+
+                            <com.facebook.widget.LoginButton
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/right_fb_login" />
+
+                            <TextView
+                                android:layout_marginTop="8dp"
+                                android:padding="4dp"
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:text="Login with Facebook to see comments of another people"
+                                android:id="@+id/right_txt_reload"
+                                style="@style/txt_white_18"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
 
 
                     </FrameLayout>
@@ -140,25 +163,70 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/right_txt_comments"
-                    android:layout_margin="4dp"
-                    android:layout_gravity="center"
-                    android:layout_width="0dp"
+                <!--comt and send-->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Say about this hero" />
+                    android:orientation="horizontal">
 
-                <ImageView
-                    android:background="?android:attr/selectableItemBackground"
-                    android:id="@+id/right_img_send"
+                    <EditText
+                        android:id="@+id/right_txt_comments"
+                        android:layout_margin="4dp"
+                        android:layout_gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Say about this hero" />
+
+                    <ImageView
+                        android:background="?android:attr/selectableItemBackground"
+                        android:id="@+id/right_img_send"
+                        android:layout_gravity="center"
+                        android:layout_margin="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_content_send" />
+                </LinearLayout>
+
+                <!--post by-->
+                <LinearLayout
+                    android:id="@+id/right_view_post_by"
+                    android:layout_marginTop="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/txt_white_14"
+                        android:text="(Post by:" />
+
+                    <son.nt.dota2.customview.RoundedImageView
+                        android:id="@+id/right_post_by_avatar"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@mipmap/ic_launcher" />
+
+                    <TextView
+                        android:layout_gravity="center_vertical"
+                        android:id="@+id/right_post_by_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/txt_white_14"
+                        android:text="Kens Burns )" />
+                </LinearLayout>
+                <!--log out-->
+                <com.facebook.widget.LoginButton
+                    android:layout_marginTop="2dp"
                     android:layout_gravity="center"
-                    android:layout_margin="4dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_content_send" />
+                    android:id="@+id/right_fb_logout" />
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>

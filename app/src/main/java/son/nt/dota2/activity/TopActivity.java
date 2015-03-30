@@ -3,6 +3,10 @@ package son.nt.dota2.activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.google.android.gms.ads.AdRequest;
@@ -10,11 +14,13 @@ import com.google.android.gms.ads.AdView;
 
 import son.nt.dota2.R;
 import son.nt.dota2.base.BaseFragmentActivity;
+import son.nt.dota2.fragment.PlayListFragment;
 import son.nt.dota2.fragment.TopFragment;
 import son.nt.dota2.utils.TsGaTools;
 
 
-public class TopActivity extends BaseFragmentActivity implements TopFragment.OnFragmentInteractionListener{
+public class TopActivity extends BaseFragmentActivity implements TopFragment.OnFragmentInteractionListener,
+PlayListFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +29,7 @@ public class TopActivity extends BaseFragmentActivity implements TopFragment.OnF
         setContentView(R.layout.activity_top);
         adMob();
         TsGaTools.trackPages("/TopActivity");
+        addTest();
     }
 
 
@@ -51,5 +58,33 @@ public class TopActivity extends BaseFragmentActivity implements TopFragment.OnF
 
         //my s3
         mAdView.loadAd(adRequest);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main_top, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_playlist:
+                showFragment(new PlayListFragment(), true);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void addTest () {
+        View view = findViewById(R.id.top_test);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFragment(new PlayListFragment(), true);
+            }
+        });
     }
 }

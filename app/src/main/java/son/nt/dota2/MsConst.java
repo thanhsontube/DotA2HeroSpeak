@@ -47,4 +47,10 @@ public class MsConst {
         COPY,
         RINGTONE
     }
+
+    public static final String FB_ID_POST_TO = "1637205283182530";
+
+    public static final String FB_COMMENT_TO = "/1637431773159881/comments";
+    public static final String FB_FETCH = "http://gdata.youtube.com/feeds/api/playlists/%s?v=2&alt=json";
+    public static final String FB_AVATAR_LINK = "https://graph.facebook.com/%s/picture?type=normal";
 }

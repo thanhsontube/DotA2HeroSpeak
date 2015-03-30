@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidquery.AQuery;
 import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
@@ -33,8 +34,10 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.LikeView;
+import com.facebook.widget.LoginButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -46,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterDrawerLeft;
 import son.nt.dota2.adapter.AdapterDrawerRight;
@@ -55,6 +59,7 @@ import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.LeftDrawerDto;
 import son.nt.dota2.facebook.UserDto;
 import son.nt.dota2.fragment.MainFragment;
+import son.nt.dota2.fragment.PlayListFragment;
 import son.nt.dota2.fragment.SavedFragment;
 import son.nt.dota2.utils.CommonUtil;
 import son.nt.dota2.utils.DatetimeUtils;
@@ -63,7 +68,7 @@ import son.nt.dota2.utils.TsFeedback;
 import son.nt.dota2.utils.TsGaTools;
 
 public class MainActivity extends BaseFragmentActivity implements MainFragment.OnFragmentInteractionListener,
-        SavedFragment.OnFragmentInteractionListener {
+        SavedFragment.OnFragmentInteractionListener, PlayListFragment.OnFragmentInteractionListener {
     private static final String TAG = "MainActivity";
     private static final String PERMISSION = "publish_actions";
     HeroDto heroDto;
@@ -79,10 +84,13 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
     private RecyclerView.LayoutManager layoutManagerR;
     private AdapterDrawerLeft adapterLeft;
     private AdapterDrawerRight adapterRight;
+    private View viewLeft;
 
     private List<LeftDrawerDto> list = new ArrayList<>();
     private List<UserDto> listCmts = new ArrayList<UserDto>();
     FilterLog log = new FilterLog(TAG);
+
+    private LoginButton loginButton;
 
 
     @Override
@@ -102,9 +110,7 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
         adMob();
 		uiLifecycleHelper = new UiLifecycleHelper(this, statusCallback);
         uiLifecycleHelper.onCreate(savedInstanceState);
-
         CommonUtil.getKeyHashForFacebook(this);
-        facebookLogin();
     }
 
     private void adMob() {
@@ -130,7 +136,9 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
         list.add(new LeftDrawerDto("Favorite"));
         list.add(new LeftDrawerDto("Rate this app"));
         list.add(new LeftDrawerDto("Share this app"));
+        list.add(new LeftDrawerDto("(HOT)Dota 2 Videos"));
     }
+
 
     private void initLayout() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -140,6 +148,7 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolBar, R.string.app_name, 0);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
@@ -149,6 +158,9 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
         leftDrawer.setLayoutManager(layoutManager);
         adapterLeft = new AdapterDrawerLeft(this, list);
         leftDrawer.setAdapter(adapterLeft);
+
+        loginButton = (LoginButton) findViewById(R.id.right_fb_login);
+        viewLeft = findViewById(R.id.left_view);
     }
 
     private Handler handler = new Handler();
@@ -181,11 +193,15 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
                         TsGaTools.trackPages("/ShareApp");
                         facebookShareWithDialog();
                         break;
+                    case 5:
+                        TsGaTools.trackPages("/Videos");
+                        showFragment(new PlayListFragment(), true);
+                    break;
                 }
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        drawerLayout.closeDrawer(leftDrawer);
+                        drawerLayout.closeDrawer(Gravity.START);
                     }
                 }, 250L);
 
@@ -207,7 +223,6 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
         });
 
 
-
     }
 
     @Override
@@ -223,7 +238,8 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
     }
 
     private void updateLayout() {
-
+        viewPostBy.setVisibility(View.GONE);
+        loginButtonOut.setVisibility(View.GONE);
     }
 
 
@@ -303,6 +319,12 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
         pendingAction = PendingAction.NONE;
         if (state == SessionState.OPENED) {
             controllerLoadCmt.load();
+        } else {
+            llFbLogin.setVisibility(View.VISIBLE);
+            viewPostBy.setVisibility(View.GONE);
+            loginButtonOut.setVisibility(View.GONE);
+            listCmts.clear();;
+            adapterRight.notifyDataSetChanged();
         }
         switch (prevPendingAction) {
             case LOGIN:
@@ -387,12 +409,17 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
     public void onResume() {
         super.onResume();
         uiLifecycleHelper.onResume();
+        Session session = Session.getActiveSession();
+        if (session != null && (session.isOpened() || session.isClosed()) ) {
+            onCallbackStatus(session, session.getState(), null);
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         uiLifecycleHelper.onActivityResult(requestCode, resultCode, data, dialogCallback);
+        likeView.handleOnActivityResult(this, requestCode, resultCode, data);
     }
 
     @Override
@@ -426,7 +453,7 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
 
             new Request(
                     session,
-                    "/1637431773159881/comments",
+                    MsConst.FB_COMMENT_TO,
                     params,
                     HttpMethod.GET,
                     new Request.Callback() {
@@ -436,9 +463,10 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
                                 FacebookRequestError err = response.getError();
                                 log.d("log>>>" + "FacebookRequestError:" + err);
                                 if (err != null) {
+                                    llFbLogin.setVisibility(View.VISIBLE);
                                     return;
                                 }
-                                txtReload.setVisibility(View.GONE);
+                                llFbLogin.setVisibility(View.GONE);
                                 String tl = response.getGraphObject().toString();
                                 log.d("log>>>" + "Facebook object:" + tl.toString());
                                 JSONObject jsonObject = response.getGraphObject().getInnerJSONObject();
@@ -471,7 +499,7 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
                                     }
 
                                     dto = new UserDto(id, name, cmt, timePost);
-                                    String avatar = String.format("https://graph.facebook.com/%s/picture?type=normal", id);
+                                    String avatar = String.format(MsConst.FB_AVATAR_LINK, id);
                                     dto.avatar = avatar;
                                     if (!id.equals("-1")) {
                                         listCmt.add(dto);
@@ -483,6 +511,7 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
                                 listCmts.clear();
                                 listCmts.addAll(listCmt);
                                 adapterRight.notifyDataSetChanged();
+                                controllerUserFb.load();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -497,16 +526,13 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
     private ImageView imgHeroRight;
     private EditText edtCmt;
     private TextView txtReload;
+    private View llFbLogin;
     private LikeView likeView;
     private void setupDrawerRight() {
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.right_swipe_refresh);
         imgSend = (ImageView) findViewById(R.id.right_img_send);
         imgHeroRight = (ImageView) findViewById(R.id.right_img_hero);
-//        ImageOptions options = new ImageOptions();
-//        options.round = 30;
-//        AQuery aq = new AQuery(this);
-//        aq.id(imgHeroRight).image(heroDto.avatarThubmail, options);
         edtCmt = (EditText) findViewById(R.id.right_txt_comments);
 
         rightDrawer = (RecyclerView) findViewById(R.id.right_recycle_view);
@@ -544,7 +570,11 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
             }
         });
         likeView = (LikeView) findViewById(R.id.right_fb_like_view);
-        likeView.setObjectId("1637205283182530");
+        likeView.setObjectId(MsConst.FB_ID_POST_TO);
+
+        llFbLogin = findViewById (R.id.right_ll_cmt);
+
+        setupPostByView();
 
     }
 
@@ -557,8 +587,8 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
             return;
         }
 
-        if (txtReload.getVisibility() == View.VISIBLE) {
-            Toast.makeText(this, "Please click reload first!", Toast.LENGTH_SHORT).show();
+        if (llFbLogin.getVisibility() == View.VISIBLE) {
+            Toast.makeText(this, "Please Login first!", Toast.LENGTH_SHORT).show();
             return;
         }
         if(!hasPostFacebookPermission()) {
@@ -586,10 +616,9 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
         log.d("log>>>" + "postComment");
         Bundle params = new Bundle();
         params.putString("message", message);
-/* make the API call */
         new Request(
                 session,
-                "/1637431773159881/comments",
+                MsConst.FB_COMMENT_TO,
                 params,
                 HttpMethod.POST,
                 new Request.Callback() {
@@ -643,5 +672,56 @@ public class MainActivity extends BaseFragmentActivity implements MainFragment.O
             //open facebook appp
             TsFeedback.installFB(this);
         }
+    }
+
+    Controller controllerUserFb = new Controller() {
+        @Override
+        public void load() {
+            final Request request = Request.newMeRequest(Session.getActiveSession(), new Request.GraphUserCallback() {
+                @Override
+                public void onCompleted(GraphUser graphUser, Response response) {
+                    FacebookRequestError err = response.getError();
+                    if (err != null) {
+                        log.d("log>>>" + "Error controllerUserFb:" + err.toString());
+                        viewPostBy.setVisibility(View.GONE);
+                        loginButtonOut.setVisibility(View.GONE);
+                        return;
+                    }
+
+                    viewPostBy.setVisibility(View.VISIBLE);
+                    loginButtonOut.setVisibility(View.VISIBLE);
+                    String firstName = graphUser.getFirstName();
+                    String lastName = graphUser.getLastName();
+                    if (TextUtils.isEmpty(firstName)) {
+                        firstName = "";
+                    }
+                    if (TextUtils.isEmpty(lastName)) {
+                        lastName = "";
+                    }
+                    String id = graphUser.getId();
+                    String avatar = String.format(MsConst.FB_AVATAR_LINK, id);
+                    //update
+                    txtNamePostBy.setText(firstName + " " + lastName + ")");
+
+                    AQuery aq = new AQuery(getApplicationContext());
+                    aq.id(imgAvatarPostBy).image(avatar, true, true);
+
+                }
+            });
+            request.executeAsync();
+        }
+
+    };
+
+
+    View viewPostBy;
+    TextView txtNamePostBy;
+    ImageView imgAvatarPostBy;
+    LoginButton loginButtonOut;
+    private void setupPostByView() {
+        viewPostBy = findViewById(R.id.right_view_post_by);
+        txtNamePostBy = (TextView) findViewById(R.id.right_post_by_name);
+        imgAvatarPostBy = (ImageView) findViewById(R.id.right_post_by_avatar);
+        loginButtonOut = (LoginButton) findViewById(R.id.right_fb_logout);
     }
 }
