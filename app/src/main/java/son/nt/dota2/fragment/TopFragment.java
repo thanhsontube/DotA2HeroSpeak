@@ -30,7 +30,7 @@ import java.util.Random;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
-import son.nt.dota2.base.BaseFragment;
+import son.nt.dota2.base.AFragment;
 import son.nt.dota2.base.Controller;
 import son.nt.dota2.customview.KenBurnsView;
 import son.nt.dota2.dto.HeroData;
@@ -42,7 +42,7 @@ import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 
 
-public class TopFragment extends BaseFragment {
+public class TopFragment extends AFragment {
     // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";

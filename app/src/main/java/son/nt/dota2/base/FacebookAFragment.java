@@ -29,7 +29,7 @@ import son.nt.dota2.utils.Logger;
  * Created by Sonnt on 1/31/2015.
  * this class is used for all fragments that want to user Facebook SDk for login
  */
-public abstract class FacebookBaseFragment extends BaseFragment {
+public abstract class FacebookAFragment extends AFragment {
 
     private static final String TAG = "FacebookBaseFragment";
     Logger log = new Logger(TAG);

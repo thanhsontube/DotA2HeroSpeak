@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="son.nt.dota2">
+    package="son.nt.dota2" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-        <!--This meta-data tag is required to use Google Play Services.-->
+        android:theme="@style/AppTheme" >
+
+        <!-- This meta-data tag is required to use Google Play Services. -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -19,16 +21,16 @@
         <activity
             android:name=".activity.TopActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:launchMode="singleTask" >
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/title_activity_main"></activity>
+            android:label="@string/title_activity_main" />
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
@@ -36,33 +38,38 @@
 
         <service
             android:name=".service.PrefetchService"
-            android:exported="false"></service>
+            android:exported="false" />
         <service
             android:name=".service.DownloadService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
             android:name=".service.ServiceMedia"
             android:enabled="true"
-            android:exported="true"></service>
-        <!--check on build productFlavors-->
+            android:exported="true" />
+        <!-- check on build productFlavors -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-
             android:value="@string/facebook_id" />
-
 
         <activity
             android:name="com.facebook.LoginActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <!--youtube activity-->
+        <!-- youtube activity -->
         <activity
             android:name=".youtube.WidgetVideoYoutubeActivity"
             android:screenOrientation="portrait" />
-    </application>
+        <activity
+            android:name=".activity.LoginActivity"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 
 </manifest>

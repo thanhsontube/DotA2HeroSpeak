@@ -44,7 +44,7 @@ import java.util.List;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterSpeak;
-import son.nt.dota2.base.BaseFragment;
+import son.nt.dota2.base.AFragment;
 import son.nt.dota2.base.Controller;
 import son.nt.dota2.customview.blur.Blur;
 import son.nt.dota2.customview.blur.ImageUtils;
@@ -63,7 +63,7 @@ import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.NetworkUtils;
 
-public class MainFragment extends BaseFragment implements View.OnClickListener {
+public class MainFragment extends AFragment implements View.OnClickListener {
     private static final String TAG = "MainFragment";
     Logger log = new Logger(TAG);
     // TODO: Rename parameter arguments, choose names that match

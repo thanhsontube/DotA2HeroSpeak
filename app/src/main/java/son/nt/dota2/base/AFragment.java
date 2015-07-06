@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +21,7 @@ import son.nt.dota2.loader.base.ContentManager;
 /**
  * Created by Sonnt on 3/14/2015.
  */
-public class BaseFragment extends Fragment {
+public class AFragment extends Fragment {
     protected Context context;
     protected ResourceManager resource;
     protected ContentManager contentManager;
@@ -33,7 +33,7 @@ public class BaseFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        actionBar = ((ActionBarActivity)activity).getSupportActionBar();
+        actionBar = ((AppCompatActivity)getActivity()).getDelegate().getSupportActionBar();
     }
 
     @Override

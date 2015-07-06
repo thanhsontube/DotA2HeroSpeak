@@ -5,12 +5,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import java.util.Collection;
 import java.util.Stack;
 
-abstract public class BaseFragmentActivity extends ActionBarActivity implements OnBackStackChangedListener {
+abstract public class AActivity extends AppCompatActivity implements OnBackStackChangedListener {
 
     protected static final String FRAGMENT_KEY = "main";
     protected static final String SAVE_KEY_STACK = "tag_stack";

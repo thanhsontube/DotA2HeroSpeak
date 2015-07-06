@@ -19,7 +19,7 @@ import java.util.List;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterPlayPlist;
-import son.nt.dota2.base.BaseFragment;
+import son.nt.dota2.base.AFragment;
 import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.PlayListDto;
 import son.nt.dota2.loader.PlayListLoader;
@@ -34,7 +34,7 @@ import son.nt.dota2.youtube.WidgetVideoYoutubeActivity;
  * Use the {@link PlayListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PlayListFragment extends BaseFragment {
+public class PlayListFragment extends AFragment {
 
     private static final String TAG = "PlayListFragment";
     Logger log = new Logger(TAG);

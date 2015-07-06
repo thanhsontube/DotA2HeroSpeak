@@ -18,7 +18,7 @@ import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.MainActivity;
 import son.nt.dota2.adapter.AdapterHeroList;
-import son.nt.dota2.base.BaseFragment;
+import son.nt.dota2.base.AFragment;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.utils.Logger;
@@ -32,7 +32,7 @@ import son.nt.dota2.utils.TsGaTools;
  * Use the {@link HeroListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HeroListFragment extends BaseFragment {
+public class HeroListFragment extends AFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";

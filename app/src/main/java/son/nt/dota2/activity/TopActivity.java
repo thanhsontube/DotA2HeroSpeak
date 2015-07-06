@@ -11,13 +11,13 @@ import android.view.WindowManager;
 import son.nt.dota2.BuildConfig;
 import son.nt.dota2.R;
 import son.nt.dota2.adMob.AdMobUtils;
-import son.nt.dota2.base.BaseFragmentActivity;
+import son.nt.dota2.base.AActivity;
 import son.nt.dota2.fragment.PlayListFragment;
 import son.nt.dota2.fragment.TopFragment;
 import son.nt.dota2.utils.TsGaTools;
 
 
-public class TopActivity extends BaseFragmentActivity implements TopFragment.OnFragmentInteractionListener,
+public class TopActivity extends AActivity implements TopFragment.OnFragmentInteractionListener,
         PlayListFragment.OnFragmentInteractionListener {
 
     @Override
@@ -36,7 +36,6 @@ public class TopActivity extends BaseFragmentActivity implements TopFragment.OnF
         } else {
             AdMobUtils.show();
         }
-
     }
 
 

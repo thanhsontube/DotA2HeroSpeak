@@ -15,5 +15,6 @@ public class MyApplication extends Application {
         ResourceManager.createInstance(getApplicationContext());
         TsSqlite.createInstance(getApplicationContext());
         TsGaTools.createInstance(getApplicationContext());
+//        FacebookSdk.sdkInitialize(getApplicationContext());
     }
 }

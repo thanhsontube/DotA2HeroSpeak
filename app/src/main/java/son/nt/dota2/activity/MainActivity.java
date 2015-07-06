@@ -53,7 +53,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.adMob.AdMobUtils;
 import son.nt.dota2.adapter.AdapterDrawerLeft;
 import son.nt.dota2.adapter.AdapterDrawerRight;
-import son.nt.dota2.base.BaseFragmentActivity;
+import son.nt.dota2.base.AActivity;
 import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.LeftDrawerDto;
@@ -67,7 +67,7 @@ import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsFeedback;
 import son.nt.dota2.utils.TsGaTools;
 
-public class MainActivity extends BaseFragmentActivity implements MainFragment.OnFragmentInteractionListener,
+public class MainActivity extends AActivity implements MainFragment.OnFragmentInteractionListener,
         SavedFragment.OnFragmentInteractionListener, PlayListFragment.OnFragmentInteractionListener {
     private static final String TAG = "MainActivity";
     private static final String PERMISSION = "publish_actions";

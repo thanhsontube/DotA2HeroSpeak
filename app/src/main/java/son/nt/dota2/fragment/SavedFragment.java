@@ -22,7 +22,7 @@ import java.util.List;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterSaved;
-import son.nt.dota2.base.BaseFragment;
+import son.nt.dota2.base.AFragment;
 import son.nt.dota2.data.SaveDto;
 import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.service.ServiceMedia;
@@ -37,7 +37,7 @@ import son.nt.dota2.utils.Logger;
  * Use the {@link SavedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SavedFragment extends BaseFragment {
+public class SavedFragment extends AFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
