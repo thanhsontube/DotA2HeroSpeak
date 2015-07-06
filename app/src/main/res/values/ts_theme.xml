@@ -3,13 +3,17 @@
 
     <!-- them overlay actionbar -->
     <!--<style name="ts_theme_overlay" parent="android:Theme.DeviceDefault.Light.DarkActionBar">-->
-    <style name="ts_theme_overlay" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.TS" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/com_facebook_blue</item>
         <item name="colorPrimaryDark">@color/md_indigo_500</item>
         <item name="android:windowBackground">@color/blue_A400</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
     </style>
-    <!--<item name="android:windowActionBarOverlay">true</item>-->
-    <!-- <item name="android:actionBarStyle">@style/ts_actionbar_overlay_style</item>-->
+
+    <style name="AppStyle" parent="Theme.TS">
+
+    </style>
 
     <!-- actionBar style -->
     <style name="ts_actionbar_overlay_style" parent="Widget.AppCompat.Toolbar">

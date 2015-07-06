@@ -11,7 +11,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppStyle" >
 
         <!-- This meta-data tag is required to use Google Play Services. -->
         <meta-data
@@ -22,11 +22,13 @@
             android:name=".activity.TopActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask" >
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".activity.MainActivity"
@@ -52,23 +54,26 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/fb_id" />
 
-        <activity android:name="com.facebook.FacebookActivity"
+        <activity
+            android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!-- youtube activity -->
         <activity
             android:name=".youtube.WidgetVideoYoutubeActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.LoginActivity"
-            >
+        <activity android:name=".activity.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.HomeActivity"
+             >
         </activity>
     </application>
 

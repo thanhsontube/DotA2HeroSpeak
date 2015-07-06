@@ -28,17 +28,15 @@ import com.facebook.login.widget.ProfilePictureView;
 import java.security.MessageDigest;
 
 import son.nt.dota2.R;
-import son.nt.dota2.activity.TopActivity;
+import son.nt.dota2.activity.HomeActivity;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.utils.Logger;
 
 public class LoginFragment extends AFragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     public static final String TAG = "LoginFragment";
@@ -111,20 +109,11 @@ public class LoginFragment extends AFragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
-
     }
 
 
 
     private void initLayout(View view) {
-        view.findViewById(R.id.skip_login_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), TopActivity.class));
-            }
-        });
-
-
         loginButton = (LoginButton) view.findViewById(R.id.login_button_login);
         loginButton.setFragment(this);
         profilePictureView = (ProfilePictureView) view.findViewById(R.id.profilePicture);
@@ -134,11 +123,7 @@ public class LoginFragment extends AFragment {
                 updateUI();
             }
         };
-
         txtGuest = (TextView) view.findViewById(R.id.skip_login_button);
-
-
-
     }
 
     @Override
@@ -159,6 +144,12 @@ public class LoginFragment extends AFragment {
     }
 
     private void initListener () {
+        txtGuest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), HomeActivity.class));
+            }
+        });
 
     }
 

@@ -13,4 +13,9 @@
         <item name="android:icon">@android:color/transparent</item>
         <item name="android:titleTextStyle">@style/title_text_style</item>
     </style>-->
+
+    <style name="AppStyle" parent="Theme.TS">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
 </resources>
