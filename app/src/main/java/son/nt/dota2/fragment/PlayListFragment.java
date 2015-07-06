@@ -23,7 +23,7 @@ import son.nt.dota2.base.AFragment;
 import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.PlayListDto;
 import son.nt.dota2.loader.PlayListLoader;
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.youtube.WidgetVideoYoutubeActivity;
 
 /**
@@ -37,7 +37,7 @@ import son.nt.dota2.youtube.WidgetVideoYoutubeActivity;
 public class PlayListFragment extends AFragment {
 
     private static final String TAG = "PlayListFragment";
-    Logger log = new Logger(TAG);
+    TsLog log = new TsLog(TAG);
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 

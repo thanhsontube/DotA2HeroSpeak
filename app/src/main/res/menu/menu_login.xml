@@ -2,6 +2,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="son.nt.dota2.activity.LoginActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_fb_logout"
+        android:orderInCategory="100"
+        android:title="fb log out"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_fb_login"
+        android:orderInCategory="100"
+        android:title="fb log in"
+        app:showAsAction="never" />
 </menu>

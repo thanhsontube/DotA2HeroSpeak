@@ -3,12 +3,12 @@ package son.nt.dota2.facebook;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
 
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 
 public abstract class FbLoader<T> {
     private static final String TAG = "FbLoader";
@@ -19,7 +19,7 @@ public abstract class FbLoader<T> {
 
     public abstract void onFbLoaderFail(Throwable e);
 
-    Logger log = new Logger(TAG);
+    TsLog log = new TsLog(TAG);
 
     private String grathPath;
     private Bundle params;
@@ -32,27 +32,30 @@ public abstract class FbLoader<T> {
         this.httpMethod = httpMethod;
     }
 
-    protected abstract T handleResult(Response response);
+    protected abstract T handleResult(GraphResponse response);
 
     public void request(FbLoaderManager fbLoaderManager) {
         if(params == null) {
             params = new Bundle();
         }
         onFbLoaderStart();
-        Request request = new Request(Session.getActiveSession(), grathPath, params, httpMethod,
-                new Request.Callback() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken == null) {
+            onFbLoaderFail(new Exception("TOKEN FB is NULL"));
+        }
 
-                    @Override
-                    public void onCompleted(Response response) {
-                        try {
-                            T result = handleResult(response);
-                            onFbLoaderSuccess(result);
-                        } catch (Exception e) {
-                            onFbLoaderFail(e);
-                        }
-                    }
-                });
-        request.executeAsync();
+        GraphRequest graphRequest = new GraphRequest(accessToken, grathPath, params, httpMethod, new GraphRequest.Callback() {
+            @Override
+            public void onCompleted(GraphResponse graphResponse) {
+                try {
+                    T results = handleResult(graphResponse);
+                    onFbLoaderSuccess(results);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFbLoaderFail(e);
+                }
+            }
+        });
+        graphRequest.executeAsync();
     }
-
 }

@@ -2,6 +2,8 @@ package son.nt.dota2;
 
 import android.app.Application;
 
+import com.facebook.FacebookSdk;
+
 import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.utils.TsGaTools;
 
@@ -15,6 +17,6 @@ public class MyApplication extends Application {
         ResourceManager.createInstance(getApplicationContext());
         TsSqlite.createInstance(getApplicationContext());
         TsGaTools.createInstance(getApplicationContext());
-//        FacebookSdk.sdkInitialize(getApplicationContext());
+        FacebookSdk.sdkInitialize(getApplicationContext());
     }
 }

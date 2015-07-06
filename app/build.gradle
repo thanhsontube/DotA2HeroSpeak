@@ -20,17 +20,11 @@ android {
     productFlavors {
         dev {
             applicationId = "dev.son.nt.dota2"
-            resValue("string", "app_name", "Dev DOTA2 Speak")
-            resValue("string", "facebook_id", "2116506108488158")
-            resValue("string", "ads_test_device", "CF7C21124342C5CD6DA74C6EC4445777")
 
         }
 
         real {
             applicationId = "son.nt.dota2"
-            resValue("string", "app_name", "DOTA2 Speak")
-            resValue("string", "facebook_id", "908877899176035")
-            resValue("string", "ads_test_device", "")
         }
     }
 
@@ -64,6 +58,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.google.android.gms:play-services:7.5.0'
-    compile 'com.facebook.android:facebook-android-sdk:3.21.1'
+    compile 'com.facebook.android:facebook-android-sdk:4.1.0'
     compile 'com.android.support:design:22.2.0'
 }

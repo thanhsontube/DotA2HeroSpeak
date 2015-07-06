@@ -2,7 +2,9 @@
 <resources>
     <string name="ga_id">UA-53670653-5</string>
     <string name="banner_ad_unit_id">ca-app-pub-9899382571152367/5311030932</string>
-    <string name="fb_id">2116506108488158</string>
-    <string name="app_name">DEV DOTA 2 </string>
-    <string name="ad_mob_test_device">CF7C21124342C5CD6DA74C6EC4445777</string>
+    <string name="fb_id">908877899176035</string>
+    <string name="app_name">DOTA 2 SPEAK</string>
+    <string name="ad_mob_test_device"></string>
+
+
 </resources>

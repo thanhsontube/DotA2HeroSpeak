@@ -24,11 +24,11 @@ import java.util.List;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.utils.FileUtil;
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 
 public class DownloadService extends Service {
     private static final String TAG = "DownloadService";
-    Logger log = new Logger(TAG);
+    TsLog log = new TsLog(TAG);
 
     LocalBinder binder = new LocalBinder();
 

@@ -9,6 +9,7 @@ import son.nt.dota2.fragment.LoginFragment;
 
 public class LoginActivity extends AActivity {
 
+
     @Override
     protected Fragment onCreateMainFragment(Bundle savedInstanceState) {
         return LoginFragment.newInstance("", "");

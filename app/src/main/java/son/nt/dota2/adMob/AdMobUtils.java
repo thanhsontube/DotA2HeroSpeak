@@ -18,7 +18,7 @@ public class AdMobUtils {
         //ad mob
         viewInstance = view;
         AdView mAdView = (AdView) view.findViewById(adMobID);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(view.getContext().getString(R.string.ads_test_device)).build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(view.getContext().getString(R.string.ad_mob_test_device)).build();
         mAdView.loadAd(adRequest);
     }
 

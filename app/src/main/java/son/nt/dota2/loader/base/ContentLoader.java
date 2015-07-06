@@ -23,13 +23,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.Executor;
 
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 
 
 public abstract class ContentLoader<T> {
 
     protected static final long HOUR = 1 * 60 * 60 * 1000;
-    private static final Logger log = new Logger(ContentLoader.class.getSimpleName());
+    private static final TsLog log = new TsLog(ContentLoader.class.getSimpleName());
     private final boolean useCache;
     private final MessageDigest mDigester;
     private HttpUriRequest request;

@@ -39,7 +39,7 @@ import son.nt.dota2.loader.DataLoader;
 import son.nt.dota2.loader.HeroBgLoader;
 import son.nt.dota2.service.PrefetchService;
 import son.nt.dota2.utils.FileUtil;
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 
 
 public class TopFragment extends AFragment {
@@ -54,7 +54,7 @@ public class TopFragment extends AFragment {
     private OnFragmentInteractionListener mListener;
 
     private static final String TAG = "TopFragment";
-    Logger log = new Logger(TAG);
+    TsLog log = new TsLog(TAG);
 
     private ViewPager pager;
     private AdapterTop adapter;

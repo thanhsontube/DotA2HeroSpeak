@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
 
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 
 public class ContentManager {
 
-    private static final Logger log = new Logger(ContentManager.class.getSimpleName());
+    private static final TsLog log = new TsLog(ContentManager.class.getSimpleName());
 
     private final Context context;
 

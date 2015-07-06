@@ -6,8 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.facebook.FacebookRequestError;
-import com.facebook.Response;
-import com.facebook.model.GraphObject;
+import com.facebook.GraphResponse;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,26 +15,25 @@ import son.nt.dota2.facebook.object.FbCmtData;
 import son.nt.dota2.facebook.object.FbCmtFrom;
 import son.nt.dota2.facebook.object.FbCmtSummary;
 import son.nt.dota2.facebook.object.FbComments;
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 
 
 public abstract class FbCommentsLoader extends FbLoaderGet<FbComments> {
 
     private static final String TAG = "FbCommentsLoader";
-    Logger log = new Logger(TAG);
+    TsLog log = new TsLog(TAG);
 
     public FbCommentsLoader(Context context, String graphpath, Bundle params) {
         super(context, graphpath, params);
     }
 
     @Override
-    protected FbComments handleResult(Response response) {
+    protected FbComments handleResult(GraphResponse response) {
         try {
-            GraphObject graphObject = response.getGraphObject();
+            JSONObject jsonObject = response.getJSONObject();
             FacebookRequestError facebookError = response.getError();
             String err = facebookError.getErrorMessage();
             log.d("log>>>" + "err:" + err);
-            JSONObject jsonObject = graphObject.getInnerJSONObject();
             JSONArray jsonArray = jsonObject.getJSONArray("data");
             FbComments comments = new FbComments();
             FbCmtData dto;

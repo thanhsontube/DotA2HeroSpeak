@@ -15,13 +15,13 @@ import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.loader.base.ContentLoader;
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 
 
 public abstract class HeroSpeakLoader extends ContentLoader<HeroData> {
     private static final String TAG = "HeroSpeakLoader";
     private String lastTitle = "";
-    Logger log = new Logger(TAG);
+    TsLog log = new TsLog(TAG);
 
     public HeroSpeakLoader(HttpUriRequest httpRequest, boolean isCache) {
         super(httpRequest, isCache);

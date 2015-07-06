@@ -27,7 +27,7 @@ import son.nt.dota2.data.SaveDto;
 import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.service.ServiceMedia;
 import son.nt.dota2.utils.FileUtil;
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,7 +52,7 @@ public class SavedFragment extends AFragment {
     private List<SaveDto> list;
     private AdapterSaved adapter;
 
-    Logger log = new Logger(TAG);
+    TsLog log = new TsLog(TAG);
 
     private OnFragmentInteractionListener mListener;
 

@@ -11,11 +11,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 
 abstract public class JsonLoaderBase<T> extends ContentLoader<T> {
 
-    private final Logger log = new Logger(JsonLoaderBase.class.getSimpleName());
+    private final TsLog log = new TsLog(JsonLoaderBase.class.getSimpleName());
 
     public JsonLoaderBase(boolean useCache) {
         super(useCache);

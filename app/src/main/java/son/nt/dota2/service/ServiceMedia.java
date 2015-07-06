@@ -22,13 +22,13 @@ import son.nt.dota2.adapter.AdapterSpeak;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.utils.FileUtil;
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.PreferenceUtil;
 
 public class ServiceMedia extends Service {
 
     private static final String TAG = "ServiceMedia";
-    Logger log = new Logger(TAG);
+    TsLog log = new TsLog(TAG);
     private MediaPlayer player;
     private LocalBinder mBinder = new LocalBinder();
     private String source;

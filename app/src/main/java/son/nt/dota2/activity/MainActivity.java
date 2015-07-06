@@ -1,6 +1,5 @@
 package son.nt.dota2.activity;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,48 +12,22 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.androidquery.AQuery;
-import com.facebook.FacebookRequestError;
-import com.facebook.HttpMethod;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
-import com.facebook.widget.FacebookDialog;
-import com.facebook.widget.LikeView;
-import com.facebook.widget.LoginButton;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import son.nt.dota2.BuildConfig;
-import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adMob.AdMobUtils;
 import son.nt.dota2.adapter.AdapterDrawerLeft;
 import son.nt.dota2.adapter.AdapterDrawerRight;
 import son.nt.dota2.base.AActivity;
-import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.LeftDrawerDto;
 import son.nt.dota2.facebook.UserDto;
@@ -62,8 +35,7 @@ import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.PlayListFragment;
 import son.nt.dota2.fragment.SavedFragment;
 import son.nt.dota2.utils.CommonUtil;
-import son.nt.dota2.utils.DatetimeUtils;
-import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.TsFeedback;
 import son.nt.dota2.utils.TsGaTools;
 
@@ -88,9 +60,8 @@ public class MainActivity extends AActivity implements MainFragment.OnFragmentIn
 
     private List<LeftDrawerDto> list = new ArrayList<>();
     private List<UserDto> listCmts = new ArrayList<UserDto>();
-    Logger log = new Logger(TAG);
+    TsLog log = new TsLog(TAG);
 
-    private LoginButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,12 +74,10 @@ public class MainActivity extends AActivity implements MainFragment.OnFragmentIn
         //        getSupportActionBar().show();
         initData();
         initLayout();
-        setupDrawerRight();
+//        setupDrawerRight();
         initListener();
         updateLayout();
         adMob();
-        uiLifecycleHelper = new UiLifecycleHelper(this, statusCallback);
-        uiLifecycleHelper.onCreate(savedInstanceState);
         CommonUtil.getKeyHashForFacebook(this);
     }
 
@@ -154,7 +123,6 @@ public class MainActivity extends AActivity implements MainFragment.OnFragmentIn
         adapterLeft = new AdapterDrawerLeft(this, list);
         leftDrawer.setAdapter(adapterLeft);
 
-        loginButton = (LoginButton) findViewById(R.id.right_fb_login);
         viewLeft = findViewById(R.id.left_view);
     }
 
@@ -185,7 +153,7 @@ public class MainActivity extends AActivity implements MainFragment.OnFragmentIn
                         break;
                     case 4:
                         TsGaTools.trackPages("/ShareApp");
-                        facebookShareWithDialog();
+//                        facebookShareWithDialog();
                         break;
                     case 5:
                         TsGaTools.trackPages("/Videos");
@@ -195,7 +163,7 @@ public class MainActivity extends AActivity implements MainFragment.OnFragmentIn
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        drawerLayout.closeDrawer(Gravity.START);
+                        drawerLayout.closeDrawer(Gravity.LEFT);
                     }
                 }, 250L);
 
@@ -231,8 +199,8 @@ public class MainActivity extends AActivity implements MainFragment.OnFragmentIn
     }
 
     private void updateLayout() {
-        viewPostBy.setVisibility(View.GONE);
-        loginButtonOut.setVisibility(View.GONE);
+//        viewPostBy.setVisibility(View.GONE);
+//        loginButtonOut.setVisibility(View.GONE);
     }
 
     @Override
@@ -266,7 +234,7 @@ public class MainActivity extends AActivity implements MainFragment.OnFragmentIn
         if (item.getItemId() == R.id.action_chat) {
             drawerLayout.openDrawer(Gravity.RIGHT);
         } else if (item.getItemId() == R.id.action_remove_fb) {
-            removePermission();
+//            removePermission();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -276,8 +244,6 @@ public class MainActivity extends AActivity implements MainFragment.OnFragmentIn
         NONE, LOGIN, REQUESTING_POST_PER, SHARE, WAIT_LOGIN_RESULT, GET_INFO
     }
 
-    private UiLifecycleHelper uiLifecycleHelper;
-    SessionState state = SessionState.CLOSED;
     private PendingAction pendingAction = PendingAction.NONE;
     private static final String PERMISSION_PUSHLISH_ACTIONS = "publish_actions";
     private static final String PERMISSION_BIRTHDAY = "user_birthday";
@@ -294,75 +260,64 @@ public class MainActivity extends AActivity implements MainFragment.OnFragmentIn
 
     boolean isPost = false;
 
-    private Session.StatusCallback statusCallback = new Session.StatusCallback() {
 
-        @Override
-        public void call(Session session,
-                         SessionState state,
-                         Exception exception) {
-            log.d("log>>>" + "statusCallback state:" + state
-                    + ";session:"
-                    + session.getState());
-            onCallbackStatus(session, state, exception);
-        }
-    };
 
     private void handlePendingAction() {
         PendingAction prevPendingAction = pendingAction;
-        log.d("log>>>" + "handlePendingAction state:" + state + ";prevPendingAction:" + prevPendingAction);
+//        log.d("log>>>" + "handlePendingAction state:" + state + ";prevPendingAction:" + prevPendingAction);
         pendingAction = PendingAction.NONE;
-        if (state == SessionState.OPENED) {
-            controllerLoadCmt.load();
-        } else {
-            llFbLogin.setVisibility(View.VISIBLE);
-            viewPostBy.setVisibility(View.GONE);
-            loginButtonOut.setVisibility(View.GONE);
-            listCmts.clear();
-            ;
-            adapterRight.notifyDataSetChanged();
-        }
-        switch (prevPendingAction) {
-            case LOGIN:
-                if (prevPendingAction == PendingAction.LOGIN && !isLogin()) {
-                    pendingAction = PendingAction.WAIT_LOGIN_RESULT;
-                    log.d("log>>>" + "WAIT_LOGIN_RESULT");
-                }
-                break;
-
-            case WAIT_LOGIN_RESULT:
-                if (isLogin()) {
-                    log.d("log>>>" + "login success isPost:" + isPost);
-                    if (isPost) {
-                        isPost = false;
-                    }
-                } else {
-                    log.d("log>>>" + "login false");
-                }
-                isPost = false;
-                break;
-
-            case REQUESTING_POST_PER:
-                log.d("log>>>" + "REQUESTING_POST_PER");
-                // requestPostPermission();
-
-                //check is cancel
-                if (!hasPostFacebookPermission()) {
-                    log.d("log>>>" + "Cancel per");
-                } else {
-                    postComment();
-                }
-                if (prevPendingAction == PendingAction.REQUESTING_POST_PER) {
-                    pendingAction = PendingAction.WAIT_LOGIN_RESULT;
-                }
-                break;
-
-            default:
-                break;
-        }
+//        if (state == SessionState.OPENED) {
+//            controllerLoadCmt.load();
+//        } else {
+//            llFbLogin.setVisibility(View.VISIBLE);
+//            viewPostBy.setVisibility(View.GONE);
+//            loginButtonOut.setVisibility(View.GONE);
+//            listCmts.clear();
+//            ;
+//            adapterRight.notifyDataSetChanged();
+//        }
+//        switch (prevPendingAction) {
+//            case LOGIN:
+//                if (prevPendingAction == PendingAction.LOGIN && !isLogin()) {
+//                    pendingAction = PendingAction.WAIT_LOGIN_RESULT;
+//                    log.d("log>>>" + "WAIT_LOGIN_RESULT");
+//                }
+//                break;
+//
+//            case WAIT_LOGIN_RESULT:
+//                if (isLogin()) {
+//                    log.d("log>>>" + "login success isPost:" + isPost);
+//                    if (isPost) {
+//                        isPost = false;
+//                    }
+//                } else {
+//                    log.d("log>>>" + "login false");
+//                }
+//                isPost = false;
+//                break;
+//
+//            case REQUESTING_POST_PER:
+//                log.d("log>>>" + "REQUESTING_POST_PER");
+//                // requestPostPermission();
+//
+//                //check is cancel
+//                if (!hasPostFacebookPermission()) {
+//                    log.d("log>>>" + "Cancel per");
+//                } else {
+//                    postComment();
+//                }
+//                if (prevPendingAction == PendingAction.REQUESTING_POST_PER) {
+//                    pendingAction = PendingAction.WAIT_LOGIN_RESULT;
+//                }
+//                break;
+//
+//            default:
+//                break;
+//        }
 
     }
 
-    private void onCallbackStatus(Session session, SessionState state, Exception exception) {
+    /*private void onCallbackStatus(Session session, SessionState state, Exception exception) {
         this.state = state;
         handlePendingAction();
     }
@@ -722,5 +677,5 @@ public class MainActivity extends AActivity implements MainFragment.OnFragmentIn
         txtNamePostBy = (TextView) findViewById(R.id.right_post_by_name);
         imgAvatarPostBy = (ImageView) findViewById(R.id.right_post_by_avatar);
         loginButtonOut = (LoginButton) findViewById(R.id.right_fb_logout);
-    }
+    }*/
 }
