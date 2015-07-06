@@ -16,13 +16,13 @@ import son.nt.dota2.facebook.object.FbCmtData;
 import son.nt.dota2.facebook.object.FbCmtFrom;
 import son.nt.dota2.facebook.object.FbCmtSummary;
 import son.nt.dota2.facebook.object.FbComments;
-import son.nt.dota2.utils.FilterLog;
+import son.nt.dota2.utils.Logger;
 
 
 public abstract class FbCommentsLoader extends FbLoaderGet<FbComments> {
 
     private static final String TAG = "FbCommentsLoader";
-    FilterLog log = new FilterLog(TAG);
+    Logger log = new Logger(TAG);
 
     public FbCommentsLoader(Context context, String graphpath, Bundle params) {
         super(context, graphpath, params);

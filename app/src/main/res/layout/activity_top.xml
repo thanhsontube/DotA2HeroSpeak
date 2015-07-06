@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,28 +9,5 @@
         android:layout_height="0dp"
         android:layout_weight="1"></FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/ll_ads"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.gms.ads.AdView
-            android:visibility="visible"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/adView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id"></com.google.android.gms.ads.AdView>
-
-        <View
-            android:id="@+id/top_test"
-            android:visibility="gone"
-            android:layout_width="320dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:background="#ff00ff" />
-    </FrameLayout>
+    <include layout="@layout/ad_mob_ll"></include>
 </LinearLayout>

@@ -21,7 +21,7 @@ import son.nt.dota2.adapter.AdapterHeroList;
 import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
-import son.nt.dota2.utils.FilterLog;
+import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsGaTools;
 
 /**
@@ -47,7 +47,7 @@ public class HeroListFragment extends BaseFragment {
     private String group;
 
     private OnFragmentInteractionListener mListener;
-    FilterLog log = new FilterLog(TAG);
+    Logger log = new Logger(TAG);
 
     public static HeroListFragment newInstance(HeroData herodata, String group) {
         HeroListFragment fragment = new HeroListFragment();

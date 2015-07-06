@@ -60,12 +60,12 @@ import son.nt.dota2.service.DownloadService;
 import son.nt.dota2.service.ServiceMedia;
 import son.nt.dota2.utils.DatetimeUtils;
 import son.nt.dota2.utils.FileUtil;
-import son.nt.dota2.utils.FilterLog;
+import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.NetworkUtils;
 
 public class MainFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = "MainFragment";
-    FilterLog log = new FilterLog(TAG);
+    Logger log = new Logger(TAG);
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";

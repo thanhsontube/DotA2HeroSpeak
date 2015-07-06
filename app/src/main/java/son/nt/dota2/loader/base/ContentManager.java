@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
 
-import son.nt.dota2.utils.FilterLog;
+import son.nt.dota2.utils.Logger;
 
 public class ContentManager {
 
-    private static final FilterLog log = new FilterLog(ContentManager.class.getSimpleName());
+    private static final Logger log = new Logger(ContentManager.class.getSimpleName());
 
     private final Context context;
 

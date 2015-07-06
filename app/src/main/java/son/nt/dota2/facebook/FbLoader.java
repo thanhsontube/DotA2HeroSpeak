@@ -8,7 +8,7 @@ import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 
-import son.nt.dota2.utils.FilterLog;
+import son.nt.dota2.utils.Logger;
 
 public abstract class FbLoader<T> {
     private static final String TAG = "FbLoader";
@@ -19,7 +19,7 @@ public abstract class FbLoader<T> {
 
     public abstract void onFbLoaderFail(Throwable e);
 
-    FilterLog log = new FilterLog(TAG);
+    Logger log = new Logger(TAG);
 
     private String grathPath;
     private Bundle params;

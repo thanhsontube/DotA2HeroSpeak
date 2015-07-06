@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.Locale;
 
-import son.nt.dota2.utils.FilterLog;
+import son.nt.dota2.utils.Logger;
 
 /**
  * Created by Sonnt on 1/31/2015.
@@ -32,7 +32,7 @@ import son.nt.dota2.utils.FilterLog;
 public abstract class FacebookBaseFragment extends BaseFragment {
 
     private static final String TAG = "FacebookBaseFragment";
-    FilterLog log = new FilterLog(TAG);
+    Logger log = new Logger(TAG);
 
     //facebook login
     private enum PendingAction {

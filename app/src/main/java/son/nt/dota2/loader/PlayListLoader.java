@@ -12,14 +12,14 @@ import java.util.List;
 import son.nt.dota2.dto.PlayListDto;
 import son.nt.dota2.dto.YoutubeVideoDto;
 import son.nt.dota2.loader.base.JsonLoaderBase;
-import son.nt.dota2.utils.FilterLog;
+import son.nt.dota2.utils.Logger;
 
 /**
  * Created by 4210047 on 3/30/2015.
  */
 public abstract class PlayListLoader extends JsonLoaderBase<PlayListDto> {
     private static final String TAG = "PlayListLoader";
-    FilterLog log = new FilterLog(TAG);
+    Logger log = new Logger(TAG);
 
     public PlayListLoader (HttpUriRequest httpUriRequest, boolean isUseCache) {
         super (httpUriRequest, isUseCache);

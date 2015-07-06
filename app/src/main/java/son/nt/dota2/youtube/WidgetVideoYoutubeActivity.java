@@ -23,15 +23,15 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.BuildConfig;
 import son.nt.dota2.R;
+import son.nt.dota2.adMob.AdMobUtils;
 import son.nt.dota2.adapter.AdapterVideoList;
 import son.nt.dota2.dto.PlayListDto;
 import son.nt.dota2.dto.YoutubeVideoDto;
@@ -131,15 +131,13 @@ public class WidgetVideoYoutubeActivity extends YouTubeFailureRecoveryActivity {
     }
 
     private void adMob() {
-        //ad mob
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-//                .addTestDevice("C5C5650D2E6510CF583E2D3D94B69B57")
-//                .addTestDevice("224370EA280CB464C7C922F369F77C69")
-                .build();
+        AdMobUtils.init(findViewById(R.id.ll_ads), R.id.adView);
+        if (BuildConfig.DEBUG) {
+            AdMobUtils.hide();
+        } else {
+            AdMobUtils.show();
+        }
 
-        //my s3
-        mAdView.loadAd(adRequest);
     }
 
 }

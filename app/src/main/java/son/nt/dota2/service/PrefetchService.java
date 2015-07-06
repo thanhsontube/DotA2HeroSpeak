@@ -23,7 +23,7 @@ import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.utils.FileUtil;
-import son.nt.dota2.utils.FilterLog;
+import son.nt.dota2.utils.Logger;
 
 
 /**
@@ -34,7 +34,7 @@ import son.nt.dota2.utils.FilterLog;
  */
 public class PrefetchService extends IntentService {
     private static final String TAG = "PrefetchService";
-    FilterLog log = new FilterLog(TAG);
+    Logger log = new Logger(TAG);
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_FOO = "son.nt.dota2.service.action.FOO";
