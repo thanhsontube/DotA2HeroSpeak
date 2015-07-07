@@ -8,9 +8,15 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
+import com.twotoasters.jazzylistview.JazzyHelper;
+import com.twotoasters.jazzylistview.recyclerview.JazzyRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,25 +41,24 @@ import son.nt.dota2.utils.TsScreen;
  * create an instance of this fragment.
  */
 public class HeroListFragment extends AFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "HeroListFragment";
+    public static final int EFFECT_DEFAULT = JazzyHelper.GROW;
+    public static final String KEY_EFFECT_DEFAULT = "KEY_EFFECT_DEFAULT";
 
-    // TODO: Rename and change types of parameters
     private HeroData herodata;
-//    private GridView gridView;
-//    private AdapterHeroList adapter;
     private AdapterRcvHome adapterHome;
     private List<HeroDto> listHero = new ArrayList<>();
     private String group;
 
     RecyclerView recyclerView;
     StaggeredGridLayoutManager staggeredGridLayoutManager;
+    JazzyRecyclerViewScrollListener jazzyRecyclerViewScrollListener;
 
     private OnFragmentInteractionListener mListener;
     TsLog log = new TsLog(TAG);
+    int currentEffect = EFFECT_DEFAULT;
 
     public static HeroListFragment newInstance(HeroData herodata, String group) {
         HeroListFragment fragment = new HeroListFragment();
@@ -70,6 +75,7 @@ public class HeroListFragment extends AFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             herodata = (HeroData) getArguments().getSerializable(ARG_PARAM1);
             group = getArguments().getString(ARG_PARAM2);
@@ -90,20 +96,42 @@ public class HeroListFragment extends AFragment {
         initData();
         initLayout(view);
         initListener();
+        if (savedInstanceState != null) {
+            currentEffect = savedInstanceState.getInt(KEY_EFFECT_DEFAULT, EFFECT_DEFAULT);
+            setEffect();
+
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_EFFECT_DEFAULT, currentEffect);
+    }
+
+    private void setEffect() {
+        jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
     }
 
     private void initData() {
         listHero.clear();
         listHero.addAll(getListHeros(group));
     }
-    private void initLayout(View view) {
-//        gridView = (GridView) view.findViewById(R.id.top_grid_view);
-//        adapter = new AdapterHeroList(context, listHero);
-//        gridView.setAdapter(adapter);
 
-        adapterHome = new AdapterRcvHome(context, listHero);
+    private void initLayout(View view) {
+        adapterHome = new AdapterRcvHome(context, listHero, new AdapterRcvHome.IAdapter() {
+            @Override
+            public void onIAdapterItemCLick(HeroDto heroDto, int position) {
+                if (mListener != null) {
+                    mListener.heroSelected(heroDto);
+                }
+            }
+        });
         recyclerView = (RecyclerView) view.findViewById(R.id.home_recycle_view);
         recyclerView.setHasFixedSize(true);
+        jazzyRecyclerViewScrollListener = new JazzyRecyclerViewScrollListener();
+        setEffect();
+        recyclerView.addOnScrollListener(jazzyRecyclerViewScrollListener);
         int row = 2;
         if (TsScreen.isLandscape(getActivity())) {
             row = 4;
@@ -113,12 +141,13 @@ public class HeroListFragment extends AFragment {
         recyclerView.setAdapter(adapterHome);
 
     }
+
     AdapterView.OnItemClickListener onClickGrid = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             TsGaTools.trackPages("/" + listHero.get(position).name);
             Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.putExtra("data",listHero.get(position));
+            intent.putExtra("data", listHero.get(position));
             startActivity(intent);
         }
     };
@@ -131,6 +160,7 @@ public class HeroListFragment extends AFragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+        void heroSelected (HeroDto heroDto);
     }
 
     private List<HeroDto> getListHeros(String group) {
@@ -141,13 +171,13 @@ public class HeroListFragment extends AFragment {
                     list.add(dto);
                 }
             }
-        } else if (group.equals(MsConst.GROUP_AGI) ){
+        } else if (group.equals(MsConst.GROUP_AGI)) {
             for (HeroDto dto : herodata.listHeros) {
                 if (dto.group.equals(MsConst.GROUP_AGI)) {
                     list.add(dto);
                 }
             }
-        } else if (group.equals(MsConst.GROUP_INTEL) ){
+        } else if (group.equals(MsConst.GROUP_INTEL)) {
             for (HeroDto dto : herodata.listHeros) {
                 if (dto.group.equals(MsConst.GROUP_INTEL)) {
                     list.add(dto);
@@ -155,7 +185,78 @@ public class HeroListFragment extends AFragment {
             }
         }
         return list;
-
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_effect, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_0:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(0);
+                currentEffect = 0;
+                break;
+            case R.id.action_1:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(1);
+                currentEffect = 1;
+                break;
+            case R.id.action_2:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(2);
+                currentEffect = 2;
+                break;
+            case R.id.action_3:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(3);
+                currentEffect = 3;
+                break;
+            case R.id.action_4:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(4);
+                currentEffect = 4;
+                break;
+            case R.id.action_5:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(5);
+                currentEffect = 5;
+                break;
+            case R.id.action_6:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(6);
+                currentEffect = 6;
+                break;
+            case R.id.action_7:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(7);
+                currentEffect = 7;
+                break;
+            case R.id.action_8:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(8);
+                currentEffect = 8;
+                break;
+            case R.id.action_9:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(9);
+                currentEffect = 9;
+                break;
+            case R.id.action_10:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(10);
+                currentEffect = 10;
+                break;
+            case R.id.action_11:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(11);
+                currentEffect = 11;
+                break;
+            case R.id.action_12:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(12);
+                currentEffect = 12;
+                break;
+            case R.id.action_13:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(13);
+                currentEffect = 13;
+                break;
+            case R.id.action_14:
+                jazzyRecyclerViewScrollListener.setTransitionEffect(14);
+                currentEffect = 14;
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

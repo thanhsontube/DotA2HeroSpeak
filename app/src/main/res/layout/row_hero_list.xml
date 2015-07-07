@@ -5,11 +5,10 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
+    android:background="?selectableItemBackground"
     card_view:cardCornerRadius="8dp"
     card_view:cardElevation="4dp"
-    card_view:cardUseCompatPadding="true"
-    android:background="?selectableItemBackground"
-    >
+    card_view:cardUseCompatPadding="true">
 
     <LinearLayout
 
@@ -18,10 +17,10 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_gravity="center"
             android:id="@+id/row_avatar"
             android:layout_width="100dp"
             android:layout_height="120dp"
+            android:layout_gravity="center"
             android:contentDescription="@string/action_settings"
             android:scaleType="fitXY" />
 

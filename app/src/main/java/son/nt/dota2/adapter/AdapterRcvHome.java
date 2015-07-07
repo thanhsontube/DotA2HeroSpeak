@@ -2,13 +2,13 @@ package son.nt.dota2.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -25,24 +25,28 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
 
     List<HeroDto> mValues;
     Context context;
-    AQuery aq;
+    private int mBackground;
+    private final TypedValue mTypedValue = new TypedValue();
     private  final WeakReference<Context> contextWeakReference;
-    public AdapterRcvHome (Context cx, List<HeroDto> list) {
+    public AdapterRcvHome (Context cx, List<HeroDto> list, IAdapter iAdapter) {
+        this.listener = iAdapter;
         this.mValues = list;
         this.contextWeakReference = new WeakReference<Context>(cx);
-        aq = new AQuery(cx);
+        context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
+        mBackground = mTypedValue.resourceId;
     }
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_hero_list, viewGroup, false);
+        view.setBackgroundResource(mBackground);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        HeroDto dto = mValues.get(i);
+    public void onBindViewHolder(ViewHolder viewHolder, final int i) {
+        final HeroDto dto = mValues.get(i);
         String url = "http://38.media.tumblr.com/600b4ea2d2770bec97fd836a6b3c91f9/tumblr_n5u5px6X1Z1rwq84jo1_r1_400.gif";
         viewHolder.txtName.setText(dto.name);
         if (contextWeakReference.get() != null) {
@@ -55,12 +59,13 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(listener != null) {
+                    listener.onIAdapterItemCLick(dto, i);
+                }
             }
         });
 
     }
-
     @Override
     public int getItemCount() {
         return mValues.size();
@@ -78,5 +83,8 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
 
         }
     }
-
+    IAdapter listener;
+    public interface IAdapter {
+        void onIAdapterItemCLick (HeroDto heroDto, int position);
+    }
 }
