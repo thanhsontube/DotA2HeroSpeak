@@ -1,15 +1,27 @@
 package son.nt.dota2.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import son.nt.dota2.R;
+import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.AFragment;
+import son.nt.dota2.dto.HeroData;
+import son.nt.dota2.utils.FileUtil;
+import son.nt.dota2.utils.TsScreen;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,16 +32,19 @@ import son.nt.dota2.base.AFragment;
  * create an instance of this fragment.
  */
 public class HomeFragment extends AFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    ViewPager viewPager;
+    TabLayout tabLayout;
+    AdapterTop adapterTop;
+    private HeroData herodata = new HeroData();
+
 
     /**
      * Use this factory method to create a new instance of
@@ -39,7 +54,6 @@ public class HomeFragment extends AFragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment HomeFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -69,7 +83,13 @@ public class HomeFragment extends AFragment {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initData();
+        initLayout(view);
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -104,8 +124,53 @@ public class HomeFragment extends AFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    private void initLayout(View view) {
+        tabLayout = (TabLayout) view.findViewById(R.id.home_tabs);
+        viewPager = (ViewPager) view.findViewById(R.id.home_view_pager);
+        adapterTop = new AdapterTop(getFragmentManager(),herodata );
+        viewPager.setAdapter(adapterTop);
+        tabLayout.setupWithViewPager(viewPager);
+        if (TsScreen.isLandscape(getActivity())) {
+
+            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_action_settings));
+            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_action_settings));
+            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_action_settings));
+        }
+    }
+
+    private void initData() {
+        try {
+            File fOut = new File(resource.folderSave, File.separator + "data.zip");
+            if (fOut.exists()) {
+                herodata = FileUtil.readHeroList(context);
+                return;
+            }
+            InputStream in = context.getAssets().open("data.zip");
+            OutputStream out = new FileOutputStream(fOut, false);
+            int read;
+            byte[] buffer = new byte[1024];
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+
+            out.flush();
+            out.close();
+            in.close();
+
+            //unzip
+            boolean isUnzip = FileUtil.unpackZip(resource.folderSave + File.separator, "data.zip");
+            if (isUnzip) {
+                herodata = FileUtil.readHeroList(context);
+
+            } else {
+                Toast.makeText(context, "Sorry, can not initialize data", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

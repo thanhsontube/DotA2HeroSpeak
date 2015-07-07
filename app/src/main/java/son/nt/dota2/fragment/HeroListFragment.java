@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +18,13 @@ import java.util.List;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.MainActivity;
-import son.nt.dota2.adapter.AdapterHeroList;
+import son.nt.dota2.adapter.AdapterRcvHome;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
-import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.TsGaTools;
+import son.nt.dota2.utils.TsLog;
+import son.nt.dota2.utils.TsScreen;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,10 +43,14 @@ public class HeroListFragment extends AFragment {
 
     // TODO: Rename and change types of parameters
     private HeroData herodata;
-    private GridView gridView;
-    private AdapterHeroList adapter;
+//    private GridView gridView;
+//    private AdapterHeroList adapter;
+    private AdapterRcvHome adapterHome;
     private List<HeroDto> listHero = new ArrayList<>();
     private String group;
+
+    RecyclerView recyclerView;
+    StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private OnFragmentInteractionListener mListener;
     TsLog log = new TsLog(TAG);
@@ -91,9 +97,21 @@ public class HeroListFragment extends AFragment {
         listHero.addAll(getListHeros(group));
     }
     private void initLayout(View view) {
-        gridView = (GridView) view.findViewById(R.id.top_grid_view);
-        adapter = new AdapterHeroList(context, listHero);
-        gridView.setAdapter(adapter);
+//        gridView = (GridView) view.findViewById(R.id.top_grid_view);
+//        adapter = new AdapterHeroList(context, listHero);
+//        gridView.setAdapter(adapter);
+
+        adapterHome = new AdapterRcvHome(context, listHero);
+        recyclerView = (RecyclerView) view.findViewById(R.id.home_recycle_view);
+        recyclerView.setHasFixedSize(true);
+        int row = 2;
+        if (TsScreen.isLandscape(getActivity())) {
+            row = 4;
+        }
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(row, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        recyclerView.setAdapter(adapterHome);
+
     }
     AdapterView.OnItemClickListener onClickGrid = new AdapterView.OnItemClickListener() {
         @Override
@@ -106,7 +124,7 @@ public class HeroListFragment extends AFragment {
     };
 
     private void initListener() {
-        gridView.setOnItemClickListener(onClickGrid);
+//        gridView.setOnItemClickListener(onClickGrid);
     }
 
 
