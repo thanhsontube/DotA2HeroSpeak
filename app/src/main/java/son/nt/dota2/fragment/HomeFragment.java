@@ -134,10 +134,9 @@ public class HomeFragment extends AFragment {
         viewPager.setAdapter(adapterTop);
         tabLayout.setupWithViewPager(viewPager);
         if (TsScreen.isLandscape(getActivity())) {
-
-            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_action_settings));
-            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_action_settings));
-            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_action_settings));
+            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_str_24));
+            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_agi_24));
+            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
         }
     }
 

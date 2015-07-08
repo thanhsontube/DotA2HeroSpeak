@@ -31,16 +31,17 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
     public AdapterRcvHome (Context cx, List<HeroDto> list, IAdapter iAdapter) {
         this.listener = iAdapter;
         this.mValues = list;
+        this.context = cx;
         this.contextWeakReference = new WeakReference<Context>(cx);
-        context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
-        mBackground = mTypedValue.resourceId;
+//        context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
+//        mBackground = mTypedValue.resourceId;
     }
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_hero_list, viewGroup, false);
-        view.setBackgroundResource(mBackground);
+//        view.setBackgroundResource(mBackground);
         return new ViewHolder(view);
     }
 
@@ -49,6 +50,13 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
         final HeroDto dto = mValues.get(i);
         String url = "http://38.media.tumblr.com/600b4ea2d2770bec97fd836a6b3c91f9/tumblr_n5u5px6X1Z1rwq84jo1_r1_400.gif";
         viewHolder.txtName.setText(dto.name);
+        if (dto.group.equalsIgnoreCase("Str")) {
+            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.strength));
+        } else if (dto.group.equalsIgnoreCase("Agi")){
+            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.agi));
+        } else {
+            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.intel));
+        }
         if (contextWeakReference.get() != null) {
             Glide.with(viewHolder.imageView.getContext()).load(dto.avatarThubmail)
                     .fitCenter()

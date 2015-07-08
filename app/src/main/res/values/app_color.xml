@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="strength">@color/md_red_500</color>
+    <color name="agi">@color/md_green_500</color>
+    <color name="intel">@color/md_blue_500</color>
+</resources>
