@@ -17,6 +17,7 @@ import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroDto;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * Created by Sonnt on 7/7/15.
@@ -28,8 +29,7 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
     private int mBackground;
     private final TypedValue mTypedValue = new TypedValue();
     private  final WeakReference<Context> contextWeakReference;
-    public AdapterRcvHome (Context cx, List<HeroDto> list, IAdapter iAdapter) {
-        this.listener = iAdapter;
+    public AdapterRcvHome (Context cx, List<HeroDto> list) {
         this.mValues = list;
         this.context = cx;
         this.contextWeakReference = new WeakReference<Context>(cx);
@@ -67,9 +67,7 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(listener != null) {
-                    listener.onIAdapterItemCLick(dto, i);
-                }
+                OttoBus.post(dto);
             }
         });
 
@@ -90,9 +88,5 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
             this.txtName = (TextView) view.findViewById(R.id.row_name);
 
         }
-    }
-    IAdapter listener;
-    public interface IAdapter {
-        void onIAdapterItemCLick (HeroDto heroDto, int position);
     }
 }

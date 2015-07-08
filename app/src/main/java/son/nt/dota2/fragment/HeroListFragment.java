@@ -119,14 +119,7 @@ public class HeroListFragment extends AFragment {
     }
 
     private void initLayout(View view) {
-        adapterHome = new AdapterRcvHome(context, listHero, new AdapterRcvHome.IAdapter() {
-            @Override
-            public void onIAdapterItemCLick(HeroDto heroDto, int position) {
-                if (mListener != null) {
-                    mListener.heroSelected(heroDto);
-                }
-            }
-        });
+        adapterHome = new AdapterRcvHome(context, listHero);
         recyclerView = (RecyclerView) view.findViewById(R.id.home_recycle_view);
         recyclerView.setHasFixedSize(true);
         jazzyRecyclerViewScrollListener = new JazzyRecyclerViewScrollListener();
@@ -153,7 +146,6 @@ public class HeroListFragment extends AFragment {
     };
 
     private void initListener() {
-//        gridView.setOnItemClickListener(onClickGrid);
     }
 
 

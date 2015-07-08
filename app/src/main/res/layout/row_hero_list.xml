@@ -17,6 +17,7 @@
         android:orientation="vertical">
 
         <ImageView
+            android:background="@color/md_grey_300"
             android:id="@+id/row_avatar"
             android:layout_width="100dp"
             android:layout_height="120dp"

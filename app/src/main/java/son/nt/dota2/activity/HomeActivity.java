@@ -10,12 +10,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.squareup.otto.Subscribe;
+
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
+import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.fragment.HomeFragment;
+import son.nt.dota2.fragment.MainFragment;
+import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.OttoBus;
 
-public class HomeActivity extends AActivity implements HomeFragment.OnFragmentInteractionListener {
+public class HomeActivity extends AActivity implements HomeFragment.OnFragmentInteractionListener,
+MainFragment.OnFragmentInteractionListener{
 
+    public static final String TAG = "HomeActivity";
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
     Toolbar toolbar;
@@ -60,8 +68,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home, menu);
+//        getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
 
@@ -83,5 +90,23 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        OttoBus.register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        OttoBus.unRegister(this);
+    }
+
+    @Subscribe
+    public void handleDataFromAdapterRcvHome(HeroDto heroDto) {
+        Logger.debug(TAG, ">>>" + "handleDataFromAdapterRcvHome:" + heroDto.name);
+        showFragment(MainFragment.newInstance("", heroDto), true);
     }
 }
