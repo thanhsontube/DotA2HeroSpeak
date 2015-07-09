@@ -7,9 +7,14 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.twotoasters.jazzylistview.JazzyHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,6 +50,11 @@ public class HomeFragment extends AFragment {
     AdapterTop adapterTop;
     private HeroData herodata = new HeroData();
 
+    public static final int EFFECT_DEFAULT = JazzyHelper.GROW;
+    int currentEffect = EFFECT_DEFAULT;
+
+    public static final String KEY_EFFECT_DEFAULT = "KEY_EFFECT_DEFAULT";
+
 
     /**
      * Use this factory method to create a new instance of
@@ -70,6 +80,7 @@ public class HomeFragment extends AFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -88,6 +99,15 @@ public class HomeFragment extends AFragment {
         super.onViewCreated(view, savedInstanceState);
         initData();
         initLayout(view);
+        if (savedInstanceState != null) {
+            currentEffect = savedInstanceState.getInt(KEY_EFFECT_DEFAULT, EFFECT_DEFAULT);
+            setEffect();
+
+        }
+
+    }
+    private void setEffect() {
+        adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
     }
 
     public void onButtonPressed(Uri uri) {
@@ -130,7 +150,7 @@ public class HomeFragment extends AFragment {
     private void initLayout(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.home_tabs);
         viewPager = (ViewPager) view.findViewById(R.id.home_view_pager);
-        adapterTop = new AdapterTop(getFragmentManager(),herodata );
+        adapterTop = new AdapterTop(getFragmentManager(), herodata);
         viewPager.setAdapter(adapterTop);
         tabLayout.setupWithViewPager(viewPager);
         if (TsScreen.isLandscape(getActivity())) {
@@ -170,6 +190,85 @@ public class HomeFragment extends AFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_effect, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_0:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(0);
+                currentEffect = 0;
+                break;
+            case R.id.action_1:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(1);
+                currentEffect = 1;
+                break;
+            case R.id.action_2:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(2);
+                currentEffect = 2;
+                break;
+            case R.id.action_3:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(3);
+                currentEffect = 3;
+                break;
+            case R.id.action_4:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(4);
+                currentEffect = 4;
+                break;
+            case R.id.action_5:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(5);
+                currentEffect = 5;
+                break;
+            case R.id.action_6:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(6);
+                currentEffect = 6;
+                break;
+            case R.id.action_7:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(7);
+                currentEffect = 7;
+                break;
+            case R.id.action_8:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(8);
+                currentEffect = 8;
+                break;
+            case R.id.action_9:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(9);
+                currentEffect = 9;
+                break;
+            case R.id.action_10:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(10);
+                currentEffect = 10;
+                break;
+            case R.id.action_11:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(11);
+                currentEffect = 11;
+                break;
+            case R.id.action_12:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(12);
+                currentEffect = 12;
+                break;
+            case R.id.action_13:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(13);
+                currentEffect = 13;
+                break;
+            case R.id.action_14:
+                adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(14);
+                currentEffect = 14;
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_EFFECT_DEFAULT, currentEffect);
     }
 
 }

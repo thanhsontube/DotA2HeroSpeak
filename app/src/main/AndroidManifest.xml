@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="son.nt.dota2" >
+    package="son.nt.dota2">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -11,7 +11,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppStyle" >
+        android:theme="@style/Theme.TS">
+
 
         <!-- This meta-data tag is required to use Google Play Services. -->
         <meta-data
@@ -21,7 +22,7 @@
         <activity
             android:name=".activity.TopActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -64,7 +65,8 @@
         <activity
             android:name=".youtube.WidgetVideoYoutubeActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.LoginActivity" >
+
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -73,7 +75,16 @@
         </activity>
         <activity
             android:name=".activity.HomeActivity"
-             >
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustPan|adjustNothing">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
         </activity>
     </application>
 

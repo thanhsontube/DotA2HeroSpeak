@@ -5,6 +5,7 @@ import android.os.Environment;
 
 import java.io.File;
 
+import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.facebook.FbLoaderManager;
 import son.nt.dota2.loader.MyPath;
 import son.nt.dota2.loader.base.ContentManager;
@@ -26,6 +27,16 @@ public class ResourceManager {
     public String folderBlur;
 
     public String fileHeroList;
+
+    private HeroData heroData;
+
+    public void setHeroData(HeroData heroData) {
+        this.heroData = heroData;
+    }
+
+    public HeroData getHeroData() {
+        return heroData;
+    }
 
     public ResourceManager(Context context) {
         this.context = context;

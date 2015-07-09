@@ -1,10 +1,12 @@
 package son.nt.dota2.base;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.Collection;
@@ -143,5 +145,35 @@ abstract public class AActivity extends AppCompatActivity implements OnBackStack
         }
         ft.commit();
     }
+
+    protected FragmentManager fragmentManager;
+    protected ActionBar actionBar;
+
+    protected FragmentManager getSafeFragmentManager() {
+        if (fragmentManager == null) {
+            fragmentManager = getSupportFragmentManager();
+        }
+        return fragmentManager;
+    }
+
+    protected ActionBar getSafeActionBar() {
+        if (actionBar == null) {
+            actionBar = this.getSupportActionBar();
+        }
+        return actionBar;
+    }
+
+    protected boolean isSafe() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (this.isDestroyed()) {
+                return false;
+            }
+        }
+        if (this.isFinishing()) {
+            return false;
+        }
+        return true;
+    }
+
 
 }

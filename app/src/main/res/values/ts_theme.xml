@@ -6,7 +6,7 @@
     <style name="Theme.TS" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/com_facebook_blue</item>
         <item name="colorPrimaryDark">@color/md_indigo_500</item>
-        <item name="android:windowBackground">@color/blue_A400</item>
+        <item name="android:windowBackground">@color/white</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
     </style>

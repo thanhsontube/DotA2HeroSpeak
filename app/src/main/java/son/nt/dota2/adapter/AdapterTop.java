@@ -2,6 +2,7 @@ package son.nt.dota2.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.ViewGroup;
 
 import son.nt.dota2.MsConst;
 import son.nt.dota2.base.BasePagerAdapter;
@@ -14,6 +15,16 @@ import son.nt.dota2.fragment.HeroListFragment;
 public class AdapterTop extends BasePagerAdapter {
     private HeroData herodata;
     private FragmentManager fm;
+    private Fragment mPrimaryFragment;
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        super.setPrimaryItem(container, position, object);
+        mPrimaryFragment = (Fragment) object;
+    }
+
+    public HeroListFragment getCurrentFragment() {
+        return (HeroListFragment)mPrimaryFragment;
+    }
 
     public AdapterTop(FragmentManager fm, HeroData herodata) {
         super(fm);

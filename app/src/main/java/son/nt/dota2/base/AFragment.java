@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -28,12 +29,12 @@ public class AFragment extends Fragment {
     protected MyPath mypath;
     protected AQuery aq;
     protected ActionBar actionBar;
+    protected FragmentManager fragmentManager;
     protected TsSqlite sqlite;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        actionBar = ((AppCompatActivity)getActivity()).getDelegate().getSupportActionBar();
     }
 
     @Override
@@ -45,11 +46,40 @@ public class AFragment extends Fragment {
         mypath = resource.getMyPath();
         aq = new AQuery(context);
         sqlite = TsSqlite.getInstance();
+        actionBar = getSafeActionBar();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
+
+
+    protected FragmentManager getSafeFragmentManager() {
+        if (fragmentManager == null) {
+            fragmentManager = getActivity().getSupportFragmentManager();
+        }
+        return fragmentManager;
+    }
+
+    protected ActionBar getSafeActionBar() {
+        if (actionBar == null) {
+            actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        }
+        return actionBar;
+    }
+
+    protected boolean isSafe()
+    {
+        if (this.isRemoving() || this.getActivity() == null || this.isDetached() || !this.isAdded()
+                || this.getView() == null)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
 
 }

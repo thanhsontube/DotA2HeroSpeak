@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:fitsSystemWindows="true"
     tools:context="son.nt.dota2.activity.LoginActivity">
 
     <FrameLayout
+        android:id="@+id/login_ll_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/login_ll_main"></FrameLayout>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
