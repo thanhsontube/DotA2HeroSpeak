@@ -1,14 +1,18 @@
 package son.nt.dota2.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +22,7 @@ import son.nt.dota2.ResourceManager;
 import son.nt.dota2.adapter.AdapterSearchHero;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.dto.HeroDto;
+import son.nt.dota2.provider.SearchableProvider;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +47,8 @@ public class SearchableFragment extends AFragment {
     RecyclerView recyclerView;
     AdapterSearchHero adapterSearchHero;
     List<HeroDto> list = new ArrayList<>();
+
+    CoordinatorLayout coordinatorLayout;
 
     /**
      * Use this factory method to create a new instance of
@@ -132,17 +139,35 @@ public class SearchableFragment extends AFragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         adapterSearchHero = new AdapterSearchHero(getActivity(), list);
         recyclerView.setAdapter(adapterSearchHero);
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.search_coordinator_layout);
         doSearch(query);
     }
 
     public void doSearch(String query) {
+        setTitle("Search for:" + query);
         list.clear();
         for (HeroDto dto : ResourceManager.getInstance().getHeroData().listHeros) {
             if (dto.name.toLowerCase().contains(query.toLowerCase())) {
                 list.add(dto);
             }
         }
+        if(!list.isEmpty()) {
+            SearchableProvider.saveQuery(getActivity(), query);
+        }
         adapterSearchHero.notifyDataSetChanged();
+
+        recyclerView.setVisibility(list.isEmpty() ? View.GONE : View.VISIBLE);
+        if (list.isEmpty()) {
+            TextView textView = new TextView(getActivity());
+            textView.setText(getString(R.string.not_found_hero));
+            textView.setId(getResources().getInteger(R.integer.id_txt));
+            textView.setTextColor(getResources().getColor(R.color.black));
+            textView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            textView.setGravity(Gravity.CENTER);
+            coordinatorLayout.addView(textView);
+        } else if (coordinatorLayout.findViewById( getResources().getInteger(R.integer.id_txt)) != null){
+            coordinatorLayout.removeView(coordinatorLayout.findViewById( getResources().getInteger(R.integer.id_txt)));
+        }
     }
 
 }

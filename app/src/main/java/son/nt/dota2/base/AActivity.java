@@ -160,7 +160,7 @@ abstract public class AActivity extends AppCompatActivity implements OnBackStack
         if (actionBar == null) {
             actionBar = this.getSupportActionBar();
         }
-        return actionBar;
+        return getSupportActionBar();
     }
 
     protected boolean isSafe() {
@@ -173,6 +173,10 @@ abstract public class AActivity extends AppCompatActivity implements OnBackStack
             return false;
         }
         return true;
+    }
+
+    protected void setTitle(String title) {
+        getSafeActionBar().setTitle(title);
     }
 
 

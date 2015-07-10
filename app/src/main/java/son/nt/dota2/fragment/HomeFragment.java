@@ -25,6 +25,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.dto.HeroData;
+import son.nt.dota2.provider.SearchableProvider;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.TsScreen;
 
@@ -102,9 +103,7 @@ public class HomeFragment extends AFragment {
         if (savedInstanceState != null) {
             currentEffect = savedInstanceState.getInt(KEY_EFFECT_DEFAULT, EFFECT_DEFAULT);
             setEffect();
-
         }
-
     }
     private void setEffect() {
         adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
@@ -201,6 +200,9 @@ public class HomeFragment extends AFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_delete:
+                SearchableProvider.clearHistory(getActivity());
+                break;
             case R.id.action_0:
                 adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(0);
                 currentEffect = 0;

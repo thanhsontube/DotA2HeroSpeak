@@ -81,5 +81,9 @@ public class AFragment extends Fragment {
         return true;
     }
 
+    protected void setTitle(String title) {
+        getSafeActionBar().setTitle(title);
+    }
+
 
 }

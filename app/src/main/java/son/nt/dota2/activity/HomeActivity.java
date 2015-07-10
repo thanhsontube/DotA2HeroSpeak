@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -41,9 +40,20 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        initActionBar();
         initLayout();
         initListener();
         handleSearch(getIntent());
+    }
+
+    private void initActionBar() {
+        toolbar = (Toolbar) findViewById(R.id.home_toolbar);
+        setSupportActionBar(toolbar);
+
+        getSafeActionBar().setHomeButtonEnabled(true);
+        getSafeActionBar().setDisplayShowHomeEnabled(true);
+        getSafeActionBar().setDisplayHomeAsUpEnabled(true);
+        getSafeActionBar().setDisplayShowTitleEnabled(true);
     }
 
     @Override
@@ -59,14 +69,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     private void initLayout() {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.home_drawer_ll);
-        toolbar = (Toolbar) findViewById(R.id.home_toolbar);
-
-
-        setSupportActionBar(toolbar);
-        getSafeActionBar().setHomeButtonEnabled(true);
-        getSafeActionBar().setDisplayShowHomeEnabled(true);
-        getSafeActionBar().setDisplayHomeAsUpEnabled(true);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.action_settings);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.action_clear, R.string.action_settings);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
     }
@@ -98,6 +101,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         } else {
+            setTitle(getString(R.string.app_name));
             actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
@@ -119,7 +123,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         if (Intent.ACTION_SEARCH.equalsIgnoreCase(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             Logger.debug(TAG, ">>>" + "handleSearch:" + query);
-            SearchableProvider.saveQuery(this, query);
 
             if (mFragmentTagStack.size() == 0) {
                 showFragment(SearchableFragment.newInstance(query, ""), true);
@@ -157,9 +160,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
             return true;
         }
 
-        if (id == R.id.action_delete) {
-            SearchableProvider.clearHistory(this);
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -172,7 +173,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     @Override
     protected void onResume() {
         super.onResume();
-        actionBarDrawerToggle.syncState();
         OttoBus.register(this);
     }
 
