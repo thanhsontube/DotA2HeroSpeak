@@ -24,7 +24,6 @@ import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.SearchableFragment;
-import son.nt.dota2.provider.SearchableProvider;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 
@@ -125,6 +124,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
             Logger.debug(TAG, ">>>" + "handleSearch:" + query);
 
             if (mFragmentTagStack.size() == 0) {
+                super.onPostResume();
                 showFragment(SearchableFragment.newInstance(query, ""), true);
             } else {
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag(mFragmentTagStack.peek());

@@ -12,5 +12,4 @@
 
     <string name="not_found_hero">Not found Hero</string>
     <string name="action_clear">Clear Search History</string>
-    <integer name="id_txt">1088</integer>
 </resources>

@@ -9,6 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -75,6 +78,7 @@ public class SearchableFragment extends AFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             query = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -161,13 +165,30 @@ public class SearchableFragment extends AFragment {
             TextView textView = new TextView(getActivity());
             textView.setText(getString(R.string.not_found_hero));
             textView.setId(getResources().getInteger(R.integer.id_txt));
+            textView.setTag("not-found");
             textView.setTextColor(getResources().getColor(R.color.black));
             textView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
             textView.setGravity(Gravity.CENTER);
             coordinatorLayout.addView(textView);
-        } else if (coordinatorLayout.findViewById( getResources().getInteger(R.integer.id_txt)) != null){
-            coordinatorLayout.removeView(coordinatorLayout.findViewById( getResources().getInteger(R.integer.id_txt)));
+        } else if (coordinatorLayout.findViewWithTag("not-found") != null){
+            coordinatorLayout.removeView(coordinatorLayout.findViewWithTag("not-found"));
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_search_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                SearchableProvider.clearHistory(getActivity());
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
