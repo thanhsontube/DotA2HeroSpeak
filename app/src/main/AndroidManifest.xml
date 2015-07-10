@@ -18,6 +18,11 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        
+        
+        <provider
+            android:authorities=".provider.SearchableProvider"
+            android:name="son.nt.dota2.provider.SearchableProvider"/>
 
         <activity
             android:name=".activity.TopActivity"

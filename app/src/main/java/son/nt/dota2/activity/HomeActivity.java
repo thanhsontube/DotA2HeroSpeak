@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +25,7 @@ import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.SearchableFragment;
+import son.nt.dota2.provider.SearchableProvider;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 
@@ -117,6 +119,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         if (Intent.ACTION_SEARCH.equalsIgnoreCase(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             Logger.debug(TAG, ">>>" + "handleSearch:" + query);
+            SearchableProvider.saveQuery(this, query);
 
             if (mFragmentTagStack.size() == 0) {
                 showFragment(SearchableFragment.newInstance(query, ""), true);
@@ -152,6 +155,10 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if (id == R.id.action_delete) {
+            SearchableProvider.clearHistory(this);
         }
 
         return super.onOptionsItemSelected(item);
