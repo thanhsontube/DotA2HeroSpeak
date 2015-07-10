@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.twotoasters.jazzylistview.JazzyHelper;
+import com.twotoasters.jazzylistview.recyclerview.JazzyRecyclerViewScrollListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +55,7 @@ public class SearchableFragment extends AFragment {
     List<HeroDto> list = new ArrayList<>();
 
     CoordinatorLayout coordinatorLayout;
+    JazzyRecyclerViewScrollListener jazzyRecyclerViewScrollListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -139,6 +143,9 @@ public class SearchableFragment extends AFragment {
     private void initLayout (View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.search_rcv);
         recyclerView.setHasFixedSize(true);
+        jazzyRecyclerViewScrollListener = new JazzyRecyclerViewScrollListener();
+        jazzyRecyclerViewScrollListener.setTransitionEffect(JazzyHelper.CURL);
+        recyclerView.addOnScrollListener(jazzyRecyclerViewScrollListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         adapterSearchHero = new AdapterSearchHero(getActivity(), list);
@@ -164,7 +171,6 @@ public class SearchableFragment extends AFragment {
         if (list.isEmpty()) {
             TextView textView = new TextView(getActivity());
             textView.setText(getString(R.string.not_found_hero));
-            textView.setId(getResources().getInteger(R.integer.id_txt));
             textView.setTag("not-found");
             textView.setTextColor(getResources().getColor(R.color.black));
             textView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
