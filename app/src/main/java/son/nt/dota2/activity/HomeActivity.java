@@ -193,4 +193,5 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         setIntent(intent);
         handleSearch(intent);
     }
+
 }

@@ -2,6 +2,7 @@ package son.nt.dota2.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -16,16 +17,27 @@ import android.widget.Toast;
 
 import com.twotoasters.jazzylistview.JazzyHelper;
 
+import org.apache.http.client.methods.HttpGet;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.AFragment;
+import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.HeroData;
+import son.nt.dota2.dto.HeroManager;
+import son.nt.dota2.htmlcleaner.role.Roles;
+import son.nt.dota2.htmlcleaner.role.RolesLoader;
+import son.nt.dota2.loader.HeroBgLoader;
+import son.nt.dota2.service.PrefetchService;
 import son.nt.dota2.utils.FileUtil;
+import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.TsScreen;
 
 /**
@@ -37,6 +49,7 @@ import son.nt.dota2.utils.TsScreen;
  * create an instance of this fragment.
  */
 public class HomeFragment extends AFragment {
+    public static final String TAG = "HomeFragment";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -97,21 +110,18 @@ public class HomeFragment extends AFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initData();
+//        initData();
+        herodata = HeroManager.getInstance().getHeroData();
         initLayout(view);
         if (savedInstanceState != null) {
             currentEffect = savedInstanceState.getInt(KEY_EFFECT_DEFAULT, EFFECT_DEFAULT);
             setEffect();
         }
+//        controllerLoadBg.load();
+        controler.load();
     }
     private void setEffect() {
         adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -268,5 +278,64 @@ public class HomeFragment extends AFragment {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_EFFECT_DEFAULT, currentEffect);
     }
+
+    //test parse
+    Controller controler = new Controller() {
+        @Override
+        public void load() {
+            {
+                HttpGet httpGet = new HttpGet(RolesLoader.PATH_ROLES);
+                contentManager.load(new RolesLoader(httpGet, false) {
+                    @Override
+                    public void onContentLoaderStart() {
+                        Logger.debug(TAG, ">>>" + "onContentLoaderStart");
+                    }
+
+                    @Override
+                    public void onContentLoaderSucceed(List<Roles> entity) {
+                        Logger.debug(TAG, ">>>" + "onContentLoaderSucceed");
+                    }
+
+                    @Override
+                    public void onContentLoaderFailed(Throwable e) {
+                        Logger.error(TAG, ">>>" + "onContentLoaderFailed:" + e.toString());
+                    }
+                });
+            }
+        }
+    };
+
+    HeroData bgHeroData;
+    TsLog log = new TsLog(TAG);
+    Controller controllerLoadBg = new Controller() {
+        @Override
+        public void load() {
+            HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Model_pictures");
+            contentManager.load(new HeroBgLoader(httpGet, false) {
+                @Override
+                public void onContentLoaderStart() {
+                    log.d("log>>>" + "controllerLoadBg start");
+                }
+
+                @Override
+                public void onContentLoaderSucceed(HeroData entity) {
+                    log.d("log>>>" + "controllerLoadBg success :" + entity.listHeros.size());
+
+                    bgHeroData = entity;
+                    try {
+//                        FileUtil.saveHeroList(context, herodata);
+                        context.startService(new Intent(context, PrefetchService.class));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onContentLoaderFailed(Throwable e) {
+                    log.e("log>>>" + "controllerLoadBg fail:" + e);
+                }
+            });
+        }
+    };
 
 }
