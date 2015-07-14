@@ -26,6 +26,7 @@ import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.RolesFragment;
 import son.nt.dota2.fragment.SearchableFragment;
+import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
@@ -38,6 +39,8 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     NavigationView navigationView;
     ActionBarDrawerToggle actionBarDrawerToggle;
     Toolbar toolbar;
+    SearchView searchView;
+    MenuItem menuSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         initListener();
         navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         handleSearch(getIntent());
+        testAbilities();
     }
 
     private void initActionBar() {
@@ -126,10 +130,16 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     public void onBackStackChanged() {
         super.onBackStackChanged();
         if (mFragmentTagStack.size() > 0) {
+            if (menuSearch != null) {
+                menuSearch.setVisible(false);
+            }
             actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         } else {
+            if (menuSearch != null) {
+                menuSearch.setVisible(true);
+            }
             setTitle(getString(R.string.app_name));
             navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
             actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
@@ -141,11 +151,16 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem menuItem = menu.findItem(R.id.action_search_hero);
-        SearchView searchView = (SearchView) menuItem.getActionView();
+        menuSearch = menu.findItem(R.id.action_search_hero);
+        searchView = (SearchView) menuSearch.getActionView();
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setQueryHint(getString(R.string.action_search_hero));
+        if (mFragmentTagStack.size() > 0) {
+            menuSearch.setVisible(false);
+        } else {
+            menuSearch.setVisible(true);
+        }
         return true;
     }
 
@@ -222,6 +237,10 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
         handleSearch(intent);
+    }
+
+    private void testAbilities () {
+        HTTPParseUtils.getInstance().withAbility();
     }
 
 

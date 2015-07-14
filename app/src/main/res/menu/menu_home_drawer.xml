@@ -9,7 +9,7 @@
 
         <item
             android:id="@+id/nav_roles"
-            android:icon="@drawable/ic_action_settings"
+            android:icon="@drawable/pip_carry"
             android:title="Roles" />
         <item
             android:id="@+id/nav_messages"

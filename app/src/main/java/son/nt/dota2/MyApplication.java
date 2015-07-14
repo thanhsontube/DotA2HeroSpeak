@@ -7,6 +7,7 @@ import com.parse.Parse;
 
 import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.dto.HeroManager;
+import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.TsGaTools;
 
 /**
@@ -21,6 +22,7 @@ public class MyApplication extends Application {
         TsGaTools.createInstance(getApplicationContext());
         FacebookSdk.sdkInitialize(getApplicationContext());
         HeroManager.createInstance(getApplicationContext());
+        HTTPParseUtils.createInstance(getApplicationContext());
 
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
