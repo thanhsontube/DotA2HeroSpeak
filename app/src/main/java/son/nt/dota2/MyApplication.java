@@ -3,6 +3,7 @@ package son.nt.dota2;
 import android.app.Application;
 
 import com.facebook.FacebookSdk;
+import com.parse.Parse;
 
 import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.dto.HeroManager;
@@ -20,5 +21,10 @@ public class MyApplication extends Application {
         TsGaTools.createInstance(getApplicationContext());
         FacebookSdk.sdkInitialize(getApplicationContext());
         HeroManager.createInstance(getApplicationContext());
+
+        // Enable Local Datastore.
+        Parse.enableLocalDatastore(this);
+
+        Parse.initialize(this, "MXj3eiU5G9qQxEHD9aVFdbHZbtcInx6v1VNIjmyf", "LsnCDCPtmWxnLVeKQg7Vc5oSEYQGJR6Tcz3Ettwi");
     }
 }

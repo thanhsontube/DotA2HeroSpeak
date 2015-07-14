@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.parse.ParseObject;
 import com.squareup.otto.Subscribe;
 
 import son.nt.dota2.R;
@@ -43,6 +44,11 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         initLayout();
         initListener();
         handleSearch(getIntent());
+
+        ParseObject testObject = new ParseObject("TestObject");
+        testObject.put("foo", "bar");
+        testObject.saveInBackground();
+
     }
 
     private void initActionBar() {
@@ -193,5 +199,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         setIntent(intent);
         handleSearch(intent);
     }
+
 
 }

@@ -2,7 +2,6 @@ package son.nt.dota2.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -13,16 +12,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.twotoasters.jazzylistview.JazzyHelper;
 
 import org.apache.http.client.methods.HttpGet;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 import son.nt.dota2.R;
@@ -31,13 +25,9 @@ import son.nt.dota2.base.AFragment;
 import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroManager;
-import son.nt.dota2.htmlcleaner.role.Roles;
+import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
-import son.nt.dota2.loader.HeroBgLoader;
-import son.nt.dota2.service.PrefetchService;
-import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
-import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.TsScreen;
 
 /**
@@ -110,15 +100,13 @@ public class HomeFragment extends AFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        initData();
         herodata = HeroManager.getInstance().getHeroData();
         initLayout(view);
         if (savedInstanceState != null) {
             currentEffect = savedInstanceState.getInt(KEY_EFFECT_DEFAULT, EFFECT_DEFAULT);
             setEffect();
         }
-//        controllerLoadBg.load();
-        controler.load();
+//        controler.load();
     }
     private void setEffect() {
         adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
@@ -168,37 +156,7 @@ public class HomeFragment extends AFragment {
         }
     }
 
-    private void initData() {
-        try {
-            File fOut = new File(resource.folderSave, File.separator + "data.zip");
-            if (fOut.exists()) {
-                herodata = FileUtil.readHeroList(context);
-                return;
-            }
-            InputStream in = context.getAssets().open("data.zip");
-            OutputStream out = new FileOutputStream(fOut, false);
-            int read;
-            byte[] buffer = new byte[1024];
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
 
-            out.flush();
-            out.close();
-            in.close();
-
-            //unzip
-            boolean isUnzip = FileUtil.unpackZip(resource.folderSave + File.separator, "data.zip");
-            if (isUnzip) {
-                herodata = FileUtil.readHeroList(context);
-
-            } else {
-                Toast.makeText(context, "Sorry, can not initialize data", Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -292,7 +250,7 @@ public class HomeFragment extends AFragment {
                     }
 
                     @Override
-                    public void onContentLoaderSucceed(List<Roles> entity) {
+                    public void onContentLoaderSucceed(List<RoleDto> entity) {
                         Logger.debug(TAG, ">>>" + "onContentLoaderSucceed");
                     }
 
@@ -305,37 +263,6 @@ public class HomeFragment extends AFragment {
         }
     };
 
-    HeroData bgHeroData;
-    TsLog log = new TsLog(TAG);
-    Controller controllerLoadBg = new Controller() {
-        @Override
-        public void load() {
-            HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Model_pictures");
-            contentManager.load(new HeroBgLoader(httpGet, false) {
-                @Override
-                public void onContentLoaderStart() {
-                    log.d("log>>>" + "controllerLoadBg start");
-                }
 
-                @Override
-                public void onContentLoaderSucceed(HeroData entity) {
-                    log.d("log>>>" + "controllerLoadBg success :" + entity.listHeros.size());
-
-                    bgHeroData = entity;
-                    try {
-//                        FileUtil.saveHeroList(context, herodata);
-                        context.startService(new Intent(context, PrefetchService.class));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onContentLoaderFailed(Throwable e) {
-                    log.e("log>>>" + "controllerLoadBg fail:" + e);
-                }
-            });
-        }
-    };
 
 }

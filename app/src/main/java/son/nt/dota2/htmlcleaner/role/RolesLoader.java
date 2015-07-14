@@ -1,5 +1,7 @@
 package son.nt.dota2.htmlcleaner.role;
 
+import com.parse.ParseObject;
+
 import org.apache.http.client.methods.HttpUriRequest;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
@@ -7,15 +9,18 @@ import org.htmlcleaner.TagNode;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.ResourceManager;
 import son.nt.dota2.loader.base.ContentLoader;
+import son.nt.dota2.utils.ImageDownload;
 import son.nt.dota2.utils.Logger;
 
 /**
  * Created by Sonnt on 7/13/15.
  */
-public abstract class RolesLoader extends ContentLoader<List<Roles>> {
+public abstract class RolesLoader extends ContentLoader<List<RoleDto>> {
     public static final String PATH_ROLES = "http://dota2.gamepedia.com/Role";
     public static final String TAG = "RolesLoader";
 
@@ -24,7 +29,7 @@ public abstract class RolesLoader extends ContentLoader<List<Roles>> {
     }
 
     @Override
-    protected List<Roles> handleStream(InputStream in) throws IOException {
+    protected List<RoleDto> handleStream(InputStream in) throws IOException {
         try {
             HtmlCleaner cleaner = new HtmlCleaner();
             CleanerProperties props = cleaner.getProperties();
@@ -51,7 +56,11 @@ public abstract class RolesLoader extends ContentLoader<List<Roles>> {
                 Logger.debug(TAG, ">>>" + "length:" + data
                         .length);
 
+                List<RoleDto> listRoles = new ArrayList<>();
+                RoleDto dto;
+
                 for (int i = 1; i < data.length; i++) {
+                    dto = new RoleDto();
 
                     TagNode tNode = (TagNode) data[i];
 
@@ -60,6 +69,7 @@ public abstract class RolesLoader extends ContentLoader<List<Roles>> {
                         int size = tNode.getChildTagList().size();
                         if (size == 0) {
                             Logger.debug(TAG, ">>>" + "Node 0:" + tNode.getText());
+                            dto.name =  tNode.getText().toString();
                         } else {
 
                             TagNode imgNode = tNode.getChildTagList().get(0);
@@ -67,15 +77,26 @@ public abstract class RolesLoader extends ContentLoader<List<Roles>> {
                             Logger.debug(TAG, ">>>" + "------" + tagName + "----------");
                             if ("img".equals(tagName)) {
                                 String linkImage = imgNode.getAttributeByName("src");
+                                String name = imgNode.getAttributeByName("alt").replace(" ","_").toLowerCase();
                                 linkImage = linkImage.substring(0, linkImage.indexOf("?version"));
                                 Logger.debug(TAG, ">>>" + "Link:" + linkImage);
+
+                                ImageDownload.downloadFile(ResourceManager.getInstance().getContext(), linkImage, name);
+                                dto.linkIcon = linkImage;
+
+
                             }
+                            dto.name = tNode.getText().toString();
                             Logger.debug(TAG, ">>>" + "Tex1:" + tNode.getText());
                         }
                     }
 
+                    listRoles.add(dto);
+
 
                 }
+
+                upLoadToParseService(listRoles);
 
 
             }
@@ -85,5 +106,18 @@ public abstract class RolesLoader extends ContentLoader<List<Roles>> {
 
         }
         return null;
+    }
+
+    private void upLoadToParseService (List<RoleDto> listRoles) {
+        for (RoleDto dto :listRoles) {
+            Logger.debug(TAG, ">>>" + "up:" + dto.name);
+            ParseObject parseObject = new ParseObject("RoleDto");
+            parseObject.put("name", dto.name);
+            parseObject.put("linkIcon", dto.linkIcon);
+            parseObject.put("slogan", dto.slogan);
+            parseObject.put("description", dto.description);
+            parseObject.put("icon", dto.icon);
+            parseObject.saveInBackground();
+        }
     }
 }
