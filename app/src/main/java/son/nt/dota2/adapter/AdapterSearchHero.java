@@ -32,7 +32,7 @@ public class AdapterSearchHero  extends RecyclerView.Adapter<AdapterSearchHero.V
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_search_heroes, parent, false);
         return new ViewHolder(view);
     }
     public static class ViewHolder extends RecyclerView.ViewHolder {

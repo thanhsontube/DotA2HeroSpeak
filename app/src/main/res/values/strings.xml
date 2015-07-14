@@ -12,4 +12,6 @@
 
     <string name="not_found_hero">Not found Hero</string>
     <string name="action_clear">Clear Search History</string>
+
+    <string name="long_text">Will become more useful later in the game if they gain a significant gold advantage.</string>
 </resources>

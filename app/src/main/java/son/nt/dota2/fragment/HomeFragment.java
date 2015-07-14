@@ -15,19 +15,11 @@ import android.view.ViewGroup;
 
 import com.twotoasters.jazzylistview.JazzyHelper;
 
-import org.apache.http.client.methods.HttpGet;
-
-import java.util.List;
-
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.AFragment;
-import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroManager;
-import son.nt.dota2.htmlcleaner.role.RoleDto;
-import son.nt.dota2.htmlcleaner.role.RolesLoader;
-import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsScreen;
 
 /**
@@ -106,7 +98,6 @@ public class HomeFragment extends AFragment {
             currentEffect = savedInstanceState.getInt(KEY_EFFECT_DEFAULT, EFFECT_DEFAULT);
             setEffect();
         }
-//        controler.load();
     }
     private void setEffect() {
         adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
@@ -236,33 +227,5 @@ public class HomeFragment extends AFragment {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_EFFECT_DEFAULT, currentEffect);
     }
-
-    //test parse
-    Controller controler = new Controller() {
-        @Override
-        public void load() {
-            {
-                HttpGet httpGet = new HttpGet(RolesLoader.PATH_ROLES);
-                contentManager.load(new RolesLoader(httpGet, false) {
-                    @Override
-                    public void onContentLoaderStart() {
-                        Logger.debug(TAG, ">>>" + "onContentLoaderStart");
-                    }
-
-                    @Override
-                    public void onContentLoaderSucceed(List<RoleDto> entity) {
-                        Logger.debug(TAG, ">>>" + "onContentLoaderSucceed");
-                    }
-
-                    @Override
-                    public void onContentLoaderFailed(Throwable e) {
-                        Logger.error(TAG, ">>>" + "onContentLoaderFailed:" + e.toString());
-                    }
-                });
-            }
-        }
-    };
-
-
 
 }

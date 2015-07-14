@@ -1,6 +1,9 @@
 package son.nt.dota2.htmlcleaner.role;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import org.apache.http.client.methods.HttpUriRequest;
 import org.htmlcleaner.CleanerProperties;
@@ -77,7 +80,7 @@ public abstract class RolesLoader extends ContentLoader<List<RoleDto>> {
                             Logger.debug(TAG, ">>>" + "------" + tagName + "----------");
                             if ("img".equals(tagName)) {
                                 String linkImage = imgNode.getAttributeByName("src");
-                                String name = imgNode.getAttributeByName("alt").replace(" ","_").toLowerCase();
+                                String name = imgNode.getAttributeByName("alt").replace(" ", "_").replace("-", "_").toLowerCase();
                                 linkImage = linkImage.substring(0, linkImage.indexOf("?version"));
                                 Logger.debug(TAG, ">>>" + "Link:" + linkImage);
 
@@ -90,15 +93,14 @@ public abstract class RolesLoader extends ContentLoader<List<RoleDto>> {
                             Logger.debug(TAG, ">>>" + "Tex1:" + tNode.getText());
                         }
                     }
-
-                    listRoles.add(dto);
+                    dto.no = i;
+                    if(!dto.name.contains("Unofficial")) {
+                        listRoles.add(dto);
+                    }
 
 
                 }
-
                 upLoadToParseService(listRoles);
-
-
             }
 
 
@@ -108,16 +110,31 @@ public abstract class RolesLoader extends ContentLoader<List<RoleDto>> {
         return null;
     }
 
-    private void upLoadToParseService (List<RoleDto> listRoles) {
-        for (RoleDto dto :listRoles) {
-            Logger.debug(TAG, ">>>" + "up:" + dto.name);
-            ParseObject parseObject = new ParseObject("RoleDto");
-            parseObject.put("name", dto.name);
-            parseObject.put("linkIcon", dto.linkIcon);
-            parseObject.put("slogan", dto.slogan);
-            parseObject.put("description", dto.description);
-            parseObject.put("icon", dto.icon);
-            parseObject.saveInBackground();
-        }
+    private void upLoadToParseService (final List<RoleDto> listRoles) {
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(RoleDto.class.getSimpleName());
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> l, ParseException e) {
+                if (e != null || l.size() > 0) {
+                    return;
+
+                }
+
+                for (RoleDto dto :listRoles) {
+                    Logger.debug(TAG, ">>>" + "up:" + dto.name);
+                    ParseObject parseObject = new ParseObject("RoleDto");
+                    parseObject.put("no", dto.no);
+                    parseObject.put("name", dto.name);
+                    parseObject.put("linkIcon", dto.linkIcon);
+                    parseObject.put("slogan", dto.slogan);
+                    parseObject.put("description", dto.description);
+                    parseObject.put("icon", dto.icon);
+                    parseObject.saveInBackground();
+                }
+            }
+        });
     }
+
+
 }

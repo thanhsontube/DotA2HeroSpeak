@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.parse.ParseObject;
 import com.squareup.otto.Subscribe;
 
 import son.nt.dota2.R;
@@ -24,15 +24,18 @@ import son.nt.dota2.base.AActivity;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
+import son.nt.dota2.fragment.RolesFragment;
 import son.nt.dota2.fragment.SearchableFragment;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
+import son.nt.dota2.utils.TsGaTools;
 
 public class HomeActivity extends AActivity implements HomeFragment.OnFragmentInteractionListener,
         MainFragment.OnFragmentInteractionListener, SearchableFragment.OnFragmentInteractionListener {
 
     public static final String TAG = "HomeActivity";
     DrawerLayout drawerLayout;
+    NavigationView navigationView;
     ActionBarDrawerToggle actionBarDrawerToggle;
     Toolbar toolbar;
 
@@ -43,12 +46,8 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         initActionBar();
         initLayout();
         initListener();
+        navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         handleSearch(getIntent());
-
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
-
     }
 
     private void initActionBar() {
@@ -73,6 +72,8 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
     private void initLayout() {
 
+        navigationView = (NavigationView) findViewById(R.id.home_navigation);
+
         drawerLayout = (DrawerLayout) findViewById(R.id.home_drawer_ll);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.action_clear, R.string.action_settings);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
@@ -80,6 +81,29 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     }
 
     private void initListener() {
+
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                drawerLayout.closeDrawers();
+
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_home:
+                        TsGaTools.trackPages("/Home");
+                        while (mFragmentTagStack.size() > 0) {
+                            getSafeFragmentManager().popBackStackImmediate();
+                        }
+                        break;
+                    case R.id.nav_roles:
+                        TsGaTools.trackPages("/Roles");
+                        showFragment(RolesFragment.newInstance("", ""), true);
+                        break;
+                }
+                return true;
+            }
+        });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +131,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
         } else {
             setTitle(getString(R.string.app_name));
+            navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
             actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
@@ -165,7 +190,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         if (id == R.id.action_settings) {
             return true;
         }
-
 
 
         return super.onOptionsItemSelected(item);
