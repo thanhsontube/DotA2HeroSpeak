@@ -39,10 +39,6 @@ public class HeroEntry implements Serializable {
 
     public List<GalleryDto> gallery = new ArrayList<>();
 
-
-
-
-
     // 0: Str, 1: Agi; 3: Intel
     public String group ;
     public String hrefDota2;

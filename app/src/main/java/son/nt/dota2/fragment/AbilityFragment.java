@@ -1,12 +1,22 @@
 package son.nt.dota2.fragment;
 
 import android.app.Fragment;
+import android.app.Service;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.TabLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +25,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.dto.AbilityDto;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.service.ServiceMedia;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +48,9 @@ public class AbilityFragment extends AbsFragment {
     private TabLayout tabLayout;
     private List<AbilityDto> listAbilities = new ArrayList<>();
     private HeroEntry heroEntry;
+    private LayoutInflater inflater;
+
+    ServiceMedia serviceMedia;
 
     /**
      * Use this factory method to create a new instance of
@@ -63,11 +77,19 @@ public class AbilityFragment extends AbsFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (getArguments() != null) {
             heroEntry = (HeroEntry) getArguments().getSerializable(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         getSafeActionBar().setTitle(heroEntry.name);
+        getActivity().bindService(ServiceMedia.getIntentService(getActivity()), serviceConnection, Service.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unbindService(serviceConnection);
     }
 
     @Override
@@ -96,15 +118,54 @@ public class AbilityFragment extends AbsFragment {
         }
 
         for (AbilityDto dto : heroEntry.listAbilities) {
-            TabLayout.Tab tab =  tabLayout.newTab().setText(dto.name);
+            View vTab = inflater.inflate(R.layout.tab_ability, null);
+            ImageView img = (ImageView) vTab.findViewById(R.id.ability_icon);
+            TextView txt = (TextView) vTab.findViewById(R.id.ability_text);
+            txt.setText(dto.name);
+            Glide.with(getActivity()).load(dto.linkImage).fitCenter().into(img);
+            TabLayout.Tab tab =  tabLayout.newTab().setCustomView(vTab);
             tabLayout.addTab(tab);
-
         }
 
     }
 
     @Override
     public void initListener() {
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (!TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
+                    serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
+                }
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                if (!TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
+                    serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
+                }
+            }
+        });
+
 
     }
+
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            ServiceMedia.LocalBinder localBinder = (ServiceMedia.LocalBinder) binder;
+            serviceMedia = localBinder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            serviceMedia = null;
+        }
+    };
 }

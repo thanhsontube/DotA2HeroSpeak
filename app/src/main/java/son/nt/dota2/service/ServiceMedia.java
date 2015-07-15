@@ -280,5 +280,22 @@ public class ServiceMedia extends Service {
         }
     }
 
+    public void playSingleLink (String link) {
+        isPlayAndStopOne = true;
+        try {
+            File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat"));
+            if (file.exists()) {
+                player.reset();
+                player.setDataSource(file.getPath());
+                player.prepare();
+                player.start();
+            } else {
+                loadSpeak(link);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

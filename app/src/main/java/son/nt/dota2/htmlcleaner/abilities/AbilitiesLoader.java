@@ -98,6 +98,7 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                         if (oImgs.length > 0) {
                             TagNode tnI = (TagNode) oImgs[0];
                             Logger.debug(TAG, ">>>" + "tnI:" + tnI.getAttributeByName("src"));
+                            dto.linkImage = tnI.getAttributeByName("src");
                         }
 //                        Map<String, String> maps = node2.getAttributes();
 //                        for (String s : maps.values()) {
