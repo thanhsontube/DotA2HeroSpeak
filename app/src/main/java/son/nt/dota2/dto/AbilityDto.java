@@ -2,10 +2,12 @@ package son.nt.dota2.dto;
 
 import java.util.Map;
 
+import son.nt.dota2.base.AObject;
+
 /**
  * Created by Sonnt on 7/14/15.
  */
-public class AbilityDto {
+public class AbilityDto  extends AObject{
     public String name; //Starstorm
     public String heroName; //Mirana
     public String ability; // No targer
