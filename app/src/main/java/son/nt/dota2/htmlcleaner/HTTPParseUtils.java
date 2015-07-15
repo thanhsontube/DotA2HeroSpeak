@@ -8,10 +8,12 @@ import java.util.List;
 
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.AbilityDto;
+import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * Created by Sonnt on 7/13/15.
@@ -54,9 +56,9 @@ public class HTTPParseUtils {
     }
 
 
-    public void withAbility () {
-        HttpGet httpGet = new HttpGet(AbilitiesLoader.PATH_ABILITY);
-        ResourceManager.getInstance().getContentManager().load(new AbilitiesLoader(httpGet, false) {
+    public void withAbility (final String name) {
+        HttpGet httpGet = new HttpGet(AbilitiesLoader.PATH_ABILITY_ROOT + name);
+        ResourceManager.getInstance().getContentManager().load(new AbilitiesLoader(httpGet, true) {
             @Override
             public void onContentLoaderStart() {
                 Logger.debug(TAG, ">>>" + "onContentLoaderStart");
@@ -64,7 +66,11 @@ public class HTTPParseUtils {
 
             @Override
             public void onContentLoaderSucceed(List<AbilityDto> entity) {
-                Logger.debug(TAG, ">>>" + "onContentLoaderSucceed");
+                Logger.debug(TAG, ">>>" + "onContentLoaderSucceed:" + entity.size());
+                HeroEntry heroEntry = new HeroEntry();
+                heroEntry.name = name;
+                heroEntry.listAbilities.addAll(entity);
+                OttoBus.post(heroEntry);
             }
 
             @Override

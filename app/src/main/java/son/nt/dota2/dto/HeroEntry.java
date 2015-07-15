@@ -35,9 +35,9 @@ public class HeroEntry implements Serializable {
 
 
 
-    public List<AbilityDto> skills;
+    public List<AbilityDto> listAbilities = new ArrayList<>();
 
-    public List<GalleryDto> gallery;
+    public List<GalleryDto> gallery = new ArrayList<>();
 
 
 

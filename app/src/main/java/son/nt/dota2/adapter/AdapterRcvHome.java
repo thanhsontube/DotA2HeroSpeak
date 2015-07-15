@@ -17,6 +17,7 @@ import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroDto;
+import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.OttoBus;
 
 /**
@@ -68,6 +69,9 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
             @Override
             public void onClick(View v) {
                 OttoBus.post(dto);
+
+                //TODO test ability
+                HTTPParseUtils.getInstance().withAbility(dto.name);
             }
         });
 

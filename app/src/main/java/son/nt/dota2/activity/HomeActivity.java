@@ -22,11 +22,12 @@ import com.squareup.otto.Subscribe;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.dto.HeroDto;
+import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.fragment.AbilityFragment;
 import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.RolesFragment;
 import son.nt.dota2.fragment.SearchableFragment;
-import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
@@ -230,7 +231,12 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     @Subscribe
     public void handleDataFromAdapterRcvHome(HeroDto heroDto) {
         Logger.debug(TAG, ">>>" + "handleDataFromAdapterRcvHome:" + heroDto.name);
-        showFragment(MainFragment.newInstance("", heroDto), true);
+//        showFragment(MainFragment.newInstance("", heroDto), true);
+    }
+    @Subscribe
+    public void handleAbility(HeroEntry heroEntry) {
+        Logger.debug(TAG, ">>>" + "handleAbility:" + heroEntry.name);
+        showFragment(AbilityFragment.newInstance(heroEntry, ""), true);
     }
 
     @Override
@@ -240,7 +246,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     }
 
     private void testAbilities () {
-        HTTPParseUtils.getInstance().withAbility();
+//        HTTPParseUtils.getInstance().withAbility();
     }
 
 

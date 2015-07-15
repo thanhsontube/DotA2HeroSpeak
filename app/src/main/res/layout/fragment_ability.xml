@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?colorPrimary"
+    tools:context="son.nt.dota2.fragment.AbilityFragment">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/ability_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        tab:tabGravity="center"
+        tab:tabIndicatorColor="@color/md_yellow_700"
+        tab:tabMode="scrollable">
+
+    </android.support.design.widget.TabLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/md_grey_500"></FrameLayout>
+
+</LinearLayout>
