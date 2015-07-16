@@ -1,5 +1,7 @@
 package son.nt.dota2.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import son.nt.dota2.base.AObject;
@@ -20,6 +22,9 @@ public class AbilityDto  extends AObject{
     public String linkImage ; //
 
     Map<String, String> killInfo;
+    public boolean isUltimate = false;
+    public List<String> coolDowns = new ArrayList<>();
+    public List<String> manacCosts = new ArrayList<>();
 
     public void setTypes (String ability, String affect, String damage) {
         this.ability = ability;
@@ -27,6 +32,15 @@ public class AbilityDto  extends AObject{
         this.damage = damage;
     }
 
+    public AbilityDto() {
+        coolDowns.add("-");
+        coolDowns.add("-");
+        coolDowns.add("-");
+        coolDowns.add("-");
 
-
+        manacCosts.add("-");
+        manacCosts.add("-");
+        manacCosts.add("-");
+        manacCosts.add("-");
+    }
 }

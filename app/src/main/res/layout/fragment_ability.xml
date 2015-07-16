@@ -16,80 +16,114 @@
         tab:tabMode="scrollable">
 
     </android.support.design.widget.TabLayout>
-
-    <FrameLayout
+    <ScrollView
+        android:background="@color/md_grey_500"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/md_grey_500">
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            >
+            <!--
+            =======================
+                Ability Types
+            =======================
+            -->
 
             <LinearLayout
-                android:gravity="center"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Ability" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/ability_abi"
-                    android:textColor="@color/md_yellow_700"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ability" />
+
+                    <TextView
+                        android:id="@+id/ability_abi"
+                        android:textColor="@color/md_yellow_700"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ability" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Ability" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Affects" />
+
+                    <TextView
+                        android:id="@+id/ability_aff"
+                        android:textColor="@color/md_yellow_700"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ability" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Damage" />
+
+                    <TextView
+                        android:id="@+id/ability_damage"
+                        android:textColor="@color/md_yellow_700"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ability" />
+
+                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:gravity="center"
-                android:layout_width="0dp"
+            <!--
+            =======================
+                Ability Description
+            =======================
+            -->
+            <TextView
+                android:id="@+id/ability_description"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="@string/long_text"
+                android:textColor="@color/white"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Affects" />
-
-                <TextView
-                    android:id="@+id/ability_aff"
-                    android:textColor="@color/md_yellow_700"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ability" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:gravity="center"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Damage" />
-
-                <TextView
-                    android:id="@+id/ability_damage"
-                    android:textColor="@color/md_yellow_700"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ability" />
-
-            </LinearLayout>
+            <!--
+            =======================
+                table cooldown - mana cost - damange
+            =======================
+            -->
+            <include layout="@layout/table_ability_level"></include>
         </LinearLayout>
-    </FrameLayout>
+
+    </ScrollView>
+
+
+
 
 </LinearLayout>

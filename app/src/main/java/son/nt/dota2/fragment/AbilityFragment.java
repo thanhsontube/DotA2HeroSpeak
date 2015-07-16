@@ -50,6 +50,11 @@ public class AbilityFragment extends AbsFragment {
     private HeroEntry heroEntry;
     private LayoutInflater inflater;
     private TextView txtAbility, txtAffects, txtDamage;
+    private TextView txtDescription;
+
+    private TextView cooldown1, cooldown2, cooldown3, cooldown4;
+    private TextView mana1, mana2, mana3, mana4;
+    private View tableLv4;
 
     ServiceMedia serviceMedia;
 
@@ -117,6 +122,8 @@ public class AbilityFragment extends AbsFragment {
         txtAbility = (TextView) view.findViewById(R.id.ability_abi);
         txtAffects = (TextView) view.findViewById(R.id.ability_aff);
         txtDamage = (TextView) view.findViewById(R.id.ability_damage);
+        txtDescription = (TextView) view.findViewById(R.id.ability_description);
+        setupTable(view);
         if (heroEntry == null || heroEntry.listAbilities.size() == 0) {
             return;
         }
@@ -134,13 +141,49 @@ public class AbilityFragment extends AbsFragment {
 
     }
 
+    private void setupTable(View view) {
+        cooldown1 = (TextView) view.findViewById(R.id.cooldown_lv1);
+        cooldown2 = (TextView) view.findViewById(R.id.cooldown_lv2);
+        cooldown3 = (TextView) view.findViewById(R.id.cooldown_lv3);
+        cooldown4 = (TextView) view.findViewById(R.id.cooldown_lv4);
+
+        mana1 = (TextView) view.findViewById(R.id.mana_lv1);
+        mana2 = (TextView) view.findViewById(R.id.mana_lv2);
+        mana3 = (TextView) view.findViewById(R.id.mana_lv3);
+        mana4 = (TextView) view.findViewById(R.id.mana_lv4);
+
+        tableLv4 = view.findViewById(R.id.table_lv_4);
+    }
+
     private void update(int position) {
         if (heroEntry == null || heroEntry.listAbilities.size() == 0) {
             return;
         }
+
+        AbilityDto dto = heroEntry.listAbilities.get(position);
         txtAbility.setText(heroEntry.listAbilities.get(position).ability);
         txtAffects.setText(heroEntry.listAbilities.get(position).affects);
         txtDamage.setText(heroEntry.listAbilities.get(position).damage);
+        txtDescription.setText(heroEntry.listAbilities.get(position).description);
+        txtDescription.setVisibility(TextUtils.isEmpty(heroEntry.listAbilities.get(position).description) ? View.GONE : View.VISIBLE);
+
+
+
+        mana1.setText(dto.manacCosts.get(0));
+        mana2.setText(dto.manacCosts.get(1));
+        mana3.setText(dto.manacCosts.get(2));
+        mana4.setText(dto.manacCosts.get(3));
+
+        cooldown1.setText(dto.coolDowns.get(0));
+        cooldown2.setText(dto.coolDowns.get(1));
+        cooldown3.setText(dto.coolDowns.get(2));
+        cooldown4.setText(dto.coolDowns.get(3));
+
+        if (dto.isUltimate) {
+            tableLv4.setVisibility(View.GONE);
+        } else {
+            tableLv4.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

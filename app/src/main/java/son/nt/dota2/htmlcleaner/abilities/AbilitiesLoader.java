@@ -93,10 +93,10 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
 
 
                         TagNode node2 = nodeA.getChildTagList().get(1);
-                        Logger.debug(TAG, ">>>" + "Node2 text:" + node2.getText() + ";size:" + node2.getChildTagList().size() );
+                        Logger.debug(TAG, ">>>" + "Node2 text:" + node2.getText() + ";size:" + node2.getChildTagList().size());
                         String imgPath = "//img[@src]";
-                        Object []oImgs = node2.evaluateXPath(imgPath);
-                        Logger.debug(TAG, ">>>" + "oImgs:" +oImgs.length);
+                        Object[] oImgs = node2.evaluateXPath(imgPath);
+                        Logger.debug(TAG, ">>>" + "oImgs:" + oImgs.length);
                         if (oImgs.length > 0) {
                             TagNode tnI = (TagNode) oImgs[0];
                             Logger.debug(TAG, ">>>" + "tnI:" + tnI.getAttributeByName("src"));
@@ -105,13 +105,13 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                         //skill type
 
                         String affects = node2.getText().toString();
-                        String []arr = affects.split("\n");
+                        String[] arr = affects.split("\n");
                         List<String> listSkillType = new ArrayList<>();
                         Logger.debug(TAG, ">>>" + "arr:" + arr.length);
-                        int ii = 0;
+//                        int ii = 0;
 
                         for (String s : arr) {
-                            Logger.debug(TAG, ">>>" + "arr:" + s + ":" + ii++);
+//                            Logger.debug(TAG, ">>>" + "arr:" + s + ":" + ii++);
                             if (!TextUtils.isEmpty(s) && !s.equals(" ")) {
                                 listSkillType.add(s);
                             }
@@ -134,14 +134,85 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
 
                         dto.setTypes(ability, affect, damage);
 
+                        //Ability Description
+                        TagNode nodeDes = nodeA.getChildTagList().get(2);
+                        String description = nodeDes.getText().toString();
+                        dto.description = description;
 
 
-//                        Map<String, String> maps = node2.getAttributes();
-//                        for (String s : maps.values()) {
-//                            if (s.contains("http://")) {
-//                                Logger.debug(TAG, ">>>" + "sLink:" +  s);
-//                            }
-//                        }
+                        //Coundown and mana
+
+                        TagNode nodeTable = nodeA.getChildTagList().get(4);
+
+                        String xPathTable = "//table";
+                        Object[] oTable = nodeTable.evaluateXPath(xPathTable);
+                        Logger.debug(TAG, ">>>" + "Table:" + oTable.length);
+                        if (oTable.length > 0) {
+                            //cooldown and mana
+                            String xPathMana = "//a[@title='Mana']";
+                            TagNode nodeCoolDownMana = (TagNode) oTable[0];
+                            Object[] oMana = nodeCoolDownMana.evaluateXPath(xPathMana);
+                            if (oMana.length > 0) {
+                                String xPathCoMna = "./tbody/tr/td";
+                                Object[] oComa = nodeCoolDownMana.evaluateXPath(xPathCoMna);
+                                Logger.debug(TAG, ">>>" + "oComa:" + oComa.length);
+
+
+                                //get cooldown
+                                TagNode nodeCoolDown = (TagNode) oComa[0];
+
+
+                                String coolDowns = nodeCoolDown.getText().toString().replace(".", "").trim();
+                                String[] arrCoolDown = coolDowns.split("/");
+                                Logger.debug(TAG, ">>>" + "arrCoolDown:" + arrCoolDown.length);
+                                dto.coolDowns.clear();
+                                if (arrCoolDown.length == 1) {
+
+                                    dto.coolDowns.add(arrCoolDown[0]);
+                                    dto.coolDowns.add(arrCoolDown[0]);
+                                    dto.coolDowns.add(arrCoolDown[0]);
+                                    dto.coolDowns.add(arrCoolDown[0]);
+                                } else if (arrCoolDown.length == 4) {
+                                    dto.coolDowns.add(arrCoolDown[0]);
+                                    dto.coolDowns.add(arrCoolDown[1]);
+                                    dto.coolDowns.add(arrCoolDown[2]);
+                                    dto.coolDowns.add(arrCoolDown[3]);
+                                } else if (arrCoolDown.length == 3) {
+                                    dto.coolDowns.add(arrCoolDown[0]);
+                                    dto.coolDowns.add(arrCoolDown[1]);
+                                    dto.coolDowns.add(arrCoolDown[2]);
+                                    dto.coolDowns.add("-");
+
+                                    dto.isUltimate = true;
+                                }
+
+                                TagNode nodeMana = (TagNode) oComa[1];
+                                String manaCosts = nodeMana.getText().toString().replace(".", "").trim();
+                                String[] arrManaCost = manaCosts.split("/");
+                                dto.manacCosts.clear();
+                                if (arrManaCost.length == 1) {
+
+                                    dto.manacCosts.add(arrManaCost[0]);
+                                    dto.manacCosts.add(arrManaCost[0]);
+                                    dto.manacCosts.add(arrManaCost[0]);
+                                    dto.manacCosts.add(arrManaCost[0]);
+                                } else if (arrManaCost.length == 4) {
+                                    dto.manacCosts.add(arrManaCost[0]);
+                                    dto.manacCosts.add(arrManaCost[1]);
+                                    dto.manacCosts.add(arrManaCost[2]);
+                                    dto.manacCosts.add(arrManaCost[3]);
+                                } else if (arrManaCost.length == 3) {
+                                    dto.manacCosts.add(arrManaCost[0]);
+                                    dto.manacCosts.add(arrManaCost[1]);
+                                    dto.manacCosts.add(arrManaCost[2]);
+                                    dto.manacCosts.add("-");
+
+                                    dto.isUltimate = true;
+                                }
+                            }
+
+                        }
+
 
                         sizeB = 0;
                         for (int j = 0; j < sizeB; j++) {
@@ -153,7 +224,7 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                                     try {
                                         TagNode nodeC = nodeB.getChildTagList().get(k);
                                         Logger.debug(TAG, ">>>" + "--CCC---:" + sizeC + ":" + k + ";nodeC:" + nodeC.getChildTagList().size());
-                                        if (k == 0 && j ==0) {
+                                        if (k == 0 && j == 0) {
                                             skillName = nodeC.getText().toString().substring(1, nodeC.getText().toString().indexOf("   "));
                                             Logger.debug(TAG, ">>>" + "skill name:" + skillName);
                                             dto.name = skillName;
@@ -172,8 +243,8 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                         if (listAbilities.size() > 0) {
 
                             for (AbilityDto d : listAbilities) {
-                                String old = d.name.toLowerCase().replace(" ","").trim();
-                                String new1 = dto.name.toLowerCase().replace(" ","").trim();
+                                String old = d.name.toLowerCase().replace(" ", "").trim();
+                                String new1 = dto.name.toLowerCase().replace(" ", "").trim();
                                 if (new1.contains(old) || old.contains(new1)) {
 
                                 } else {
@@ -183,6 +254,11 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                             }
                         } else {
                             listAbilities.add(dto);
+                        }
+
+                        //Stop add another skill
+                        if (dto.isUltimate) {
+                            break;
                         }
 
                     } catch (Exception e) {
