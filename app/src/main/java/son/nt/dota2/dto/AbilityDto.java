@@ -21,6 +21,12 @@ public class AbilityDto  extends AObject{
 
     Map<String, String> killInfo;
 
+    public void setTypes (String ability, String affect, String damage) {
+        this.ability = ability;
+        this.affects = affect;
+        this.damage = damage;
+    }
+
 
 
 }

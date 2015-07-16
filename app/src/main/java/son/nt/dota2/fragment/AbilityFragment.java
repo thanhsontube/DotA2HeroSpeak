@@ -49,6 +49,7 @@ public class AbilityFragment extends AbsFragment {
     private List<AbilityDto> listAbilities = new ArrayList<>();
     private HeroEntry heroEntry;
     private LayoutInflater inflater;
+    private TextView txtAbility, txtAffects, txtDamage;
 
     ServiceMedia serviceMedia;
 
@@ -113,6 +114,9 @@ public class AbilityFragment extends AbsFragment {
     @Override
     public void initLayout(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.ability_tab_layout);
+        txtAbility = (TextView) view.findViewById(R.id.ability_abi);
+        txtAffects = (TextView) view.findViewById(R.id.ability_aff);
+        txtDamage = (TextView) view.findViewById(R.id.ability_damage);
         if (heroEntry == null || heroEntry.listAbilities.size() == 0) {
             return;
         }
@@ -126,7 +130,17 @@ public class AbilityFragment extends AbsFragment {
             TabLayout.Tab tab =  tabLayout.newTab().setCustomView(vTab);
             tabLayout.addTab(tab);
         }
+        update(0);
 
+    }
+
+    private void update(int position) {
+        if (heroEntry == null || heroEntry.listAbilities.size() == 0) {
+            return;
+        }
+        txtAbility.setText(heroEntry.listAbilities.get(position).ability);
+        txtAffects.setText(heroEntry.listAbilities.get(position).affects);
+        txtDamage.setText(heroEntry.listAbilities.get(position).damage);
     }
 
     @Override
@@ -137,6 +151,7 @@ public class AbilityFragment extends AbsFragment {
                 if (!TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
                     serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
                 }
+                update(tab.getPosition());
 
             }
 

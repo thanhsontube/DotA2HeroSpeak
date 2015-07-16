@@ -1,5 +1,7 @@
 package son.nt.dota2.htmlcleaner.abilities;
 
+import android.text.TextUtils;
+
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -100,6 +102,40 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                             Logger.debug(TAG, ">>>" + "tnI:" + tnI.getAttributeByName("src"));
                             dto.linkImage = tnI.getAttributeByName("src");
                         }
+                        //skill type
+
+                        String affects = node2.getText().toString();
+                        String []arr = affects.split("\n");
+                        List<String> listSkillType = new ArrayList<>();
+                        Logger.debug(TAG, ">>>" + "arr:" + arr.length);
+                        int ii = 0;
+
+                        for (String s : arr) {
+                            Logger.debug(TAG, ">>>" + "arr:" + s + ":" + ii++);
+                            if (!TextUtils.isEmpty(s) && !s.equals(" ")) {
+                                listSkillType.add(s);
+                            }
+                        }
+                        Logger.debug(TAG, ">>>" + "ListSkill:" + listSkillType.size());
+
+                        String ability = null;
+
+                        String affect = null;
+                        String damage = null;
+                        if (listSkillType.size() == 6) {
+                            ability = listSkillType.get(3);
+                            affect = listSkillType.get(4);
+                            damage = listSkillType.get(5);
+                        }
+                        if (listSkillType.size() == 4) {
+                            ability = listSkillType.get(2);
+                            affect = listSkillType.get(3);
+                        }
+
+                        dto.setTypes(ability, affect, damage);
+
+
+
 //                        Map<String, String> maps = node2.getAttributes();
 //                        for (String s : maps.values()) {
 //                            if (s.contains("http://")) {
@@ -136,8 +172,13 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                         if (listAbilities.size() > 0) {
 
                             for (AbilityDto d : listAbilities) {
-                                if (!(dto.name.toLowerCase().contains(d.name.trim().toLowerCase()))) {
+                                String old = d.name.toLowerCase().replace(" ","").trim();
+                                String new1 = dto.name.toLowerCase().replace(" ","").trim();
+                                if (new1.contains(old) || old.contains(new1)) {
+
+                                } else {
                                     listAbilities.add(dto);
+
                                 }
                             }
                         } else {
