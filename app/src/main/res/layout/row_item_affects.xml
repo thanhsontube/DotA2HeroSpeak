@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="4dp"
+    tools:context="son.nt.dota2.fragment.AbilityFragment"
+    tools:background = "@color/md_brown_700">
+
+    <ImageView
+        android:id="@+id/src"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_agi_40" />
+
+    <LinearLayout
+        android:layout_marginLeft="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:textColor="@color/md_yellow_A200"
+            android:id="@+id/alt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/long_text" />
+
+        <TextView
+            android:layout_marginTop="4dp"
+            android:id="@+id/row_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/long_text"
+            android:textColor="@color/white" />
+        <View
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/md_light_blue_A200"></View>
+
+    </LinearLayout>
+
+
+</LinearLayout>

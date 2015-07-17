@@ -17,7 +17,7 @@
 
     </android.support.design.widget.TabLayout>
     <ScrollView
-        android:background="@color/md_grey_500"
+        android:background="@color/md_brown_700"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -33,6 +33,7 @@
             -->
 
             <LinearLayout
+                android:layout_marginTop="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -107,6 +108,7 @@
             =======================
             -->
             <TextView
+                android:layout_margin="8dp"
                 android:id="@+id/ability_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -119,6 +121,29 @@
             =======================
             -->
             <include layout="@layout/table_ability_level"></include>
+
+            <!--
+            =======================
+                item affects
+            =======================
+            -->
+            <android.support.v7.widget.CardView
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:background="@color/md_brown_700"
+                    android:id="@+id/ability_items_affects"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
     </ScrollView>

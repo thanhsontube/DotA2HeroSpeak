@@ -3,4 +3,16 @@
     <style name="AppTheme" parent="AppStyle">
     </style>
 
+    <style name="table_ability_mana">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/md_light_blue_A400</item>
+        <item name="android:layout_height">40dp</item>
+    </style>
+
+    <style name="table_ability_delays">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_height">40dp</item>
+    </style>
+
 </resources>

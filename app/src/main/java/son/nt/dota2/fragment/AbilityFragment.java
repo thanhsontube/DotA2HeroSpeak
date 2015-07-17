@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +25,7 @@ import java.util.List;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.dto.AbilityDto;
+import son.nt.dota2.dto.AbilityItemAffectDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.service.ServiceMedia;
 
@@ -55,6 +57,8 @@ public class AbilityFragment extends AbsFragment {
     private TextView cooldown1, cooldown2, cooldown3, cooldown4;
     private TextView mana1, mana2, mana3, mana4;
     private View tableLv4;
+
+    private LinearLayout viewItemAffects;
 
     ServiceMedia serviceMedia;
 
@@ -124,6 +128,7 @@ public class AbilityFragment extends AbsFragment {
         txtDamage = (TextView) view.findViewById(R.id.ability_damage);
         txtDescription = (TextView) view.findViewById(R.id.ability_description);
         setupTable(view);
+        viewItemAffects = (LinearLayout) view.findViewById(R.id.ability_items_affects);
         if (heroEntry == null || heroEntry.listAbilities.size() == 0) {
             return;
         }
@@ -183,6 +188,24 @@ public class AbilityFragment extends AbsFragment {
             tableLv4.setVisibility(View.GONE);
         } else {
             tableLv4.setVisibility(View.VISIBLE);
+        }
+
+
+        viewItemAffects.removeAllViews();
+        for (AbilityItemAffectDto d : dto.itemAffects) {
+            View row = inflater.inflate(R.layout.row_item_affects, null);
+            ((TextView)row.findViewById(R.id.row_text)).setText(d.text);
+            if (!TextUtils.isEmpty(d.alt)) {
+                ((TextView)row.findViewById(R.id.alt)).setVisibility(View.VISIBLE);
+                ((TextView)row.findViewById(R.id.alt)).setText(d.alt);
+            } else {
+                ((TextView)row.findViewById(R.id.alt)).setVisibility(View.GONE);
+            }
+            ImageView src = (ImageView) row.findViewById(R.id.src);
+            Glide.with(src.getContext()).load(d.src).fitCenter().into(src);
+            if (!TextUtils.isEmpty(d.text)) {
+                viewItemAffects.addView(row);
+            }
         }
     }
 

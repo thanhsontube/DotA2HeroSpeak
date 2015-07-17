@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.dto.AbilityDto;
+import son.nt.dota2.dto.AbilityItemAffectDto;
 import son.nt.dota2.loader.base.ContentLoader;
 import son.nt.dota2.utils.Logger;
 
@@ -134,7 +135,9 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
 
                         String xPathTable = "//table";
                         Object[] oTable = nodeTable.evaluateXPath(xPathTable);
+                        int start = 0;
                         if (oTable.length > 0) {
+                            start = 1;
                             //cooldown and mana
                             String xPathMana = "//a[@title='Mana']";
                             TagNode nodeCoolDownMana = (TagNode) oTable[0];
@@ -195,6 +198,31 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                                     dto.isUltimate = true;
                                 }
                             }
+
+                        }
+
+                        //another fields
+                        Logger.debug(TAG, ">>>" + "<<>>> yyyyy1");
+
+                        for (int ii = start ; ii < oTable.length; ii ++ ) {
+                            TagNode nodeOther = (TagNode) oTable[ii];
+                            String xPath = "./tbody/tr/td";
+                            Object[] oComa = nodeOther.evaluateXPath(xPath);
+
+                            if (oComa.length > 0) {
+                                TagNode n0 = (TagNode) oComa[0];
+                                String apath = "//img[@src]";
+                                Object [] o = n0.evaluateXPath(apath);
+                                String src = null;
+                                String alt = null;
+                                if (o.length > 0) {
+                                    src = ((TagNode)o[0]).getAttributeByName("src");
+                                    alt = ((TagNode)o[0]).getAttributeByName("alt");
+                                }
+                                Logger.debug(TAG, ">>>" + "n0:" + n0.getText() + ";item:" + src + "  ;alt:" + alt);
+                                dto.itemAffects.add(new AbilityItemAffectDto(src, alt, n0.getText().toString()));
+                            }
+
 
                         }
                         boolean isAdd = true;

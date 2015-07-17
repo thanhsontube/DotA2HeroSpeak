@@ -25,6 +25,7 @@ public class AbilityDto  extends AObject{
     public boolean isUltimate = false;
     public List<String> coolDowns = new ArrayList<>();
     public List<String> manacCosts = new ArrayList<>();
+    public List<AbilityItemAffectDto> itemAffects = new ArrayList<>();
 
     public void setTypes (String ability, String affect, String damage) {
         this.ability = ability;

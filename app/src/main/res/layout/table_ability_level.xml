@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_marginTop="8dp"
     xmlns:card="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card:cardBackgroundColor="@android:color/transparent"
-    card:cardElevation="5dp"
-    card:cardCornerRadius="2dp"
-    card:contentPadding="4dp">
+    android:layout_marginTop="8dp"
+    card:cardBackgroundColor="@color/md_brown_700"
+    card:contentPadding="8dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -19,19 +17,36 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textColor="@color/md_yellow_A700"/>
-            <ImageView
+                android:textColor="@color/md_yellow_A700" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_mana"/>
-           <ImageView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:src="@drawable/ic_cooldown"/>
+                android:layout_height="40dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_marginLeft="8dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_mana" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_marginLeft="8dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_cooldown" />
+            </LinearLayout>
 
 
         </LinearLayout>
@@ -40,25 +55,27 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lv1"
-                android:textColor="@color/md_yellow_A700"/>
+                android:textColor="@color/md_yellow_A700" />
+
             <TextView
                 android:id="@+id/mana_lv1"
+                style="@style/table_ability_mana"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="150"
-                android:textColor="@color/md_blue_500"/>
+                android:text="150" />
+
             <TextView
                 android:id="@+id/cooldown_lv1"
+                style="@style/table_ability_delays"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="125"
-                android:textColor="@color/white"/>
+                />
 
         </LinearLayout>
 
@@ -71,25 +88,28 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="Lv2"
-                android:textColor="@color/md_yellow_A700"/>
+                android:textColor="@color/md_yellow_A700" />
+
             <TextView
                 android:id="@+id/mana_lv2"
+                style="@style/table_ability_mana"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="150"
-                android:textColor="@color/md_blue_500"/>
+                android:text="150" />
+
             <TextView
                 android:id="@+id/cooldown_lv2"
+                style="@style/table_ability_delays"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="125"
-                android:textColor="@color/white"/>
+                 />
 
         </LinearLayout>
 
@@ -102,25 +122,27 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lv3"
-                android:textColor="@color/md_yellow_A700"/>
+                android:textColor="@color/md_yellow_A700" />
+
             <TextView
                 android:id="@+id/mana_lv3"
+                style="@style/table_ability_mana"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="150"
-                android:textColor="@color/md_blue_500"/>
+                android:text="150" />
+
             <TextView
                 android:id="@+id/cooldown_lv3"
+                style="@style/table_ability_delays"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="125"
-                android:textColor="@color/white"/>
+                />
 
         </LinearLayout>
 
@@ -134,25 +156,27 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lv4"
-                android:textColor="@color/md_yellow_A700"/>
+                android:textColor="@color/md_yellow_A700" />
+
             <TextView
                 android:id="@+id/mana_lv4"
+                style="@style/table_ability_mana"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="150"
-                android:textColor="@color/md_blue_500"/>
+                android:text="150" />
+
             <TextView
                 android:id="@+id/cooldown_lv4"
+                style="@style/table_ability_delays"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="125"
-                android:textColor="@color/white"/>
+                />
 
         </LinearLayout>
 
