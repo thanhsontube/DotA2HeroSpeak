@@ -20,6 +20,7 @@ import java.util.List;
 
 import son.nt.dota2.dto.AbilityDto;
 import son.nt.dota2.dto.AbilityItemAffectDto;
+import son.nt.dota2.dto.AbilityLevelDto;
 import son.nt.dota2.loader.base.ContentLoader;
 import son.nt.dota2.utils.Logger;
 
@@ -30,6 +31,12 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
     public static final String PATH_ABILITY = "http://dota2.gamepedia.com/Outworld_Devourer";
     public static final String PATH_ABILITY_ROOT = "http://dota2.gamepedia.com/";
     public static final String TAG = "AbilitiesLoader";
+
+    public static final int POS_ABILITY_NAME= 0;
+    public static final int POS_ABILITY_IMAGE= 1;
+    public static final int POS_ABILITY_DESCRIPTION= 2;
+    public static final int POS_ABILITY_INFO = 3;
+    public static final int POS_ABILITY_COOL_DOWN_MANA= 4;
 
     public AbilitiesLoader(HttpUriRequest request, boolean useCache) {
         super(request, useCache);
@@ -81,14 +88,14 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                             e.printStackTrace();
                         }
                         // skill name
-                        TagNode node1 = nodeA.getChildTagList().get(0);
+                        TagNode node1 = nodeA.getChildTagList().get(POS_ABILITY_NAME);
                         String skillName = node1.getText().toString().substring(1, node1.getText().toString().indexOf("   ")).trim();
                         dto.name = skillName;
 
 
-                        //Skill Image
+                        //Skill Image AND TYPE
 
-                        TagNode node2 = nodeA.getChildTagList().get(1);
+                        TagNode node2 = nodeA.getChildTagList().get(POS_ABILITY_IMAGE);
                         String imgPath = "//img[@src]";
                         Object[] oImgs = node2.evaluateXPath(imgPath);
                         if (oImgs.length > 0) {
@@ -124,14 +131,14 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                         dto.setTypes(ability, affect, damage);
 
                         //Ability Description
-                        TagNode nodeDes = nodeA.getChildTagList().get(2);
+                        TagNode nodeDes = nodeA.getChildTagList().get(POS_ABILITY_DESCRIPTION);
                         String description = nodeDes.getText().toString();
                         dto.description = description;
 
 
                         //Coundown and mana
 
-                        TagNode nodeTable = nodeA.getChildTagList().get(4);
+                        TagNode nodeTable = nodeA.getChildTagList().get(POS_ABILITY_COOL_DOWN_MANA);
 
                         String xPathTable = "//table";
                         Object[] oTable = nodeTable.evaluateXPath(xPathTable);
@@ -202,7 +209,7 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                         }
 
                         //another fields
-                        Logger.debug(TAG, ">>>" + "<<>>> yyyyy1");
+                        Logger.debug(TAG, ">>>" + "<<>>> yyyyy2");
 
                         for (int ii = start ; ii < oTable.length; ii ++ ) {
                             TagNode nodeOther = (TagNode) oTable[ii];
@@ -219,12 +226,68 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                                     src = ((TagNode)o[0]).getAttributeByName("src");
                                     alt = ((TagNode)o[0]).getAttributeByName("alt");
                                 }
-                                Logger.debug(TAG, ">>>" + "n0:" + n0.getText() + ";item:" + src + "  ;alt:" + alt);
                                 dto.itemAffects.add(new AbilityItemAffectDto(src, alt, n0.getText().toString()));
                             }
 
+                        }
+
+                        //ABILITY INFO
+                        TagNode nodeInfo = nodeA.getChildTagList().get(POS_ABILITY_INFO);
+                        String full = nodeInfo.getChildTagList().get(0).getText().toString().replace(" ", "");
+                        char []arrC =  full.toCharArray();
+                        List<Integer> list = new ArrayList<>();
+                        list.add(0);
+                        String specialChars = "/*!@#$%^&*()\"{}_[]|\\?/<>,.";
+                        for (int j  = 0; j < arrC.length -1; j ++) {
+                            int k = j + 1;
+                            char a1 = arrC[j];
+                            char a2 = arrC[k];
+                            if (((Character.isDigit(a1) || specialChars.contains(String.valueOf(a1)))) && Character.isLetter(a2)) {
+
+                                list.add(k);
+                            }
 
                         }
+                        int end;
+                        AbilityLevelDto abilityLevelDto;
+
+
+                        AbilityLevelDto d1 = new AbilityLevelDto();
+                        d1.name = "";
+                        d1.list.add("Lv1");
+                        d1.list.add("Lv2");
+                        d1.list.add("Lv3");
+                        d1.list.add("Lv4");
+                        dto.abilityLevel.add(d1);
+                        for (int j = 0; j < list.size()  ; j ++) {
+                            if (j < list.size() -1) {
+                                end = list.get(j + 1);
+                            } else {
+                                end = full.length();
+                            }
+                            String a1 = full.substring(list.get(j), end);
+                            Logger.debug(TAG, ">>>" + "a1:" + a1);
+
+                            String []arr2 = a1.split(":");
+                            abilityLevelDto = new AbilityLevelDto();
+                            abilityLevelDto.name = arr2[0];
+
+                            String []arr3 = arr2[1].split("/");
+                            Logger.debug(TAG, ">>>" + "arr3:" + arr3.length);
+                            if (arr3.length == 1) {
+                                abilityLevelDto.list.add(arr2[1]);
+                                abilityLevelDto.list.add(arr2[1]);
+                                abilityLevelDto.list.add(arr2[1]);
+                                abilityLevelDto.list.add(arr2[1]);
+                            } else {
+                                for (int k =0; k < arr3.length; k ++) {
+                                    abilityLevelDto.list.add(arr3[k]);
+                                }
+                            }
+
+                            dto.abilityLevel.add(abilityLevelDto);
+                        }
+
                         boolean isAdd = true;
                         for (AbilityDto d : listAbilities) {
                             String old = d.name.toLowerCase().replace(" ", "").trim();

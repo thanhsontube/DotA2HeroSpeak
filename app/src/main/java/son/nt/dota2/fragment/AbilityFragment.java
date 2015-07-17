@@ -26,6 +26,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.dto.AbilityDto;
 import son.nt.dota2.dto.AbilityItemAffectDto;
+import son.nt.dota2.dto.AbilityLevelDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.service.ServiceMedia;
 
@@ -59,6 +60,7 @@ public class AbilityFragment extends AbsFragment {
     private View tableLv4;
 
     private LinearLayout viewItemAffects;
+    private LinearLayout viewLevel;
 
     ServiceMedia serviceMedia;
 
@@ -129,6 +131,7 @@ public class AbilityFragment extends AbsFragment {
         txtDescription = (TextView) view.findViewById(R.id.ability_description);
         setupTable(view);
         viewItemAffects = (LinearLayout) view.findViewById(R.id.ability_items_affects);
+        viewLevel = (LinearLayout) view.findViewById(R.id.ability_level);
         if (heroEntry == null || heroEntry.listAbilities.size() == 0) {
             return;
         }
@@ -206,6 +209,30 @@ public class AbilityFragment extends AbsFragment {
             if (!TextUtils.isEmpty(d.text)) {
                 viewItemAffects.addView(row);
             }
+        }
+
+        viewLevel.removeAllViews();
+        for (AbilityLevelDto d : dto.abilityLevel) {
+            View row = inflater.inflate(R.layout.row_ability_level, null);
+            TextView txtLevelName = (TextView) row.findViewById(R.id.level_name);
+            TextView txtLevel1 = (TextView) row.findViewById(R.id.level1_1);
+            TextView txtLevel2 = (TextView) row.findViewById(R.id.level1_2);
+            TextView txtLevel3 = (TextView) row.findViewById(R.id.level1_3);
+            TextView txtLevel4 = (TextView) row.findViewById(R.id.level1_4);
+
+            txtLevelName.setText(d.name);
+            txtLevel1.setText(d.list.get(0));
+            txtLevel2.setText(d.list.get(1));
+            txtLevel3.setText(d.list.get(2));
+            if (d.list.size() == 4) {
+
+                txtLevel4.setVisibility(View.VISIBLE);
+                txtLevel4.setText(d.list.get(3));
+            } else {
+                txtLevel4.setVisibility(View.GONE);
+            }
+
+            viewLevel.addView(row);
         }
     }
 

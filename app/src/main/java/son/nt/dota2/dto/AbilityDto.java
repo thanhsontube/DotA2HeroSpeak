@@ -2,7 +2,6 @@ package son.nt.dota2.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import son.nt.dota2.base.AObject;
 
@@ -21,10 +20,10 @@ public class AbilityDto  extends AObject{
     public String description;//Calls down a wave of meteors to damage nearby enemy units. The nearest enemy unit in 325 range will take a second hit for 75% of the damage.
     public String linkImage ; //
 
-    Map<String, String> killInfo;
     public boolean isUltimate = false;
     public List<String> coolDowns = new ArrayList<>();
     public List<String> manacCosts = new ArrayList<>();
+    public List<AbilityLevelDto> abilityLevel = new ArrayList<>();
     public List<AbilityItemAffectDto> itemAffects = new ArrayList<>();
 
     public void setTypes (String ability, String affect, String damage) {
