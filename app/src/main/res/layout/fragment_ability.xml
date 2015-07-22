@@ -137,14 +137,6 @@
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
-
-            <!--
-            =======================
-                table cooldown - mana cost - damange
-            =======================
-            -->
-            <include layout="@layout/table_ability_level"></include>
-
             <!--
             =======================
                 item affects
@@ -167,6 +159,29 @@
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
+
+            <!--
+            =======================
+                Notes
+            =======================
+            -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NOTES:"/>
+                <TextView
+                    android:layout_marginTop="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/md_yellow_200"
+                    android:id="@+id/ability_txt_notes"
+                    android:text="@string/long_text"/>
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

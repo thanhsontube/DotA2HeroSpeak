@@ -21,26 +21,13 @@ public class AbilityDto  extends AObject{
     public String linkImage ; //
 
     public boolean isUltimate = false;
-    public List<String> coolDowns = new ArrayList<>();
-    public List<String> manacCosts = new ArrayList<>();
     public List<AbilityLevelDto> abilityLevel = new ArrayList<>();
     public List<AbilityItemAffectDto> itemAffects = new ArrayList<>();
+    public List<String> listNotes = new ArrayList<>();
 
     public void setTypes (String ability, String affect, String damage) {
         this.ability = ability;
         this.affects = affect;
         this.damage = damage;
-    }
-
-    public AbilityDto() {
-        coolDowns.add("-");
-        coolDowns.add("-");
-        coolDowns.add("-");
-        coolDowns.add("-");
-
-        manacCosts.add("-");
-        manacCosts.add("-");
-        manacCosts.add("-");
-        manacCosts.add("-");
     }
 }

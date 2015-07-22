@@ -38,6 +38,8 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
     public static final int POS_ABILITY_INFO = 3;
     public static final int POS_ABILITY_COOL_DOWN_MANA= 4;
 
+    public static final String DOT = " ";
+
     public AbilitiesLoader(HttpUriRequest request, boolean useCache) {
         super(request, useCache);
     }
@@ -54,11 +56,14 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
             Object[] data = null;
 
             TagNode tagNode = cleaner.clean(in);
+
             String xpath = "//table[@class='abilitytable']";
             data = tagNode.evaluateXPath(xpath);
 
+
             List<AbilityDto> listAbilities = new ArrayList<>();
             listAbilities.clear();
+
             if (data != null && data.length > 0) {
                 AbilityDto dto;
 
@@ -68,6 +73,7 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
 
 
                     try {
+
                         Logger.debug(TAG, ">>>" + "==========AAAA==========:" + sizeA + ":" + i);
                         dto = new AbilityDto();
                         //TODO need be care full with this
@@ -138,6 +144,14 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
 
                         //Coundown and mana
 
+                        AbilityLevelDto d1 = new AbilityLevelDto();
+                        d1.name = "";
+                        d1.list.add("Lv1");
+                        d1.list.add("Lv2");
+                        d1.list.add("Lv3");
+                        d1.list.add("Lv4");
+                        dto.abilityLevel.add(d1);
+
                         TagNode nodeTable = nodeA.getChildTagList().get(POS_ABILITY_COOL_DOWN_MANA);
 
                         String xPathTable = "//table";
@@ -160,51 +174,75 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
 
                                 String coolDowns = nodeCoolDown.getText().toString().replace(".", "").trim();
                                 String[] arrCoolDown = coolDowns.split("/");
-                                dto.coolDowns.clear();
+                                AbilityLevelDto abiDto;
+                                abiDto = new AbilityLevelDto();
+                                abiDto.name = "CoolDown";
+                                dto.abilityLevel.add(abiDto);
                                 if (arrCoolDown.length == 1) {
 
-                                    dto.coolDowns.add(arrCoolDown[0]);
-                                    dto.coolDowns.add(arrCoolDown[0]);
-                                    dto.coolDowns.add(arrCoolDown[0]);
-                                    dto.coolDowns.add(arrCoolDown[0]);
+                                    abiDto.list.add(arrCoolDown[0]);
+                                    abiDto.list.add(arrCoolDown[0]);
+                                    abiDto.list.add(arrCoolDown[0]);
+                                    abiDto.list.add(arrCoolDown[0]);
                                 } else if (arrCoolDown.length == 4) {
-                                    dto.coolDowns.add(arrCoolDown[0]);
-                                    dto.coolDowns.add(arrCoolDown[1]);
-                                    dto.coolDowns.add(arrCoolDown[2]);
-                                    dto.coolDowns.add(arrCoolDown[3]);
+
+
+                                    abiDto.list.add(arrCoolDown[0]);
+                                    abiDto.list.add(arrCoolDown[1]);
+                                    abiDto.list.add(arrCoolDown[2]);
+                                    abiDto.list.add(arrCoolDown[3]);
                                 } else if (arrCoolDown.length == 3) {
-                                    dto.coolDowns.add(arrCoolDown[0]);
-                                    dto.coolDowns.add(arrCoolDown[1]);
-                                    dto.coolDowns.add(arrCoolDown[2]);
-                                    dto.coolDowns.add("-");
+                                    abiDto.list.add(arrCoolDown[0]);
+                                    abiDto.list.add(arrCoolDown[1]);
+                                    abiDto.list.add(arrCoolDown[2]);
+                                    abiDto.list.add("-");
+
 
                                     dto.isUltimate = true;
+                                }else {
+                                    abiDto.list.add("-");
+                                    abiDto.list.add("-");
+                                    abiDto.list.add("-");
+                                    abiDto.list.add("-");
                                 }
 
                                 TagNode nodeMana = (TagNode) oComa[1];
                                 String manaCosts = nodeMana.getText().toString().replace(".", "").trim();
                                 String[] arrManaCost = manaCosts.split("/");
-                                dto.manacCosts.clear();
+                                AbilityLevelDto abilityMana = new AbilityLevelDto();
+                                abilityMana.name = "Mana Cost";
+                                dto.abilityLevel.add(abilityMana);
                                 if (arrManaCost.length == 1) {
 
-                                    dto.manacCosts.add(arrManaCost[0]);
-                                    dto.manacCosts.add(arrManaCost[0]);
-                                    dto.manacCosts.add(arrManaCost[0]);
-                                    dto.manacCosts.add(arrManaCost[0]);
+
+                                    abilityMana.list.add(arrManaCost[0]);
+                                    abilityMana.list.add(arrManaCost[0]);
+                                    abilityMana.list.add(arrManaCost[0]);
+                                    abilityMana.list.add(arrManaCost[0]);
                                 } else if (arrManaCost.length == 4) {
-                                    dto.manacCosts.add(arrManaCost[0]);
-                                    dto.manacCosts.add(arrManaCost[1]);
-                                    dto.manacCosts.add(arrManaCost[2]);
-                                    dto.manacCosts.add(arrManaCost[3]);
+
+
+
+                                    abilityMana.list.add(arrManaCost[0]);
+                                    abilityMana.list.add(arrManaCost[1]);
+                                    abilityMana.list.add(arrManaCost[2]);
+                                    abilityMana.list.add(arrManaCost[3]);
                                 } else if (arrManaCost.length == 3) {
-                                    dto.manacCosts.add(arrManaCost[0]);
-                                    dto.manacCosts.add(arrManaCost[1]);
-                                    dto.manacCosts.add(arrManaCost[2]);
-                                    dto.manacCosts.add("-");
+
+                                    abilityMana.list.add(arrManaCost[0]);
+                                    abilityMana.list.add(arrManaCost[1]);
+                                    abilityMana.list.add(arrManaCost[2]);
+                                    abilityMana.list.add("-");
 
                                     dto.isUltimate = true;
+                                } else {
+                                    abilityMana.list.add("-");
+                                    abilityMana.list.add("-");
+                                    abilityMana.list.add("-");
+                                    abilityMana.list.add("-");
                                 }
                             }
+
 
                         }
 
@@ -252,41 +290,49 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                         AbilityLevelDto abilityLevelDto;
 
 
-                        AbilityLevelDto d1 = new AbilityLevelDto();
-                        d1.name = "";
-                        d1.list.add("Lv1");
-                        d1.list.add("Lv2");
-                        d1.list.add("Lv3");
-                        d1.list.add("Lv4");
-                        dto.abilityLevel.add(d1);
+
                         for (int j = 0; j < list.size()  ; j ++) {
                             if (j < list.size() -1) {
                                 end = list.get(j + 1);
                             } else {
                                 end = full.length();
                             }
-                            String a1 = full.substring(list.get(j), end);
-                            Logger.debug(TAG, ">>>" + "a1:" + a1);
+                            String a1 = full.substring(list.get(j), end).replace("\n", "").replace(" ","").trim();
+                            Logger.debug(TAG, ">>>" + "arrPerLevel String:" + a1);
 
                             String []arr2 = a1.split(":");
                             abilityLevelDto = new AbilityLevelDto();
                             abilityLevelDto.name = arr2[0];
 
-                            String []arr3 = arr2[1].split("/");
-                            Logger.debug(TAG, ">>>" + "arr3:" + arr3.length);
-                            if (arr3.length == 1) {
+                            String []arrPerLevel = arr2[1].split("/");
+                            Logger.debug(TAG, ">>>" + "arrPerLevel:" + arrPerLevel.length);
+                            if (arrPerLevel.length == 1) {
+
                                 abilityLevelDto.list.add(arr2[1]);
                                 abilityLevelDto.list.add(arr2[1]);
                                 abilityLevelDto.list.add(arr2[1]);
-                                abilityLevelDto.list.add(arr2[1]);
-                            } else {
-                                for (int k =0; k < arr3.length; k ++) {
-                                    abilityLevelDto.list.add(arr3[k]);
+                                if(!dto.isUltimate) {
+                                    abilityLevelDto.list.add(arr2[1]);
                                 }
                             }
 
+                            if (arrPerLevel.length == 3) {
+                                dto.isUltimate = true;
+                                for (int k =0; k < arrPerLevel.length; k ++) {
+                                    abilityLevelDto.list.add(arrPerLevel[k]);
+                                }
+                                abilityLevelDto.list.add("-");
+                            }
+
+                            if (arrPerLevel.length == 4) {
+                                for (int k =0; k < arrPerLevel.length; k ++) {
+                                    abilityLevelDto.list.add(arrPerLevel[k]);
+                                }
+                            }
                             dto.abilityLevel.add(abilityLevelDto);
                         }
+
+
 
                         boolean isAdd = true;
                         for (AbilityDto d : listAbilities) {
@@ -309,6 +355,30 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                     }
                 }
             }
+
+            // Notes
+
+            try {
+                String nodePath = "//td[@style = 'vertical-align:top;border-left:1px solid black;padding:3px 5px;']";
+                Object[] dataNotes = tagNode.evaluateXPath(nodePath);
+
+                for (int i = 0; i < listAbilities.size(); i ++) {
+                    TagNode tn = (TagNode) dataNotes[i];
+                    String node = tn.getText().toString();
+                    Logger.debug(TAG, ">>>" + "Node:" + node);
+                    String []arr = node.split("\n");
+                    Logger.debug(TAG, ">>>" + "Arr:" + arr.length);
+                    for (String s : arr) {
+                        Logger.debug(TAG, ">>>" + "s:" + s);
+                        if (!TextUtils.isEmpty(s.trim()) && !s.trim().equals("Notes:")) {
+                            listAbilities.get(i).listNotes.add(s.replace(DOT, " ").trim());
+                        }
+                    }
+                }
+            } catch (XPatherException e) {
+                e.printStackTrace();
+            }
+
             return listAbilities;
 
 

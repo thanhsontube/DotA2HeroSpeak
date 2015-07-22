@@ -1,6 +1,5 @@
 package son.nt.dota2.fragment;
 
-import android.app.Fragment;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,21 +29,9 @@ import son.nt.dota2.dto.AbilityLevelDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.service.ServiceMedia;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AbilityFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link AbilityFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AbilityFragment extends AbsFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
@@ -55,24 +42,13 @@ public class AbilityFragment extends AbsFragment {
     private TextView txtAbility, txtAffects, txtDamage;
     private TextView txtDescription;
 
-    private TextView cooldown1, cooldown2, cooldown3, cooldown4;
-    private TextView mana1, mana2, mana3, mana4;
-    private View tableLv4;
-
     private LinearLayout viewItemAffects;
     private LinearLayout viewLevel;
 
+    private TextView txtNotes;
+
     ServiceMedia serviceMedia;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AbilityFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static AbilityFragment newInstance(HeroEntry param1, String param2) {
         AbilityFragment fragment = new AbilityFragment();
         Bundle args = new Bundle();
@@ -129,9 +105,11 @@ public class AbilityFragment extends AbsFragment {
         txtAffects = (TextView) view.findViewById(R.id.ability_aff);
         txtDamage = (TextView) view.findViewById(R.id.ability_damage);
         txtDescription = (TextView) view.findViewById(R.id.ability_description);
-        setupTable(view);
+        txtNotes = (TextView) view.findViewById(R.id.ability_txt_notes);
         viewItemAffects = (LinearLayout) view.findViewById(R.id.ability_items_affects);
         viewLevel = (LinearLayout) view.findViewById(R.id.ability_level);
+
+
         if (heroEntry == null || heroEntry.listAbilities.size() == 0) {
             return;
         }
@@ -149,20 +127,6 @@ public class AbilityFragment extends AbsFragment {
 
     }
 
-    private void setupTable(View view) {
-        cooldown1 = (TextView) view.findViewById(R.id.cooldown_lv1);
-        cooldown2 = (TextView) view.findViewById(R.id.cooldown_lv2);
-        cooldown3 = (TextView) view.findViewById(R.id.cooldown_lv3);
-        cooldown4 = (TextView) view.findViewById(R.id.cooldown_lv4);
-
-        mana1 = (TextView) view.findViewById(R.id.mana_lv1);
-        mana2 = (TextView) view.findViewById(R.id.mana_lv2);
-        mana3 = (TextView) view.findViewById(R.id.mana_lv3);
-        mana4 = (TextView) view.findViewById(R.id.mana_lv4);
-
-        tableLv4 = view.findViewById(R.id.table_lv_4);
-    }
-
     private void update(int position) {
         if (heroEntry == null || heroEntry.listAbilities.size() == 0) {
             return;
@@ -176,24 +140,13 @@ public class AbilityFragment extends AbsFragment {
         txtDescription.setVisibility(TextUtils.isEmpty(heroEntry.listAbilities.get(position).description) ? View.GONE : View.VISIBLE);
 
 
-
-        mana1.setText(dto.manacCosts.get(0));
-        mana2.setText(dto.manacCosts.get(1));
-        mana3.setText(dto.manacCosts.get(2));
-        mana4.setText(dto.manacCosts.get(3));
-
-        cooldown1.setText(dto.coolDowns.get(0));
-        cooldown2.setText(dto.coolDowns.get(1));
-        cooldown3.setText(dto.coolDowns.get(2));
-        cooldown4.setText(dto.coolDowns.get(3));
-
-        if (dto.isUltimate) {
-            tableLv4.setVisibility(View.GONE);
-        } else {
-            tableLv4.setVisibility(View.VISIBLE);
+        StringBuilder notes = new StringBuilder();
+        for (String s : dto.listNotes) {
+            notes.append(s);
+            notes.append("\n\r\n\r");
         }
 
-
+        txtNotes.setText(notes.toString());
         viewItemAffects.removeAllViews();
         for (AbilityItemAffectDto d : dto.itemAffects) {
             View row = inflater.inflate(R.layout.row_item_affects, null);
@@ -220,16 +173,51 @@ public class AbilityFragment extends AbsFragment {
             TextView txtLevel3 = (TextView) row.findViewById(R.id.level1_3);
             TextView txtLevel4 = (TextView) row.findViewById(R.id.level1_4);
 
-            txtLevelName.setText(d.name);
-            txtLevel1.setText(d.list.get(0));
-            txtLevel2.setText(d.list.get(1));
-            txtLevel3.setText(d.list.get(2));
-            if (d.list.size() == 4) {
+            txtLevel1.setTextColor(getResources().getColor(R.color.md_white_1000));
+            txtLevel2.setTextColor(getResources().getColor(R.color.md_white_1000));
+            txtLevel3.setTextColor(getResources().getColor(R.color.md_white_1000));
+            txtLevel4.setTextColor(getResources().getColor(R.color.md_white_1000));
 
-                txtLevel4.setVisibility(View.VISIBLE);
+            if (TextUtils.isEmpty(d.name)) {
+                txtLevel1.setTextColor(getResources().getColor(R.color.md_yellow_A700));
+                txtLevel2.setTextColor(getResources().getColor(R.color.md_yellow_A700));
+                txtLevel3.setTextColor(getResources().getColor(R.color.md_yellow_A700));
+                txtLevel4.setTextColor(getResources().getColor(R.color.md_yellow_A700));
+            }
+
+            if (d.name.toLowerCase().contains("cooldown")) {
+                txtLevel1.setTextColor(getResources().getColor(R.color.md_green_A700));
+                txtLevel2.setTextColor(getResources().getColor(R.color.md_green_A700));
+                txtLevel3.setTextColor(getResources().getColor(R.color.md_green_A700));
+                txtLevel4.setTextColor(getResources().getColor(R.color.md_green_A700));
+            }
+
+            if (d.name.contains("Mana")) {
+                txtLevel1.setTextColor(getResources().getColor(R.color.md_blue_A700));
+                txtLevel2.setTextColor(getResources().getColor(R.color.md_blue_A700));
+                txtLevel3.setTextColor(getResources().getColor(R.color.md_blue_A700));
+                txtLevel4.setTextColor(getResources().getColor(R.color.md_blue_A700));
+            }
+
+            if (d.name.toLowerCase().contains("damage")) {
+                txtLevel1.setTextColor(getResources().getColor(R.color.md_red_A700));
+                txtLevel2.setTextColor(getResources().getColor(R.color.md_red_A700));
+                txtLevel3.setTextColor(getResources().getColor(R.color.md_red_A700));
+                txtLevel4.setTextColor(getResources().getColor(R.color.md_red_A700));
+            }
+
+            txtLevelName.setText(d.name);
+            if (d.list.size() > 0) {
+                txtLevel1.setText(d.list.get(0));
+                txtLevel2.setText(d.list.get(1));
+                txtLevel3.setText(d.list.get(2));
+                if (!dto.isUltimate) {
+
+                    txtLevel4.setVisibility(View.VISIBLE);
                 txtLevel4.setText(d.list.get(3));
-            } else {
-                txtLevel4.setVisibility(View.GONE);
+                } else {
+                    txtLevel4.setVisibility(View.GONE);
+                }
             }
 
             viewLevel.addView(row);
