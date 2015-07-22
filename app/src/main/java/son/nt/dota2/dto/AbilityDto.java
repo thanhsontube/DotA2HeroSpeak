@@ -9,8 +9,9 @@ import son.nt.dota2.base.AObject;
  * Created by Sonnt on 7/14/15.
  */
 public class AbilityDto  extends AObject{
-    public String name; //Starstorm
+    public int no;
     public String heroName; //Mirana
+    public String name; //Starstorm
     public String ability; // No targer
     public String affects; //enemies
     public String damage; //magical
@@ -21,13 +22,24 @@ public class AbilityDto  extends AObject{
     public String linkImage ; //
 
     public boolean isUltimate = false;
-    public List<AbilityLevelDto> abilityLevel = new ArrayList<>();
-    public List<AbilityItemAffectDto> itemAffects = new ArrayList<>();
+    public List<AbilityLevelDto> listAbilityPerLevel = new ArrayList<>();
+    public List<AbilityItemAffectDto> listItemAffects = new ArrayList<>();
     public List<String> listNotes = new ArrayList<>();
+
+    public AbilityDto () {
+        no = -1;
+        heroName = name = ability = affects = damage = sound = description = linkImage = "";
+    }
 
     public void setTypes (String ability, String affect, String damage) {
         this.ability = ability;
         this.affects = affect;
         this.damage = damage;
+    }
+
+    public void setTypes (String [] arr) {
+        this.ability = arr[0];
+        this.affects = arr[1];
+        this.damage = arr[2];
     }
 }

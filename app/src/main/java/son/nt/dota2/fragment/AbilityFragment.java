@@ -43,7 +43,7 @@ public class AbilityFragment extends AbsFragment {
     private TextView txtDescription;
 
     private LinearLayout viewItemAffects;
-    private LinearLayout viewLevel;
+    private LinearLayout viewAbilityPerLevel;
 
     private TextView txtNotes;
 
@@ -107,7 +107,7 @@ public class AbilityFragment extends AbsFragment {
         txtDescription = (TextView) view.findViewById(R.id.ability_description);
         txtNotes = (TextView) view.findViewById(R.id.ability_txt_notes);
         viewItemAffects = (LinearLayout) view.findViewById(R.id.ability_items_affects);
-        viewLevel = (LinearLayout) view.findViewById(R.id.ability_level);
+        viewAbilityPerLevel = (LinearLayout) view.findViewById(R.id.ability_level);
 
 
         if (heroEntry == null || heroEntry.listAbilities.size() == 0) {
@@ -120,7 +120,7 @@ public class AbilityFragment extends AbsFragment {
             TextView txt = (TextView) vTab.findViewById(R.id.ability_text);
             txt.setText(dto.name);
             Glide.with(getActivity()).load(dto.linkImage).fitCenter().into(img);
-            TabLayout.Tab tab =  tabLayout.newTab().setCustomView(vTab);
+            TabLayout.Tab tab = tabLayout.newTab().setCustomView(vTab);
             tabLayout.addTab(tab);
         }
         update(0);
@@ -147,15 +147,16 @@ public class AbilityFragment extends AbsFragment {
         }
 
         txtNotes.setText(notes.toString());
+
         viewItemAffects.removeAllViews();
-        for (AbilityItemAffectDto d : dto.itemAffects) {
+        for (AbilityItemAffectDto d : dto.listItemAffects) {
             View row = inflater.inflate(R.layout.row_item_affects, null);
-            ((TextView)row.findViewById(R.id.row_text)).setText(d.text);
+            ((TextView) row.findViewById(R.id.row_text)).setText(d.text);
             if (!TextUtils.isEmpty(d.alt)) {
-                ((TextView)row.findViewById(R.id.alt)).setVisibility(View.VISIBLE);
-                ((TextView)row.findViewById(R.id.alt)).setText(d.alt);
+                ((TextView) row.findViewById(R.id.alt)).setVisibility(View.VISIBLE);
+                ((TextView) row.findViewById(R.id.alt)).setText(d.alt);
             } else {
-                ((TextView)row.findViewById(R.id.alt)).setVisibility(View.GONE);
+                ((TextView) row.findViewById(R.id.alt)).setVisibility(View.GONE);
             }
             ImageView src = (ImageView) row.findViewById(R.id.src);
             Glide.with(src.getContext()).load(d.src).fitCenter().into(src);
@@ -164,8 +165,8 @@ public class AbilityFragment extends AbsFragment {
             }
         }
 
-        viewLevel.removeAllViews();
-        for (AbilityLevelDto d : dto.abilityLevel) {
+        viewAbilityPerLevel.removeAllViews();
+        for (AbilityLevelDto d : dto.listAbilityPerLevel) {
             View row = inflater.inflate(R.layout.row_ability_level, null);
             TextView txtLevelName = (TextView) row.findViewById(R.id.level_name);
             TextView txtLevel1 = (TextView) row.findViewById(R.id.level1_1);
@@ -177,6 +178,8 @@ public class AbilityFragment extends AbsFragment {
             txtLevel2.setTextColor(getResources().getColor(R.color.md_white_1000));
             txtLevel3.setTextColor(getResources().getColor(R.color.md_white_1000));
             txtLevel4.setTextColor(getResources().getColor(R.color.md_white_1000));
+
+            txtLevelName.setText(d.name);
 
             if (TextUtils.isEmpty(d.name)) {
                 txtLevel1.setTextColor(getResources().getColor(R.color.md_yellow_A700));
@@ -206,21 +209,18 @@ public class AbilityFragment extends AbsFragment {
                 txtLevel4.setTextColor(getResources().getColor(R.color.md_red_A700));
             }
 
-            txtLevelName.setText(d.name);
-            if (d.list.size() > 0) {
-                txtLevel1.setText(d.list.get(0));
-                txtLevel2.setText(d.list.get(1));
-                txtLevel3.setText(d.list.get(2));
-                if (!dto.isUltimate) {
 
-                    txtLevel4.setVisibility(View.VISIBLE);
-                txtLevel4.setText(d.list.get(3));
-                } else {
-                    txtLevel4.setVisibility(View.GONE);
-                }
+            txtLevel1.setText(d.list.get(0));
+            txtLevel2.setText(d.list.get(1));
+            txtLevel3.setText(d.list.get(2));
+            txtLevel4.setText(d.list.get(3));
+            if (dto.isUltimate) {
+                txtLevel4.setVisibility(View.GONE);
+            } else {
+                txtLevel4.setVisibility(View.VISIBLE);
             }
 
-            viewLevel.addView(row);
+            viewAbilityPerLevel.addView(row);
         }
     }
 
