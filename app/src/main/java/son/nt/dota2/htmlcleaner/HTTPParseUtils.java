@@ -15,7 +15,11 @@ import java.util.List;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.AbilityDto;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.HeroList;
+import son.nt.dota2.dto.HeroManager;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
+import son.nt.dota2.htmlcleaner.hero.HeroListLoader;
+import son.nt.dota2.htmlcleaner.hero.HeroNameLoader;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
 import son.nt.dota2.utils.Logger;
@@ -81,6 +85,64 @@ public class HTTPParseUtils {
                 heroEntry.name = name;
                 heroEntry.listAbilities.addAll(entity);
                 OttoBus.post(heroEntry);
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>>" + "onContentLoaderFailed:" + e.toString());
+            }
+        });
+    }
+
+    /**
+     * get basic information of heroes
+     */
+    public void withHeroList () {
+        Logger.debug(TAG, ">>>" + ">>>withHeroList<<<");
+        HttpGet httpGet = new HttpGet(HeroListLoader.URL_HERO_LIST);
+        ResourceManager.getInstance().getContentManager().load(new HeroListLoader(httpGet, true) {
+            @Override
+            public void onContentLoaderStart() {
+                Logger.debug(TAG, ">>>" + "onContentLoaderStart");
+            }
+
+            @Override
+            public void onContentLoaderSucceed(HeroList entity) {
+                Logger.debug(TAG, ">>>" + "onContentLoaderSucceed:" + entity.getListHeroes().size());
+                HeroManager.getInstance().setHeroList(entity);
+
+                int i = 0;
+                for (HeroEntry dto : entity.getListHeroes()) {
+                    withHeroName(dto.heroId);
+                    i++;
+                    if (i == 3) {
+                        break;
+                    }
+                }
+
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>>" + "onContentLoaderFailed:" + e.toString());
+            }
+        });
+    }
+
+    public void withHeroName (String heroId) {
+        String url = "http://dota2.gamepedia.com/" + heroId;
+        Logger.debug(TAG, ">>>" + "withHeroName:" + url);
+        HttpGet httpGet = new HttpGet(url);
+        ResourceManager.getInstance().getContentManager().load(new HeroNameLoader(httpGet, true) {
+            @Override
+            public void onContentLoaderStart() {
+                Logger.debug(TAG, ">>>" + "onContentLoaderStart");
+            }
+
+            @Override
+            public void onContentLoaderSucceed(HeroEntry entity) {
+                Logger.debug(TAG, ">>>" + "onContentLoaderSucceed:" + entity.fullName);
+
             }
 
             @Override

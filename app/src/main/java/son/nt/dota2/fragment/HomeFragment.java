@@ -43,7 +43,7 @@ public class HomeFragment extends AFragment {
     ViewPager viewPager;
     TabLayout tabLayout;
     AdapterTop adapterTop;
-    private HeroData herodata = new HeroData();
+    private HeroData herodata;
 
     public static final int EFFECT_DEFAULT = JazzyHelper.GROW;
     int currentEffect = EFFECT_DEFAULT;

@@ -1,16 +1,25 @@
 package son.nt.dota2.dto;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import son.nt.dota2.htmlcleaner.role.RoleDto;
+import son.nt.dota2.base.AObject;
 
 /**
  * Created by Sonnt on 7/14/15.
  */
-public class HeroEntry implements Serializable {
+public class HeroEntry extends AObject {
     public String id;
+
+
+    /**
+     * get info from http://www.dota2.com/heroes/
+     */
+    public String heroId; //Dragon_Knight
+    public String hrefDota2;
+    public String avatarThumbnail;
+    public String group ;
+
     public String name; //Juggernaut
     public String fullName; // Yurnero, the Juggernaut
     public String nickName;
@@ -25,7 +34,7 @@ public class HeroEntry implements Serializable {
     public String sloganVoice;
 
     //Pip carry.png Carry / Pip pusher.png Pusher
-    public List<RoleDto> roles = new ArrayList<>();
+    public List<String> roles = new ArrayList<>();
 
     /**
      * No one has ever seen the face hidden beneath the mask of Yurnero the Juggernaut. It is only speculation that he even has one.
@@ -39,10 +48,7 @@ public class HeroEntry implements Serializable {
 
     public List<GalleryDto> gallery = new ArrayList<>();
 
-    // 0: Str, 1: Agi; 3: Intel
-    public String group ;
-    public String hrefDota2;
-    public String avatarThubmail;
+
     public String avatarLarge;
 
     //http://hydra-media.cursecdn.com/dota2.gamepedia.com/thumb/0/08/Balance_of_the_Bladekeeper_Loading_Screen_16x9.png/1600px-Balance_of_the_Bladekeeper_Loading_Screen_16x9.png
@@ -53,5 +59,12 @@ public class HeroEntry implements Serializable {
 //    public List<EnumRoles> roles;
 
     public HeroEntry() {
+    }
+
+    public void setBaseInfo(String heroId, String hrefDota2, String avatarThumbnail, String group) {
+        this.heroId = heroId;
+        this.hrefDota2 = hrefDota2;
+        this.avatarThumbnail = avatarThumbnail;
+        this.group = group;
     }
 }

@@ -1,13 +1,12 @@
 package son.nt.dota2.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import son.nt.dota2.BuildConfig;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.fragment.LoginFragment;
+import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 
 public class LoginActivity extends AActivity {
 
@@ -31,9 +30,14 @@ public class LoginActivity extends AActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (BuildConfig.DEBUG) {
-            startActivity(new Intent(this, HomeActivity.class));
-            finish();
-        }
+        testAbilities();
+//        if (BuildConfig.DEBUG) {
+//            startActivity(new Intent(this, HomeActivity.class));
+//            finish();
+//        }
+    }
+
+    private void testAbilities () {
+        HTTPParseUtils.getInstance().withHeroList();
     }
 }

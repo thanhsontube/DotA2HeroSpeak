@@ -18,6 +18,8 @@ public class HeroManager {
 
     private HeroData heroData;
 
+    private HeroList heroList;
+
     static HeroManager INSTANCE = null;
 
     private Context context;
@@ -70,5 +72,13 @@ public class HeroManager {
 
     public HeroData getHeroData() {
         return heroData;
+    }
+
+    public HeroList getHeroList() {
+        return heroList;
+    }
+
+    public void setHeroList(HeroList heroList) {
+        this.heroList = heroList;
     }
 }
