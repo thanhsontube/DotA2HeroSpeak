@@ -60,7 +60,9 @@ public class HeroEntry extends AObject {
 //    public List<EnumRoles> roles;
 
     public HeroEntry() {
+        group = "Str";
     }
+
 
     public void setBaseInfo(String heroId, String hrefDota2, String avatarThumbnail, String group) {
         this.heroId = heroId;

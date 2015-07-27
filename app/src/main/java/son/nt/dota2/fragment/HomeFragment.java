@@ -13,14 +13,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.twotoasters.jazzylistview.JazzyHelper;
+
+import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.AFragment;
+import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.HeroList;
 import son.nt.dota2.dto.HeroManager;
-import son.nt.dota2.htmlcleaner.HTTPParseUtils;
+import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsScreen;
 
 /**
@@ -94,21 +101,13 @@ public class HomeFragment extends AFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        herodata = HeroManager.getInstance().getHeroData();
-//        HTTPParseUtils.getInstance().withHeroList();
-        HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
-            @Override
-            public void onFinish() {
-                heroList = HeroManager.getInstance().getHeroList();
-                adapterTop = new AdapterTop(getFragmentManager(), heroList);
-                viewPager.setAdapter(adapterTop);
-            }
-        });
         initLayout(view);
         if (savedInstanceState != null) {
             currentEffect = savedInstanceState.getInt(KEY_EFFECT_DEFAULT, EFFECT_DEFAULT);
             setEffect();
         }
+
+        getData();
     }
     private void setEffect() {
         adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
@@ -148,14 +147,14 @@ public class HomeFragment extends AFragment {
     private void initLayout(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.home_tabs);
         viewPager = (ViewPager) view.findViewById(R.id.home_view_pager);
-        adapterTop = new AdapterTop(getFragmentManager(), heroList);
-        viewPager.setAdapter(adapterTop);
-        tabLayout.setupWithViewPager(viewPager);
-        if (TsScreen.isLandscape(getActivity())) {
-            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_str_24));
-            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_agi_24));
-            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
-        }
+//        adapterTop = new AdapterTop(getFragmentManager(), heroList);
+//        viewPager.setAdapter(adapterTop);
+//        tabLayout.setupWithViewPager(viewPager);
+//        if (TsScreen.isLandscape(getActivity())) {
+//            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_str_24));
+//            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_agi_24));
+//            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
+//        }
     }
 
 
@@ -237,6 +236,62 @@ public class HomeFragment extends AFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_EFFECT_DEFAULT, currentEffect);
+    }
+
+    private void getData () {
+        Logger.debug(TAG, ">>>" + "getData");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
+        query.orderByAscending("no");
+        query.setLimit(200);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (e != null || list.size() == 0) {
+                    Logger.error(TAG, ">>>" + "ERror getDAta:" + e.toString());
+                    return;
+                }
+                Logger.debug(TAG, ">>>" + "getData size:" + list.size());
+                HeroManager.getInstance().getHeroList().getListHeroes().clear();
+                for (ParseObject p : list) {
+                    HeroManager.getInstance().getHeroList().getListHeroes().add(parse(p));
+                }
+                heroList = HeroManager.getInstance().getHeroList();
+                Logger.debug(TAG, ">>>" + "Str:" + HeroManager.getInstance().getStrHeroes().size());
+                Logger.debug(TAG, ">>>" + "Agi:" + HeroManager.getInstance().getAgiHeroes().size());
+                Logger.debug(TAG, ">>>" + "Intel:" + HeroManager.getInstance().getIntelHeroes().size());
+
+                adapterTop = new AdapterTop(getFragmentManager(), heroList);
+                viewPager.setAdapter(adapterTop);
+                tabLayout.setupWithViewPager(viewPager);
+                if (TsScreen.isLandscape(getActivity())) {
+                    tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_str_24));
+                    tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_agi_24));
+                    tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
+                }
+//                adapterTop = new AdapterTop(getFragmentManager(), heroList);
+//                viewPager.setAdapter(adapterTop);
+//                adapterTop.notifyDataSetChanged();
+                Logger.debug(TAG, ">>>" + "heroList:" + heroList.getListHeroes().size());
+
+            }
+        });
+    }
+
+    private HeroEntry parse (ParseObject p) {
+        HeroEntry dto = new HeroEntry();
+        int no = p.getInt("no");
+        String heroId = p.getString("heroId");
+        String name = p.getString("name");
+        String fullName = p.getString("fullName");
+        String group = p.getString("group");
+        String href = p.getString("href");
+        String avatar = p.getString("avatar");
+
+        dto.setBaseInfo(heroId, href, avatar, group);
+        dto.no = no;
+        dto.name = name;
+        dto.fullName = fullName;
+        return dto;
     }
 
 }

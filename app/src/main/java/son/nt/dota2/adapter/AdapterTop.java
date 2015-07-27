@@ -59,7 +59,9 @@ public class AdapterTop extends BasePagerAdapter {
                 group = MsConst.GROUP_INTEL;
                 break;
         }
-        return HeroListFragment.newInstance(heroList, group);
+        return HeroListFragment.newInstance(group);
+//        return new HeroListFragment();
+//        return LoginFragment.newInstance("","");
     }
 
     @Override

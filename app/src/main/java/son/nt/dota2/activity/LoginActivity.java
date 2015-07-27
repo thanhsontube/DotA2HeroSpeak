@@ -27,7 +27,7 @@ public class LoginActivity extends AActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        testAbilities();
+//        testAbilities();
     }
 
     @Override

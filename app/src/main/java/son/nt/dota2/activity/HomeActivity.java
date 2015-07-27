@@ -28,7 +28,6 @@ import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.RolesFragment;
 import son.nt.dota2.fragment.SearchableFragment;
-import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
@@ -53,7 +52,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         initListener();
         navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         handleSearch(getIntent());
-        testAbilities();
     }
 
     private void initActionBar() {
@@ -245,10 +243,5 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         setIntent(intent);
         handleSearch(intent);
     }
-
-    private void testAbilities () {
-        HTTPParseUtils.getInstance().withHeroList();
-    }
-
 
 }

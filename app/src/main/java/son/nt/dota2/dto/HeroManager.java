@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.utils.FileUtil;
@@ -18,7 +20,7 @@ public class HeroManager {
 
     private HeroData heroData;
 
-    private HeroList heroList;
+    private HeroList heroList = new HeroList();
 
     static HeroManager INSTANCE = null;
 
@@ -89,5 +91,42 @@ public class HeroManager {
             }
         }
         return null;
+    }
+
+    public List<HeroEntry> getStrHeroes () {
+        List<HeroEntry> list = new ArrayList<>();
+        if (heroList == null) {
+            return list;
+        }
+        for (HeroEntry dto : heroList.getListHeroes()) {
+            if (dto.group.equals("Str")) {
+                list.add(dto);
+            }
+        }
+        return  list;
+    }
+    public List<HeroEntry> getAgiHeroes () {
+        List<HeroEntry> list = new ArrayList<>();
+        if (heroList == null) {
+            return list;
+        }
+        for (HeroEntry dto : heroList.getListHeroes()) {
+            if (dto.group.equals("Agi")) {
+                list.add(dto);
+            }
+        }
+        return  list;
+    }
+    public List<HeroEntry> getIntelHeroes () {
+        List<HeroEntry> list = new ArrayList<>();
+        if (heroList == null) {
+            return list;
+        }
+        for (HeroEntry dto : heroList.getListHeroes()) {
+            if (dto.group.equals("Intel")) {
+                list.add(dto);
+            }
+        }
+        return  list;
     }
 }

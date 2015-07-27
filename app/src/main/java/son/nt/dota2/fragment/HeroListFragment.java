@@ -20,12 +20,12 @@ import java.util.List;
 
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
-import son.nt.dota2.ResourceManager;
 import son.nt.dota2.activity.MainActivity;
 import son.nt.dota2.adapter.AdapterRcvHome;
 import son.nt.dota2.base.AFragment;
-import son.nt.dota2.dto.HeroList;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.HeroList;
+import son.nt.dota2.dto.HeroManager;
 import son.nt.dota2.utils.TsGaTools;
 import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.TsScreen;
@@ -46,11 +46,11 @@ public class HeroListFragment extends AFragment {
     int currentEffect = EFFECT_DEFAULT;
 
     public static final String KEY_EFFECT_DEFAULT = "KEY_EFFECT_DEFAULT";
-    private HeroList heroList;
+    //    private HeroList heroList;
     private AdapterRcvHome adapterHome;
     private List<HeroEntry> listHero = new ArrayList<>();
 
-    private String group;
+    private String group = "Str";
     RecyclerView recyclerView;
     StaggeredGridLayoutManager staggeredGridLayoutManager;
 
@@ -59,10 +59,17 @@ public class HeroListFragment extends AFragment {
     TsLog log = new TsLog(TAG);
 
     public static HeroListFragment newInstance(HeroList HeroList, String group) {
-//        ResourceManager.getInstance().setHeroList(HeroList);
         HeroListFragment fragment = new HeroListFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARAM1, HeroList);
+        args.putString(ARG_PARAM2, group);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static HeroListFragment newInstance(String group) {
+        HeroListFragment fragment = new HeroListFragment();
+        Bundle args = new Bundle();
         args.putString(ARG_PARAM2, group);
         fragment.setArguments(args);
         return fragment;
@@ -75,8 +82,16 @@ public class HeroListFragment extends AFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            heroList = (HeroList) getArguments().getSerializable(ARG_PARAM1);
+//            heroList = (HeroList) getArguments().getSerializable(ARG_PARAM1);
             group = getArguments().getString(ARG_PARAM2);
+            if (group.equals(MsConst.GROUP_STR)) {
+                listHero = HeroManager.getInstance().getStrHeroes();
+            } else if (group.equals(MsConst.GROUP_AGI)) {
+                listHero = HeroManager.getInstance().getAgiHeroes();
+            } else if (group.equals(MsConst.GROUP_INTEL)) {
+                listHero = HeroManager.getInstance().getIntelHeroes();
+            }
+
         }
     }
 
@@ -108,8 +123,8 @@ public class HeroListFragment extends AFragment {
     }
 
     private void initData() {
-        listHero.clear();
-        listHero.addAll(getListHeros(group));
+//        listHero.clear();
+//        listHero.addAll(getListHeros(group));
     }
 
     private void initLayout(View view) {
@@ -146,32 +161,33 @@ public class HeroListFragment extends AFragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
-        void heroSelected (HeroEntry HeroEntry);
+
+        void heroSelected(HeroEntry HeroEntry);
     }
 
-    private List<HeroEntry> getListHeros(String group) {
-        List<HeroEntry> list = new ArrayList<>();
-        if (group.equals(MsConst.GROUP_STR)) {
-            for (HeroEntry dto : heroList.getListHeroes()) {
-                if (dto.group.equals(MsConst.GROUP_STR)) {
-                    list.add(dto);
-                }
-            }
-        } else if (group.equals(MsConst.GROUP_AGI)) {
-            for (HeroEntry dto : heroList.getListHeroes()) {
-                if (dto.group.equals(MsConst.GROUP_AGI)) {
-                    list.add(dto);
-                }
-            }
-        } else if (group.equals(MsConst.GROUP_INTEL)) {
-            for (HeroEntry dto : heroList.getListHeroes()) {
-                if (dto.group.equals(MsConst.GROUP_INTEL)) {
-                    list.add(dto);
-                }
-            }
-        }
-        return list;
-    }
+//    private List<HeroEntry> getListHeros(String group) {
+//        List<HeroEntry> list = new ArrayList<>();
+//        if (group.equals(MsConst.GROUP_STR)) {
+//            for (HeroEntry dto : heroList.getListHeroes()) {
+//                if (dto.group.equals(MsConst.GROUP_STR)) {
+//                    list.add(dto);
+//                }
+//            }
+//        } else if (group.equals(MsConst.GROUP_AGI)) {
+//            for (HeroEntry dto : heroList.getListHeroes()) {
+//                if (dto.group.equals(MsConst.GROUP_AGI)) {
+//                    list.add(dto);
+//                }
+//            }
+//        } else if (group.equals(MsConst.GROUP_INTEL)) {
+//            for (HeroEntry dto : heroList.getListHeroes()) {
+//                if (dto.group.equals(MsConst.GROUP_INTEL)) {
+//                    list.add(dto);
+//                }
+//            }
+//        }
+//        return list;
+//    }
 
 
 }

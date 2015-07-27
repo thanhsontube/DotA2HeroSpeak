@@ -118,10 +118,10 @@ public class HTTPParseUtils {
                 HeroManager.getInstance().setHeroList(entity);
 
 //                updateStep1();
-
-                for (HeroEntry dto : entity.getListHeroes()) {
-                    withHeroName(dto.heroId);
-                }
+//
+//                for (HeroEntry dto : entity.getListHeroes()) {
+//                    withHeroName(dto.heroId);
+//                }
 
 
                 if (listener != null) {
