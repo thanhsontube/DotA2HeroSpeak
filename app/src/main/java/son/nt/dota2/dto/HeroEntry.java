@@ -9,6 +9,7 @@ import son.nt.dota2.base.AObject;
  * Created by Sonnt on 7/14/15.
  */
 public class HeroEntry extends AObject {
+    public int no;
     public String id;
 
 
@@ -16,7 +17,7 @@ public class HeroEntry extends AObject {
      * get info from http://www.dota2.com/heroes/
      */
     public String heroId; //Dragon_Knight
-    public String hrefDota2;
+    public String href;
     public String avatarThumbnail;
     public String group ;
 
@@ -63,7 +64,7 @@ public class HeroEntry extends AObject {
 
     public void setBaseInfo(String heroId, String hrefDota2, String avatarThumbnail, String group) {
         this.heroId = heroId;
-        this.hrefDota2 = hrefDota2;
+        this.href = hrefDota2;
         this.avatarThumbnail = avatarThumbnail;
         this.group = group;
     }

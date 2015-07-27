@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import son.nt.dota2.R;
-import son.nt.dota2.dto.HeroDto;
+import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.OttoBus;
 
@@ -25,12 +25,12 @@ import son.nt.dota2.utils.OttoBus;
  */
 public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHolder> {
 
-    List<HeroDto> mValues;
+    List<HeroEntry> mValues;
     Context context;
     private int mBackground;
     private final TypedValue mTypedValue = new TypedValue();
     private  final WeakReference<Context> contextWeakReference;
-    public AdapterRcvHome (Context cx, List<HeroDto> list) {
+    public AdapterRcvHome (Context cx, List<HeroEntry> list) {
         this.mValues = list;
         this.context = cx;
         this.contextWeakReference = new WeakReference<Context>(cx);
@@ -48,7 +48,7 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int i) {
-        final HeroDto dto = mValues.get(i);
+        final HeroEntry dto = mValues.get(i);
         String url = "http://38.media.tumblr.com/600b4ea2d2770bec97fd836a6b3c91f9/tumblr_n5u5px6X1Z1rwq84jo1_r1_400.gif";
         viewHolder.txtName.setText(dto.name);
         if (dto.group.equalsIgnoreCase("Str")) {
@@ -59,7 +59,7 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
             viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.intel));
         }
         if (contextWeakReference.get() != null) {
-            Glide.with(viewHolder.imageView.getContext()).load(dto.avatarThubmail)
+            Glide.with(viewHolder.imageView.getContext()).load(dto.avatarThumbnail)
                     .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(viewHolder.imageView);

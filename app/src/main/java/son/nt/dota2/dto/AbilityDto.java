@@ -10,7 +10,7 @@ import son.nt.dota2.base.AObject;
  */
 public class AbilityDto  extends AObject{
     public int no;
-    public String heroName; //Mirana
+    public String heroId; //Mirana
     public String name; //Starstorm
     public String ability; // No targer
     public String affects; //enemies
@@ -28,13 +28,7 @@ public class AbilityDto  extends AObject{
 
     public AbilityDto () {
         no = -1;
-        heroName = name = ability = affects = damage = sound = description = linkImage = "";
-    }
-
-    public void setTypes (String ability, String affect, String damage) {
-        this.ability = ability;
-        this.affects = affect;
-        this.damage = damage;
+        heroId = name = ability = affects = damage = sound = description = linkImage = "";
     }
 
     public void setTypes (String [] arr) {

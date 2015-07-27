@@ -7,13 +7,14 @@ import android.view.ViewGroup;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.base.BasePagerAdapter;
 import son.nt.dota2.dto.HeroData;
+import son.nt.dota2.dto.HeroList;
 import son.nt.dota2.fragment.HeroListFragment;
 
 /**
  * Created by Sonnt on 3/14/2015.
  */
 public class AdapterTop extends BasePagerAdapter {
-    private HeroData herodata;
+    private HeroList heroList;
     private FragmentManager fm;
     private Fragment mPrimaryFragment;
     @Override
@@ -26,14 +27,21 @@ public class AdapterTop extends BasePagerAdapter {
         return (HeroListFragment)mPrimaryFragment;
     }
 
-    public AdapterTop(FragmentManager fm, HeroData herodata) {
+    public AdapterTop(FragmentManager fm, HeroList data) {
         super(fm);
         this.fm = fm;
-        this.herodata = herodata;
+        this.heroList = data;
 
     }
-    public void update(HeroData data) {
-        this.herodata = data;
+
+    public AdapterTop(FragmentManager fm, HeroData data) {
+        super(fm);
+        this.fm = fm;
+//        this.heroList = data;
+//
+    }
+    public void update(HeroList data) {
+        this.heroList = data;
         notifyDataSetChanged();
     }
 
@@ -51,7 +59,7 @@ public class AdapterTop extends BasePagerAdapter {
                 group = MsConst.GROUP_INTEL;
                 break;
         }
-        return HeroListFragment.newInstance(herodata, group);
+        return HeroListFragment.newInstance(heroList, group);
     }
 
     @Override
@@ -61,11 +69,11 @@ public class AdapterTop extends BasePagerAdapter {
 
     @Override
     public int getCount() {
-        return herodata.groups.length;
+        return heroList.groups.length;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return herodata.groups[position];
+        return heroList.groups[position];
     }
 }

@@ -42,7 +42,7 @@ public abstract class HeroNameLoader extends ContentLoader<HeroEntry> {
                 TagNode nodeA = ((TagNode) data[0]).getChildTagList().get(0);
                  heroName = nodeA.getText().toString();
                 heroEntry.name = heroName;
-                Logger.debug(TAG, ">>>" + "heroName:" + heroName);
+                Logger.debug(TAG, ">>>" + "heroId:" + heroName);
             }
 
             String xpath2 = "//td[@style='font-weight:bold;font-size:13px;text-align:center;']";

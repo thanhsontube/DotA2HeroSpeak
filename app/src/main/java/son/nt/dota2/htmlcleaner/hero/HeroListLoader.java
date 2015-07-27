@@ -53,6 +53,7 @@ public abstract class HeroListLoader extends ContentLoader<HeroList> {
             String href = "";
             String group = "";
             String avatar = "";
+            int countNo = 1;
             if (data.length > 0) {
                 for (int i = 0; i < data.length; i++) {
                     Log.e("HeroListLoader", "log>>>" + "===========" + i);
@@ -79,9 +80,11 @@ public abstract class HeroListLoader extends ContentLoader<HeroList> {
                         //http://www.dota2.com/hero/Huskar/
                         String[] array = href.split("/");
                         heroId = array[array.length - 1];
-                        Logger.debug(TAG, ">>>" + "HeroId:" + heroId + ";link:" + avatar);
+                        Logger.debug(TAG, ">>>" + "No:" + countNo + ";HeroId:" + heroId + ";link:" + avatar);
                         heroDto.setBaseInfo(heroId,href, avatar, group);
+                        heroDto.no = countNo;
                         heroList.getListHeroes().add(heroDto);
+                        countNo ++;
 
 
                         //avatar large

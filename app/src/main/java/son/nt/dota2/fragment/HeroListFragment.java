@@ -24,8 +24,8 @@ import son.nt.dota2.ResourceManager;
 import son.nt.dota2.activity.MainActivity;
 import son.nt.dota2.adapter.AdapterRcvHome;
 import son.nt.dota2.base.AFragment;
-import son.nt.dota2.dto.HeroData;
-import son.nt.dota2.dto.HeroDto;
+import son.nt.dota2.dto.HeroList;
+import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.utils.TsGaTools;
 import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.TsScreen;
@@ -46,9 +46,9 @@ public class HeroListFragment extends AFragment {
     int currentEffect = EFFECT_DEFAULT;
 
     public static final String KEY_EFFECT_DEFAULT = "KEY_EFFECT_DEFAULT";
-    private HeroData herodata;
+    private HeroList heroList;
     private AdapterRcvHome adapterHome;
-    private List<HeroDto> listHero = new ArrayList<>();
+    private List<HeroEntry> listHero = new ArrayList<>();
 
     private String group;
     RecyclerView recyclerView;
@@ -58,11 +58,11 @@ public class HeroListFragment extends AFragment {
     private OnFragmentInteractionListener mListener;
     TsLog log = new TsLog(TAG);
 
-    public static HeroListFragment newInstance(HeroData herodata, String group) {
-        ResourceManager.getInstance().setHeroData(herodata);
+    public static HeroListFragment newInstance(HeroList HeroList, String group) {
+//        ResourceManager.getInstance().setHeroList(HeroList);
         HeroListFragment fragment = new HeroListFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, herodata);
+        args.putSerializable(ARG_PARAM1, HeroList);
         args.putString(ARG_PARAM2, group);
         fragment.setArguments(args);
         return fragment;
@@ -75,7 +75,7 @@ public class HeroListFragment extends AFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            herodata = (HeroData) getArguments().getSerializable(ARG_PARAM1);
+            heroList = (HeroList) getArguments().getSerializable(ARG_PARAM1);
             group = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -90,7 +90,7 @@ public class HeroListFragment extends AFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        log.d("log>>>" + "onViewCreated herodata");
+        log.d("log>>>" + "onViewCreated heroList");
         initData();
         initLayout(view);
         initListener();
@@ -146,25 +146,25 @@ public class HeroListFragment extends AFragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
-        void heroSelected (HeroDto heroDto);
+        void heroSelected (HeroEntry HeroEntry);
     }
 
-    private List<HeroDto> getListHeros(String group) {
-        List<HeroDto> list = new ArrayList<>();
+    private List<HeroEntry> getListHeros(String group) {
+        List<HeroEntry> list = new ArrayList<>();
         if (group.equals(MsConst.GROUP_STR)) {
-            for (HeroDto dto : herodata.listHeros) {
+            for (HeroEntry dto : heroList.getListHeroes()) {
                 if (dto.group.equals(MsConst.GROUP_STR)) {
                     list.add(dto);
                 }
             }
         } else if (group.equals(MsConst.GROUP_AGI)) {
-            for (HeroDto dto : herodata.listHeros) {
+            for (HeroEntry dto : heroList.getListHeroes()) {
                 if (dto.group.equals(MsConst.GROUP_AGI)) {
                     list.add(dto);
                 }
             }
         } else if (group.equals(MsConst.GROUP_INTEL)) {
-            for (HeroDto dto : herodata.listHeros) {
+            for (HeroEntry dto : heroList.getListHeroes()) {
                 if (dto.group.equals(MsConst.GROUP_INTEL)) {
                     list.add(dto);
                 }

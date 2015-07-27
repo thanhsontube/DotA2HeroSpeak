@@ -81,4 +81,13 @@ public class HeroManager {
     public void setHeroList(HeroList heroList) {
         this.heroList = heroList;
     }
+
+    public HeroEntry getHero(String heroId) {
+        for (HeroEntry dto : heroList.getListHeroes()) {
+            if (dto.heroId.equals(heroId)) {
+                return dto;
+            }
+        }
+        return null;
+    }
 }

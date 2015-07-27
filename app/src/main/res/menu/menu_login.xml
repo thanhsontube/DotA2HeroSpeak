@@ -17,4 +17,22 @@
         android:orderInCategory="100"
         android:title="fb log in"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_push_step1"
+        android:orderInCategory="100"
+        android:title="action_push_step1"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_push_step2"
+        android:orderInCategory="100"
+        android:title="action_push_step2"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_push_step3"
+        android:orderInCategory="100"
+        android:title="action_push_step3"
+        app:showAsAction="never" />
 </menu>

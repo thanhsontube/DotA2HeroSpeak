@@ -18,8 +18,9 @@ import com.twotoasters.jazzylistview.JazzyHelper;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.AFragment;
-import son.nt.dota2.dto.HeroData;
+import son.nt.dota2.dto.HeroList;
 import son.nt.dota2.dto.HeroManager;
+import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.TsScreen;
 
 /**
@@ -43,7 +44,8 @@ public class HomeFragment extends AFragment {
     ViewPager viewPager;
     TabLayout tabLayout;
     AdapterTop adapterTop;
-    private HeroData herodata;
+//    private HeroData herodata;
+    private HeroList heroList = new HeroList();
 
     public static final int EFFECT_DEFAULT = JazzyHelper.GROW;
     int currentEffect = EFFECT_DEFAULT;
@@ -92,7 +94,16 @@ public class HomeFragment extends AFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        herodata = HeroManager.getInstance().getHeroData();
+//        herodata = HeroManager.getInstance().getHeroData();
+//        HTTPParseUtils.getInstance().withHeroList();
+        HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
+            @Override
+            public void onFinish() {
+                heroList = HeroManager.getInstance().getHeroList();
+                adapterTop = new AdapterTop(getFragmentManager(), heroList);
+                viewPager.setAdapter(adapterTop);
+            }
+        });
         initLayout(view);
         if (savedInstanceState != null) {
             currentEffect = savedInstanceState.getInt(KEY_EFFECT_DEFAULT, EFFECT_DEFAULT);
@@ -137,7 +148,7 @@ public class HomeFragment extends AFragment {
     private void initLayout(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.home_tabs);
         viewPager = (ViewPager) view.findViewById(R.id.home_view_pager);
-        adapterTop = new AdapterTop(getFragmentManager(), herodata);
+        adapterTop = new AdapterTop(getFragmentManager(), heroList);
         viewPager.setAdapter(adapterTop);
         tabLayout.setupWithViewPager(viewPager);
         if (TsScreen.isLandscape(getActivity())) {

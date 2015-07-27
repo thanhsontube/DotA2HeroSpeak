@@ -2,6 +2,8 @@ package son.nt.dota2.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
@@ -25,12 +27,13 @@ public class LoginActivity extends AActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        testAbilities();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        testAbilities();
+
 //        if (BuildConfig.DEBUG) {
 //            startActivity(new Intent(this, HomeActivity.class));
 //            finish();
@@ -39,5 +42,21 @@ public class LoginActivity extends AActivity {
 
     private void testAbilities () {
         HTTPParseUtils.getInstance().withHeroList();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_login, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_push_step1:break;
+            case R.id.action_push_step2:break;
+            case R.id.action_push_step3:break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
