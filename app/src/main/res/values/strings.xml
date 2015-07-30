@@ -14,4 +14,5 @@
     <string name="action_clear">Clear Search History</string>
 
     <string name="long_text">Will become more useful later in the game if they gain a significant gold advantage.</string>
+    <string name="title_activity_hero">HeroActivity</string>
 </resources>

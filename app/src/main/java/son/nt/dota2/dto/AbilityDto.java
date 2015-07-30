@@ -24,7 +24,7 @@ public class AbilityDto  extends AObject{
     public boolean isUltimate = false;
     public List<AbilityLevelDto> listAbilityPerLevel = new ArrayList<>();
     public List<AbilityItemAffectDto> listItemAffects = new ArrayList<>();
-    public List<String> listNotes = new ArrayList<>();
+    public List<AbilityNotesDto> listNotes = new ArrayList<>();
 
     public AbilityDto () {
         no = -1;

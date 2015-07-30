@@ -14,11 +14,13 @@ import org.apache.http.client.methods.HttpGet;
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.AbilityDto;
+import son.nt.dota2.dto.AbilityItemAffectDto;
+import son.nt.dota2.dto.AbilityLevelDto;
+import son.nt.dota2.dto.AbilityNotesDto;
 import son.nt.dota2.dto.HeroEntry;
-import son.nt.dota2.dto.HeroList;
-import son.nt.dota2.dto.HeroManager;
 import son.nt.dota2.dto.HeroRoleDto;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroListLoader;
@@ -26,7 +28,6 @@ import son.nt.dota2.htmlcleaner.hero.HeroNameLoader;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
 import son.nt.dota2.utils.Logger;
-import son.nt.dota2.utils.OttoBus;
 
 /**
  * Created by Sonnt on 7/13/15.
@@ -85,12 +86,13 @@ public class HTTPParseUtils {
             public void onContentLoaderSucceed(List<AbilityDto> entity) {
                 Logger.debug(TAG, ">>>" + "onContentLoaderSucceed:" + entity.size());
                 //put this data on Parse
-                upLoadToParseService(entity, name);
 
-                HeroEntry heroEntry = new HeroEntry();
-                heroEntry.name = name;
-                heroEntry.listAbilities.addAll(entity);
-                OttoBus.post(heroEntry);
+                    uploadAbilityToParse(entity, name);
+
+//                HeroEntry heroEntry = new HeroEntry();
+//                heroEntry.name = name;
+//                heroEntry.listAbilities.addAll(entity);
+//                OttoBus.post(heroEntry);
             }
 
             @Override
@@ -113,9 +115,10 @@ public class HTTPParseUtils {
             }
 
             @Override
-            public void onContentLoaderSucceed(HeroList entity) {
-                Logger.debug(TAG, ">>>" + "onContentLoaderSucceed:" + entity.getListHeroes().size());
-                HeroManager.getInstance().setHeroList(entity);
+            public void onContentLoaderSucceed(List<HeroEntry> entity) {
+                Logger.debug(TAG, ">>>" + "onContentLoaderSucceed:" + entity.size());
+                HeroManager.getInstance().listHeroes.clear();
+                HeroManager.getInstance().listHeroes.addAll(entity);
 
 //                updateStep1();
 //
@@ -171,7 +174,8 @@ public class HTTPParseUtils {
         });
     }
 
-    private void upLoadToParseService(final List<AbilityDto> list, final String heroName) {
+    private void uploadAbilityToParse(final List<AbilityDto> list, final String heroName) {
+        Logger.debug(TAG, ">>>" + "-----------uploadAbilityToParse:" + heroName);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(AbilityDto.class.getSimpleName());
         query.whereEqualTo("heroId", heroName);
@@ -190,7 +194,7 @@ public class HTTPParseUtils {
                     p = new ParseObject(AbilityDto.class.getSimpleName());
                     p.put("no", i);
                     p.put("heroId", dto.heroId);
-                    p.put("name", dto.name);
+                    p.put("abilityName", dto.name);
                     p.put("ability", TextUtils.isEmpty(dto.ability) ? "" : dto.ability);
                     p.put("affects", TextUtils.isEmpty(dto.affects) ? "" : dto.affects);
                     p.put("damage", TextUtils.isEmpty(dto.damage) ? "" : dto.damage);
@@ -199,6 +203,46 @@ public class HTTPParseUtils {
                     p.put("linkImage", TextUtils.isEmpty(dto.linkImage) ? "" : dto.linkImage);
                     p.put("isUltimate", dto.isUltimate);
                     p.saveInBackground();
+
+                    //upload AbilityLevelDto
+                    for (AbilityLevelDto d: dto.listAbilityPerLevel) {
+                        ParseObject p1 = new ParseObject(AbilityLevelDto.class.getSimpleName());
+                        p1.put("heroId", dto.heroId);
+                        p1.put("abilityName", dto.name);
+                        p1.put("abilityLevelName", d.name);
+                        StringBuilder value = new StringBuilder();
+                        for (int j = 0; j < d.list.size(); j ++) {
+                            value.append(d.list.get(j));
+                            if (j < d.list.size() -1) {
+                                value.append("/");
+                            }
+                        }
+                        p1.put("abilityLevelValue", value.toString());
+                        p1.saveInBackground();
+                        Logger.debug(TAG, ">>>" + "OK AbilityLevelDto");
+                    }
+
+                    //upload AbilityItemAffectDto
+                    for (AbilityItemAffectDto d : dto.listItemAffects) {
+                        ParseObject p1 = new ParseObject(AbilityItemAffectDto.class.getSimpleName());
+                        p1.put("heroId", dto.heroId);
+                        p1.put("abilityName", dto.name);
+                        p1.put("src", TextUtils.isEmpty(d.src)? "": d.src);
+                        p1.put("alt", TextUtils.isEmpty(d.alt)? "": d.alt);
+                        p1.put("text", TextUtils.isEmpty(d.text)? "": d.text);
+                        p1.saveInBackground();
+                        Logger.debug(TAG, ">>>" + "OK AbilityItemAffectDto");
+                    }
+
+                    //upload AbilityNotesDto
+                    for (AbilityNotesDto d : dto.listNotes) {
+                        ParseObject p1 = new ParseObject(AbilityNotesDto.class.getSimpleName());
+                        p1.put("heroId", dto.heroId);
+                        p1.put("abilityName", dto.name);
+                        p1.put("notes", TextUtils.isEmpty(d.notes)? "": d. notes);
+                        p1.saveInBackground();
+                        Logger.debug(TAG, ">>>" + "OK AbilityNotesDto");
+                    }
                     i++;
                     Logger.debug(TAG, ">>>" + "Put Parse success:" + i + ":" + dto.name);
                 }
@@ -221,7 +265,7 @@ public class HTTPParseUtils {
     int count = 1;
     private void updateStep1() {
 
-        for (final HeroEntry dto : HeroManager.getInstance().getHeroList().getListHeroes()) {
+        for (final HeroEntry dto : HeroManager.getInstance().listHeroes) {
             ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
             query.whereEqualTo("heroId", dto.heroId);
             query.findInBackground(new FindCallback<ParseObject>() {

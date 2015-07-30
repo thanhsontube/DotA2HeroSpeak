@@ -6,7 +6,6 @@ import com.facebook.FacebookSdk;
 import com.parse.Parse;
 
 import son.nt.dota2.data.TsSqlite;
-import son.nt.dota2.dto.HeroManager;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.TsGaTools;
 

@@ -9,8 +9,9 @@ public class MsConst {
     public static final String GROUP_STR = "Str";
     public static final String GROUP_AGI = "Agi";
     public static final String GROUP_INTEL = "Intel";
-
     public static final String KEY_REPEAT = "KEY_REPEAT";
+
+    public static final String EXTRA_HERO = "EXTRA_HERO";
 
     public static enum RepeatMode {
         MODE_ON (0),

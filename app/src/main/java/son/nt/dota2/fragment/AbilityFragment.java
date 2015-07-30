@@ -26,6 +26,7 @@ import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.dto.AbilityDto;
 import son.nt.dota2.dto.AbilityItemAffectDto;
 import son.nt.dota2.dto.AbilityLevelDto;
+import son.nt.dota2.dto.AbilityNotesDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.service.ServiceMedia;
 
@@ -70,7 +71,7 @@ public class AbilityFragment extends AbsFragment {
             heroEntry = (HeroEntry) getArguments().getSerializable(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        getSafeActionBar().setTitle(heroEntry.name);
+//        getSafeActionBar().setTitle(heroEntry.name);
         getActivity().bindService(ServiceMedia.getIntentService(getActivity()), serviceConnection, Service.BIND_AUTO_CREATE);
     }
 
@@ -141,8 +142,8 @@ public class AbilityFragment extends AbsFragment {
 
 
         StringBuilder notes = new StringBuilder();
-        for (String s : dto.listNotes) {
-            notes.append(s);
+        for (AbilityNotesDto s : dto.listNotes) {
+            notes.append(s.notes);
             notes.append("\n\r\n\r");
         }
 

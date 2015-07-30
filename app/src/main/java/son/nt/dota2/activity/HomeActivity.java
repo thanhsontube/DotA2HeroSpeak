@@ -19,11 +19,11 @@ import android.view.View;
 
 import com.squareup.otto.Subscribe;
 
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.HeroEntry;
-import son.nt.dota2.fragment.AbilityFragment;
 import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.RolesFragment;
@@ -234,8 +234,15 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     }
     @Subscribe
     public void handleAbility(HeroEntry heroEntry) {
-        Logger.debug(TAG, ">>>" + "handleAbility:" + heroEntry.name);
-        showFragment(AbilityFragment.newInstance(heroEntry, ""), true);
+        Logger.debug(TAG, ">>>" + "=========handleAbility:" + heroEntry.name);
+//        for (HeroEntry hero : HeroManager.getInstance().getHeroList().getListHeroes()) {
+//
+//            HTTPParseUtils.getInstance().withAbility(hero.heroId);
+//        }
+
+        Intent intent = new Intent(this, HeroActivity.class);
+        intent.putExtra(MsConst.EXTRA_HERO, heroEntry);
+        startActivity(intent);
     }
 
     @Override

@@ -13,14 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.dto.HeroEntry;
-import son.nt.dota2.dto.HeroList;
 import son.nt.dota2.loader.base.ContentLoader;
 import son.nt.dota2.utils.Logger;
 
 /**
  * Created by Sonnt on 7/23/15.
  */
-public abstract class HeroListLoader extends ContentLoader<HeroList> {
+public abstract class HeroListLoader extends ContentLoader<List<HeroEntry>> {
 
 
     public static final String URL_HERO_LIST = "http://www.dota2.com/heroes/";
@@ -31,10 +30,8 @@ public abstract class HeroListLoader extends ContentLoader<HeroList> {
     }
 
     @Override
-    protected HeroList handleStream(InputStream in) throws IOException {
-        HeroList heroList = new HeroList();
-        List<HeroEntry> heroEntries = new ArrayList<>();
-        heroList.setListHeroes(heroEntries);
+    protected List<HeroEntry> handleStream(InputStream in) throws IOException {
+        List<HeroEntry> listHeroes = new ArrayList<>();
         try {
 
             HtmlCleaner cleaner = new HtmlCleaner();
@@ -83,22 +80,17 @@ public abstract class HeroListLoader extends ContentLoader<HeroList> {
                         Logger.debug(TAG, ">>>" + "No:" + countNo + ";HeroId:" + heroId + ";link:" + avatar);
                         heroDto.setBaseInfo(heroId,href, avatar, group);
                         heroDto.no = countNo;
-                        heroList.getListHeroes().add(heroDto);
+                        listHeroes.add(heroDto);
                         countNo ++;
-
-
                         //avatar large
                         //http://cdn.dota2.com/apps/dota2/images/heroes/tinker_vert.jpg
-
                         //http://cdn.dota2.com/apps/dota2/images/heroes/queenofpain_hphover.png
-
                     }
-
                 }
             }
         } catch (Exception e) {
             Log.e("HeroListLoader", "log>>>" + "data err :" + e);
         }
-        return heroList;
+        return listHeroes;
     }
 }

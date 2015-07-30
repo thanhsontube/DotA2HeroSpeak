@@ -15,6 +15,7 @@ import java.util.List;
 import son.nt.dota2.dto.AbilityDto;
 import son.nt.dota2.dto.AbilityItemAffectDto;
 import son.nt.dota2.dto.AbilityLevelDto;
+import son.nt.dota2.dto.AbilityNotesDto;
 import son.nt.dota2.loader.base.ContentLoader;
 import son.nt.dota2.utils.Logger;
 
@@ -588,7 +589,7 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                     try {
 
                         if (!TextUtils.isEmpty(s.trim()) && !s.trim().equals("Notes:")) {
-                            listAbilities.get(i).listNotes.add(s.replace(DOT, " ").trim());
+                            listAbilities.get(i).listNotes.add(new AbilityNotesDto(s.replace(DOT, " ").trim()));
                         }
 
                     } catch (Exception e) {
@@ -597,6 +598,7 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                     }
                 }
             }
+
 
             return listAbilities;
 

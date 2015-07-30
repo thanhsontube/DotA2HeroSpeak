@@ -25,8 +25,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.dto.HeroEntry;
-import son.nt.dota2.dto.HeroList;
-import son.nt.dota2.dto.HeroManager;
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsScreen;
 
@@ -52,9 +51,8 @@ public class HomeFragment extends AFragment {
     TabLayout tabLayout;
     AdapterTop adapterTop;
 //    private HeroData herodata;
-    private HeroList heroList = new HeroList();
 
-    public static final int EFFECT_DEFAULT = JazzyHelper.GROW;
+    public static final int EFFECT_DEFAULT = JazzyHelper.ZIPPER;
     int currentEffect = EFFECT_DEFAULT;
 
     public static final String KEY_EFFECT_DEFAULT = "KEY_EFFECT_DEFAULT";
@@ -109,6 +107,7 @@ public class HomeFragment extends AFragment {
 
         getData();
     }
+
     private void setEffect() {
         adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
     }
@@ -156,7 +155,6 @@ public class HomeFragment extends AFragment {
 //            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
 //        }
     }
-
 
 
     @Override
@@ -238,7 +236,7 @@ public class HomeFragment extends AFragment {
         outState.putInt(KEY_EFFECT_DEFAULT, currentEffect);
     }
 
-    private void getData () {
+    private void getData() {
         Logger.debug(TAG, ">>>" + "getData");
         ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
         query.orderByAscending("no");
@@ -247,20 +245,19 @@ public class HomeFragment extends AFragment {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
                 if (e != null || list.size() == 0) {
-                    Logger.error(TAG, ">>>" + "ERror getDAta:" + e.toString());
+                    Logger.error(TAG, ">>>" + "Error getData:" + e.toString());
                     return;
                 }
                 Logger.debug(TAG, ">>>" + "getData size:" + list.size());
-                HeroManager.getInstance().getHeroList().getListHeroes().clear();
+                HeroManager.getInstance().listHeroes.clear();
                 for (ParseObject p : list) {
-                    HeroManager.getInstance().getHeroList().getListHeroes().add(parse(p));
+                    HeroManager.getInstance().listHeroes.add(parse(p));
                 }
-                heroList = HeroManager.getInstance().getHeroList();
                 Logger.debug(TAG, ">>>" + "Str:" + HeroManager.getInstance().getStrHeroes().size());
                 Logger.debug(TAG, ">>>" + "Agi:" + HeroManager.getInstance().getAgiHeroes().size());
                 Logger.debug(TAG, ">>>" + "Intel:" + HeroManager.getInstance().getIntelHeroes().size());
 
-                adapterTop = new AdapterTop(getFragmentManager(), heroList);
+                adapterTop = new AdapterTop(getFragmentManager());
                 viewPager.setAdapter(adapterTop);
                 tabLayout.setupWithViewPager(viewPager);
                 if (TsScreen.isLandscape(getActivity())) {
@@ -268,16 +265,12 @@ public class HomeFragment extends AFragment {
                     tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_agi_24));
                     tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
                 }
-//                adapterTop = new AdapterTop(getFragmentManager(), heroList);
-//                viewPager.setAdapter(adapterTop);
-//                adapterTop.notifyDataSetChanged();
-                Logger.debug(TAG, ">>>" + "heroList:" + heroList.getListHeroes().size());
 
             }
         });
     }
 
-    private HeroEntry parse (ParseObject p) {
+    private HeroEntry parse(ParseObject p) {
         HeroEntry dto = new HeroEntry();
         int no = p.getInt("no");
         String heroId = p.getString("heroId");

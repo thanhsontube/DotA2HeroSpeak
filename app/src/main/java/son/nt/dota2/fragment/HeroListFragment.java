@@ -18,14 +18,13 @@ import com.twotoasters.jazzylistview.recyclerview.JazzyRecyclerViewScrollListene
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.MainActivity;
 import son.nt.dota2.adapter.AdapterRcvHome;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.dto.HeroEntry;
-import son.nt.dota2.dto.HeroList;
-import son.nt.dota2.dto.HeroManager;
 import son.nt.dota2.utils.TsGaTools;
 import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.TsScreen;
@@ -57,15 +56,6 @@ public class HeroListFragment extends AFragment {
     JazzyRecyclerViewScrollListener jazzyRecyclerViewScrollListener;
     private OnFragmentInteractionListener mListener;
     TsLog log = new TsLog(TAG);
-
-    public static HeroListFragment newInstance(HeroList HeroList, String group) {
-        HeroListFragment fragment = new HeroListFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, HeroList);
-        args.putString(ARG_PARAM2, group);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     public static HeroListFragment newInstance(String group) {
         HeroListFragment fragment = new HeroListFragment();

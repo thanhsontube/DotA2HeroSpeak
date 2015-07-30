@@ -40,7 +40,7 @@ public class LoginActivity extends AActivity {
 //        }
     }
 
-    private void testAbilities () {
+    private void testAbilities() {
         HTTPParseUtils.getInstance().withHeroList();
     }
 
@@ -53,9 +53,13 @@ public class LoginActivity extends AActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_push_step1:break;
-            case R.id.action_push_step2:break;
-            case R.id.action_push_step3:break;
+            case R.id.action_push_step1:
+                break;
+            case R.id.action_push_step2:
+                break;
+            case R.id.action_push_step3:
+
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

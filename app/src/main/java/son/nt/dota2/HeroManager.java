@@ -1,4 +1,4 @@
-package son.nt.dota2.dto;
+package son.nt.dota2;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -10,7 +10,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import son.nt.dota2.ResourceManager;
+import son.nt.dota2.dto.HeroData;
+import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.utils.FileUtil;
 
 /**
@@ -20,7 +21,9 @@ public class HeroManager {
 
     private HeroData heroData;
 
-    private HeroList heroList = new HeroList();
+    public List<HeroEntry> listHeroes = new ArrayList<>();
+
+    public String[] groups = new String[]{"STRENGTH", "AGILITY", "INTELLIGENCE"};
 
     static HeroManager INSTANCE = null;
 
@@ -72,20 +75,9 @@ public class HeroManager {
         }
     }
 
-    public HeroData getHeroData() {
-        return heroData;
-    }
-
-    public HeroList getHeroList() {
-        return heroList;
-    }
-
-    public void setHeroList(HeroList heroList) {
-        this.heroList = heroList;
-    }
 
     public HeroEntry getHero(String heroId) {
-        for (HeroEntry dto : heroList.getListHeroes()) {
+        for (HeroEntry dto : listHeroes) {
             if (dto.heroId.equals(heroId)) {
                 return dto;
             }
@@ -95,10 +87,7 @@ public class HeroManager {
 
     public List<HeroEntry> getStrHeroes () {
         List<HeroEntry> list = new ArrayList<>();
-        if (heroList == null) {
-            return list;
-        }
-        for (HeroEntry dto : heroList.getListHeroes()) {
+        for (HeroEntry dto : listHeroes) {
             if (dto.group.equals("Str")) {
                 list.add(dto);
             }
@@ -107,10 +96,7 @@ public class HeroManager {
     }
     public List<HeroEntry> getAgiHeroes () {
         List<HeroEntry> list = new ArrayList<>();
-        if (heroList == null) {
-            return list;
-        }
-        for (HeroEntry dto : heroList.getListHeroes()) {
+        for (HeroEntry dto : listHeroes) {
             if (dto.group.equals("Agi")) {
                 list.add(dto);
             }
@@ -119,10 +105,7 @@ public class HeroManager {
     }
     public List<HeroEntry> getIntelHeroes () {
         List<HeroEntry> list = new ArrayList<>();
-        if (heroList == null) {
-            return list;
-        }
-        for (HeroEntry dto : heroList.getListHeroes()) {
+        for (HeroEntry dto : listHeroes) {
             if (dto.group.equals("Intel")) {
                 list.add(dto);
             }
