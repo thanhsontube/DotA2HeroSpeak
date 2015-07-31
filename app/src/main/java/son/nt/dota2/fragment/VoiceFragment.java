@@ -4,11 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,51 +13,54 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
-import son.nt.dota2.adapter.AdapterPagerHero;
+import son.nt.dota2.adapter.AdapterVoice;
 import son.nt.dota2.base.AbsFragment;
-import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.Logger;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link HeroFragment.OnFragmentInteractionListener} interface
+ * {@link VoiceFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link HeroFragment#newInstance} factory method to
+ * Use the {@link VoiceFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HeroFragment extends AbsFragment {
-
+public class VoiceFragment extends AbsFragment {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String TAG = "HeroFragment";
+    private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "VoiceFragment";
 
     // TODO: Rename and change types of parameters
-    private HeroEntry heroEntry;
+    private String mParam1;
+    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-
-    private AdapterPagerHero adapter;
-    private List<android.support.v4.app.Fragment> listFragments = new ArrayList<>();
-    private ArrayList<String> titles = new ArrayList<>();
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @return A new instance of fragment HeroFragment.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment VoiceFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HeroFragment newInstance(HeroEntry param1) {
-        HeroFragment fragment = new HeroFragment();
+    public static VoiceFragment newInstance(String param1, String param2) {
+        VoiceFragment fragment = new VoiceFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public HeroFragment() {
+    public VoiceFragment() {
         // Required empty public constructor
     }
 
@@ -68,7 +68,8 @@ public class HeroFragment extends AbsFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            heroEntry = (HeroEntry) getArguments().getSerializable(ARG_PARAM1);
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -76,7 +77,7 @@ public class HeroFragment extends AbsFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_hero, container, false);
+        return inflater.inflate(R.layout.fragment_voice, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -92,8 +93,7 @@ public class HeroFragment extends AbsFragment {
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+
         }
     }
 
@@ -120,43 +120,41 @@ public class HeroFragment extends AbsFragment {
 
     @Override
     public void initData() {
-        Logger.debug(TAG, ">>>" + "initData:" + heroEntry);
-        if (heroEntry != null) {
-            Logger.debug(TAG, ">>>" + "initData with:" + heroEntry.heroId);
-        }
-        titles.clear();
-        titles.add("Ability");
-        titles.add("Ability2");
-        titles.add("Voice");
-        listFragments.clear();
-        listFragments.add(AbilityFragment.newInstance(heroEntry, ""));
-        listFragments.add( AbilityFragment.newInstance(heroEntry,""));
-        listFragments.add( VoiceFragment.newInstance(heroEntry.heroId,""));
-
-        adapter = new AdapterPagerHero(getSafeFragmentManager(), listFragments, titles);
 
     }
 
-    CoordinatorLayout coordinatorLayout;
-    AppBarLayout appBarLayout;
-    Toolbar toolbar;
-    TabLayout tabLayout;
-    ViewPager pager;
-
+    private RecyclerView recyclerView;
+    private AdapterVoice adapter;
+    private List<SpeakDto> list = new ArrayList<>();
     @Override
     public void initLayout(View view) {
-        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.hero_coordinator);
-        appBarLayout = (AppBarLayout) view.findViewById(R.id.hero_appbarlayout);
-        toolbar = (Toolbar) view.findViewById(R.id.hero_toolbar);
-        tabLayout = (TabLayout) view.findViewById(R.id.hero_tablayout);
-        pager = (ViewPager) view.findViewById(R.id.hero_pager);
-        pager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(pager);
+        recyclerView = (RecyclerView) view.findViewById(R.id.voice_recycleview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        recyclerView.setHasFixedSize(true);
+
+        adapter = new AdapterVoice(getActivity(), list);
+        recyclerView.setAdapter(adapter);
 
     }
 
     @Override
     public void initListener() {
+        HTTPParseUtils.getInstance().withVoices(mParam1);
+        HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
+            @Override
+            public void onFinish() {
+                list.clear();
+                List<SpeakDto> mList = HeroManager.getInstance().getHero(mParam1).listSpeaks;
+
+                for (SpeakDto d : mList) {
+                    Logger.debug(TAG, ">>>" + "Text:" + d.text + ";img:" + d.rivalImage);
+                }
+                list.addAll(mList);
+                adapter.notifyDataSetChanged();
+            }
+        });
 
     }
 }

@@ -66,7 +66,7 @@ public abstract class HeroSpeakLoader extends ContentLoader<HeroData> {
                     headerTag = (TagNode) data[0];
                     builder = (StringBuilder) headerTag.getText();
                     Log.e("", "log>>>" + i + " data HeroSpeakLoader header:" + builder.toString());
-                    speakDto.title = builder.toString();
+                    speakDto.text = builder.toString();
                     speakDto.isTitle = true;
                     listSpeaks.add(speakDto);
                     lastTitle = builder.toString();
@@ -156,6 +156,11 @@ public abstract class HeroSpeakLoader extends ContentLoader<HeroData> {
         } catch (Exception e) {
         }
         return herodata;
+    }
+
+
+    private void getKillingARiver () {
+
     }
 
 //    speakDto.link = link;

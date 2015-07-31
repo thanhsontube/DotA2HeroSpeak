@@ -148,7 +148,7 @@ public class PrefetchService extends IntentService {
                     headerTag = (TagNode) data[0];
                     builder = (StringBuilder) headerTag.getText();
 //                    Log.v("", "log>>>" + i + " ====data HeroSpeakLoader header:" + builder.toString());
-                    speakDto.title = builder.toString();
+                    speakDto.text = builder.toString();
                     speakDto.isTitle = true;
                     listSpeaks.add(speakDto);
                     lastTitle = builder.toString();

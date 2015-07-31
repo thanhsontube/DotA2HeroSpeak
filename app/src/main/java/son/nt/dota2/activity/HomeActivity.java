@@ -28,6 +28,7 @@ import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.RolesFragment;
 import son.nt.dota2.fragment.SearchableFragment;
+import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
@@ -239,6 +240,9 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 //
 //            HTTPParseUtils.getInstance().withAbility(hero.heroId);
 //        }
+
+        HTTPParseUtils.getInstance().withVoices(heroEntry.heroId);
+//        showFragment(VoiceFragment.newInstance(heroEntry.heroId, ""), true);
 
         Intent intent = new Intent(this, HeroActivity.class);
         intent.putExtra(MsConst.EXTRA_HERO, heroEntry);

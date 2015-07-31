@@ -22,11 +22,13 @@ import son.nt.dota2.dto.AbilityLevelDto;
 import son.nt.dota2.dto.AbilityNotesDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.HeroRoleDto;
+import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroListLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroNameLoader;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
+import son.nt.dota2.htmlcleaner.voice.VoiceLoader;
 import son.nt.dota2.utils.Logger;
 
 /**
@@ -347,6 +349,50 @@ public class HTTPParseUtils {
 
 
         }
+    }
+
+    public void withVoices (final String heroId) {
+        Logger.debug(TAG, ">>>" + "withVoices:" + heroId);
+        String pathSpeak = String.format(VoiceLoader.PATH, heroId);
+        if (pathSpeak.contains("Natures_Prophet")) {
+            pathSpeak = pathSpeak.replace("Natures", "Nature's");
+        }
+        HttpGet httpGet = new HttpGet(pathSpeak);
+        ResourceManager.getInstance().getContentManager().load(new VoiceLoader(httpGet, false) {
+            @Override
+            public void onContentLoaderStart() {
+                Logger.debug(TAG, ">>>" + "withVoices start");
+            }
+
+            @Override
+            public void onContentLoaderSucceed(List<SpeakDto> entity) {
+                Logger.debug(TAG, ">>>" + "onContentLoaderSucceed :" + entity.size());
+                HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
+                heroEntry.listSpeaks.clear();
+                heroEntry.listSpeaks.addAll(entity);
+
+                if (listener != null) {
+                    listener.onFinish();
+                }
+                try {
+//                    FileUtil.saveHeroSpeak(context, heroDto, heroDto.name);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+//                list.clear();
+//                list.addAll(heroDto.listSpeaks);
+//                adapter.notifyDataSetChanged();
+//                isLoaded = true;
+//                startPrefetch();
+//                prepareMedia();
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>>" + "with Voices Error:" + e);
+            }
+        });
+
     }
 
 

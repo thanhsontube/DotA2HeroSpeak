@@ -81,8 +81,8 @@ public class AdapterSpeak extends ArrayAdapter<SpeakDto> {
             case TYPE_TITLE:
 
 
-                if (dto.title != null) {
-                    holder.title.setText(dto.title);
+                if (dto.text != null) {
+                    holder.title.setText(dto.text);
                 }
                 break;
             case TYPE_SPEAK:
