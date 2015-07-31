@@ -242,6 +242,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 //        }
 
         HTTPParseUtils.getInstance().withVoices(heroEntry.heroId);
+        HTTPParseUtils.getInstance().getAbilityFromServer(heroEntry.heroId);
 //        showFragment(VoiceFragment.newInstance(heroEntry.heroId, ""), true);
 
         Intent intent = new Intent(this, HeroActivity.class);

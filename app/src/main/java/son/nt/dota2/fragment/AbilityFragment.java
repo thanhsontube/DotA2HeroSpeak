@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.dto.AbilityDto;
@@ -28,6 +29,7 @@ import son.nt.dota2.dto.AbilityItemAffectDto;
 import son.nt.dota2.dto.AbilityLevelDto;
 import son.nt.dota2.dto.AbilityNotesDto;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.service.ServiceMedia;
 
 public class AbilityFragment extends AbsFragment {
@@ -38,7 +40,7 @@ public class AbilityFragment extends AbsFragment {
     private OnFragmentInteractionListener mListener;
     private TabLayout tabLayout;
     private List<AbilityDto> listAbilities = new ArrayList<>();
-    private HeroEntry heroEntry;
+    private String heroId;
     private LayoutInflater inflater;
     private TextView txtAbility, txtAffects, txtDamage;
     private TextView txtDescription;
@@ -50,11 +52,10 @@ public class AbilityFragment extends AbsFragment {
 
     ServiceMedia serviceMedia;
 
-    public static AbilityFragment newInstance(HeroEntry param1, String param2) {
+    public static AbilityFragment newInstance(String heroID) {
         AbilityFragment fragment = new AbilityFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_PARAM1, heroID);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,8 +69,7 @@ public class AbilityFragment extends AbsFragment {
         super.onCreate(savedInstanceState);
         inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (getArguments() != null) {
-            heroEntry = (HeroEntry) getArguments().getSerializable(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            heroId = getArguments().getString(ARG_PARAM1);
         }
 //        getSafeActionBar().setTitle(heroEntry.name);
         getActivity().bindService(ServiceMedia.getIntentService(getActivity()), serviceConnection, Service.BIND_AUTO_CREATE);
@@ -111,6 +111,7 @@ public class AbilityFragment extends AbsFragment {
         viewAbilityPerLevel = (LinearLayout) view.findViewById(R.id.ability_level);
 
 
+        HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
         if (heroEntry == null || heroEntry.listAbilities.size() == 0) {
             return;
         }
@@ -129,6 +130,7 @@ public class AbilityFragment extends AbsFragment {
     }
 
     private void update(int position) {
+        HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
         if (heroEntry == null || heroEntry.listAbilities.size() == 0) {
             return;
         }
@@ -230,8 +232,13 @@ public class AbilityFragment extends AbsFragment {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (!TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
-                    serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
+                HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
+                if (heroEntry != null && heroEntry.listAbilities.size() > 0 && !TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
+                    try {
+                        serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 update(tab.getPosition());
 
@@ -244,9 +251,32 @@ public class AbilityFragment extends AbsFragment {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+                HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
                 if (!TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
                     serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
                 }
+            }
+        });
+
+        HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
+            @Override
+            public void onFinish() {
+                listAbilities.clear();
+                listAbilities.addAll(HeroManager.getInstance().getHero(heroId).listAbilities);
+                tabLayout.removeAllTabs();
+                for (AbilityDto dto : listAbilities) {
+                    View vTab = inflater.inflate(R.layout.tab_ability, null);
+                    ImageView img = (ImageView) vTab.findViewById(R.id.ability_icon);
+                    TextView txt = (TextView) vTab.findViewById(R.id.ability_text);
+                    txt.setText(dto.name);
+                    Glide.with(getActivity()).load(dto.linkImage).fitCenter().into(img);
+                    TabLayout.Tab tab = tabLayout.newTab().setCustomView(vTab);
+                    tabLayout.addTab(tab);
+                }
+                for (int i = 0; i < listAbilities.size(); i ++) {
+                    update(i);
+                }
+
             }
         });
 

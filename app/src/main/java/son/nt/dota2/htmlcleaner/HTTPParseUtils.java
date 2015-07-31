@@ -406,6 +406,48 @@ public class HTTPParseUtils {
     public interface IParseCallBack {
         void onFinish();
     }
+    
+    public void getAbilityFromServer (final String heroId) {
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(AbilityDto.class.getSimpleName());
+        query.whereEqualTo("heroId", heroId);
+        query.orderByAscending("no");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                List<AbilityDto> listAbi = new ArrayList<AbilityDto>();
+                AbilityDto d;
+                for (ParseObject p : list) {
+                    d = new AbilityDto();
+                    d.no = p.getInt("no");
+                    d.name = p.getString("abilityName");
+                    d.ability = p.getString("ability");
+                    d.affects = p.getString("affects");
+                    d.damage = p.getString("damage");
+                    d.sound = p.getString("sound");
+                    d.description = p.getString("description");
+                    d.linkImage = p.getString("linkImage");
+                    d.isUltimate = p.getBoolean("isUltimate");
+
+                    //list AbilityLevelDto
+//                    ParseQuery<ParseObject> q = new ParseQuery<ParseObject>(AbilityLevelDto.class.getSimpleName());
+//                    q.whereEqualTo("heroId", heroId);
+//                    q.whereEqualTo("abilityName", d.name);
+//                    q.findInBackground(new FindCallback<ParseObject>() {
+//                        @Override
+//                        public void done(List<ParseObject> list, ParseException e) {
+//
+//                        }
+//                    });
+                    listAbi.add(d);
+                }
+                HeroManager.getInstance().getHero(heroId).listAbilities.clear();
+                HeroManager.getInstance().getHero(heroId).listAbilities.addAll(listAbi);
+                if (listener != null) {
+                    listener.onFinish();
+                }
+            }
+        });
+    }
 
 
 }

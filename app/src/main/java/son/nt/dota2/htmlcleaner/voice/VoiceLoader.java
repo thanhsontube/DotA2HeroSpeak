@@ -23,6 +23,8 @@ public abstract class VoiceLoader extends ContentLoader<List<SpeakDto>> {
     private String lastTitle = "";
     TsLog log = new TsLog(TAG);
 
+    public static final String GROUP_SPAWNING = "Spawning";
+
     public VoiceLoader(HttpUriRequest httpRequest, boolean isCache) {
         super(httpRequest, isCache);
     }
@@ -43,54 +45,247 @@ public abstract class VoiceLoader extends ContentLoader<List<SpeakDto>> {
             String xPath = "//div[@id='mw-content-text']";
             Object[] data = tagNode.evaluateXPath(xPath);
             TagNode nodeA = (TagNode) data[0];
-            List<SpeakDto> listKillingRival = getKillingARiver(nodeA);
-            if (listKillingRival.size() > 0) {
-                return listKillingRival;
+            List<TagNode> tagNodes = nodeA.getChildTagList();
+            TagNode normalNode = null;
+
+            //Spawning
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Spawning']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getNormal(normalNode, GROUP_SPAWNING));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+
             }
+
+            //Killing_a_Rival
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Killing_a_Rival']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Killing a Rival"));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //Beginning_the_Battle
+
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Beginning_the_Battle']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getNormal(normalNode, "Beginning the Battle"));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //Meeting_an_Ally
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Meeting_an_Ally']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Meeting an Ally"));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //Purchasing_a_Specific_Item
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Purchasing_a_Specific_Item']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Purchasing_a_Specific_Item"));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //Removed_from_game_2
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Removed_from_game_2']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Removed from game"));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //Drawing_First_Blood
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Drawing_First_Blood']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getNormal(normalNode, "Drawing_First_Blood"));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //Thanking
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Thanking']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getNormal(normalNode, "Thanking"));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //Respawning
+
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Respawning']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getNormal(normalNode, "Respawning"));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //Last_Hitting
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Last_Hitting']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getNormal(normalNode, "Last_Hitting"));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //Dying
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Dying']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getNormal(normalNode, "Dying"));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
 
         } catch (Exception e) {
         }
         return listSpeaks;
     }
 
-
-    private List<SpeakDto> getKillingARiver(TagNode nodeA) throws XPatherException {
+    private List<SpeakDto> getNormal(TagNode nodeA, String group) {
         List<SpeakDto> list = new ArrayList<>();
-        Logger.debug(TAG, ">>>" + "getKillingARiver:" + nodeA);
-        List<TagNode> tagNodes = nodeA.getChildTagList();
-        Logger.debug(TAG, ">>>" + "getKillingARiver size:" + tagNodes.size());
-        String xpathA = "";
-        Object[] objA;
-        TagNode tag = null;
-        TagNode tagRival = null;
         SpeakDto d = new SpeakDto();
-        d.text = "Killing a rival";
+        d.text = group;
         d.isTitle = true;
-        d.voiceGroup = "Killing a rival";
+        d.voiceGroup = group;
         list.add(d);
         SpeakDto speakDto;
-        for (int i = 0; i < tagNodes.size(); i++) {
-
-            tag = tagNodes.get(i);
-            try {
-                //search title Killing A Rival
-
-                xpathA = "//span[@id='Killing_a_Rival']";
-                objA = tag.evaluateXPath(xpathA);
-                if (objA.length > 0) {
-                    tagRival = tagNodes.get(i + 1);
-                    break;
-                }
-            } catch (XPatherException e) {
-                e.printStackTrace();
+        try {
+            String xpathA = "./li";
+            Object[] objB = nodeA.evaluateXPath(xpathA);
+            for (int i = 0; i < objB.length; i++) {
+                speakDto = new SpeakDto();
+                TagNode nodetext = (TagNode) objB[i];
+                TagNode t1 = nodetext.getChildTagList().get(0);
+                String mp3 = t1.getAttributeByName("href");
+                String text = nodetext.getText().toString().replace("Play", "").trim();
+                speakDto.voiceGroup = group;
+                speakDto.link = mp3;
+                speakDto.text = text;
+                speakDto.no = i;
+                list.add(speakDto);
             }
 
+        } catch (Exception e) {
+            Logger.error(TAG, ">>>" + "Error getNormal:" + e.toString());
         }
+        return list;
+    }
 
-        if (tagRival != null) {
-            Logger.debug(TAG, ">>>" + "TAG rival != NULL");
-            xpathA = "./li";
-            Object[] objB = tagRival.evaluateXPath(xpathA);
+    private List<SpeakDto> getVoiceWithImage(TagNode nodeA, String group) {
+        List<SpeakDto> list = new ArrayList<>();
+        SpeakDto d = new SpeakDto();
+        d.text = group;
+        d.isTitle = true;
+        d.voiceGroup = group;
+        list.add(d);
+        SpeakDto speakDto;
+        try {
+            String xpathA = "./li";
+            Object[] objB = nodeA.evaluateXPath(xpathA);
             for (int i = 0; i < objB.length; i++) {
                 speakDto = new SpeakDto();
                 TagNode nodetext = (TagNode) objB[i];
@@ -111,7 +306,11 @@ public abstract class VoiceLoader extends ContentLoader<List<SpeakDto>> {
                 speakDto.no = i;
                 list.add(speakDto);
             }
+
+        } catch (Exception e) {
+            Logger.error(TAG, ">>>" + "Error getNormal:" + e.toString());
         }
         return list;
     }
+
 }
