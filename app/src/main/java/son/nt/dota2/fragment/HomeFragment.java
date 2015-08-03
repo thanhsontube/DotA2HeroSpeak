@@ -19,13 +19,17 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.twotoasters.jazzylistview.JazzyHelper;
 
+import java.io.IOException;
 import java.util.List;
 
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.AFragment;
+import son.nt.dota2.base.AObject;
 import son.nt.dota2.dto.HeroEntry;
-import son.nt.dota2.HeroManager;
+import son.nt.dota2.dto.HeroSavedDto;
+import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsScreen;
 
@@ -104,8 +108,32 @@ public class HomeFragment extends AFragment {
             currentEffect = savedInstanceState.getInt(KEY_EFFECT_DEFAULT, EFFECT_DEFAULT);
             setEffect();
         }
+        try {
 
-        getData();
+            AObject saveObject = FileUtil.getObject(context, HeroSavedDto.class.getSimpleName());
+            if (saveObject != null) {
+                HeroSavedDto heroData = (HeroSavedDto) saveObject;
+                Logger.debug(TAG, ">>>" + "saveObject != null:" + heroData.listHeroes.size());
+                HeroManager.getInstance().listHeroes.clear();
+                HeroManager.getInstance().listHeroes.addAll(heroData.listHeroes);
+
+                adapterTop = new AdapterTop(getFragmentManager());
+                viewPager.setAdapter(adapterTop);
+                tabLayout.setupWithViewPager(viewPager);
+                if (TsScreen.isLandscape(getActivity())) {
+                    tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_str_24));
+                    tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_agi_24));
+                    tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
+                }
+
+            } else {
+
+                getData();
+            }
+        } catch (Exception e) {
+
+        }
+
     }
 
     private void setEffect() {
@@ -252,6 +280,15 @@ public class HomeFragment extends AFragment {
                 HeroManager.getInstance().listHeroes.clear();
                 for (ParseObject p : list) {
                     HeroManager.getInstance().listHeroes.add(parse(p));
+                }
+
+                try {
+                    HeroSavedDto heroData = new HeroSavedDto();
+                    heroData.listHeroes.clear();
+                    heroData.listHeroes.addAll(HeroManager.getInstance().listHeroes);
+                    FileUtil.saveObject(getActivity(), heroData, HeroSavedDto.class.getSimpleName());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
                 Logger.debug(TAG, ">>>" + "Str:" + HeroManager.getInstance().getStrHeroes().size());
                 Logger.debug(TAG, ">>>" + "Agi:" + HeroManager.getInstance().getAgiHeroes().size());

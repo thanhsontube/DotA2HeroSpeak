@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.base.AObject;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.utils.FileUtil;
@@ -17,9 +18,9 @@ import son.nt.dota2.utils.FileUtil;
 /**
  * Created by Sonnt on 7/13/15.
  */
-public class HeroManager {
+public class HeroManager extends AObject{
 
-    private HeroData heroData;
+    public HeroData heroData;
 
     public List<HeroEntry> listHeroes = new ArrayList<>();
 

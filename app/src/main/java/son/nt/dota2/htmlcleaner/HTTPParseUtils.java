@@ -22,6 +22,7 @@ import son.nt.dota2.dto.AbilityLevelDto;
 import son.nt.dota2.dto.AbilityNotesDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.HeroRoleDto;
+import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroListLoader;
@@ -29,6 +30,7 @@ import son.nt.dota2.htmlcleaner.hero.HeroNameLoader;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
 import son.nt.dota2.htmlcleaner.voice.VoiceLoader;
+import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 
 /**
@@ -376,6 +378,7 @@ public class HTTPParseUtils {
                 }
                 try {
 //                    FileUtil.saveHeroSpeak(context, heroDto, heroDto.name);
+                    FileUtil.saveObject(context, new HeroSpeakSaved(heroId, entity), heroId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

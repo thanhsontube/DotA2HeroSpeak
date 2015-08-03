@@ -21,6 +21,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import son.nt.dota2.ResourceManager;
+import son.nt.dota2.base.AObject;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
 
@@ -28,6 +29,27 @@ import son.nt.dota2.dto.HeroDto;
  * Created by tiennt on 2/5/15.
  */
 public class FileUtil {
+
+    public static void saveObject(Context context, AObject data, String name) throws IOException {
+        File woFile = new File(ResourceManager.getInstance().folderObject, name);
+        if (!woFile.exists()) {
+            woFile.createNewFile();
+        }
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(woFile));
+        oos.writeObject(data);
+        oos.close();
+    }
+
+    public static AObject getObject(Context context, String name) throws IOException, ClassNotFoundException {
+        File woFile = new File(ResourceManager.getInstance().folderObject, name);
+        if (!woFile.exists()) {
+            return null;
+        }
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(woFile));
+        AObject wo = ((AObject) ois.readObject());
+        ois.close();
+        return wo;
+    }
 
     public static void saveHeroList(Context context, HeroData data) throws IOException {
         File woFile = new File(ResourceManager.getInstance().fileHeroList);

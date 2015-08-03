@@ -10,15 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterVoice;
+import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.AbsFragment;
+import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
+import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 
 /**
@@ -141,20 +145,40 @@ public class VoiceFragment extends AbsFragment {
 
     @Override
     public void initListener() {
-        HTTPParseUtils.getInstance().withVoices(mParam1);
-        HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
-            @Override
-            public void onFinish() {
-                list.clear();
-                List<SpeakDto> mList = HeroManager.getInstance().getHero(mParam1).listSpeaks;
 
-                for (SpeakDto d : mList) {
-                    Logger.debug(TAG, ">>>" + "Text:" + d.text + ";img:" + d.rivalImage);
-                }
-                list.addAll(mList);
+        try {
+            AObject heroSpeak = FileUtil.getObject(getActivity(), mParam1);
+            if (heroSpeak != null) {
+                Logger.debug(TAG, ">>>" + "heroSpeak != null");
+                HeroSpeakSaved heroSpeakSaved = (HeroSpeakSaved) heroSpeak;
+                HeroManager.getInstance().getHero(mParam1).listSpeaks.clear();
+                HeroManager.getInstance().getHero(mParam1).listSpeaks.addAll(heroSpeakSaved.listSpeaks);
+
+                list.clear();
+                list.addAll(heroSpeakSaved.listSpeaks);
                 adapter.notifyDataSetChanged();
+            } else {
+                HTTPParseUtils.getInstance().withVoices(mParam1);
+                HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
+                    @Override
+                    public void onFinish() {
+                        list.clear();
+                        List<SpeakDto> mList = HeroManager.getInstance().getHero(mParam1).listSpeaks;
+
+                        for (SpeakDto d : mList) {
+                            Logger.debug(TAG, ">>>" + "Text:" + d.text + ";img:" + d.rivalImage);
+                        }
+                        list.addAll(mList);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
 
     }
 }

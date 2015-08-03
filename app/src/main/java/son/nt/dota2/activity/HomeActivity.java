@@ -241,7 +241,22 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 //            HTTPParseUtils.getInstance().withAbility(hero.heroId);
 //        }
 
-        HTTPParseUtils.getInstance().withVoices(heroEntry.heroId);
+
+//        try {
+//            AObject heroSpeak = FileUtil.getObject(this, heroEntry.heroId);
+//            if (heroSpeak != null) {
+//                Logger.debug(TAG, ">>>" + "heroSpeak != null");
+//                HeroSpeakSaved heroSpeakSaved = (HeroSpeakSaved) heroSpeak;
+//                HeroManager.getInstance().getHero(heroEntry.heroId).listSpeaks.clear();
+//                HeroManager.getInstance().getHero(heroEntry.heroId).listSpeaks.addAll(heroSpeakSaved.listSpeaks);
+//            } else {
+//                HTTPParseUtils.getInstance().withVoices(heroEntry.heroId);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
         HTTPParseUtils.getInstance().getAbilityFromServer(heroEntry.heroId);
 //        showFragment(VoiceFragment.newInstance(heroEntry.heroId, ""), true);
 
