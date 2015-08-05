@@ -11,6 +11,14 @@
         <item name="windowActionBar">false</item>
     </style>
 
+    <style name="Theme.Hero" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/com_facebook_blue</item>
+        <item name="colorPrimaryDark">@color/md_indigo_500</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
     <style name="AppStyle" parent="Theme.TS">
 
     </style>

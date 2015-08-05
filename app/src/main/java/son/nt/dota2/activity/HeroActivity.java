@@ -2,6 +2,7 @@ package son.nt.dota2.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +15,15 @@ import son.nt.dota2.fragment.HeroFragment;
 
 public class HeroActivity extends AActivity implements HeroFragment.OnFragmentInteractionListener {
     HeroEntry heroEntry;
+    public  FloatingActionButton floatingActionButton;
+
+    public FloatingActionButton getFab() {
+        HeroFragment f = (HeroFragment) getSafeFragmentManager().findFragmentByTag(FRAGMENT_KEY);
+        if (f != null) {
+            return f.floatingActionButton;
+        }
+        return null;
+    }
 
     @Override
     protected Fragment onCreateMainFragment(Bundle savedInstanceState) {
@@ -62,4 +72,6 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+
 }

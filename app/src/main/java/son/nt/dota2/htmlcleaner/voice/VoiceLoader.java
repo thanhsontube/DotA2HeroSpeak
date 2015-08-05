@@ -238,6 +238,46 @@ public abstract class VoiceLoader extends ContentLoader<List<SpeakDto>> {
                 }
             }
 
+            List<String> listBand = new ArrayList<>();
+            listBand.add("Dying");
+            listBand.add("Last_Hitting");
+            listBand.add("Respawning");
+            listBand.add("Thanking");
+            listBand.add("Drawing_First_Blood");
+            listBand.add("Removed_from_game_2");
+            listBand.add("Purchasing_a_Specific_Item");
+            listBand.add("Meeting_an_Ally");
+            listBand.add("Beginning_the_Battle");
+            listBand.add("Killing_a_Rival");
+            listBand.add("Spawning");
+            //another
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@class='mw-headline']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        TagNode nodeTitle = (TagNode) objA[0];
+                        String id = nodeTitle.getAttributeByName("id");
+
+                        boolean isAdd = true;
+                        for (String s : listBand) {
+                            if (id.equals(s)) {
+                                isAdd = false;
+                            }
+                        }
+                        Logger.debug(TAG, ">>>" + "Id:" + id + ";IsAdd:" + isAdd);
+                        if (isAdd) {
+                            normalNode = tagNodes.get(i + 1);
+                            listSpeaks.addAll(getNormal(normalNode, id));
+                        }
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
 
 
         } catch (Exception e) {

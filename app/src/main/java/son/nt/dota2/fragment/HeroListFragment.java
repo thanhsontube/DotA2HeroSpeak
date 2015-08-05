@@ -21,6 +21,7 @@ import java.util.List;
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
+import son.nt.dota2.activity.HeroActivity;
 import son.nt.dota2.activity.MainActivity;
 import son.nt.dota2.adapter.AdapterRcvHome;
 import son.nt.dota2.base.AFragment;
@@ -145,6 +146,7 @@ public class HeroListFragment extends AFragment {
     };
 
     private void initListener() {
+
     }
 
 

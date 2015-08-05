@@ -12,6 +12,7 @@
         android:text="Moving"
         style="@style/txt_white_18"
         android:textSize="26sp"
+        android:textAllCaps="true"
         android:layout_gravity="center"/>
 
 </LinearLayout>

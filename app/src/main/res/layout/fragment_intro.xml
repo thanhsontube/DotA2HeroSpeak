@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?colorPrimary"
+    android:background="@color/transparent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="son.nt.dota2.fragment.IntroFragment">
 

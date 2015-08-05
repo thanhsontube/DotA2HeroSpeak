@@ -24,6 +24,7 @@ import java.util.List;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.utils.FileUtil;
+import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsLog;
 
 public class DownloadService extends Service {
@@ -34,13 +35,15 @@ public class DownloadService extends Service {
 
     public boolean isQuit = false;
 
+    private String heroId;
+
     public class LocalBinder extends Binder {
 
         public DownloadService getService() {
             return DownloadService.this;
         }
     }
-    public Intent getIntent(Context context) {
+    public static Intent getIntent(Context context) {
         return new Intent(context, DownloadService.class);
     }
     public DownloadService() {
@@ -61,7 +64,7 @@ public class DownloadService extends Service {
         super.onDestroy();
     }
 
-    public void addLink(List<String> list) {
+    public void addLink(List<String> list, String heroId) {
         log.d("log>>>" + "addLink:" + list.size());
         int i = 0;
         for (String link : list) {
@@ -72,7 +75,9 @@ public class DownloadService extends Service {
         }
     }
 
-    public void addLinkDto(List<SpeakDto> list) {
+    public void addLinkDto(List<SpeakDto> list, String heroId) {
+        Logger.debug(TAG, ">>>" + "========addLinkDto======:" + list.size());
+        this.heroId = heroId;
         DownloadLoader loader = new DownloadLoader();
         loader.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, list);
     }
@@ -107,7 +112,8 @@ public class DownloadService extends Service {
         if(TextUtils.isEmpty(linkSpeak)) {
             return;
         }
-        File fileTo = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
+        String pathSave = ResourceManager.getInstance().folderAudio +  File.separator + heroId + File.separator;
+        File fileTo = new File(pathSave, FileUtil.createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
         if (fileTo.exists()) {
 //            log.d("log>>>" + "downloadLink exist");
             return;
@@ -120,7 +126,7 @@ public class DownloadService extends Service {
             if (status.getStatusCode() == HttpStatus.SC_OK) {
 
                 InputStream in = response.getEntity().getContent();
-                File fileOut = new File(ResourceManager.getInstance().folderAudio, File.separator + "down_temp");
+                File fileOut = new File(pathSave,"down_temp");
 
                 OutputStream out = new FileOutputStream(fileOut, false);
                 byte []buffer = new byte[1024];

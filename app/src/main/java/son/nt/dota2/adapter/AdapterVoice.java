@@ -15,11 +15,14 @@ import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * Created by Sonnt on 7/30/15.
  */
 public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
+
+    public static final String TAG = "AdapterVoice";
 
     private List<SpeakDto> list;
     LayoutInflater inflater;
@@ -50,7 +53,7 @@ public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(Holder holder, final int position) {
         final SpeakDto dto = list.get(position);
         switch (getItemViewType(position)) {
             case TYPE_SPEAK:
@@ -78,14 +81,33 @@ public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.imgRival);
 
+                holder.view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        list.get(position).position = position;
+                        OttoBus.post(list.get(position));
+                    }
+                });
+                if (dto.isPlaying) {
+                    holder.view.setBackgroundResource(R.drawable.d_row_speaking);
+                    holder.imgPlaying.setVisibility(View.VISIBLE);
+                } else {
+                    holder.imgPlaying.setVisibility(View.GONE);
+                    holder.view.setBackgroundResource(android.R.color.transparent);
+                }
+
                 break;
             case TYPE_TITLE:
                 if (dto.text != null) {
-                    holder.title.setText(dto.text);
+                    holder.title.setText(dto.text.replace("_"," "));
                 }
                 break;
         }
 
+    }
+
+    public SpeakDto getItem(int position) {
+        return list.get(position);
     }
 
     @Override

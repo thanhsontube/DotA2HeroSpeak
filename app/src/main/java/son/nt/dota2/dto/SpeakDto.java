@@ -16,6 +16,8 @@ public class SpeakDto extends AObject {
     public boolean isTitle = false;
     public boolean isPlaying = false;
 
+    public int position;
+
     public void setRival(String rivalName, String rivalImage, String voiceText, String voiceMp3) {
         this.rivalName = rivalName;
         this.rivalImage = rivalImage;

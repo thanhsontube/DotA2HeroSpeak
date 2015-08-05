@@ -89,7 +89,8 @@
         </activity>
         <activity
             android:name=".activity.HeroActivity"
-            android:label="@string/title_activity_hero" >
+            android:label="@string/title_activity_hero"
+            android:theme="@style/Theme.Hero">
         </activity>
     </application>
 

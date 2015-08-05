@@ -12,6 +12,10 @@ import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import java.util.List;
 import java.util.Random;
 
 import son.nt.dota2.R;
@@ -153,6 +157,19 @@ public class KenBurnsView extends FrameLayout {
         for (int i = 0; i < mImageViews.length; i++) {
             mImageViews[i].setImageBitmap(mBitmap[i]);
         }
+    }
+
+    public void setResourceUrl(List<String> list) {
+        if(list.size() <=1 ) {
+            return;
+        }
+
+        Random random = new Random();
+        int rd = random.nextInt(list.size());
+        for (int i = 0; i < mImageViews.length; i++) {
+            Glide.with(getContext()).load(list.get(rd)).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(mImageViews[i]);
+        }
+
     }
 }
 

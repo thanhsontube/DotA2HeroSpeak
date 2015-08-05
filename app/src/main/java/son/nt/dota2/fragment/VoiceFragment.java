@@ -2,13 +2,19 @@ package son.nt.dota2.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.Service;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,8 +28,12 @@ import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
+import son.nt.dota2.service.DownloadService;
+import son.nt.dota2.service.ServiceMedia;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.NetworkUtils;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,6 +85,17 @@ public class VoiceFragment extends AbsFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        OttoBus.register(this);
+        getActivity().bindService(ServiceMedia.getIntentService(getActivity()), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
+        getActivity().bindService(DownloadService.getIntent(getActivity()), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        OttoBus.unRegister(this);
+        getActivity().unbindService(serviceConnectionMedia);
+        getActivity().unbindService(serviceConnectionPrefetchAudio);
     }
 
     @Override
@@ -130,10 +151,11 @@ public class VoiceFragment extends AbsFragment {
     private RecyclerView recyclerView;
     private AdapterVoice adapter;
     private List<SpeakDto> list = new ArrayList<>();
+
     @Override
     public void initLayout(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.voice_recycleview);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         recyclerView.setHasFixedSize(true);
@@ -146,6 +168,30 @@ public class VoiceFragment extends AbsFragment {
     @Override
     public void initListener() {
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!recyclerView.canScrollVertically(1)) {
+//                    onScrolledToEnd();
+                } else if (dy < 0) {
+//                    onScrolledUp();
+                    //hide
+//                    ((HeroActivity)getActivity()).floatingActionButton.setVisibility(View.GONE);
+                } else if (dy > 0) {
+//                    onScrolledDown();
+                    //show
+//                    ((HeroActivity)getActivity()).floatingActionButton.setVisibility(View.VISIBLE);
+
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
         try {
             AObject heroSpeak = FileUtil.getObject(getActivity(), mParam1);
             if (heroSpeak != null) {
@@ -157,22 +203,32 @@ public class VoiceFragment extends AbsFragment {
                 list.clear();
                 list.addAll(heroSpeakSaved.listSpeaks);
                 adapter.notifyDataSetChanged();
+                isLoaded = true;
+                startPrefetch();
             } else {
                 HTTPParseUtils.getInstance().withVoices(mParam1);
                 HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
                     @Override
                     public void onFinish() {
+                        Logger.debug(TAG, ">>>" + "withVoices onFinish");
                         list.clear();
                         List<SpeakDto> mList = HeroManager.getInstance().getHero(mParam1).listSpeaks;
 
-                        for (SpeakDto d : mList) {
-                            Logger.debug(TAG, ">>>" + "Text:" + d.text + ";img:" + d.rivalImage);
+//                        for (SpeakDto d : mList) {
+//                            Logger.debug(TAG, ">>>" + "Text:" + d.text + ";img:" + d.rivalImage);
+//                        }
+                        if (mediaService != null) {
+                            mediaService.setAdapterVoice(adapter);
+                            mediaService.setListData(mList);
                         }
                         list.addAll(mList);
                         adapter.notifyDataSetChanged();
+                        isLoaded = true;
+                        startPrefetch();
                     }
                 });
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -180,5 +236,70 @@ public class VoiceFragment extends AbsFragment {
         }
 
 
+    }
+
+
+    DownloadService downloadService;
+    boolean isBind = false;
+    boolean isLoaded = false;
+    //MEDIA MUSIC service
+    private ServiceMedia mediaService;
+    ServiceConnection serviceConnectionMedia = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            ServiceMedia.LocalBinder binder = (ServiceMedia.LocalBinder) service;
+            mediaService = binder.getService();
+            prepareMedia();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            try {
+                mediaService.stop();
+                mediaService = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private void prepareMedia() {
+        mediaService.setAdapterVoice(adapter);
+        mediaService.setListData(HeroManager.getInstance().getHero(mParam1).listSpeaks);
+
+    }
+
+    @Subscribe
+    public void listeningAndPlay(SpeakDto speakDto) {
+        if (mediaService != null) {
+//            mediaService.playSingleLink(speakDto.link);
+            mediaService.playSong(speakDto.position, true);
+        }
+
+    }
+
+    //prefetch all audio
+
+    ServiceConnection serviceConnectionPrefetchAudio = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            DownloadService.LocalBinder binder = (DownloadService.LocalBinder) service;
+            downloadService = binder.getService();
+            isBind = true;
+            startPrefetch();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBind = true;
+        }
+    };
+
+    private void startPrefetch() {
+        Logger.debug(TAG, ">>>" + "startPrefetch isBind" + isBind + ";isLoaded:" + isLoaded);
+        if (isBind && isLoaded && NetworkUtils.isConnected(getActivity())) {
+            downloadService.addLinkDto(list);
+        }
     }
 }

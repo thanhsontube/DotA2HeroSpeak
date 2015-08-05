@@ -9,6 +9,7 @@
     android:paddingBottom="8dp"
     android:id="@+id/row_voice_main"
     android:background="@drawable/d_row_speak"
+    android:descendantFocusability="blocksDescendants"
     android:minHeight="70dp">
 
     <LinearLayout

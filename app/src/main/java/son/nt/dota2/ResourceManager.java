@@ -55,7 +55,7 @@ public class ResourceManager {
     }
     private void initialize() {
         try {
-            myPath = new MyPath(context);
+//            myPath = new MyPath(context);
             contentManager = new ContentManager(context, 100);
 //            folderSave = getContext().getFilesDir().getPath();
 

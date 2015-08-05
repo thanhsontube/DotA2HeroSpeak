@@ -235,7 +235,7 @@ public class AbilityFragment extends AbsFragment {
                 HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
                 if (heroEntry != null && heroEntry.listAbilities.size() > 0 && !TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
                     try {
-                        serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
+//                        serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -253,7 +253,7 @@ public class AbilityFragment extends AbsFragment {
             public void onTabReselected(TabLayout.Tab tab) {
                 HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
                 if (!TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
-                    serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
+//                    serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
                 }
             }
         });

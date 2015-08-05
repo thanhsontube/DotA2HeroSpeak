@@ -377,17 +377,10 @@ public class HTTPParseUtils {
                     listener.onFinish();
                 }
                 try {
-//                    FileUtil.saveHeroSpeak(context, heroDto, heroDto.name);
                     FileUtil.saveObject(context, new HeroSpeakSaved(heroId, entity), heroId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-//                list.clear();
-//                list.addAll(heroDto.listSpeaks);
-//                adapter.notifyDataSetChanged();
-//                isLoaded = true;
-//                startPrefetch();
-//                prepareMedia();
             }
 
             @Override

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -13,12 +14,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterPagerHero;
 import son.nt.dota2.base.AbsFragment;
+import son.nt.dota2.customview.KenBurnsView;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.utils.Logger;
 
@@ -43,6 +50,10 @@ public class HeroFragment extends AbsFragment {
     private AdapterPagerHero adapter;
     private List<android.support.v4.app.Fragment> listFragments = new ArrayList<>();
     private ArrayList<String> titles = new ArrayList<>();
+    public FloatingActionButton floatingActionButton;
+
+    KenBurnsView kenBurnsView;
+    private List<String> listKenburns = new ArrayList<>();
 
     /**
      * Use this factory method to create a new instance of
@@ -145,6 +156,12 @@ public class HeroFragment extends AbsFragment {
 
     @Override
     public void initLayout(View view) {
+        //kenburns
+        kenBurnsView = (KenBurnsView) view.findViewById(R.id.hero_ken_burns);
+        int[] ids = new int[]{R.mipmap.ken2, R.mipmap.ken2};
+        kenBurnsView.setResourceIds(ids);
+        kenBurnsView.startLayoutAnimation();
+
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.hero_coordinator);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.hero_appbarlayout);
         toolbar = (Toolbar) view.findViewById(R.id.hero_toolbar);
@@ -152,11 +169,40 @@ public class HeroFragment extends AbsFragment {
         pager = (ViewPager) view.findViewById(R.id.hero_pager);
         pager.setAdapter(adapter);
         tabLayout.setupWithViewPager(pager);
+        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.hero_fab);
 
+        getKenBurnsImage();
     }
 
     @Override
     public void initListener() {
 
+    }
+
+
+    private void getKenBurnsImage () {
+        Logger.debug(TAG, ">>>" + "getKenBurnsImage");
+        try {
+            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Dota2BgDto");
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> list, ParseException e) {
+                    listKenburns.clear();
+                    for (ParseObject p : list) {
+                        String s = p.getString("link");
+                        listKenburns.add(s);
+
+                    }
+                    updateKenBurns();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateKenBurns() {
+        kenBurnsView.setResourceUrl(listKenburns);
+        kenBurnsView.startLayoutAnimation();
     }
 }

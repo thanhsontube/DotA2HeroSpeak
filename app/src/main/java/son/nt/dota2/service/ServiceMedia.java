@@ -19,6 +19,7 @@ import java.util.List;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.adapter.AdapterSpeak;
+import son.nt.dota2.adapter.AdapterVoice;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.utils.FileUtil;
@@ -38,6 +39,10 @@ public class ServiceMedia extends Service {
     public int prePos = 0;
 
     private boolean isPlayAndStopOne = false;
+    AdapterVoice adapterVoice;
+    public void setAdapterVoice (AdapterVoice adapterVoice) {
+        this.adapterVoice = adapterVoice;
+    }
 
     public SpeakDto getnextFile() {
         if (list == null || list.size() == 0) {
@@ -84,9 +89,13 @@ public class ServiceMedia extends Service {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 if (!isPlayAndStopOne) {
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     playNextVideo();
                 }
-//                play();
             }
         });
 
@@ -97,7 +106,6 @@ public class ServiceMedia extends Service {
                 if (!isPlayAndStopOne) {
                     playNextVideo();
                 }
-//                play();
                 return false;
             }
         });
@@ -143,12 +151,50 @@ public class ServiceMedia extends Service {
         try {
             player.reset();
             if (list.size() >= currentPosition) {
+                if (adapterVoice != null) {
+                    if (currentPosition > 0) {
+                        adapterVoice.getItem(prePos).isPlaying = false;
+                    }
+                    adapterVoice.getItem(currentPosition).isPlaying = true;
+                    adapterVoice.notifyDataSetChanged();
+
+                }
+
+                if(txtPos != null) {
+                    txtPos.setText("(" + currentPosition + ")");
+                }
+                prePos = currentPosition;
+                File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(list.get(index).link).replace(".mp3", ".dat"));
+                if (file.exists()) {
+                    player.setDataSource(file.getPath());
+                    player.prepare();
+                    player.start();
+                } else {
+                    loadSpeak(list.get(index).link);
+                }
+
+
+            }
+        } catch (Exception e) {
+            log.e("log>>>" + "MediaService error play song:" + currentPosition + ":" + e.toString());
+            if (!isPlayAndStopOne) {
+                playNextVideo();
+            }
+        }
+    }
+
+    public void playSong2(int index) {
+        currentPosition = index;
+        try {
+            player.reset();
+            if (list.size() >= currentPosition) {
                 if (adapter != null) {
                     if (currentPosition > 0) {
                         adapter.getItem(prePos).isPlaying = false;
                     }
                     adapter.getItem(currentPosition).isPlaying = true;
                     adapter.notifyDataSetChanged();
+
                 }
 
                 if(txtPos != null) {
