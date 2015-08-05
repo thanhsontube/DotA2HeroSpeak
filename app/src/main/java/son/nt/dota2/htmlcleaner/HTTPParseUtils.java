@@ -369,6 +369,9 @@ public class HTTPParseUtils {
             @Override
             public void onContentLoaderSucceed(List<SpeakDto> entity) {
                 Logger.debug(TAG, ">>>" + "onContentLoaderSucceed :" + entity.size());
+                for (SpeakDto p : entity) {
+                    p.heroId = heroId;
+                }
                 HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
                 heroEntry.listSpeaks.clear();
                 heroEntry.listSpeaks.addAll(entity);

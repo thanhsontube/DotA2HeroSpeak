@@ -23,7 +23,6 @@ import java.util.List;
 
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.SpeakDto;
-import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsLog;
 
@@ -112,8 +111,7 @@ public class DownloadService extends Service {
         if(TextUtils.isEmpty(linkSpeak)) {
             return;
         }
-        String pathSave = ResourceManager.getInstance().folderAudio +  File.separator + heroId + File.separator;
-        File fileTo = new File(pathSave, FileUtil.createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
+        File fileTo = new File(ResourceManager.getInstance().getPathAudio(linkSpeak, heroId));
         if (fileTo.exists()) {
 //            log.d("log>>>" + "downloadLink exist");
             return;
@@ -126,7 +124,12 @@ public class DownloadService extends Service {
             if (status.getStatusCode() == HttpStatus.SC_OK) {
 
                 InputStream in = response.getEntity().getContent();
-                File fileOut = new File(pathSave,"down_temp");
+                String path = ResourceManager.getInstance().folderAudio + File.separator + heroId + File.separator;
+                File f = new File((path));
+                if (!f.exists()) {
+                    f.mkdirs();
+                }
+                File fileOut = new File(path,"down_temp");
 
                 OutputStream out = new FileOutputStream(fileOut, false);
                 byte []buffer = new byte[1024];

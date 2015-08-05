@@ -255,7 +255,7 @@ public class MainFragment extends AFragment implements View.OnClickListener {
             btnPaused.setVisibility(View.GONE);
             btnPlayed.setVisibility(View.VISIBLE);
             txtPos.setVisibility(View.GONE);
-            mediaService.playSong(position, true);
+            mediaService.playSong(position,"", true);
         }
     };
 
@@ -474,7 +474,7 @@ public class MainFragment extends AFragment implements View.OnClickListener {
 
     private void startPrefetch() {
         if (isBind && isLoaded) {
-            downloadService.addLinkDto(list);
+            downloadService.addLinkDto(list, heroName);
         }
     }
 

@@ -9,6 +9,7 @@ import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.facebook.FbLoaderManager;
 import son.nt.dota2.loader.MyPath;
 import son.nt.dota2.loader.base.ContentManager;
+import son.nt.dota2.utils.FileUtil;
 
 /**
  * Created by Sonnt on 3/14/2015.
@@ -101,5 +102,14 @@ public class ResourceManager {
 
     public ContentManager getContentManager() {
         return contentManager;
+    }
+
+    public String getPathAudio (String link, String heroID) {
+        String path = ResourceManager.getInstance().folderAudio + File.separator + heroID + File.separator;
+        File f = new File((path));
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        return ResourceManager.getInstance().folderAudio + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat");
     }
 }

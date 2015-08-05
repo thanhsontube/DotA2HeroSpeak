@@ -121,7 +121,7 @@ public class SavedFragment extends AFragment {
             public void onClick(int position, SaveDto dto) {
                 Log.v("", "log>>>" + "Save F click:" + position);
                 if (mediaService != null) {
-                    mediaService.play(dto.speakLink);
+                    mediaService.play(dto.speakLink, "");
                 }
 
             }

@@ -44,32 +44,18 @@ import son.nt.dota2.utils.OttoBus;
  * create an instance of this fragment.
  */
 public class VoiceFragment extends AbsFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "VoiceFragment";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
+    private String heroID;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment VoiceFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static VoiceFragment newInstance(String param1, String param2) {
+    public static VoiceFragment newInstance(String param1) {
         VoiceFragment fragment = new VoiceFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,8 +68,7 @@ public class VoiceFragment extends AbsFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            heroID = getArguments().getString(ARG_PARAM1);
         }
         OttoBus.register(this);
         getActivity().bindService(ServiceMedia.getIntentService(getActivity()), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
@@ -193,12 +178,12 @@ public class VoiceFragment extends AbsFragment {
         });
 
         try {
-            AObject heroSpeak = FileUtil.getObject(getActivity(), mParam1);
+            AObject heroSpeak = FileUtil.getObject(getActivity(), heroID);
             if (heroSpeak != null) {
                 Logger.debug(TAG, ">>>" + "heroSpeak != null");
                 HeroSpeakSaved heroSpeakSaved = (HeroSpeakSaved) heroSpeak;
-                HeroManager.getInstance().getHero(mParam1).listSpeaks.clear();
-                HeroManager.getInstance().getHero(mParam1).listSpeaks.addAll(heroSpeakSaved.listSpeaks);
+                HeroManager.getInstance().getHero(heroID).listSpeaks.clear();
+                HeroManager.getInstance().getHero(heroID).listSpeaks.addAll(heroSpeakSaved.listSpeaks);
 
                 list.clear();
                 list.addAll(heroSpeakSaved.listSpeaks);
@@ -206,19 +191,19 @@ public class VoiceFragment extends AbsFragment {
                 isLoaded = true;
                 startPrefetch();
             } else {
-                HTTPParseUtils.getInstance().withVoices(mParam1);
+                HTTPParseUtils.getInstance().withVoices(heroID);
                 HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
                     @Override
                     public void onFinish() {
                         Logger.debug(TAG, ">>>" + "withVoices onFinish");
                         list.clear();
-                        List<SpeakDto> mList = HeroManager.getInstance().getHero(mParam1).listSpeaks;
+                        List<SpeakDto> mList = HeroManager.getInstance().getHero(heroID).listSpeaks;
 
 //                        for (SpeakDto d : mList) {
 //                            Logger.debug(TAG, ">>>" + "Text:" + d.text + ";img:" + d.rivalImage);
 //                        }
                         if (mediaService != null) {
-                            mediaService.setAdapterVoice(adapter);
+                            mediaService.setAdapterVoice(adapter, heroID);
                             mediaService.setListData(mList);
                         }
                         list.addAll(mList);
@@ -265,8 +250,8 @@ public class VoiceFragment extends AbsFragment {
     };
 
     private void prepareMedia() {
-        mediaService.setAdapterVoice(adapter);
-        mediaService.setListData(HeroManager.getInstance().getHero(mParam1).listSpeaks);
+        mediaService.setAdapterVoice(adapter, heroID);
+        mediaService.setListData(HeroManager.getInstance().getHero(heroID).listSpeaks);
 
     }
 
@@ -274,7 +259,7 @@ public class VoiceFragment extends AbsFragment {
     public void listeningAndPlay(SpeakDto speakDto) {
         if (mediaService != null) {
 //            mediaService.playSingleLink(speakDto.link);
-            mediaService.playSong(speakDto.position, true);
+            mediaService.playSong(speakDto.position, speakDto.heroId, true);
         }
 
     }
@@ -299,7 +284,7 @@ public class VoiceFragment extends AbsFragment {
     private void startPrefetch() {
         Logger.debug(TAG, ">>>" + "startPrefetch isBind" + isBind + ";isLoaded:" + isLoaded);
         if (isBind && isLoaded && NetworkUtils.isConnected(getActivity())) {
-            downloadService.addLinkDto(list);
+            downloadService.addLinkDto(list, heroID);
         }
     }
 }

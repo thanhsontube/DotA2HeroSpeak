@@ -142,7 +142,7 @@ public class HeroFragment extends AbsFragment {
         listFragments.clear();
         listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
         listFragments.add(AbilityFragment.newInstance(heroEntry.heroId));
-        listFragments.add( VoiceFragment.newInstance(heroEntry.heroId,""));
+        listFragments.add( VoiceFragment.newInstance(heroEntry.heroId));
 
         adapter = new AdapterPagerHero(getSafeFragmentManager(), listFragments, titles);
 

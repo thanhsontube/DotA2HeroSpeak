@@ -22,9 +22,8 @@ import son.nt.dota2.adapter.AdapterSpeak;
 import son.nt.dota2.adapter.AdapterVoice;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.loader.MediaLoader;
-import son.nt.dota2.utils.FileUtil;
-import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.PreferenceUtil;
+import son.nt.dota2.utils.TsLog;
 
 public class ServiceMedia extends Service {
 
@@ -37,11 +36,13 @@ public class ServiceMedia extends Service {
     private MsConst.RepeatMode repeatMode = MsConst.RepeatMode.MODE_OFF;
     public int currentPosition = 0;
     public int prePos = 0;
+    public String heroID;
 
     private boolean isPlayAndStopOne = false;
     AdapterVoice adapterVoice;
-    public void setAdapterVoice (AdapterVoice adapterVoice) {
+    public void setAdapterVoice (AdapterVoice adapterVoice, String heroID) {
         this.adapterVoice = adapterVoice;
+        this.heroID = heroID;
     }
 
     public SpeakDto getnextFile() {
@@ -115,12 +116,12 @@ public class ServiceMedia extends Service {
         repeatMode = MsConst.RepeatMode.getMode(PreferenceUtil.getPreference(this, MsConst.KEY_REPEAT, 1));
         switch (repeatMode) {
             case MODE_ONE:
-                playSong(currentPosition);
+                playSong(currentPosition, heroID);
                 break;
             case MODE_OFF:
                 currentPosition++;
                 if (currentPosition != list.size()) {
-                    playSong(currentPosition);
+                    playSong(currentPosition, heroID);
                 }
                 break;
             case MODE_ON:
@@ -128,7 +129,7 @@ public class ServiceMedia extends Service {
                 if (currentPosition == list.size()) {
                     currentPosition = 0;
                 }
-                playSong(currentPosition);
+                playSong(currentPosition, heroID);
                 break;
 
             default:
@@ -138,15 +139,15 @@ public class ServiceMedia extends Service {
 
     }
 
-    public void playSong (int index, boolean isItemClick) {
+    public void playSong (int index, String heroID, boolean isItemClick) {
         isPlayAndStopOne = isItemClick;
-        playSong(index);
+        playSong(index, heroID);
     }
 
 
 
     //TODO play song at index
-    public void playSong(int index) {
+    public void playSong(int index, String heroID) {
         currentPosition = index;
         try {
             player.reset();
@@ -164,13 +165,13 @@ public class ServiceMedia extends Service {
                     txtPos.setText("(" + currentPosition + ")");
                 }
                 prePos = currentPosition;
-                File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(list.get(index).link).replace(".mp3", ".dat"));
+                File file = new File(ResourceManager.getInstance().getPathAudio(list.get(index).link, heroID));
                 if (file.exists()) {
                     player.setDataSource(file.getPath());
                     player.prepare();
                     player.start();
                 } else {
-                    loadSpeak(list.get(index).link);
+                    loadSpeak(list.get(index).link, heroID);
                 }
 
 
@@ -183,46 +184,46 @@ public class ServiceMedia extends Service {
         }
     }
 
-    public void playSong2(int index) {
-        currentPosition = index;
-        try {
-            player.reset();
-            if (list.size() >= currentPosition) {
-                if (adapter != null) {
-                    if (currentPosition > 0) {
-                        adapter.getItem(prePos).isPlaying = false;
-                    }
-                    adapter.getItem(currentPosition).isPlaying = true;
-                    adapter.notifyDataSetChanged();
-
-                }
-
-                if(txtPos != null) {
-                    txtPos.setText("(" + currentPosition + ")");
-                }
-                prePos = currentPosition;
-                File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(list.get(index).link).replace(".mp3", ".dat"));
-                if (file.exists()) {
-                    player.setDataSource(file.getPath());
-                    player.prepare();
-                    player.start();
-                } else {
-                    loadSpeak(list.get(index).link);
-                }
-
-
-            }
-        } catch (Exception e) {
-            log.e("log>>>" + "MediaService error play song:" + currentPosition + ":" + e.toString());
-            if (!isPlayAndStopOne) {
-                playNextVideo();
-            }
-        }
-    }
+//    public void playSong2(int index) {
+//        currentPosition = index;
+//        try {
+//            player.reset();
+//            if (list.size() >= currentPosition) {
+//                if (adapter != null) {
+//                    if (currentPosition > 0) {
+//                        adapter.getItem(prePos).isPlaying = false;
+//                    }
+//                    adapter.getItem(currentPosition).isPlaying = true;
+//                    adapter.notifyDataSetChanged();
+//
+//                }
+//
+//                if(txtPos != null) {
+//                    txtPos.setText("(" + currentPosition + ")");
+//                }
+//                prePos = currentPosition;
+//                File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(list.get(index).link).replace(".mp3", ".dat"));
+//                if (file.exists()) {
+//                    player.setDataSource(file.getPath());
+//                    player.prepare();
+//                    player.start();
+//                } else {
+//                    loadSpeak(list.get(index).link);
+//                }
+//
+//
+//            }
+//        } catch (Exception e) {
+//            log.e("log>>>" + "MediaService error play song:" + currentPosition + ":" + e.toString());
+//            if (!isPlayAndStopOne) {
+//                playNextVideo();
+//            }
+//        }
+//    }
 
     public void play() {
         isPlayAndStopOne = false;
-        playSong(currentPosition);
+        playSong(currentPosition, heroID);
 //        player.start();
     }
 
@@ -270,7 +271,7 @@ public class ServiceMedia extends Service {
         this.heroName = heroName;
     }
 
-    private void loadSpeak(final String linkSpeak) {
+    private void loadSpeak(final String linkSpeak, final String heroID) {
         try {
 
             HttpGet httpGet = new HttpGet(linkSpeak);
@@ -281,7 +282,7 @@ public class ServiceMedia extends Service {
                 public void onContentLoaderSucceed(File entity) {
                     Log.v(TAG, "log>>>" + "onContentLoaderSucceed:" + entity.getPath());
                     try {
-                        File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(linkSpeak).replace(".mp3", ".dat"));
+                        File file = new File(ResourceManager.getInstance().getPathAudio(linkSpeak, heroID));
                         Log.v(TAG, "log>>>" + "file:" + file.getPath());
                         entity.renameTo(file);
                         player.setDataSource(file.getPath());
@@ -309,39 +310,41 @@ public class ServiceMedia extends Service {
         }
     }
 
-    public void play (String link) {
+    public void play (String link, String heroID) {
         isPlayAndStopOne = true;
         try {
-            File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat"));
+            File file = new File(ResourceManager.getInstance().getPathAudio(link, heroID));
             if (file.exists()) {
                 player.reset();
                 player.setDataSource(file.getPath());
                 player.prepare();
                 player.start();
             } else {
-                loadSpeak(link);
+                loadSpeak(link, heroID);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void playSingleLink (String link) {
-        isPlayAndStopOne = true;
-        try {
-            File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat"));
-            if (file.exists()) {
-                player.reset();
-                player.setDataSource(file.getPath());
-                player.prepare();
-                player.start();
-            } else {
-                loadSpeak(link);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void playSingleLink (String link) {
+//        isPlayAndStopOne = true;
+//        try {
+//            File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat"));
+//            if (file.exists()) {
+//                player.reset();
+//                player.setDataSource(file.getPath());
+//                player.prepare();
+//                player.start();
+//            } else {
+//                loadSpeak(link);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
 
 
 }
