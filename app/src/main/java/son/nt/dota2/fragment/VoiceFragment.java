@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.squareup.otto.Subscribe;
 
@@ -51,6 +52,7 @@ public class VoiceFragment extends AbsFragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private View autoPlay;
 
     public static VoiceFragment newInstance(String param1) {
         VoiceFragment fragment = new VoiceFragment();
@@ -148,10 +150,28 @@ public class VoiceFragment extends AbsFragment {
         adapter = new AdapterVoice(getActivity(), list);
         recyclerView.setAdapter(adapter);
 
+        autoPlay = view.findViewById(R.id.voice_fab);
+
     }
 
     @Override
     public void initListener() {
+
+        autoPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mediaService != null) {
+                    if (mediaService.getPlayer().isPlaying()) {
+
+                        mediaService.pause();
+                        ((ImageButton)autoPlay).setImageResource(R.mipmap.icon_played);
+                    } else {
+                        mediaService.play();
+                        ((ImageButton)autoPlay).setImageResource(R.mipmap.icon_paused);
+                    }
+                }
+            }
+        });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

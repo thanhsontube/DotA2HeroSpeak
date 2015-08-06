@@ -316,11 +316,13 @@ public class HomeFragment extends AFragment {
         String group = p.getString("group");
         String href = p.getString("href");
         String avatar = p.getString("avatar");
+        String lore = p.getString("lore");
 
         dto.setBaseInfo(heroId, href, avatar, group);
         dto.no = no;
         dto.name = name;
         dto.fullName = fullName;
+        dto.lore = lore;
         return dto;
     }
 

@@ -24,6 +24,7 @@ import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.HeroRoleDto;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.save.SaveHeroAbility;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroListLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroNameLoader;
@@ -78,8 +79,8 @@ public class HTTPParseUtils {
     }
 
 
-    public void withAbility(final String name) {
-        HttpGet httpGet = new HttpGet(AbilitiesLoader.PATH_ABILITY_ROOT + name);
+    public void withAbility(final String heroID) {
+        HttpGet httpGet = new HttpGet(AbilitiesLoader.PATH_ABILITY_ROOT + heroID);
         ResourceManager.getInstance().getContentManager().load(new AbilitiesLoader(httpGet, true) {
             @Override
             public void onContentLoaderStart() {
@@ -88,10 +89,24 @@ public class HTTPParseUtils {
 
             @Override
             public void onContentLoaderSucceed(List<AbilityDto> entity) {
-                Logger.debug(TAG, ">>>" + "onContentLoaderSucceed:" + entity.size());
+                for (AbilityDto d : entity) {
+                    d.heroId = heroID;
+                }
+                Logger.debug(TAG, ">>>=====>>>>" + "withAbility hero:" + heroID + ";total abilities:" + entity.size());
+                SaveHeroAbility saveHeroAbility = new SaveHeroAbility(heroID, entity);
+                try {
+                    FileUtil.saveAbilityObject(context, saveHeroAbility, heroID);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (listener!= null) {
+                    listener.onFinish();
+                }
+
                 //put this data on Parse
 
-                    uploadAbilityToParse(entity, name);
+//                    uploadAbilityToParse(entity, name);
 
 //                HeroEntry heroEntry = new HeroEntry();
 //                heroEntry.name = name;

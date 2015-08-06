@@ -3,6 +3,8 @@ package son.nt.dota2.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.base.AObject;
+
 /**
  * Created by Sonnt on 7/17/15.
  *
@@ -14,7 +16,9 @@ import java.util.List;
  07-17 17:26:15.540  21532-22635/dev.son.nt.dota2 D/AbilitiesLoader﹕ >>>a1:AlliesAttackDamageBonus:0(50%/75%/100%*)
  07-17 17:26:15.540  21532-22635/dev.son.nt.dota2 D/AbilitiesLoader﹕ >>>a1:BuffDuration:25
  */
-public class AbilityLevelDto extends AbilityBaseObject {
+public class AbilityLevelDto extends AObject {
+    public String heroId;
+    public String abilityName;
     public String name; //SelfDamageBonus
     public String value;
     public List <String> list = new ArrayList<>(); //100%/150%/200%

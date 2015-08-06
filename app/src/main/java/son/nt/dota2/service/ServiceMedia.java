@@ -91,7 +91,7 @@ public class ServiceMedia extends Service {
             public void onCompletion(MediaPlayer mp) {
                 if (!isPlayAndStopOne) {
                     try {
-                        Thread.sleep(1500);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

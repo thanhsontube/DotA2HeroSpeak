@@ -12,5 +12,15 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:scrollbarAlwaysDrawVerticalTrack="true"/>
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/voice_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:src="@mipmap/icon_played"
+        fab:fab_colorNormal="?colorPrimary"
+        fab:fab_colorPressed="?colorPrimaryDark"
+        fab:fab_colorRipple="@color/md_red_500" />
 
 </FrameLayout>

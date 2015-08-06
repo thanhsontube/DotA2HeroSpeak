@@ -136,12 +136,12 @@ public class HeroFragment extends AbsFragment {
             Logger.debug(TAG, ">>>" + "initData with:" + heroEntry.heroId);
         }
         titles.clear();
-        titles.add("Introduce");
-        titles.add("Ability");
-        titles.add("Voice");
         listFragments.clear();
+        titles.add("Introduce");
         listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
+        titles.add("Ability");
         listFragments.add(AbilityFragment.newInstance(heroEntry.heroId));
+        titles.add("Voice");
         listFragments.add( VoiceFragment.newInstance(heroEntry.heroId));
 
         adapter = new AdapterPagerHero(getSafeFragmentManager(), listFragments, titles);

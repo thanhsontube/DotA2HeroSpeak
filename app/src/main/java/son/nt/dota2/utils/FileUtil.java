@@ -51,6 +51,14 @@ public class FileUtil {
         return wo;
     }
 
+    public static void saveAbilityObject (Context context, AObject data, String name) throws Exception {
+        saveObject(context, data, "abi_" + name);
+    }
+
+    public static AObject getAbilityObject(Context context, String name) throws IOException, ClassNotFoundException {
+        return getObject(context, "abi_" +name);
+    }
+
     public static void saveHeroList(Context context, HeroData data) throws IOException {
         File woFile = new File(ResourceManager.getInstance().fileHeroList);
         if (!woFile.exists()) {

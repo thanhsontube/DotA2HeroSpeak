@@ -53,7 +53,7 @@
             android:layout_margin="16dp"
             android:clickable="true"
             android:src="@drawable/ic_agi_40"
-            android:visibility="visible"
+            android:visibility="gone"
             app:backgroundTint="@color/md_red_500"
             app:borderWidth="4dp"
             app:fabSize="normal"></android.support.design.widget.FloatingActionButton>

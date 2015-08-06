@@ -1,19 +1,23 @@
 package son.nt.dota2.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
+import son.nt.dota2.utils.Logger;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +31,7 @@ public class IntroFragment extends AbsFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "IntroFragment";
 
     // TODO: Rename and change types of parameters
     private String heroId;
@@ -112,15 +116,19 @@ public class IntroFragment extends AbsFragment {
     }
 
     private TextView txtLore;
+    private ImageView img;
 
     @Override
     public void initLayout(View view) {
         txtLore = (TextView) view.findViewById(R.id.intro_lore);
         txtLore.setText("");
         String text = HeroManager.getInstance().getHero(heroId).lore;
+        Logger.debug(TAG, ">>>" + "initLayout text:" + text + ";heroId:" + heroId);
         if (!TextUtils.isEmpty(text)) {
             txtLore.setText(text);
         }
+        img = (ImageView) view.findViewById(R.id.intro_image);
+        Glide.with(getActivity()).load(HeroManager.getInstance().getHero(heroId).avatarThumbnail).fitCenter().into(img);
     }
 
     @Override

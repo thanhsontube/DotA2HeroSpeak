@@ -18,23 +18,29 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
+import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.dto.AbilityDto;
 import son.nt.dota2.dto.AbilityItemAffectDto;
 import son.nt.dota2.dto.AbilityLevelDto;
 import son.nt.dota2.dto.AbilityNotesDto;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.save.SaveHeroAbility;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.service.ServiceMedia;
+import son.nt.dota2.utils.FileUtil;
+import son.nt.dota2.utils.Logger;
 
 public class AbilityFragment extends AbsFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = AbsFragment.class.getSimpleName();
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
@@ -258,27 +264,29 @@ public class AbilityFragment extends AbsFragment {
             }
         });
 
-        HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
-            @Override
-            public void onFinish() {
-                listAbilities.clear();
-                listAbilities.addAll(HeroManager.getInstance().getHero(heroId).listAbilities);
-                tabLayout.removeAllTabs();
-                for (AbilityDto dto : listAbilities) {
-                    View vTab = inflater.inflate(R.layout.tab_ability, null);
-                    ImageView img = (ImageView) vTab.findViewById(R.id.ability_icon);
-                    TextView txt = (TextView) vTab.findViewById(R.id.ability_text);
-                    txt.setText(dto.name);
-                    Glide.with(getActivity()).load(dto.linkImage).fitCenter().into(img);
-                    TabLayout.Tab tab = tabLayout.newTab().setCustomView(vTab);
-                    tabLayout.addTab(tab);
-                }
-                for (int i = 0; i < listAbilities.size(); i ++) {
-                    update(i);
-                }
+//        HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
+//            @Override
+//            public void onFinish() {
+//                listAbilities.clear();
+//                listAbilities.addAll(HeroManager.getInstance().getHero(heroId).listAbilities);
+//                tabLayout.removeAllTabs();
+//                for (AbilityDto dto : listAbilities) {
+//                    View vTab = inflater.inflate(R.layout.tab_ability, null);
+//                    ImageView img = (ImageView) vTab.findViewById(R.id.ability_icon);
+//                    TextView txt = (TextView) vTab.findViewById(R.id.ability_text);
+//                    txt.setText(dto.name);
+//                    Glide.with(getActivity()).load(dto.linkImage).fitCenter().into(img);
+//                    TabLayout.Tab tab = tabLayout.newTab().setCustomView(vTab);
+//                    tabLayout.addTab(tab);
+//                }
+//                for (int i = 0; i < listAbilities.size(); i ++) {
+//                    update(i);
+//                }
+//
+//            }
+//        });
 
-            }
-        });
+        testAbilityStrength();
 
 
     }
@@ -295,4 +303,80 @@ public class AbilityFragment extends AbsFragment {
             serviceMedia = null;
         }
     };
+
+    private void testAbilityStrength() {
+
+//        for (HeroEntry p : HeroManager.getInstance().getAgiHeroes()) {
+        final HeroEntry p = HeroManager.getInstance().getHero(heroId);
+        try {
+
+            AObject abiObject = FileUtil.getAbilityObject(getActivity(), p.heroId);
+            if (abiObject != null) {
+                SaveHeroAbility saveHeroAbility = (SaveHeroAbility) abiObject;
+                HeroManager.getInstance().getHero(saveHeroAbility.heroID).listAbilities.clear();
+                HeroManager.getInstance().getHero(saveHeroAbility.heroID).listAbilities.addAll(saveHeroAbility.listAbility);
+                Logger.debug(TAG, ">>>" + "withAbility hero:" + saveHeroAbility.listAbility.size());
+                listAbilities.clear();
+                listAbilities.addAll(HeroManager.getInstance().getHero(heroId).listAbilities);
+                tabLayout.removeAllTabs();
+                for (AbilityDto dto : listAbilities) {
+                    View vTab = inflater.inflate(R.layout.tab_ability, null);
+                    ImageView img = (ImageView) vTab.findViewById(R.id.ability_icon);
+                    TextView txt = (TextView) vTab.findViewById(R.id.ability_text);
+                    txt.setText(dto.name);
+                    Glide.with(getActivity()).load(dto.linkImage).fitCenter().into(img);
+                    TabLayout.Tab tab = tabLayout.newTab().setCustomView(vTab);
+                    tabLayout.addTab(tab);
+                }
+                for (int i = 0; i < listAbilities.size(); i++) {
+                    update(i);
+                }
+
+            } else {
+
+                HTTPParseUtils.getInstance().withAbility(p.heroId);
+                HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
+                    @Override
+                    public void onFinish() {
+                        try {
+                            AObject abiObject = FileUtil.getAbilityObject(getActivity(), p.heroId);
+                            if (abiObject != null) {
+                                SaveHeroAbility saveHeroAbility = (SaveHeroAbility) abiObject;
+                                HeroManager.getInstance().getHero(saveHeroAbility.heroID).listAbilities.clear();
+                                HeroManager.getInstance().getHero(saveHeroAbility.heroID).listAbilities.addAll(saveHeroAbility.listAbility);
+                                Logger.debug(TAG, ">>>" + "withAbility hero:" + saveHeroAbility.listAbility.size());
+                                listAbilities.clear();
+                                listAbilities.addAll(HeroManager.getInstance().getHero(heroId).listAbilities);
+                                tabLayout.removeAllTabs();
+                                for (AbilityDto dto : listAbilities) {
+                                    View vTab = inflater.inflate(R.layout.tab_ability, null);
+                                    ImageView img = (ImageView) vTab.findViewById(R.id.ability_icon);
+                                    TextView txt = (TextView) vTab.findViewById(R.id.ability_text);
+                                    txt.setText(dto.name);
+                                    Glide.with(getActivity()).load(dto.linkImage).fitCenter().into(img);
+                                    TabLayout.Tab tab = tabLayout.newTab().setCustomView(vTab);
+                                    tabLayout.addTab(tab);
+                                }
+                                for (int i = 0; i < listAbilities.size(); i++) {
+                                    update(i);
+                                }
+
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+
+        } catch (Exception e) {
+            Logger.error(TAG, ">>>" + "testAbilityStrength error:" + e.toString());
+
+        }
+
+
+//        }
+    }
 }

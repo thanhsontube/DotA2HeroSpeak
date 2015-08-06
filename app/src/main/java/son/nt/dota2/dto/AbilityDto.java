@@ -8,7 +8,7 @@ import son.nt.dota2.base.AObject;
 /**
  * Created by Sonnt on 7/14/15.
  */
-public class AbilityDto  extends AObject{
+public class AbilityDto extends AObject {
     public int no;
     public String heroId; //Mirana
     public String name; //Starstorm
@@ -19,19 +19,19 @@ public class AbilityDto  extends AObject{
     public String sound;
 
     public String description;//Calls down a wave of meteors to damage nearby enemy units. The nearest enemy unit in 325 range will take a second hit for 75% of the damage.
-    public String linkImage ; //
+    public String linkImage; //
 
     public boolean isUltimate = false;
     public List<AbilityLevelDto> listAbilityPerLevel = new ArrayList<>();
     public List<AbilityItemAffectDto> listItemAffects = new ArrayList<>();
     public List<AbilityNotesDto> listNotes = new ArrayList<>();
 
-    public AbilityDto () {
+    public AbilityDto() {
         no = -1;
         heroId = name = ability = affects = damage = sound = description = linkImage = "";
     }
 
-    public void setTypes (String [] arr) {
+    public void setTypes(String[] arr) {
         this.ability = arr[0];
         this.affects = arr[1];
         this.damage = arr[2];

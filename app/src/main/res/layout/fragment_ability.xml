@@ -27,7 +27,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/md_brown_700">
+            android:background="@color/transparent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -137,7 +137,7 @@
                         android:id="@+id/ability_level"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/md_brown_700"
+                        android:background="@color/transparent"
                         android:orientation="vertical"
                         android:padding="8dp">
 
@@ -159,7 +159,7 @@
                         android:id="@+id/ability_items_affects"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/md_brown_700"
+                        android:background="@color/transparent"
                         android:orientation="vertical"
                         android:padding="8dp">
 

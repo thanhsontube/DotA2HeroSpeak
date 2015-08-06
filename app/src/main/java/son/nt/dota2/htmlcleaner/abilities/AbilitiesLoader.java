@@ -288,15 +288,6 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
 
                     Logger.debug(TAG, ">>>" + "==========AAAA==========:" + sizeA + ":" + i);
                     TagNode nodeA = ((TagNode) data[i]).getChildTagList().get(0);
-//                    //Skill Image AND TYPE
-//
-//                    String imgPath = "//img[@src]";
-//                    Object[] oImgs = node2.evaluateXPath(imgPath);
-//                    if (oImgs.length > 0) {
-//                        TagNode tnI = (TagNode) oImgs[0];
-//                        dto.linkImage = tnI.getAttributeByName("src");
-//                        Logger.debug(TAG, ">>>" + "Image:" + dto.linkImage);
-//                    }
                     //skill type
 
                     dto.name = getName(nodeA);
@@ -304,39 +295,9 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                     dto.sound = getSound(nodeA);
                     Logger.debug(TAG, ">>>" + "Skill:" + dto.name + ";Image:" + dto.linkImage);
 
-//                    TagNode node2 = nodeA.getChildTagList().get(POS_ABILITY_IMAGE);
-//                    String affects = node2.getText().toString();
-//                    String[] arr = affects.split("\n");
-//                    List<String> skillTypes = new ArrayList<>();
-//
-//                    for (String s : arr) {
-//                        if (!TextUtils.isEmpty(s) && !s.equals(" ")) {
-//                            skillTypes.add(s);
-//                        }
-//                    }
-//                    String ability = null;
-//
-//                    String affect = null;
-//                    String damage = null;
-//                    if (skillTypes.size() == 6) {
-//                        ability = skillTypes.get(3);
-//                        affect = skillTypes.get(4);
-//                        damage = skillTypes.get(5);
-//                    }
-//                    if (skillTypes.size() == 4) {
-//                        ability = skillTypes.get(2);
-//                        affect = skillTypes.get(3);
-//                    }
-//
-//                    dto.setTypes(ability, affect, damage);
 
                     dto.setTypes(getThreeTypes(nodeA));
                     dto.description = getDescription(nodeA);
-
-//                    //Ability Description
-//                    TagNode nodeDes = nodeA.getChildTagList().get(POS_ABILITY_DESCRIPTION);
-//                    String description = nodeDes.getText().toString();
-//                    dto.description = description;
 
 
                     //Coundown and mana
@@ -359,192 +320,9 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
                         dto.isUltimate = true;
                     }
 
-
-//                    TagNode nodeTable = nodeA.getChildTagList().get(POS_ABILITY_COOL_DOWN_MANA);
-//
-//                    String xPathTable = "//table";
-//                    Object[] oTable = nodeTable.evaluateXPath(xPathTable);
-//                    int start = 0;
-//                    if (oTable.length > 0) {
-//                        start = 1;
-//                        //cooldown and mana
-//                        String xPathMana = "//a[@title='Mana']";
-//                        TagNode nodeCoolDownMana = (TagNode) oTable[0];
-//                        Object[] oMana = nodeCoolDownMana.evaluateXPath(xPathMana);
-//                        if (oMana.length > 0) {
-//                            String xPathCoMna = "./tbody/tr/td";
-//                            Object[] oComa = nodeCoolDownMana.evaluateXPath(xPathCoMna);
-//
-//
-//                            //get cooldown
-//                            TagNode nodeCoolDown = (TagNode) oComa[0];
-//
-//
-//                            String coolDowns = nodeCoolDown.getText().toString().replace(".", "").trim();
-//                            String[] arrCoolDown = coolDowns.split("/");
-//                            AbilityLevelDto abiDto;
-//                            abiDto = new AbilityLevelDto();
-//                            abiDto.name = "CoolDown";
-////                            dto.listAbilityPerLevel.add(abiDto);
-//                            if (arrCoolDown.length == 1) {
-//
-//                                abiDto.list.add(arrCoolDown[0]);
-//                                abiDto.list.add(arrCoolDown[0]);
-//                                abiDto.list.add(arrCoolDown[0]);
-//                                abiDto.list.add(arrCoolDown[0]);
-//                            } else if (arrCoolDown.length == 4) {
-//
-//
-//                                abiDto.list.add(arrCoolDown[0]);
-//                                abiDto.list.add(arrCoolDown[1]);
-//                                abiDto.list.add(arrCoolDown[2]);
-//                                abiDto.list.add(arrCoolDown[3]);
-//                            } else if (arrCoolDown.length == 3) {
-//                                abiDto.list.add(arrCoolDown[0]);
-//                                abiDto.list.add(arrCoolDown[1]);
-//                                abiDto.list.add(arrCoolDown[2]);
-//                                abiDto.list.add("-");
-//
-//
-//                                dto.isUltimate = true;
-//                            } else {
-//                                abiDto.list.add("-");
-//                                abiDto.list.add("-");
-//                                abiDto.list.add("-");
-//                                abiDto.list.add("-");
-//                            }
-//
-//                            TagNode nodeMana = (TagNode) oComa[1];
-//                            String manaCosts = nodeMana.getText().toString().replace(".", "").trim();
-//                            String[] arrManaCost = manaCosts.split("/");
-//                            AbilityLevelDto abilityMana = new AbilityLevelDto();
-//                            abilityMana.name = "Mana Cost";
-////                            dto.listAbilityPerLevel.add(abilityMana);
-//                            if (arrManaCost.length == 1) {
-//
-//
-//                                abilityMana.list.add(arrManaCost[0]);
-//                                abilityMana.list.add(arrManaCost[0]);
-//                                abilityMana.list.add(arrManaCost[0]);
-//                                abilityMana.list.add(arrManaCost[0]);
-//                            } else if (arrManaCost.length == 4) {
-//
-//
-//                                abilityMana.list.add(arrManaCost[0]);
-//                                abilityMana.list.add(arrManaCost[1]);
-//                                abilityMana.list.add(arrManaCost[2]);
-//                                abilityMana.list.add(arrManaCost[3]);
-//                            } else if (arrManaCost.length == 3) {
-//
-//                                abilityMana.list.add(arrManaCost[0]);
-//                                abilityMana.list.add(arrManaCost[1]);
-//                                abilityMana.list.add(arrManaCost[2]);
-//                                abilityMana.list.add("-");
-//
-//                                dto.isUltimate = true;
-//                            } else {
-//                                abilityMana.list.add("-");
-//                                abilityMana.list.add("-");
-//                                abilityMana.list.add("-");
-//                                abilityMana.list.add("-");
-//                            }
-//                        }
-//
-//
-//                    }
-
-                    //another fields
-//                    int start = getStart(nodeA);
-//                    TagNode nodeTable = nodeA.getChildTagList().get(POS_ABILITY_COOL_DOWN_MANA);
-//                    String xPathTable = "//table";
-//                    Object[] oTable = nodeTable.evaluateXPath(xPathTable);
-//                    Logger.debug(TAG, ">>>" + "<<>>> yyyyy2");
-//
-//                    for (int ii = start; ii < oTable.length; ii++) {
-//                        TagNode nodeOther = (TagNode) oTable[ii];
-//                        String xPath = "./tbody/tr/td";
-//                        Object[] oComa = nodeOther.evaluateXPath(xPath);
-//
-//                        if (oComa.length > 0) {
-//                            TagNode n0 = (TagNode) oComa[0];
-//                            String apath = "//img[@src]";
-//                            Object[] o = n0.evaluateXPath(apath);
-//                            String src = null;
-//                            String alt = null;
-//                            if (o.length > 0) {
-//                                src = ((TagNode) o[0]).getAttributeByName("src");
-//                                alt = ((TagNode) o[0]).getAttributeByName("alt");
-//                            }
-//                            dto.listItemAffects.add(new AbilityItemAffectDto(src, alt, n0.getText().toString()));
-//                        }
-//
-//                    }
-
                     dto.listItemAffects.clear();
                     dto.listItemAffects.addAll(getItemAffects(nodeA));
 
-
-//                    //ABILITY INFO
-//                    TagNode nodeInfo = nodeA.getChildTagList().get(POS_ABILITY_INFO);
-//                    String full = nodeInfo.getChildTagList().get(0).getText().toString().replace(" ", "");
-//                    char[] arrC = full.toCharArray();
-//                    List<Integer> list = new ArrayList<>();
-//                    list.add(0);
-//                    String specialChars = "/*!@#$%^&*()\"{}_[]|\\?/<>,.";
-//                    for (int j = 0; j < arrC.length - 1; j++) {
-//                        int k = j + 1;
-//                        char a1 = arrC[j];
-//                        char a2 = arrC[k];
-//                        if (((Character.isDigit(a1) || specialChars.contains(String.valueOf(a1)))) && Character.isLetter(a2)) {
-//
-//                            list.add(k);
-//                        }
-//
-//                    }
-//                    int end;
-//                    AbilityLevelDto abilityLevelDto;
-//
-//
-//                    for (int j = 0; j < list.size(); j++) {
-//                        if (j < list.size() - 1) {
-//                            end = list.get(j + 1);
-//                        } else {
-//                            end = full.length();
-//                        }
-//                        String a1 = full.substring(list.get(j), end).replace("\n", "").replace(" ", "").trim();
-//                        Logger.debug(TAG, ">>>" + "arrPerLevel String:" + a1);
-//
-//                        String[] arr2 = a1.split(":");
-//                        abilityLevelDto = new AbilityLevelDto();
-//                        abilityLevelDto.name = arr2[0];
-//
-//                        String[] arrPerLevel = arr2[1].split("/");
-//                        Logger.debug(TAG, ">>>" + "arrPerLevel:" + arrPerLevel.length);
-//                        if (arrPerLevel.length == 1) {
-//
-//                            abilityLevelDto.list.add(arr2[1]);
-//                            abilityLevelDto.list.add(arr2[1]);
-//                            abilityLevelDto.list.add(arr2[1]);
-//                            if (!dto.isUltimate) {
-//                                abilityLevelDto.list.add(arr2[1]);
-//                            }
-//                        }
-//
-//                        if (arrPerLevel.length == 3) {
-//                            dto.isUltimate = true;
-//                            for (int k = 0; k < arrPerLevel.length; k++) {
-//                                abilityLevelDto.list.add(arrPerLevel[k]);
-//                            }
-//                            abilityLevelDto.list.add("-");
-//                        }
-//
-//                        if (arrPerLevel.length == 4) {
-//                            for (int k = 0; k < arrPerLevel.length; k++) {
-//                                abilityLevelDto.list.add(arrPerLevel[k]);
-//                            }
-//                        }
-//                        dto.listAbilityPerLevel.add(abilityLevelDto);
-//                    }
 
                     try {
                         dto.listAbilityPerLevel.addAll(getInfoAbility(nodeA).listAbilityPerLevel);
@@ -573,7 +351,6 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
 
                 } catch (Exception e) {
                     Logger.error(TAG, ">>>" + "ERROR AAAA:" + e.toString());
-                    e.printStackTrace();
                 }
             }
 

@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:padding="4dp"
     tools:context="son.nt.dota2.fragment.AbilityFragment"
-    tools:background = "@color/md_brown_700">
+    android:background = "@color/transparent">
 
     <ImageView
         android:id="@+id/src"
