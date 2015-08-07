@@ -28,6 +28,8 @@ public class ResourceManager {
     public String folderHero;
     public String folderBlur;
     public String folderObject;
+    public String folderRingtone;
+    public String folderNotification;
 
 
     public String fileHeroList;
@@ -82,7 +84,15 @@ public class ResourceManager {
             if (!fObject.exists()) {
                 fObject.mkdirs();
             }
+
             folderObject = fObject.getPath();
+
+            File fRingtone = new File (folderSave, "/ringtone/");
+            folderRingtone = fRingtone.getPath();
+
+            File fNoti = new File (folderSave, "/notification/");
+            folderNotification = fNoti.getPath();
+
 
             fbLoaderManager = new FbLoaderManager();
 
@@ -111,5 +121,23 @@ public class ResourceManager {
             f.mkdirs();
         }
         return ResourceManager.getInstance().folderAudio + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat");
+    }
+
+    public String getPathRingtone (String link, String heroID) {
+        String path = ResourceManager.getInstance().folderRingtone + File.separator + heroID + File.separator;
+        File f = new File((path));
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        return ResourceManager.getInstance().folderRingtone + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
+    }
+
+    public String getPathNotification (String link, String heroID) {
+        String path = ResourceManager.getInstance().folderNotification + File.separator + heroID + File.separator;
+        File f = new File((path));
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        return ResourceManager.getInstance().folderNotification + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 }

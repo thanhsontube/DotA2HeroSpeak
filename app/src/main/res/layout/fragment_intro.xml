@@ -18,6 +18,7 @@
             android:src="@drawable/cheese_1"/>
 
         <TextView
+            style="@style/txt_white_18"
             android:padding="8dp"
             android:textAppearance="?android:textAppearanceMedium"
             android:textColor="@color/white"

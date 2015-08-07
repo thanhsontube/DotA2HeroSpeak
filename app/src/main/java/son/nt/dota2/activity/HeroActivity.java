@@ -3,14 +3,20 @@ package son.nt.dota2.activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.squareup.otto.Subscribe;
 
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.fragment.GridMenuDialog;
 import son.nt.dota2.fragment.HeroFragment;
+import son.nt.dota2.gridmenu.SpeakLongClick;
+import son.nt.dota2.utils.OttoBus;
 
 public class HeroActivity extends AActivity implements HeroFragment.OnFragmentInteractionListener {
     HeroEntry heroEntry;
@@ -29,7 +35,14 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
         heroEntry = (HeroEntry) getIntent().getExtras().getSerializable(MsConst.EXTRA_HERO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hero);
+        OttoBus.register(this);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OttoBus.unRegister(this);
     }
 
     @Override
@@ -57,6 +70,19 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Subscribe
+    public void voiceLongItemClick(SpeakLongClick dto) {
+        FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
+        Fragment f = getSafeFragmentManager().findFragmentByTag("long-click");
+        if (f != null) {
+            ft.remove(f);
+        }
+        GridMenuDialog dialog = GridMenuDialog.newInstance(dto.speakDto);
+        ft.add(dialog, "long-click");
+        ft.commit();
+//        dialog.show(ft, "long-click");
     }
 
 

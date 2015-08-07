@@ -19,6 +19,7 @@ import java.util.Random;
 
 import son.nt.dota2.R;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.gridmenu.SpeakLongClick;
 import son.nt.dota2.utils.OttoBus;
 
 /**
@@ -92,6 +93,14 @@ public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
                     public void onClick(View v) {
                         list.get(position).position = position;
                         OttoBus.post(list.get(position));
+                    }
+                });
+
+                holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        OttoBus.post(new SpeakLongClick(list.get(position)));
+                        return true;
                     }
                 });
                 if (dto.isPlaying) {

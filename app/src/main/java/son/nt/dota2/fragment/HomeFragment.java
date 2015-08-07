@@ -137,7 +137,11 @@ public class HomeFragment extends AFragment {
     }
 
     private void setEffect() {
-        adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
+        try {
+            adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -268,7 +268,7 @@ public class VoiceFragment extends AbsFragment {
     private void startPrefetch() {
         Logger.debug(TAG, ">>>" + "startPrefetch isBind" + isBind + ";isLoaded:" + isLoaded);
         if (isBind && isLoaded && NetworkUtils.isConnected(getActivity())) {
-            downloadService.addLinkDto(list, heroID);
+            downloadService.addLinkDto(listUsing, heroID);
         }
     }
 
@@ -301,8 +301,16 @@ public class VoiceFragment extends AbsFragment {
             listUsing.clear();
             listUsing.addAll(listTemp);
         }
+        for (SpeakDto p :listUsing) {
+            p.isPlaying = false;
+        }
 
         adapter.notifyDataSetChanged();
+        if (mediaService != null) {
+
+            mediaService.setListData(listUsing);
+            mediaService.setAdapterVoice(adapter, heroID);
+        }
 
     }
 

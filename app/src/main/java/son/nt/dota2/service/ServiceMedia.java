@@ -45,16 +45,6 @@ public class ServiceMedia extends Service {
         this.heroID = heroID;
     }
 
-    public SpeakDto getnextFile() {
-        if (list == null || list.size() == 0) {
-            return null;
-        }
-        if (currentPosition == list.size() - 1) {
-            return list.get(0);
-        }
-        return list.get(currentPosition + 1);
-    }
-
     public static Intent getIntentService(Context context) {
         return new Intent(context, ServiceMedia.class);
     }
@@ -252,6 +242,8 @@ public class ServiceMedia extends Service {
 
     public void setListData(List<SpeakDto> list) {
         log.d("log>>>" + "MediaService setListData:" + list.size());
+        currentPosition = 0;
+        prePos = 0;
         this.list.clear();
         this.list.addAll(list);
     }
