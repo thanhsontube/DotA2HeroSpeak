@@ -5,14 +5,12 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:src="@mipmap/ken2"
         android:id="@+id/image0"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <ImageView
-        android:src="@mipmap/ken2"
         android:id="@+id/image1"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"

@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AbsFragment;
-import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.Logger;
 
 /**
@@ -73,12 +72,7 @@ public class IntroFragment extends AbsFragment {
         return inflater.inflate(R.layout.fragment_intro, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -133,15 +127,6 @@ public class IntroFragment extends AbsFragment {
 
     @Override
     public void initListener() {
-        HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
-            @Override
-            public void onFinish() {
-                String text = HeroManager.getInstance().getHero(heroId).lore;
-                if (!TextUtils.isEmpty(text)) {
-                    txtLore.setText(text);
-                }
-            }
-        });
 
     }
 }

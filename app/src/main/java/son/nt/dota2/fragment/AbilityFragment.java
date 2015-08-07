@@ -287,6 +287,8 @@ public class AbilityFragment extends AbsFragment {
 //        });
 
         testAbilityStrength();
+//        getData1();
+//        getDataAgi();
 
 
     }
@@ -303,6 +305,82 @@ public class AbilityFragment extends AbsFragment {
             serviceMedia = null;
         }
     };
+
+    private void getData1() {
+                for (HeroEntry p : HeroManager.getInstance().getStrHeroes()) {
+                    AObject abiObject = null;
+                    try {
+                        abiObject = FileUtil.getAbilityObject(getActivity(), p.heroId);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    if (abiObject != null) {
+                        SaveHeroAbility saveHeroAbility = (SaveHeroAbility) abiObject;
+                        HeroManager.getInstance().getHero(saveHeroAbility.heroID).listAbilities.clear();
+                        HeroManager.getInstance().getHero(saveHeroAbility.heroID).listAbilities.addAll(saveHeroAbility.listAbility);
+                        Logger.debug(TAG, ">>>" + "withAbility hero:" + saveHeroAbility.listAbility.size());
+                        listAbilities.clear();
+                        listAbilities.addAll(HeroManager.getInstance().getHero(heroId).listAbilities);
+                        tabLayout.removeAllTabs();
+                        for (AbilityDto dto : listAbilities) {
+                            View vTab = inflater.inflate(R.layout.tab_ability, null);
+                            ImageView img = (ImageView) vTab.findViewById(R.id.ability_icon);
+                            TextView txt = (TextView) vTab.findViewById(R.id.ability_text);
+                            txt.setText(dto.name);
+                            Glide.with(getActivity()).load(dto.linkImage).fitCenter().into(img);
+                            TabLayout.Tab tab = tabLayout.newTab().setCustomView(vTab);
+                            tabLayout.addTab(tab);
+                        }
+                        for (int i = 0; i < listAbilities.size(); i++) {
+                            update(i);
+                        }
+
+                    } else {
+
+                        HTTPParseUtils.getInstance().withAbility(p.heroId);
+                    }
+                }
+    }
+
+    private void getDataAgi() {
+        for (HeroEntry p : HeroManager.getInstance().getIntelHeroes()) {
+            AObject abiObject = null;
+            try {
+                abiObject = FileUtil.getAbilityObject(getActivity(), p.heroId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (abiObject != null) {
+                SaveHeroAbility saveHeroAbility = (SaveHeroAbility) abiObject;
+                HeroManager.getInstance().getHero(saveHeroAbility.heroID).listAbilities.clear();
+                HeroManager.getInstance().getHero(saveHeroAbility.heroID).listAbilities.addAll(saveHeroAbility.listAbility);
+                Logger.debug(TAG, ">>>" + "withAbility hero:" + saveHeroAbility.listAbility.size());
+                listAbilities.clear();
+                listAbilities.addAll(HeroManager.getInstance().getHero(heroId).listAbilities);
+                tabLayout.removeAllTabs();
+                for (AbilityDto dto : listAbilities) {
+                    View vTab = inflater.inflate(R.layout.tab_ability, null);
+                    ImageView img = (ImageView) vTab.findViewById(R.id.ability_icon);
+                    TextView txt = (TextView) vTab.findViewById(R.id.ability_text);
+                    txt.setText(dto.name);
+                    Glide.with(getActivity()).load(dto.linkImage).fitCenter().into(img);
+                    TabLayout.Tab tab = tabLayout.newTab().setCustomView(vTab);
+                    tabLayout.addTab(tab);
+                }
+                for (int i = 0; i < listAbilities.size(); i++) {
+                    update(i);
+                }
+
+            } else {
+
+                HTTPParseUtils.getInstance().withAbility(p.heroId);
+            }
+        }
+    }
 
     private void testAbilityStrength() {
 

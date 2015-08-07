@@ -2,6 +2,7 @@ package son.nt.dota2.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -9,25 +10,37 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterPagerHero;
+import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.customview.KenBurnsView;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.HeroSpeakSaved;
+import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.VoiceSpinnerItem;
+import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,6 +67,7 @@ public class HeroFragment extends AbsFragment {
 
     KenBurnsView kenBurnsView;
     private List<String> listKenburns = new ArrayList<>();
+    String heroID;
 
     /**
      * Use this factory method to create a new instance of
@@ -80,6 +94,7 @@ public class HeroFragment extends AbsFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             heroEntry = (HeroEntry) getArguments().getSerializable(ARG_PARAM1);
+            heroID = heroEntry.heroId;
         }
     }
 
@@ -90,12 +105,6 @@ public class HeroFragment extends AbsFragment {
         return inflater.inflate(R.layout.fragment_hero, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -137,12 +146,12 @@ public class HeroFragment extends AbsFragment {
         }
         titles.clear();
         listFragments.clear();
-        titles.add("Introduce");
-        listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
+        titles.add("Voice");
+        listFragments.add(VoiceFragment.newInstance(heroEntry.heroId));
         titles.add("Ability");
         listFragments.add(AbilityFragment.newInstance(heroEntry.heroId));
-        titles.add("Voice");
-        listFragments.add( VoiceFragment.newInstance(heroEntry.heroId));
+        titles.add("Introduce");
+        listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
 
         adapter = new AdapterPagerHero(getSafeFragmentManager(), listFragments, titles);
 
@@ -170,17 +179,26 @@ public class HeroFragment extends AbsFragment {
         pager.setAdapter(adapter);
         tabLayout.setupWithViewPager(pager);
         floatingActionButton = (FloatingActionButton) view.findViewById(R.id.hero_fab);
+        getSaveActivity().setSupportActionBar(toolbar);
 
         getKenBurnsImage();
+
+        setupSpinner();
     }
 
     @Override
     public void initListener() {
+        toolbar.setTitle(heroEntry.fullName);
+        getSafeActionBar().setTitle(heroEntry.fullName);
+        getSafeActionBar().setDisplayShowTitleEnabled(true);
+
+        getSafeActionBar().setDisplayShowHomeEnabled(true);
+        getSafeActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
 
-    private void getKenBurnsImage () {
+    private void getKenBurnsImage() {
         Logger.debug(TAG, ">>>" + "getKenBurnsImage");
         try {
             ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Dota2BgDto");
@@ -188,6 +206,9 @@ public class HeroFragment extends AbsFragment {
                 @Override
                 public void done(List<ParseObject> list, ParseException e) {
                     listKenburns.clear();
+                    if (list == null || list.size() == 0) {
+                        return;
+                    }
                     for (ParseObject p : list) {
                         String s = p.getString("link");
                         listKenburns.add(s);
@@ -204,5 +225,136 @@ public class HeroFragment extends AbsFragment {
     private void updateKenBurns() {
         kenBurnsView.setResourceUrl(listKenburns);
         kenBurnsView.startLayoutAnimation();
+    }
+
+    VoiceSpinnerAdapter adapterSpinner;
+    List<VoiceSpinnerItem> listSpinner;
+
+    private void setupSpinner() {
+
+        AObject heroSpeak = null;
+        try {
+            heroSpeak = FileUtil.getObject(getActivity(), heroID);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (heroSpeak != null) {
+            Logger.debug(TAG, ">>>" + "heroSpeak != null");
+            HeroSpeakSaved heroSpeakSaved = (HeroSpeakSaved) heroSpeak;
+
+            listSpinner = new ArrayList<>();
+            listSpinner.add(new VoiceSpinnerItem("ALL", true));
+            for (SpeakDto d : heroSpeakSaved.listSpeaks) {
+                if (d.isTitle) {
+                    listSpinner.add(new VoiceSpinnerItem(d.text.replace("_", " ").trim()));
+                }
+            }
+
+            adapterSpinner = new VoiceSpinnerAdapter(getActivity(), listSpinner);
+
+            View spinnerContainer = LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_spiner, toolbar, false);
+            Toolbar.LayoutParams lp = new Toolbar.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            toolbar.addView(spinnerContainer, lp);
+
+            TextView toolbarTitle = (TextView) spinnerContainer.findViewById(R.id.toolbar_title);
+            toolbarTitle.setText(heroEntry.fullName);
+
+            AppCompatSpinner spinner = (AppCompatSpinner) spinnerContainer.findViewById(R.id.toolbar_spinner);
+            spinner.setAdapter(adapterSpinner);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
+                    for (VoiceSpinnerItem p : listSpinner) {
+                        p.setIsSelected(false);
+                    }
+                    listSpinner.get(position).setIsSelected(true);
+                    adapterSpinner.notifyDataSetChanged();
+                    OttoBus.post(listSpinner.get(position));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
+
+        }
+
+
+    }
+
+    private class VoiceSpinnerAdapter extends BaseAdapter {
+        List<VoiceSpinnerItem> list;
+        Context context;
+
+        public VoiceSpinnerAdapter(Context context, List<VoiceSpinnerItem> list) {
+            this.list = list;
+            this.context = context;
+
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View v = convertView;
+            Holder holder;
+            if (v == null) {
+                LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                v = layoutInflater.inflate(R.layout.row_spinner_toolbar, parent, false);
+                holder = new Holder();
+                holder.txtTitle = (TextView) v.findViewById(R.id.row_spinner_text);
+                v.setTag(holder);
+            } else {
+                holder = (Holder) v.getTag();
+            }
+            holder.txtTitle.setText(list.get(position).getGroup());
+            return v;
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            View v = convertView;
+            Holder holder;
+            if (v == null) {
+                LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                v = layoutInflater.inflate(R.layout.row_spinner_toolbar, parent, false);
+                holder = new Holder();
+                holder.txtTitle = (TextView) v.findViewById(R.id.row_spinner_text);
+                holder.imgSelected = (ImageView) v.findViewById(R.id.row_spinner_img);
+                v.setTag(holder);
+            } else {
+                holder = (Holder) v.getTag();
+            }
+
+            holder.txtTitle.setText(list.get(position).getGroup());
+            if (list.get(position).isSelected()) {
+                holder.imgSelected.setVisibility(View.VISIBLE);
+            } else {
+                holder.imgSelected.setVisibility(View.GONE);
+
+            }
+            return v;
+        }
+
+        class Holder {
+            TextView txtTitle;
+            ImageView imgSelected;
+        }
     }
 }

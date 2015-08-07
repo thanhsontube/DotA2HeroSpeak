@@ -1,7 +1,6 @@
 package son.nt.dota2.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
@@ -11,6 +10,9 @@ import android.os.IBinder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -28,6 +30,7 @@ import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.VoiceSpinnerItem;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.service.DownloadService;
 import son.nt.dota2.service.ServiceMedia;
@@ -36,23 +39,20 @@ import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.NetworkUtils;
 import son.nt.dota2.utils.OttoBus;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link VoiceFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link VoiceFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class VoiceFragment extends AbsFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String TAG = "VoiceFragment";
 
     private String heroID;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
     private View autoPlay;
+
+    DownloadService downloadService;
+    boolean isBind = false;
+    boolean isLoaded = false;
+    //MEDIA MUSIC service
+    private ServiceMedia mediaService;
 
     public static VoiceFragment newInstance(String param1) {
         VoiceFragment fragment = new VoiceFragment();
@@ -72,6 +72,7 @@ public class VoiceFragment extends AbsFragment {
         if (getArguments() != null) {
             heroID = getArguments().getString(ARG_PARAM1);
         }
+        setHasOptionsMenu(true);
         OttoBus.register(this);
         getActivity().bindService(ServiceMedia.getIntentService(getActivity()), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
         getActivity().bindService(DownloadService.getIntent(getActivity()), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
@@ -81,6 +82,9 @@ public class VoiceFragment extends AbsFragment {
     public void onDestroy() {
         super.onDestroy();
         OttoBus.unRegister(this);
+        if (downloadService != null) {
+            downloadService.isQuit = true;
+        }
         getActivity().unbindService(serviceConnectionMedia);
         getActivity().unbindService(serviceConnectionPrefetchAudio);
     }
@@ -88,16 +92,9 @@ public class VoiceFragment extends AbsFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_voice, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -115,18 +112,7 @@ public class VoiceFragment extends AbsFragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
 
@@ -138,6 +124,7 @@ public class VoiceFragment extends AbsFragment {
     private RecyclerView recyclerView;
     private AdapterVoice adapter;
     private List<SpeakDto> list = new ArrayList<>();
+    private List<SpeakDto> listUsing = new ArrayList<>();
 
     @Override
     public void initLayout(View view) {
@@ -147,7 +134,7 @@ public class VoiceFragment extends AbsFragment {
 
         recyclerView.setHasFixedSize(true);
 
-        adapter = new AdapterVoice(getActivity(), list);
+        adapter = new AdapterVoice(getActivity(), listUsing);
         recyclerView.setAdapter(adapter);
 
         autoPlay = view.findViewById(R.id.voice_fab);
@@ -164,38 +151,15 @@ public class VoiceFragment extends AbsFragment {
                     if (mediaService.getPlayer().isPlaying()) {
 
                         mediaService.pause();
-                        ((ImageButton)autoPlay).setImageResource(R.mipmap.icon_played);
+                        ((ImageButton) autoPlay).setImageResource(R.mipmap.icon_played);
                     } else {
                         mediaService.play();
-                        ((ImageButton)autoPlay).setImageResource(R.mipmap.icon_paused);
+                        ((ImageButton) autoPlay).setImageResource(R.mipmap.icon_paused);
                     }
                 }
             }
         });
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (!recyclerView.canScrollVertically(1)) {
-//                    onScrolledToEnd();
-                } else if (dy < 0) {
-//                    onScrolledUp();
-                    //hide
-//                    ((HeroActivity)getActivity()).floatingActionButton.setVisibility(View.GONE);
-                } else if (dy > 0) {
-//                    onScrolledDown();
-                    //show
-//                    ((HeroActivity)getActivity()).floatingActionButton.setVisibility(View.VISIBLE);
-
-                }
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
 
         try {
             AObject heroSpeak = FileUtil.getObject(getActivity(), heroID);
@@ -207,6 +171,8 @@ public class VoiceFragment extends AbsFragment {
 
                 list.clear();
                 list.addAll(heroSpeakSaved.listSpeaks);
+                listUsing.clear();
+                listUsing.addAll(list);
                 adapter.notifyDataSetChanged();
                 isLoaded = true;
                 startPrefetch();
@@ -227,6 +193,8 @@ public class VoiceFragment extends AbsFragment {
                             mediaService.setListData(mList);
                         }
                         list.addAll(mList);
+                        listUsing.clear();
+                        listUsing.addAll(mList);
                         adapter.notifyDataSetChanged();
                         isLoaded = true;
                         startPrefetch();
@@ -244,11 +212,7 @@ public class VoiceFragment extends AbsFragment {
     }
 
 
-    DownloadService downloadService;
-    boolean isBind = false;
-    boolean isLoaded = false;
-    //MEDIA MUSIC service
-    private ServiceMedia mediaService;
+
     ServiceConnection serviceConnectionMedia = new ServiceConnection() {
 
         @Override
@@ -307,4 +271,40 @@ public class VoiceFragment extends AbsFragment {
             downloadService.addLinkDto(list, heroID);
         }
     }
+
+    private void createMenu () {
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Subscribe
+    public void getSpinnerRequest(VoiceSpinnerItem item) {
+        List<SpeakDto> listTemp = new ArrayList<>();
+        String group = item.getGroup();
+        if (group.equals("ALL")) {
+            listUsing.clear();
+            listUsing.addAll(list);
+        } else {
+            for (SpeakDto p : list) {
+                if (p.voiceGroup.replace("_"," ").trim().equals(group)) {
+                    listTemp.add(p);
+                }
+            }
+            listUsing.clear();
+            listUsing.addAll(listTemp);
+        }
+
+        adapter.notifyDataSetChanged();
+
+    }
+
+
 }

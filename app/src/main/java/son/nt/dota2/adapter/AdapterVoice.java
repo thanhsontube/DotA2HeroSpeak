@@ -1,6 +1,9 @@
 package son.nt.dota2.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
+import java.util.Random;
 
 import son.nt.dota2.R;
 import son.nt.dota2.dto.SpeakDto;
@@ -29,11 +33,13 @@ public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
     Context context;
     public static final int TYPE_TITLE = 0;
     public static final int TYPE_SPEAK = 1;
+    ColorStateList sColorStatePlaying;
 
     public AdapterVoice(Context context, List<SpeakDto> list) {
         this.list = list;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = context;
+
     }
 
     @Override
@@ -128,6 +134,9 @@ public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
         ImageView imgRival;
         View view;
 
+        static int[] colors = new int[]{R.color.md_purple_500, R.color.md_orange_500, R.color.md_blue_500, R.color.md_green_500,
+        R.color.md_red_500, R.color.md_cyan_500};
+
         public Holder(View v) {
             super(v);
             txtNo = (TextView) v.findViewById(R.id.row_voice_no);
@@ -136,6 +145,19 @@ public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
             imgRival = (ImageView) v.findViewById(R.id.row_voice_rival);
             view = v.findViewById(R.id.row_voice_main);
             title = (TextView) v.findViewById(R.id.row_title);
+            if (imgPlaying != null) {
+                if (Build.VERSION.SDK_INT >= 21) {
+                    AnimationDrawable animation = (AnimationDrawable)
+                            imgPlaying.getContext().getDrawable(R.drawable.ic_playing_drawable);
+                    imgPlaying.setImageDrawable(animation);
+                    int col = new Random().nextInt(colors.length - 1);
+                    ColorStateList sColorStatePlaying = ColorStateList.valueOf(imgPlaying.getContext().getResources().getColor(
+                            colors[col]));
+                    imgPlaying.setImageTintList(sColorStatePlaying);
+                    if (animation != null) animation.start();
+                }
+
+            }
         }
     }
 }

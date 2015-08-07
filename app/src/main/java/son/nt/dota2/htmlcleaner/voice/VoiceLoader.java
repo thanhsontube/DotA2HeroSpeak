@@ -23,7 +23,6 @@ public abstract class VoiceLoader extends ContentLoader<List<SpeakDto>> {
     private String lastTitle = "";
     TsLog log = new TsLog(TAG);
 
-    public static final String GROUP_SPAWNING = "Spawning";
 
     public VoiceLoader(HttpUriRequest httpRequest, boolean isCache) {
         super(httpRequest, isCache);
@@ -57,7 +56,7 @@ public abstract class VoiceLoader extends ContentLoader<List<SpeakDto>> {
                     Object[] objA = tag.evaluateXPath(xpathA);
                     if (objA.length > 0) {
                         normalNode = tagNodes.get(i + 1);
-                        listSpeaks.addAll(getNormal(normalNode, GROUP_SPAWNING));
+                        listSpeaks.addAll(getNormal(normalNode, "Spawning"));
                         break;
                     }
                 } catch (XPatherException e) {
@@ -75,7 +74,24 @@ public abstract class VoiceLoader extends ContentLoader<List<SpeakDto>> {
                     Object[] objA = tag.evaluateXPath(xpathA);
                     if (objA.length > 0) {
                         normalNode = tagNodes.get(i + 1);
-                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Killing a Rival"));
+                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Killing_a_Rival"));
+                        break;
+                    }
+                } catch (XPatherException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //Meeting_an_Ally
+            for (int i = 0; i < tagNodes.size(); i++) {
+
+                TagNode tag = tagNodes.get(i);
+                try {
+                    String xpathA = "//span[@id='Meeting_an_Ally']";
+                    Object[] objA = tag.evaluateXPath(xpathA);
+                    if (objA.length > 0) {
+                        normalNode = tagNodes.get(i + 1);
+                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Meeting_an_Ally"));
                         break;
                     }
                 } catch (XPatherException e) {
@@ -93,7 +109,7 @@ public abstract class VoiceLoader extends ContentLoader<List<SpeakDto>> {
                     Object[] objA = tag.evaluateXPath(xpathA);
                     if (objA.length > 0) {
                         normalNode = tagNodes.get(i + 1);
-                        listSpeaks.addAll(getNormal(normalNode, "Beginning the Battle"));
+                        listSpeaks.addAll(getNormal(normalNode, "Beginning_the_Battle"));
                         break;
                     }
                 } catch (XPatherException e) {
@@ -101,22 +117,7 @@ public abstract class VoiceLoader extends ContentLoader<List<SpeakDto>> {
                 }
             }
 
-            //Meeting_an_Ally
-            for (int i = 0; i < tagNodes.size(); i++) {
 
-                TagNode tag = tagNodes.get(i);
-                try {
-                    String xpathA = "//span[@id='Meeting_an_Ally']";
-                    Object[] objA = tag.evaluateXPath(xpathA);
-                    if (objA.length > 0) {
-                        normalNode = tagNodes.get(i + 1);
-                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Meeting an Ally"));
-                        break;
-                    }
-                } catch (XPatherException e) {
-                    e.printStackTrace();
-                }
-            }
 
             //Purchasing_a_Specific_Item
             for (int i = 0; i < tagNodes.size(); i++) {
@@ -144,7 +145,7 @@ public abstract class VoiceLoader extends ContentLoader<List<SpeakDto>> {
                     Object[] objA = tag.evaluateXPath(xpathA);
                     if (objA.length > 0) {
                         normalNode = tagNodes.get(i + 1);
-                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Removed from game"));
+                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Removed_from_game_2"));
                         break;
                     }
                 } catch (XPatherException e) {
@@ -342,7 +343,7 @@ public abstract class VoiceLoader extends ContentLoader<List<SpeakDto>> {
                 rivalImage = arr[1].replace("2x", "").trim();
 
                 speakDto.setRival(rivalName, rivalImage, text, mp3);
-                speakDto.voiceGroup = "Killing a rival";
+                speakDto.voiceGroup = group;
                 speakDto.no = i;
                 list.add(speakDto);
             }

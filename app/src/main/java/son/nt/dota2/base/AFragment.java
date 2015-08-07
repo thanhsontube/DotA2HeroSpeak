@@ -69,6 +69,9 @@ public class AFragment extends Fragment {
         }
         return actionBar;
     }
+    protected AppCompatActivity getSaveActivity () {
+        return (AppCompatActivity)getActivity();
+    }
 
     protected boolean isSafe()
     {
