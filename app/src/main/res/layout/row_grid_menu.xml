@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:tag="text"
         android:text="06:12"
-        style="@style/txt_white_18" />
+        style="@style/txt_white_14" />
 
 
 </LinearLayout>

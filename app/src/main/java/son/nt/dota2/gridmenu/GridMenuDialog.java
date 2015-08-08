@@ -1,4 +1,4 @@
-package son.nt.dota2.fragment;
+package son.nt.dota2.gridmenu;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -21,7 +21,6 @@ import java.util.List;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterGridMenu;
 import son.nt.dota2.dto.SpeakDto;
-import son.nt.dota2.gridmenu.GridMenuItem;
 import son.nt.dota2.utils.Logger;
 
 /**
@@ -81,10 +80,10 @@ public class GridMenuDialog extends DialogFragment {
 
         list.add(new GridMenuItem("Make a Ringtone", R.drawable.ic_agi_24));
         list.add(new GridMenuItem("Set Notification Sound", R.drawable.ic_str_24));
-        list.add(new GridMenuItem("Make a Ringtone", R.drawable.ic_agi_24));
-        list.add(new GridMenuItem("Make a Ringtone", R.drawable.ic_agi_24));
-        list.add(new GridMenuItem("Make a Ringtone", R.drawable.ic_agi_24));
-        list.add(new GridMenuItem("Make a Ringtone", R.drawable.ic_agi_24));
+        list.add(new GridMenuItem("Set Alarm ", R.drawable.ic_agi_24));
+        list.add(new GridMenuItem("Comments", R.drawable.ic_agi_24));
+        list.add(new GridMenuItem("Share", R.drawable.ic_agi_24));
+        list.add(new GridMenuItem("Like", R.drawable.ic_agi_24));
         list.add(new GridMenuItem("Make a Ringtone", R.drawable.ic_agi_24));
 
         adapter = new AdapterGridMenu(getActivity(), list, speakDto);

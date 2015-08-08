@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -96,6 +97,7 @@ public class HeroFragment extends AbsFragment {
             heroEntry = (HeroEntry) getArguments().getSerializable(ARG_PARAM1);
             heroID = heroEntry.heroId;
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -194,6 +196,16 @@ public class HeroFragment extends AbsFragment {
 
         getSafeActionBar().setDisplayShowHomeEnabled(true);
         getSafeActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == android.R.id.home) {
+                    getActivity().finish();
+                }
+                return true;
+            }
+        });
 
     }
 

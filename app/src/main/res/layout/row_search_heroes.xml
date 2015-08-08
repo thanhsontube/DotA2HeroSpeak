@@ -17,12 +17,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingBottom="8dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:background="?selectableItemBackground"
     android:paddingTop="8dp">
 
     <LinearLayout
@@ -39,13 +39,29 @@
             android:layout_marginRight="16dp"
             android:src="@drawable/ic_agi_40" />
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Phantom"
-            android:textAppearance="?attr/textAppearanceListItem"
-            />
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name"
+                style="@style/txt_blue_18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phantom" />
+
+            <TextView
+                android:id="@+id/fullname"
+                style="@style/txt_black_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phantom" />
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
 

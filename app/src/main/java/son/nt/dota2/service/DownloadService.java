@@ -84,18 +84,23 @@ public class DownloadService extends Service {
     class DownloadLoader extends AsyncTask<List<SpeakDto>, Void, Integer> {
         @Override
         protected Integer doInBackground(List<SpeakDto>... params) {
-            List<SpeakDto> list = params[0];
-            log.d("log>>>" + "addLinkDto:" + list.size());
-            int i = 0;
-            for (SpeakDto dto : list) {
-//                log.d("log>>>" + "=============download:" + i + "============");
-                if(isQuit) {
-                    return -1;
+            try {
+                List<SpeakDto> list = params[0];
+                log.d("log>>>" + "addLinkDto:" + list.size());
+                int i = 0;
+                for (SpeakDto dto : list) {
+    //                log.d("log>>>" + "=============download:" + i + "============");
+                    if(isQuit) {
+                        return -1;
+                    }
+                    downloadLink(dto.link);
+                    i++;
                 }
-                downloadLink(dto.link);
-                i++;
+                return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0;
             }
-            return 0;
         }
 
         @Override

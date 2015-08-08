@@ -23,11 +23,11 @@ import com.twotoasters.jazzylistview.recyclerview.JazzyRecyclerViewScrollListene
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
-import son.nt.dota2.ResourceManager;
 import son.nt.dota2.adapter.AdapterSearchHero;
 import son.nt.dota2.base.AFragment;
-import son.nt.dota2.dto.HeroDto;
+import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.provider.SearchableProvider;
 
 /**
@@ -52,7 +52,7 @@ public class SearchableFragment extends AFragment {
 
     RecyclerView recyclerView;
     AdapterSearchHero adapterSearchHero;
-    List<HeroDto> list = new ArrayList<>();
+    List<HeroEntry> list = new ArrayList<>();
 
     CoordinatorLayout coordinatorLayout;
     JazzyRecyclerViewScrollListener jazzyRecyclerViewScrollListener;
@@ -157,8 +157,9 @@ public class SearchableFragment extends AFragment {
     public void doSearch(String query) {
         setTitle("Search for:" + query);
         list.clear();
-        for (HeroDto dto : ResourceManager.getInstance().getHeroData().listHeros) {
-            if (dto.name.toLowerCase().contains(query.toLowerCase())) {
+        for (HeroEntry dto : HeroManager.getInstance().listHeroes) {
+            if (dto.name.toLowerCase().contains(query.toLowerCase())||
+                    dto.fullName.toLowerCase().contains(query.toLowerCase())) {
                 list.add(dto);
             }
         }

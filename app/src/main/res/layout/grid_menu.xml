@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/com_facebook_tooltip_blue_background"
+    android:background="@color/red_transparent"
     android:orientation="vertical">
 
     <LinearLayout
@@ -11,7 +11,8 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/txt_white_18"
+            android:gravity="center"
+            style="@style/txt_white_14"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -19,6 +20,7 @@
             android:text="What would you like to do with:" />
 
         <TextView
+            style="@style/txt_green_18"
             android:id="@+id/grid_menu_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

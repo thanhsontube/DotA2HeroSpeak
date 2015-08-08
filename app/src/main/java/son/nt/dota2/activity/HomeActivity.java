@@ -22,7 +22,6 @@ import com.squareup.otto.Subscribe;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
-import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
@@ -131,14 +130,14 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         super.onBackStackChanged();
         if (mFragmentTagStack.size() > 0) {
             if (menuSearch != null) {
-                menuSearch.setVisible(false);
+//                menuSearch.setVisible(false);
             }
             actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         } else {
             if (menuSearch != null) {
-                menuSearch.setVisible(true);
+//                menuSearch.setVisible(true);
             }
             setTitle(getString(R.string.app_name));
             navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
@@ -156,11 +155,11 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setQueryHint(getString(R.string.action_search_hero));
-        if (mFragmentTagStack.size() > 0) {
-            menuSearch.setVisible(false);
-        } else {
-            menuSearch.setVisible(true);
-        }
+//        if (mFragmentTagStack.size() > 0) {
+//            menuSearch.setVisible(false);
+//        } else {
+//            menuSearch.setVisible(true);
+//        }
         return true;
     }
 
@@ -227,11 +226,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         OttoBus.unRegister(this);
     }
 
-    @Subscribe
-    public void handleDataFromAdapterRcvHome(HeroDto heroDto) {
-        Logger.debug(TAG, ">>>" + "handleDataFromAdapterRcvHome:" + heroDto.name);
-//        showFragment(MainFragment.newInstance("", heroDto), true);
-    }
     @Subscribe
     public void handleAbility(HeroEntry heroEntry) {
         Logger.debug(TAG, ">>>" + "=========handleAbility:" + heroEntry.name);

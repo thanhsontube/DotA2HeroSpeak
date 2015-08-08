@@ -14,7 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.util.List;
 
 import son.nt.dota2.R;
-import son.nt.dota2.dto.HeroDto;
+import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.utils.OttoBus;
 
 /**
@@ -23,9 +23,9 @@ import son.nt.dota2.utils.OttoBus;
 public class AdapterSearchHero  extends RecyclerView.Adapter<AdapterSearchHero.ViewHolder> {
 
     Context context;
-    List<HeroDto> mValues;
+    List<HeroEntry> mValues;
 
-    public AdapterSearchHero(Context context, List<HeroDto> mValues) {
+    public AdapterSearchHero(Context context, List<HeroEntry> mValues) {
         this.mValues = mValues;
         this.context = context;
     }
@@ -39,6 +39,7 @@ public class AdapterSearchHero  extends RecyclerView.Adapter<AdapterSearchHero.V
         ImageView avatar;
         ImageView group;
         TextView name;
+        TextView fullname;
         View view;
         public ViewHolder(View itemView) {
             super(itemView);
@@ -46,14 +47,16 @@ public class AdapterSearchHero  extends RecyclerView.Adapter<AdapterSearchHero.V
             this.avatar = (ImageView) itemView.findViewById(R.id.avatar);
             this.group = (ImageView) itemView.findViewById(R.id.group);
             this.name = (TextView) itemView.findViewById(R.id.name);
+            this.fullname = (TextView) itemView.findViewById(R.id.fullname);
         }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        final HeroDto dto = mValues.get(position);
+        final HeroEntry dto = mValues.get(position);
         viewHolder.name.setText(dto.name);
-        Glide.with(viewHolder.avatar.getContext()).load(dto.avatarThubmail)
+        viewHolder.fullname.setText(dto.fullName);
+        Glide.with(viewHolder.avatar.getContext()).load(dto.avatarThumbnail)
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(viewHolder.avatar);

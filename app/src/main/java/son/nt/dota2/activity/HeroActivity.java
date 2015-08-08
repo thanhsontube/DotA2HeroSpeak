@@ -13,7 +13,7 @@ import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.dto.HeroEntry;
-import son.nt.dota2.fragment.GridMenuDialog;
+import son.nt.dota2.gridmenu.GridMenuDialog;
 import son.nt.dota2.fragment.HeroFragment;
 import son.nt.dota2.gridmenu.SpeakLongClick;
 import son.nt.dota2.utils.OttoBus;
@@ -62,6 +62,12 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if (id == android.R.id.home) {
+            if (mFragmentTagStack.size() == 0) {
+                finish();
+            }
         }
 
         return super.onOptionsItemSelected(item);
