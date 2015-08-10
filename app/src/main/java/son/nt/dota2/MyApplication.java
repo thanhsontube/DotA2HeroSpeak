@@ -8,6 +8,7 @@ import com.parse.Parse;
 import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.TsGaTools;
+import son.nt.dota2.youtube.FacebookManager;
 
 /**
  * Created by Sonnt on 3/14/2015.
@@ -27,5 +28,7 @@ public class MyApplication extends Application {
         Parse.enableLocalDatastore(this);
 
         Parse.initialize(this, "MXj3eiU5G9qQxEHD9aVFdbHZbtcInx6v1VNIjmyf", "LsnCDCPtmWxnLVeKQg7Vc5oSEYQGJR6Tcz3Ettwi");
+
+        FacebookManager.createInstance(getApplicationContext());
     }
 }

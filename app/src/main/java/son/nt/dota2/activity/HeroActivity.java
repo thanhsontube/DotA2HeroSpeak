@@ -13,9 +13,11 @@ import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.gridmenu.CommentDialog;
 import son.nt.dota2.gridmenu.GridMenuDialog;
 import son.nt.dota2.fragment.HeroFragment;
 import son.nt.dota2.gridmenu.SpeakLongClick;
+import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.utils.OttoBus;
 
 public class HeroActivity extends AActivity implements HeroFragment.OnFragmentInteractionListener {
@@ -88,7 +90,24 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
         GridMenuDialog dialog = GridMenuDialog.newInstance(dto.speakDto);
         ft.add(dialog, "long-click");
         ft.commit();
-//        dialog.show(ft, "long-click");
+    }
+
+    @Subscribe
+    public void goLogin (GoLoginDto dto) {
+        if (!dto.isLogin)
+        {
+
+            startActivity(LoginActivity.getIntent(this));
+        } else {
+            FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
+            Fragment f = getSafeFragmentManager().findFragmentByTag("cmt");
+            if (f != null) {
+                ft.remove(f);
+            }
+            CommentDialog dialog = CommentDialog.createInstance();
+            ft.add(dialog, "cmt");
+            ft.commit();
+        }
     }
 
 

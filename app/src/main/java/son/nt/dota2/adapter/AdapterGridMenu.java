@@ -10,12 +10,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.gridmenu.GridMenuItem;
+import son.nt.dota2.ottobus_entry.GoLoginDto;
+import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.SoundUtils;
+import son.nt.dota2.youtube.FacebookManager;
 
 /**
  * Created by 4210047 on 3/30/2015.
@@ -27,7 +32,8 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
     public static final int CASE_RINGTONE = 0;
     public static final int CASE_NOTIFICATION = 1;
     public static final int CASE_SAVE = 2;
-    public static final int CASE_SHARE = 3;
+    public static final int CASE_COMMENTS = 3;
+    public static final int CASE_SHARE = 4;
     SpeakDto speakDto = null;
 
     public AdapterGridMenu(Context context, List<GridMenuItem> list, SpeakDto dto) {
@@ -58,13 +64,75 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "ok", Toast.LENGTH_SHORT).show();
                 switch (position) {
                     case CASE_RINGTONE:
-                        SoundUtils.setRingTone(context, speakDto);
+                        new MaterialDialog.Builder(context)
+                                .title("Confirm Set Ringtone")
+                                .positiveText("Yes")
+                                .negativeText("Cancel")
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onPositive(MaterialDialog dialog) {
+                                        super.onPositive(dialog);
+                                        SoundUtils.setRingTone(context, speakDto);
+                                    }
+
+                                    @Override
+                                    public void onNegative(MaterialDialog dialog) {
+                                        super.onNegative(dialog);
+                                    }
+                                })
+                                .show();
+
                         break;
                     case CASE_NOTIFICATION:
-                        SoundUtils.setNotificationSound(context, speakDto);
+                        new MaterialDialog.Builder(context)
+                                .title("Confirm Set Notification")
+                                .positiveText("Yes")
+                                .negativeText("Cancel")
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onPositive(MaterialDialog dialog) {
+                                        super.onPositive(dialog);
+                                        SoundUtils.setNotificationSound(context, speakDto);
+                                    }
+
+                                    @Override
+                                    public void onNegative(MaterialDialog dialog) {
+                                        super.onNegative(dialog);
+                                    }
+                                })
+                                .show();
+
+                        break;
+
+                    case CASE_COMMENTS:
+                        if (FacebookManager.getInstance().isLogin()) {
+                            Toast.makeText(context, "Loggined IN", Toast.LENGTH_SHORT).show();
+                            GoLoginDto dto = new GoLoginDto(true);
+                            dto.speakDto = speakDto;
+                            OttoBus.post(dto);
+
+                        } else {
+                            Toast.makeText(context, "Please Login First", Toast.LENGTH_SHORT).show();
+                            new MaterialDialog.Builder(context)
+                                    .title("Please Login First")
+                                    .positiveText("Login")
+                                    .negativeText("Cancel")
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            super.onPositive(dialog);
+                                            OttoBus.post(new GoLoginDto(false));
+                                        }
+
+                                        @Override
+                                        public void onNegative(MaterialDialog dialog) {
+                                            super.onNegative(dialog);
+                                        }
+                                    })
+                                    .show();
+                        }
                         break;
                 }
             }

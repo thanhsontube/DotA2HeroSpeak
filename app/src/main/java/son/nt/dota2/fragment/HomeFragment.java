@@ -1,7 +1,6 @@
 package son.nt.dota2.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -21,6 +20,7 @@ import com.twotoasters.jazzylistview.JazzyHelper;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
@@ -33,14 +33,7 @@ import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsScreen;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link HomeFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class HomeFragment extends AFragment {
     public static final String TAG = "HomeFragment";
     private static final String ARG_PARAM1 = "param1";
@@ -54,7 +47,6 @@ public class HomeFragment extends AFragment {
     ViewPager viewPager;
     TabLayout tabLayout;
     AdapterTop adapterTop;
-//    private HeroData herodata;
 
     public static final int EFFECT_DEFAULT = JazzyHelper.ZIPPER;
     int currentEffect = EFFECT_DEFAULT;
@@ -62,14 +54,6 @@ public class HomeFragment extends AFragment {
     public static final String KEY_EFFECT_DEFAULT = "KEY_EFFECT_DEFAULT";
 
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -91,6 +75,8 @@ public class HomeFragment extends AFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        currentEffect = new Random().nextInt(14);
     }
 
     @Override
@@ -136,6 +122,13 @@ public class HomeFragment extends AFragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        currentEffect = new Random().nextInt(14);
+        setEffect();
+    }
+
     private void setEffect() {
         try {
             adapterTop.getCurrentFragment().jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
@@ -161,16 +154,7 @@ public class HomeFragment extends AFragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
     }
