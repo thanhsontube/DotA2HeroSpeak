@@ -155,6 +155,9 @@ public class HeroFragment extends AbsFragment {
         titles.add("Introduce");
         listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
 
+        titles.add("Comments");
+        listFragments.add(ChatFragment.newInstance(heroEntry.heroId));
+
         adapter = new AdapterPagerHero(getSafeFragmentManager(), listFragments, titles);
 
     }

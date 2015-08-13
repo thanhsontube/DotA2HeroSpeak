@@ -35,7 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 app:layout_collapseMode="pin"
-                app:tabTextColor="@color/md_yellow_200"/>
+                app:tabTextColor="@color/md_yellow_200"
+                />
 
         </android.support.design.widget.AppBarLayout>
 

@@ -12,6 +12,8 @@ import com.squareup.otto.Subscribe;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
+import son.nt.dota2.comments.ChatDialog;
+import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.gridmenu.CommentDialog;
 import son.nt.dota2.gridmenu.GridMenuDialog;
@@ -104,10 +106,22 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
             if (f != null) {
                 ft.remove(f);
             }
-            CommentDialog dialog = CommentDialog.createInstance();
+            CommentDialog dialog = CommentDialog.createInstance(dto.speakDto);
             ft.add(dialog, "cmt");
             ft.commit();
         }
+    }
+
+    @Subscribe
+    public void goChatDialog (CommentDto dto) {
+        FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
+        Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
+        if (f != null) {
+            ft.remove(f);
+        }
+        ChatDialog dialog = ChatDialog.newInstance();
+        ft.add(dialog, "chat");
+        ft.commit();
     }
 
 
