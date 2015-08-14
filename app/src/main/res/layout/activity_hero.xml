@@ -8,6 +8,14 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/hero_main_ll"></FrameLayout>
+        android:id="@+id/hero_main_ll"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_gravity="left|bottom"
+        android:layout_margin="8dp"
+        android:id="@+id/btn_chat_hero"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_chat_white_24dp"/>
 
 </FrameLayout>

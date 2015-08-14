@@ -1,49 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chat_swipe_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/md_deep_purple_500"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="Chat History" />
-
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v4.widget.ContentLoadingProgressBar
-            android:contentDescription="Loading..."
-            style="?android:attr/progressBarStyleLarge"
-            android:id="@+id/chat_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-        </android.support.v4.widget.ContentLoadingProgressBar>
+        android:layout_height="match_parent"
+        android:background="@color/md_deep_purple_500"
+        android:orientation="vertical">
 
         <TextView
-            android:gravity="center"
-            android:padding="16dp"
-            android:background="?selectableItemBackground"
-            android:layout_gravity="center"
-            android:id="@+id/chat_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="refresh"
-            android:textAllCaps="true" />
+            android:layout_margin="8dp"
+            android:text="Chat History" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/chat_recycle_view"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-        </android.support.v7.widget.RecyclerView>
+            <android.support.v4.widget.ContentLoadingProgressBar
+                android:id="@+id/chat_loading"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="Loading...">
 
-    </FrameLayout>
+            </android.support.v4.widget.ContentLoadingProgressBar>
+
+            <TextView
+                android:id="@+id/chat_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="?selectableItemBackground"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="refresh"
+                android:textAllCaps="true" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/chat_recycle_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </FrameLayout>
 
 
-</LinearLayout>
+    </LinearLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

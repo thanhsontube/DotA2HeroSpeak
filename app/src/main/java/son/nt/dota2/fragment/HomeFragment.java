@@ -3,7 +3,10 @@ package son.nt.dota2.fragment;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +30,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.base.AObject;
+import son.nt.dota2.comments.ChatDialog;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.HeroSavedDto;
 import son.nt.dota2.utils.FileUtil;
@@ -159,6 +163,7 @@ public class HomeFragment extends AFragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+    FloatingActionButton fabChat;
     private void initLayout(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.home_tabs);
         viewPager = (ViewPager) view.findViewById(R.id.home_view_pager);
@@ -170,6 +175,21 @@ public class HomeFragment extends AFragment {
 //            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_agi_24));
 //            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
 //        }
+
+        fabChat = (FloatingActionButton) view.findViewById(R.id.btn_chat_home);
+        fabChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
+                Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
+                if (f != null) {
+                    ft.remove(f);
+                }
+                ChatDialog dialog = ChatDialog.newInstance();
+                ft.add(dialog, "chat");
+                ft.commit();
+            }
+        });
     }
 
 

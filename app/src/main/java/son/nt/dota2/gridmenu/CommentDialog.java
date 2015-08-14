@@ -12,13 +12,17 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
+import son.nt.dota2.ChatHistoryManager;
 import son.nt.dota2.R;
+import son.nt.dota2.ResourceManager;
 import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.SpeakDto;
-import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.youtube.FacebookManager;
 
 /**
@@ -71,7 +75,7 @@ public class CommentDialog extends DialogFragment {
 
                     dismiss();
 
-                    OttoBus.post(new CommentDto());
+//                    OttoBus.post(new CommentDto());
                 }
             }
         });
@@ -103,8 +107,20 @@ public class CommentDialog extends DialogFragment {
         p.put("heroText",d.getSpeakDto().text);
         p.put("heroLink",d.getSpeakDto().link);
         p.put("heroID",d.getSpeakDto().heroId);
-        p.put("heroGroup",d.getSpeakDto().voiceGroup);
+        p.put("heroGroup", d.getSpeakDto().voiceGroup);
 
-        p.saveInBackground();
+        p.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Toast.makeText(ResourceManager.getInstance().getContext(), "There is something wrong! Could n't push your comment on Server ! Sorry !", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ResourceManager.getInstance().getContext(), "Comment success !", Toast.LENGTH_SHORT).show();
+                    ChatHistoryManager.getInstance().updateHistory();
+                }
+
+            }
+        });
+
     }
 }

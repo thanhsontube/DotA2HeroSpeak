@@ -9,11 +9,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -29,6 +31,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.ottobus_entry.GoAdapterCmt;
 import son.nt.dota2.service.ServiceMedia;
+import son.nt.dota2.utils.NetworkUtils;
 import son.nt.dota2.utils.OttoBus;
 
 /**
@@ -38,6 +41,9 @@ public class ChatDialog extends DialogFragment {
     RecyclerView recyclerView;
     AdapterCmts adapterCmts;
     List<CommentDto> listValues = new ArrayList<>();
+    View viewLoading;
+    TextView viewRefresh;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     ServiceMedia serviceMedia;
     ServiceConnection serviceConnection = new ServiceConnection() {
@@ -80,6 +86,32 @@ public class ChatDialog extends DialogFragment {
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.chat_layout, null);
         recyclerView = (RecyclerView) view.findViewById(R.id.chat_recycle_view);
+        viewLoading = view.findViewById(R.id.chat_loading);
+        viewRefresh = (TextView) view.findViewById(R.id.chat_refresh);
+        recyclerView.setVisibility(View.VISIBLE);
+        viewRefresh.setVisibility(View.GONE);
+        viewLoading.setVisibility(View.GONE);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.chat_swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData();
+            }
+        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int topRowVerticalPosition = (recyclerView == null || recyclerView.getChildCount() == 0) ? 0
+                        : recyclerView.getChildAt(0).getTop();
+                swipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+            }
+        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
@@ -94,6 +126,10 @@ public class ChatDialog extends DialogFragment {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setView(view).create();
         alertDialog.setCanceledOnTouchOutside(false);
+        if (listValues.size() > 3) {
+
+            recyclerView.smoothScrollToPosition(listValues.size() -2);
+        }
         if (listValues.size() == 0) {
 
         getData();
@@ -103,6 +139,17 @@ public class ChatDialog extends DialogFragment {
     }
 
     private void getData() {
+        recyclerView.setVisibility(View.GONE);
+        viewRefresh.setVisibility(View.GONE);
+        viewLoading.setVisibility(View.VISIBLE);
+        if (!NetworkUtils.isConnected(getActivity())) {
+            recyclerView.setVisibility(View.GONE);
+            viewRefresh.setVisibility(View.VISIBLE);
+            viewRefresh.setText("No Network Connection !\n\r" +
+                    " Click to reload");
+            viewLoading.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
+        }
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(CommentDto.class.getSimpleName());
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -136,9 +183,29 @@ public class ChatDialog extends DialogFragment {
                     commentDto.setSpeakDto(speakDto);
                     listCmts.add(commentDto);
                 }
-                listValues.clear();
-                listValues.addAll(listCmts);
-                adapterCmts.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+                if (listCmts.size() == 0) {
+                    recyclerView.setVisibility(View.GONE);
+                    viewRefresh.setVisibility(View.VISIBLE);
+                    viewRefresh.setText("No comment on this Hero :( \n\r Click to reload");
+                    viewLoading.setVisibility(View.GONE);
+                } else {
+
+                    listValues.clear();
+                    listValues.addAll(listCmts);
+                    adapterCmts.notifyDataSetChanged();
+
+                    ChatHistoryManager.getInstance().listCmts.clear();
+                    ChatHistoryManager.getInstance().listCmts.addAll(listValues);
+
+                    recyclerView.setVisibility(View.VISIBLE);
+                    viewRefresh.setVisibility(View.GONE);
+                    viewLoading.setVisibility(View.GONE);
+                }
+                if (listValues.size() > 3) {
+
+                    recyclerView.smoothScrollToPosition(listValues.size() -2);
+                }
 
 
             }
