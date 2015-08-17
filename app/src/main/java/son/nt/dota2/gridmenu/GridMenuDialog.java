@@ -68,13 +68,13 @@ public class GridMenuDialog extends DialogFragment {
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        list.add(new GridMenuItem("Make a Ringtone", R.drawable.ic_agi_24));
-        list.add(new GridMenuItem("Set Notification Sound", R.drawable.ic_str_24));
-        list.add(new GridMenuItem("Set Alarm ", R.drawable.ic_agi_24));
-        list.add(new GridMenuItem("Comments", R.drawable.ic_more));
-        list.add(new GridMenuItem("Share", R.drawable.ic_agi_24));
-        list.add(new GridMenuItem("Like", R.drawable.ic_agi_24));
-        list.add(new GridMenuItem("Make a Ringtone", R.drawable.ic_agi_24));
+        list.add(new GridMenuItem("Make a Ringtone", R.drawable.ic_music_48));
+        list.add(new GridMenuItem("Set Notification Sound", R.drawable.ic_alert_48));
+        list.add(new GridMenuItem("Set Alarm ", R.drawable.ic_alarm_48));
+        list.add(new GridMenuItem("Comments", R.drawable.ic_comment_48));
+        list.add(new GridMenuItem("Copy", R.drawable.ic_copy_48));
+        list.add(new GridMenuItem("Like", R.drawable.ic_start_off_48));
+        list.add(new GridMenuItem("Share", R.drawable.ic_share_48));
 
         adapter = new AdapterGridMenu(getActivity(), list, speakDto);
         recyclerView.setAdapter(adapter);

@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -58,6 +59,8 @@ public class AbilityFragment extends AbsFragment {
 
     ServiceMedia serviceMedia;
 
+    FloatingActionButton fabMuted;
+
     public static AbilityFragment newInstance(String heroID) {
         AbilityFragment fragment = new AbilityFragment();
         Bundle args = new Bundle();
@@ -107,6 +110,7 @@ public class AbilityFragment extends AbsFragment {
 
     @Override
     public void initLayout(View view) {
+        fabMuted = (FloatingActionButton) view.findViewById(R.id.ability_muted);
         tabLayout = (TabLayout) view.findViewById(R.id.ability_tab_layout);
         txtAbility = (TextView) view.findViewById(R.id.ability_abi);
         txtAffects = (TextView) view.findViewById(R.id.ability_aff);
@@ -241,7 +245,10 @@ public class AbilityFragment extends AbsFragment {
                 HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
                 if (heroEntry != null && heroEntry.listAbilities.size() > 0 && !TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
                     try {
-//                        serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
+                        if (fabMuted.getTag().equals("normal")) {
+
+                            serviceMedia.play(heroEntry.listAbilities.get(tab.getPosition()).sound, heroId);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -259,7 +266,10 @@ public class AbilityFragment extends AbsFragment {
             public void onTabReselected(TabLayout.Tab tab) {
                 HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
                 if (!TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
-//                    serviceMedia.playSingleLink(heroEntry.listAbilities.get(tab.getPosition()).sound);
+                    if (fabMuted.getTag().equals("normal")) {
+
+                        serviceMedia.play(heroEntry.listAbilities.get(tab.getPosition()).sound, heroId);
+                    }
                 }
             }
         });
@@ -287,6 +297,20 @@ public class AbilityFragment extends AbsFragment {
 //        });
 
         testAbilityStrength();
+
+
+        fabMuted.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fabMuted.getTag().equals("muted")) {
+                    fabMuted.setTag("normal");
+                    fabMuted.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_up_white_24dp));
+                } else {
+                    fabMuted.setTag("muted");
+                    fabMuted.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_off_white_24dp));
+                }
+            }
+        });
 //        getData1();
 //        getDataAgi();
 

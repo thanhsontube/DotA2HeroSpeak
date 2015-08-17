@@ -1,12 +1,15 @@
 package son.nt.dota2.youtube;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -72,6 +75,19 @@ public class FacebookManager {
 
     public void login (Fragment fragment) {
         LoginManager.getInstance().logInWithReadPermissions(fragment, Arrays.asList(""));
+    }
+
+    public void requestUser () {
+        GraphRequest graphRequest = GraphRequest.newGraphPathRequest(AccessToken.getCurrentAccessToken(),
+                "", new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse graphResponse) {
+
+                    }
+                });
+        Bundle bundle = new Bundle();
+        graphRequest.setParameters(bundle);
+        graphRequest.executeAsync();
     }
 
 

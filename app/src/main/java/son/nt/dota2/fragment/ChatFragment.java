@@ -2,8 +2,13 @@ package son.nt.dota2.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.Service;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +20,7 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +30,10 @@ import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.comments.AdapterCmts;
 import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.ottobus_entry.GoAdapterCmt;
+import son.nt.dota2.service.ServiceMedia;
 import son.nt.dota2.utils.NetworkUtils;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,6 +59,22 @@ public class ChatFragment extends AbsFragment {
 
     View viewLoading;
     TextView viewRefresh;
+    SwipeRefreshLayout swipeRefreshLayout;
+    ServiceMedia serviceMedia;
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            ServiceMedia.LocalBinder localBinder = (ServiceMedia.LocalBinder) binder;
+            serviceMedia = localBinder.getService();
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            serviceMedia = null;
+
+        }
+    };
 
     /**
      * Use this factory method to create a new instance of
@@ -77,6 +102,18 @@ public class ChatFragment extends AbsFragment {
         if (getArguments() != null) {
             heroID = getArguments().getString(ARG_PARAM1);
         }
+        getActivity().bindService(ServiceMedia.getIntentService(getActivity()), serviceConnection, Service.BIND_AUTO_CREATE);
+        OttoBus.register(this);
+    }
+
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unbindService(serviceConnection);
+        OttoBus.unRegister(this);
     }
 
     @Override
@@ -111,11 +148,7 @@ public class ChatFragment extends AbsFragment {
 
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
 
-    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -150,6 +183,10 @@ public class ChatFragment extends AbsFragment {
 
         viewLoading = view.findViewById(R.id.chat_loading);
         viewRefresh = (TextView) view.findViewById(R.id.chat_refresh);
+
+        viewRefresh = (TextView) view.findViewById(R.id.chat_refresh);
+                swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.chat_swipe_refresh);
+        swipeRefreshLayout.setEnabled(false);
 
         getData();
 
@@ -203,6 +240,7 @@ public class ChatFragment extends AbsFragment {
                     String fromID = p.getString("fromID");
                     String fromName = p.getString("fromName");
                     long createTime = p.getLong("createTime");
+                    String image = p.getString("fromImage");
 
                     String heroText = p.getString("heroText");
                     String heroLink = p.getString("heroLink");
@@ -215,6 +253,7 @@ public class ChatFragment extends AbsFragment {
                     commentDto.setFromID(fromID);
                     commentDto.setFromName(fromName);
                     commentDto.setCreateTime(createTime);
+                    commentDto.setImage(image);
 
                     SpeakDto speakDto = new SpeakDto();
                     speakDto.heroId = heroID;
@@ -254,4 +293,11 @@ public class ChatFragment extends AbsFragment {
 //            adapterCmts.notifyDataSetChanged();
 //        }
 //    }
+
+    @Subscribe
+    public void getDataAdapter (GoAdapterCmt dto) {
+        if (serviceMedia != null) {
+            serviceMedia.play(dto.link, dto.heroID);
+        }
+    }
 }

@@ -10,6 +10,7 @@ public class CommentDto extends AObject{
     int id;
     SpeakDto speakDto;
     String message;
+    String image;
     long createTime;
     String fromID;
     String fromName;
@@ -60,6 +61,14 @@ public class CommentDto extends AObject{
 
     public void setFromName(String fromName) {
         this.fromName = fromName;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public CommentDto() {

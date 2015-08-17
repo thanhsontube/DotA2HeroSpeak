@@ -18,6 +18,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.gridmenu.GridMenuItem;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
+import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.SoundUtils;
 import son.nt.dota2.youtube.FacebookManager;
@@ -31,9 +32,10 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
 
     public static final int CASE_RINGTONE = 0;
     public static final int CASE_NOTIFICATION = 1;
-    public static final int CASE_SAVE = 2;
+    public static final int CASE_ALARM = 2;
     public static final int CASE_COMMENTS = 3;
-    public static final int CASE_SHARE = 4;
+    public static final int CASE_COPY = 4;
+    public static final int CASE_LIKE = 5;
     SpeakDto speakDto = null;
 
     public AdapterGridMenu(Context context, List<GridMenuItem> list, SpeakDto dto) {
@@ -106,15 +108,34 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
 
                         break;
 
+                    case CASE_ALARM:
+                        new MaterialDialog.Builder(context)
+                                .title("Confirm Set Alarm")
+                                .positiveText("Yes")
+                                .negativeText("Cancel")
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onPositive(MaterialDialog dialog) {
+                                        super.onPositive(dialog);
+                                        SoundUtils.setAlarmSound(context, speakDto);
+                                    }
+
+                                    @Override
+                                    public void onNegative(MaterialDialog dialog) {
+                                        super.onNegative(dialog);
+                                    }
+                                })
+                                .show();
+
+                        break;
+
                     case CASE_COMMENTS:
                         if (FacebookManager.getInstance().isLogin()) {
-                            Toast.makeText(context, "Loggined IN", Toast.LENGTH_SHORT).show();
                             GoLoginDto dto = new GoLoginDto(true);
                             dto.speakDto = speakDto;
                             OttoBus.post(dto);
 
                         } else {
-                            Toast.makeText(context, "Please Login First", Toast.LENGTH_SHORT).show();
                             new MaterialDialog.Builder(context)
                                     .title("Please Login First")
                                     .positiveText("Login")
@@ -133,6 +154,14 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                                     })
                                     .show();
                         }
+                        break;
+
+                    case CASE_COPY:
+                        FileUtil.copy(context, speakDto.text, speakDto.text);
+                        Toast.makeText(context, "copied:" + speakDto.text, Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case CASE_LIKE:
                         break;
                 }
             }

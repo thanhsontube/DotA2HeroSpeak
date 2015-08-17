@@ -55,6 +55,7 @@ public class ChatHistoryManager {
                     String fromID = p.getString("fromID");
                     String fromName = p.getString("fromName");
                     long createTime = p.getLong("createTime");
+                    String image = p.getString("fromImage");
 
                     String heroText = p.getString("heroText");
                     String heroLink = p.getString("heroLink");
@@ -65,6 +66,7 @@ public class ChatHistoryManager {
                     commentDto.setMessage(message);
                     commentDto.setFromID(fromID);
                     commentDto.setFromName(fromName);
+                    commentDto.setImage(image);
                     commentDto.setCreateTime(createTime);
 
                     SpeakDto speakDto = new SpeakDto();

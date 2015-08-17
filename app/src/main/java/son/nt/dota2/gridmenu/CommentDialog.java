@@ -12,8 +12,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.widget.ProfilePictureView;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
@@ -55,6 +57,15 @@ public class CommentDialog extends DialogFragment {
         textInputLayout = (TextInputLayout) view.findViewById(R.id.cmt_text_input_layout);
         editTextContent = (EditText) view.findViewById(R.id.cmt_edt_think);
         View submit = view.findViewById(R.id.cmt_submit);
+
+        TextView txtFromName = (TextView) view.findViewById(R.id.cmt_from_name);
+        txtFromName.setText(FacebookManager.getInstance().getProfile().getName());
+        ProfilePictureView profilePictureView = (ProfilePictureView) view.findViewById(R.id.cmt_avatar);
+        profilePictureView.setProfileId(FacebookManager.getInstance().getProfile().getId());
+
+
+
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,6 +79,7 @@ public class CommentDialog extends DialogFragment {
                     d.setCreateTime(System.currentTimeMillis());
                     d.setFromID(FacebookManager.getInstance().getProfile().getId());
                     d.setFromName(FacebookManager.getInstance().getProfile().getName());
+                    d.setImage(FacebookManager.getInstance().getProfile().getProfilePictureUri(100,100).toString());
 
                     d.setMessage(editTextContent.getText().toString().trim());
 
@@ -89,19 +101,13 @@ public class CommentDialog extends DialogFragment {
     }
 
     private void pushOnServer (CommentDto d) {
-        /*
-        int id;
-    SpeakDto speakDto;
-    String message;
-    long createTime;
-    String fromID;
-    String fromName;
-         */
+
         ParseObject p = new ParseObject(CommentDto.class.getSimpleName());
         p.put("message",d.getMessage());
         p.put("createTime",d.getCreateTime());
         p.put("fromID",d.getFromID());
         p.put("fromName",d.getFromName());
+        p.put("fromImage",d.getImage());
 
 
         p.put("heroText",d.getSpeakDto().text);

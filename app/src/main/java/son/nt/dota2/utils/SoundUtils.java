@@ -72,4 +72,33 @@ public class SoundUtils {
             e.printStackTrace();
         }
     }
+
+    public static void setAlarmSound (Context context, SpeakDto dto) {
+        try {
+            File f1 = new File(ResourceManager.getInstance().getPathAudio(dto.link, dto.heroId));
+            File f2 = new File(ResourceManager.getInstance().getPathNotification(dto.link, dto.heroId));
+            f1.renameTo(f2);
+            String outPath =  f2.getPath();
+            String mimeType = "audio/mpeg";
+
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DATA, outPath);
+            values.put(MediaStore.MediaColumns.TITLE, dto.text);
+            values.put(MediaStore.MediaColumns.SIZE, new File(outPath).length());
+            values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
+
+            values.put(MediaStore.Audio.Media.ARTIST, dto.heroId);
+            values.put(MediaStore.Audio.Media.IS_ALARM,
+                    true);
+
+
+            // Insert it into the database
+            Uri uri = MediaStore.Audio.Media.getContentUriForPath(outPath);
+            final Uri newUri = context.getContentResolver().insert(uri, values);
+
+            RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_ALARM, newUri);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 import son.nt.dota2.R;
 import son.nt.dota2.ottobus_entry.GoAdapterCmt;
 import son.nt.dota2.utils.OttoBus;
-import son.nt.dota2.youtube.FacebookManager;
+import son.nt.dota2.utils.TsDate;
 
 /**
  * Created by Sonnt on 7/9/15.
@@ -65,12 +65,13 @@ public class AdapterCmts extends RecyclerView.Adapter<AdapterCmts.ViewHolder> {
         final CommentDto dto = mValues.get(position);
         viewHolder.fromName.setText(dto.getFromName());
         viewHolder.message.setText(dto.getMessage());
-        Glide.with(viewHolder.avatar.getContext()).load(FacebookManager.getInstance().getProfile().getProfilePictureUri(100,100))
-                .fitCenter()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(viewHolder.avatar);
+            Glide.with(viewHolder.avatar.getContext()).load(dto.getImage())
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(viewHolder.avatar);
 
-        viewHolder.createTime.setText("" + dto.getCreateTime());
+
+        viewHolder.createTime.setText(TsDate.getTimeAgo(dto.getCreateTime(), context));
         viewHolder.heroID.setText(dto.getSpeakDto().heroId);
         viewHolder.heroText.setText(dto.getSpeakDto().text);
 

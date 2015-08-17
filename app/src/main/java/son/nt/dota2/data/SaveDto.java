@@ -8,6 +8,8 @@ public class SaveDto {
     public String heroLink;
     public String speakContent;
     public String speakLink;
+    public String speakGroup;
+    public String rivalImage;
     public String saveTime;
     public String no = "";
 
