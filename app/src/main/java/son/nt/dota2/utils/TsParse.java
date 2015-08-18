@@ -1,6 +1,7 @@
 package son.nt.dota2.utils;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -27,12 +28,14 @@ public class TsParse {
         String href = p.getString("href");
         String avatar = p.getString("avatar");
         String lore = p.getString("lore");
+        String bgLink = p.getString("bgLink");
 
         dto.setBaseInfo(heroId, href, avatar, group);
         dto.no = no;
         dto.name = name;
         dto.fullName = fullName;
         dto.lore = lore;
+        dto.bgLink = bgLink;
         return dto;
     }
 
@@ -68,5 +71,37 @@ public class TsParse {
         } catch (Exception e) {
 
         }
+    }
+
+    public static void updateBgToHeroEntry(final HeroEntry dto) {
+        Logger.debug(TAG, ">>>" + "updateBgToHeroEntry:" + dto.heroId);
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
+        query.whereEqualTo("heroId", dto.heroId);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (e != null || list.size() > 0) {
+
+                    ParseObject p = list.get(0);
+                    String objectId = p.getObjectId();
+                    Logger.debug(TAG, ">>>" + "objectId:" + objectId);
+
+                    ParseQuery<ParseObject> mQuery = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
+                    mQuery.getInBackground(objectId, new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject p, ParseException e) {
+                            p.put("bgLink", dto.bgLink);
+                            p.saveInBackground();
+                            Logger.debug(TAG, ">>>" + "updateBgToHeroEntry OK with:" + dto.fullName);
+                        }
+                    });
+
+                }
+            }
+        });
+
+
+
     }
 }

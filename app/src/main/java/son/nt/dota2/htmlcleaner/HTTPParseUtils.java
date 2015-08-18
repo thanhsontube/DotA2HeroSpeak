@@ -29,6 +29,7 @@ import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.dto.save.SaveBasicHeroData;
 import son.nt.dota2.dto.save.SaveHeroAbility;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
+import son.nt.dota2.htmlcleaner.bg.BgModalLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroListLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroNameLoader;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
@@ -512,6 +513,29 @@ public class HTTPParseUtils {
                 if (listener != null) {
                     listener.onFinish();
                 }
+            }
+        });
+    }
+
+    public void withBasicBg () {
+        Logger.debug(TAG, ">>>" + "======= withBasicBg ====");
+        HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Model_pictures");
+        ResourceManager.getInstance().getContentManager().load(new BgModalLoader(httpGet, true) {
+            @Override
+            public void onContentLoaderStart() {
+            }
+
+            @Override
+            public void onContentLoaderSucceed(List<HeroEntry> entity) {
+                for (HeroEntry p : entity) {
+                    Logger.debug(TAG, ">>>" + "id:" + p.heroId + ";link:" + p.bgLink);
+                    TsParse.updateBgToHeroEntry(p);
+                }
+
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
             }
         });
     }

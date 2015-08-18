@@ -22,6 +22,12 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/pre_hero_bg"
+            android:text="Pre Hero BG"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/pre_hero_speak"
             android:text="Pre Hero Speak"/>
 

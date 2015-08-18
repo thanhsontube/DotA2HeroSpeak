@@ -9,18 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import java.io.IOException;
-
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
-import son.nt.dota2.base.AObject;
-import son.nt.dota2.dto.HeroEntry;
-import son.nt.dota2.dto.save.SaveBasicHeroData;
 import son.nt.dota2.fragment.LoginFragment;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
-import son.nt.dota2.utils.FileUtil;
-import son.nt.dota2.utils.Logger;
 
 public class LoginActivity extends AActivity {
 
@@ -54,21 +47,18 @@ public class LoginActivity extends AActivity {
             }
         });
 
+        findViewById(R.id.pre_hero_bg).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HTTPParseUtils.getInstance().withBasicBg();
+
+            }
+        });
+
         findViewById(R.id.pre_hero_ability).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    AObject a = FileUtil.getObject(getApplicationContext(), SaveBasicHeroData.class.getSimpleName());
-                    SaveBasicHeroData saveBasicHeroData = (SaveBasicHeroData) a;
-                    int i = 0;
-                    for (HeroEntry p : saveBasicHeroData.list) {
-                        Logger.debug(TAG, ">>>" + i ++ + " name:" + p.heroId + ";group" +p.group);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+
 
             }
         });
@@ -87,11 +77,6 @@ public class LoginActivity extends AActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        int i = 1;
-        Logger.debug(TAG, ">>>" + "============LIST NAME ===== size" + HeroManager.getInstance().listHeroes.size());
-        for (HeroEntry p :HeroManager.getInstance().listHeroes) {
-            Logger.debug(TAG, ">>>" + i ++  + ";name:" + p.heroId + ";Full:" + p.fullName);
-        }
 
 //        if (BuildConfig.DEBUG) {
 //            startActivity(new Intent(this, HomeActivity.class));

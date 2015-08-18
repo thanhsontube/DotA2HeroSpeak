@@ -158,7 +158,7 @@ public class HeroFragment extends AbsFragment {
         titles.add("Comments");
         listFragments.add(ChatFragment.newInstance(heroEntry.heroId));
 
-        adapter = new AdapterPagerHero(getSafeFragmentManager(), listFragments, titles);
+//        adapter = new AdapterPagerHero(getSafeFragmentManager(), listFragments, titles);
 
     }
 
@@ -172,29 +172,33 @@ public class HeroFragment extends AbsFragment {
     public void initLayout(View view) {
         //kenburns
         kenBurnsView = (KenBurnsView) view.findViewById(R.id.hero_ken_burns);
-        int[] ids = new int[]{R.mipmap.ken2, R.mipmap.ken2};
-        kenBurnsView.setResourceIds(ids);
-        kenBurnsView.startLayoutAnimation();
+        listKenburns.clear();
+        listKenburns.add(heroEntry.bgLink);
+        listKenburns.add(heroEntry.bgLink);
+        updateKenBurns();
+//        getKenBurnsImage();
+//        int[] ids = new int[]{R.mipmap.ken2, R.mipmap.ken2};
+//        kenBurnsView.setResourceIds(ids);
+//        kenBurnsView.startLayoutAnimation();
 
-        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.hero_coordinator);
+//        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.hero_coordinator);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.hero_appbarlayout);
         toolbar = (Toolbar) view.findViewById(R.id.hero_toolbar);
         tabLayout = (TabLayout) view.findViewById(R.id.hero_tablayout);
         pager = (ViewPager) view.findViewById(R.id.hero_pager);
-        pager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(pager);
+//        pager.setAdapter(adapter);
+//        tabLayout.setupWithViewPager(pager);
         floatingActionButton = (FloatingActionButton) view.findViewById(R.id.hero_fab);
         getSaveActivity().setSupportActionBar(toolbar);
-
-        getKenBurnsImage();
-
-        setupSpinner();
+//
+//
+//        setupSpinner();
     }
 
     @Override
     public void initListener() {
-        toolbar.setTitle(heroEntry.fullName);
-        getSafeActionBar().setTitle(heroEntry.fullName);
+//        toolbar.setTitle(heroEntry.heroId);
+        getSafeActionBar().setTitle(heroEntry.name);
         getSafeActionBar().setDisplayShowTitleEnabled(true);
 
         getSafeActionBar().setDisplayShowHomeEnabled(true);
