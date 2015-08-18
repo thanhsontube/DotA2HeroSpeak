@@ -32,7 +32,7 @@ public class ChatHistoryManager {
 
     public ChatHistoryManager(Context context) {
         this.context = context;
-        getHistory(null);
+//        getHistory(null);
     }
 
     public static ChatHistoryManager getInstance () {

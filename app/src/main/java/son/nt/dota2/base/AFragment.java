@@ -43,7 +43,7 @@ public class AFragment extends Fragment {
         context = getActivity();
         resource = ResourceManager.getInstance();
         contentManager = resource.getContentManager();
-        mypath = resource.getMyPath();
+//        mypath = resource.getMyPath();
         aq = new AQuery(context);
         sqlite = TsSqlite.getInstance();
         actionBar = getSafeActionBar();

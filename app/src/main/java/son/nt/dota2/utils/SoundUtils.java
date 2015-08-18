@@ -76,7 +76,7 @@ public class SoundUtils {
     public static void setAlarmSound (Context context, SpeakDto dto) {
         try {
             File f1 = new File(ResourceManager.getInstance().getPathAudio(dto.link, dto.heroId));
-            File f2 = new File(ResourceManager.getInstance().getPathNotification(dto.link, dto.heroId));
+            File f2 = new File(ResourceManager.getInstance().getPathAlarm(dto.link, dto.heroId));
             f1.renameTo(f2);
             String outPath =  f2.getPath();
             String mimeType = "audio/mpeg";

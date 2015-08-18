@@ -5,8 +5,6 @@ import android.os.Environment;
 
 import java.io.File;
 
-import son.nt.dota2.dto.HeroData;
-import son.nt.dota2.facebook.FbLoaderManager;
 import son.nt.dota2.loader.MyPath;
 import son.nt.dota2.loader.base.ContentManager;
 import son.nt.dota2.utils.FileUtil;
@@ -15,13 +13,12 @@ import son.nt.dota2.utils.FileUtil;
  * Created by Sonnt on 3/14/2015.
  */
 public class ResourceManager {
-    static ResourceManager instance = null;
+    static ResourceManager INSTANCE = null;
     public static final String ROOT = "/00-Dota2";
     private Context context;
     private MyPath myPath;
     private ContentManager contentManager;
 
-    public FbLoaderManager fbLoaderManager;
 
     public String folderSave;
     public String folderAudio;
@@ -30,19 +27,11 @@ public class ResourceManager {
     public String folderObject;
     public String folderRingtone;
     public String folderNotification;
+    public String folderAlarm;
 
 
     public String fileHeroList;
 
-    private HeroData heroData;
-
-    public void setHeroData(HeroData heroData) {
-        this.heroData = heroData;
-    }
-
-    public HeroData getHeroData() {
-        return heroData;
-    }
 
     public ResourceManager(Context context) {
         this.context = context;
@@ -50,15 +39,15 @@ public class ResourceManager {
     }
 
     public static ResourceManager getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     public static void createInstance (Context context) {
-        instance = new ResourceManager(context);
+        INSTANCE = new ResourceManager(context);
     }
     private void initialize() {
         try {
-//            myPath = new MyPath(context);
+            myPath = new MyPath(context);
             contentManager = new ContentManager(context, 100);
 //            folderSave = getContext().getFilesDir().getPath();
 
@@ -66,14 +55,12 @@ public class ResourceManager {
             fileHeroList = folderSave +File.separator + "hero_list.dat";
             folderHero = folderSave+ File.separator + "hero" + File.separator;
 
-//            File fileAudio =new File(Environment.getExternalStorageDirectory(), File.separator + "DotA2HeroSpeak" + File.separator + "audio" + File.separator);
             File fileAudio =new File(folderSave, "/audio/");
             if (!fileAudio.exists()) {
                 fileAudio.mkdirs();
             }
             folderAudio = fileAudio.getPath();
 
-//            File fileBlur =new File(Environment.getExternalStorageDirectory(), File.separator + "DotA2HeroSpeak" + File.separator + "blur" + File.separator);
             File fileBlur =new File(folderSave, "/blur/");
             if (!fileBlur.exists()) {
                 fileBlur.mkdirs();
@@ -93,9 +80,8 @@ public class ResourceManager {
             File fNoti = new File (folderSave, "/notification/");
             folderNotification = fNoti.getPath();
 
-
-            fbLoaderManager = new FbLoaderManager();
-
+            File fAlarm = new File (folderSave, "/alarm/");
+            folderAlarm = fAlarm.getPath();
 
         }catch (Exception e) {
             e.printStackTrace();
@@ -106,9 +92,6 @@ public class ResourceManager {
         return context;
     }
 
-    public MyPath getMyPath() {
-        return myPath;
-    }
 
     public ContentManager getContentManager() {
         return contentManager;
@@ -139,5 +122,18 @@ public class ResourceManager {
             f.mkdirs();
         }
         return ResourceManager.getInstance().folderNotification + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
+    }
+
+    public String getPathAlarm (String link, String heroID) {
+        String path = ResourceManager.getInstance().folderAlarm + File.separator + heroID + File.separator;
+        File f = new File((path));
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        return ResourceManager.getInstance().folderAlarm + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
+    }
+
+    public MyPath getMyPath() {
+        return myPath;
     }
 }

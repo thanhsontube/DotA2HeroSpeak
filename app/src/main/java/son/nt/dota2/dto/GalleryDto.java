@@ -7,4 +7,6 @@ import java.io.Serializable;
  */
 public class GalleryDto implements Serializable {
     public String link;
+    public String group;
+    public String heroID;
 }

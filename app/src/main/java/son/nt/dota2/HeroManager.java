@@ -13,12 +13,15 @@ import java.util.List;
 import son.nt.dota2.base.AObject;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.HeroSavedDto;
 import son.nt.dota2.utils.FileUtil;
+import son.nt.dota2.utils.Logger;
 
 /**
  * Created by Sonnt on 7/13/15.
  */
 public class HeroManager extends AObject{
+    public static final String TAG = "HeroManager";
 
     public HeroData heroData;
 
@@ -36,7 +39,7 @@ public class HeroManager extends AObject{
 
     public HeroManager(Context context) {
         this.context = context;
-        initData();
+//        initData();
     }
 
     public static HeroManager getInstance () {
@@ -112,5 +115,26 @@ public class HeroManager extends AObject{
             }
         }
         return  list;
+    }
+
+    public void initDataSelf () {
+        try {
+            File fileBasicHeroList = new File (ResourceManager.getInstance().folderObject, HeroSavedDto.class.getSimpleName());
+            if (!fileBasicHeroList.exists()) {
+                Logger.debug(TAG, ">>>" + "COPY>>>>>>>");
+                FileUtil.copyAssets(context, fileBasicHeroList.getParent());
+            }
+
+            AObject saveObject = FileUtil.getObject(context, HeroSavedDto.class.getSimpleName());
+            if (saveObject != null) {
+                HeroSavedDto heroData = (HeroSavedDto) saveObject;
+                Logger.debug(TAG, ">>>" + "saveObject != null:" + heroData.listHeroes.size());
+                HeroManager.getInstance().listHeroes.clear();
+                HeroManager.getInstance().listHeroes.addAll(heroData.listHeroes);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -2,6 +2,7 @@ package son.nt.dota2.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import son.nt.dota2.base.AObject;
 
@@ -69,5 +70,19 @@ public class HeroEntry extends AObject {
         this.href = hrefDota2;
         this.avatarThumbnail = avatarThumbnail;
         this.group = group;
+    }
+
+    public String getRandomGif () {
+        if (gallery.size() == 0) {
+            return null;
+        }
+        List <String> listTemp = new ArrayList<>();
+        for (GalleryDto p : gallery) {
+            if (p.group.equalsIgnoreCase("gif")) {
+                listTemp.add(p.link);
+            }
+        }
+        int link = new Random().nextInt(listTemp.size());
+        return listTemp.get(link);
     }
 }

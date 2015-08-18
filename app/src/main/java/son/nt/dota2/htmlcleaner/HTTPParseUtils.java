@@ -11,6 +11,7 @@ import com.parse.ParseQuery;
 
 import org.apache.http.client.methods.HttpGet;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,10 @@ import son.nt.dota2.dto.AbilityLevelDto;
 import son.nt.dota2.dto.AbilityNotesDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.HeroRoleDto;
+import son.nt.dota2.dto.HeroSavedDto;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.save.SaveBasicHeroData;
 import son.nt.dota2.dto.save.SaveHeroAbility;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroListLoader;
@@ -33,6 +36,7 @@ import son.nt.dota2.htmlcleaner.role.RolesLoader;
 import son.nt.dota2.htmlcleaner.voice.VoiceLoader;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsParse;
 
 /**
  * Created by Sonnt on 7/13/15.
@@ -123,9 +127,10 @@ public class HTTPParseUtils {
 
     /**
      * get basic information of heroes
+     * Notes: this function will be never call again, because I save this Object to Asset with Name : SaveBasicHeroData
      */
-    public void withHeroList() {
-        Logger.debug(TAG, ">>>" + ">>>withHeroList<<<");
+    public void withHeroListBasic() {
+        Logger.debug(TAG, ">>>" + ">>>withHeroListBasic<<<");
         HttpGet httpGet = new HttpGet(HeroListLoader.URL_HERO_LIST);
         ResourceManager.getInstance().getContentManager().load(new HeroListLoader(httpGet, true) {
             @Override
@@ -138,6 +143,13 @@ public class HTTPParseUtils {
                 Logger.debug(TAG, ">>>" + "onContentLoaderSucceed:" + entity.size());
                 HeroManager.getInstance().listHeroes.clear();
                 HeroManager.getInstance().listHeroes.addAll(entity);
+
+                //save object
+                try {
+                    FileUtil.saveObject(context, new SaveBasicHeroData(entity), SaveBasicHeroData.class.getSimpleName());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 //                updateStep1();
 //
@@ -157,6 +169,47 @@ public class HTTPParseUtils {
                 Logger.error(TAG, ">>>" + "onContentLoaderFailed:" + e.toString());
             }
         });
+    }
+
+    public void withHeroListFromParse () {
+        Logger.debug(TAG, ">>>" + ">>>withHeroListFromParse<<<");
+        try {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
+            query.orderByAscending("no");
+            query.setLimit(200);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> list, ParseException e) {
+                    if (e != null || list.size() == 0) {
+                        Logger.error(TAG, ">>>" + "Error getData:" + e.toString());
+                        return;
+                    }
+                    Logger.debug(TAG, ">>>" + "getData size:" + list.size());
+                    HeroManager.getInstance().listHeroes.clear();
+                    for (ParseObject p : list) {
+                        HeroManager.getInstance().listHeroes.add(TsParse.parse(p));
+                    }
+
+                    try {
+                        HeroSavedDto heroData = new HeroSavedDto();
+                        heroData.listHeroes.clear();
+                        heroData.listHeroes.addAll(HeroManager.getInstance().listHeroes);
+                        FileUtil.saveObject(context, heroData, HeroSavedDto.class.getSimpleName());
+                        if (listener != null) {
+                            listener.onFinish();
+                        }
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    Logger.debug(TAG, ">>>" + "Str:" + HeroManager.getInstance().getStrHeroes().size());
+                    Logger.debug(TAG, ">>>" + "Agi:" + HeroManager.getInstance().getAgiHeroes().size());
+                    Logger.debug(TAG, ">>>" + "Intel:" + HeroManager.getInstance().getIntelHeroes().size());
+                }
+            });
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void withHeroName(final String heroId) {

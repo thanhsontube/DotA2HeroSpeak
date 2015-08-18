@@ -15,26 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.twotoasters.jazzylistview.JazzyHelper;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Random;
 
-import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.AFragment;
-import son.nt.dota2.base.AObject;
 import son.nt.dota2.comments.ChatDialog;
-import son.nt.dota2.dto.HeroEntry;
-import son.nt.dota2.dto.HeroSavedDto;
-import son.nt.dota2.utils.FileUtil;
-import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsScreen;
 
 
@@ -86,7 +74,6 @@ public class HomeFragment extends AFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -98,32 +85,6 @@ public class HomeFragment extends AFragment {
             currentEffect = savedInstanceState.getInt(KEY_EFFECT_DEFAULT, EFFECT_DEFAULT);
             setEffect();
         }
-        try {
-
-            AObject saveObject = FileUtil.getObject(context, HeroSavedDto.class.getSimpleName());
-            if (saveObject != null) {
-                HeroSavedDto heroData = (HeroSavedDto) saveObject;
-                Logger.debug(TAG, ">>>" + "saveObject != null:" + heroData.listHeroes.size());
-                HeroManager.getInstance().listHeroes.clear();
-                HeroManager.getInstance().listHeroes.addAll(heroData.listHeroes);
-
-                adapterTop = new AdapterTop(getFragmentManager());
-                viewPager.setAdapter(adapterTop);
-                tabLayout.setupWithViewPager(viewPager);
-                if (TsScreen.isLandscape(getActivity())) {
-                    tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_str_24));
-                    tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_agi_24));
-                    tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
-                }
-
-            } else {
-
-                getData();
-            }
-        } catch (Exception e) {
-
-        }
-
     }
 
     @Override
@@ -167,14 +128,14 @@ public class HomeFragment extends AFragment {
     private void initLayout(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.home_tabs);
         viewPager = (ViewPager) view.findViewById(R.id.home_view_pager);
-//        adapterTop = new AdapterTop(getFragmentManager(), heroList);
-//        viewPager.setAdapter(adapterTop);
-//        tabLayout.setupWithViewPager(viewPager);
-//        if (TsScreen.isLandscape(getActivity())) {
-//            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_str_24));
-//            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_agi_24));
-//            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
-//        }
+        adapterTop = new AdapterTop(getFragmentManager());
+        viewPager.setAdapter(adapterTop);
+        tabLayout.setupWithViewPager(viewPager);
+        if (TsScreen.isLandscape(getActivity())) {
+            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_str_24));
+            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_agi_24));
+            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
+        }
 
         fabChat = (FloatingActionButton) view.findViewById(R.id.btn_chat_home);
         fabChat.setOnClickListener(new View.OnClickListener() {
@@ -271,67 +232,4 @@ public class HomeFragment extends AFragment {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_EFFECT_DEFAULT, currentEffect);
     }
-
-    private void getData() {
-        Logger.debug(TAG, ">>>" + "getData");
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
-        query.orderByAscending("no");
-        query.setLimit(200);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> list, ParseException e) {
-                if (e != null || list.size() == 0) {
-                    Logger.error(TAG, ">>>" + "Error getData:" + e.toString());
-                    return;
-                }
-                Logger.debug(TAG, ">>>" + "getData size:" + list.size());
-                HeroManager.getInstance().listHeroes.clear();
-                for (ParseObject p : list) {
-                    HeroManager.getInstance().listHeroes.add(parse(p));
-                }
-
-                try {
-                    HeroSavedDto heroData = new HeroSavedDto();
-                    heroData.listHeroes.clear();
-                    heroData.listHeroes.addAll(HeroManager.getInstance().listHeroes);
-                    FileUtil.saveObject(getActivity(), heroData, HeroSavedDto.class.getSimpleName());
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                Logger.debug(TAG, ">>>" + "Str:" + HeroManager.getInstance().getStrHeroes().size());
-                Logger.debug(TAG, ">>>" + "Agi:" + HeroManager.getInstance().getAgiHeroes().size());
-                Logger.debug(TAG, ">>>" + "Intel:" + HeroManager.getInstance().getIntelHeroes().size());
-
-                adapterTop = new AdapterTop(getFragmentManager());
-                viewPager.setAdapter(adapterTop);
-                tabLayout.setupWithViewPager(viewPager);
-                if (TsScreen.isLandscape(getActivity())) {
-                    tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_str_24));
-                    tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_agi_24));
-                    tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_intel_24));
-                }
-
-            }
-        });
-    }
-
-    private HeroEntry parse(ParseObject p) {
-        HeroEntry dto = new HeroEntry();
-        int no = p.getInt("no");
-        String heroId = p.getString("heroId");
-        String name = p.getString("name");
-        String fullName = p.getString("fullName");
-        String group = p.getString("group");
-        String href = p.getString("href");
-        String avatar = p.getString("avatar");
-        String lore = p.getString("lore");
-
-        dto.setBaseInfo(heroId, href, avatar, group);
-        dto.no = no;
-        dto.name = name;
-        dto.fullName = fullName;
-        dto.lore = lore;
-        return dto;
-    }
-
 }

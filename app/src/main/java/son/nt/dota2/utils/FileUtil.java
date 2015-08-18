@@ -3,6 +3,7 @@ package son.nt.dota2.utils;
 import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -32,9 +34,10 @@ public class FileUtil {
 
     public static void saveObject(Context context, AObject data, String name) throws IOException {
         File woFile = new File(ResourceManager.getInstance().folderObject, name);
-        if (!woFile.exists()) {
-            woFile.createNewFile();
+        if (woFile.exists()) {
+            woFile.delete();
         }
+        woFile.createNewFile();
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(woFile));
         oos.writeObject(data);
         oos.close();
@@ -191,6 +194,52 @@ public class FileUtil {
             Toast.makeText(context, "RingtoneFile is not Available", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+
+    public static void copyAssets(Context context, String outPath) {
+        AssetManager assetManager = context.getAssets();
+        String[] files = null;
+        try {
+            files = assetManager.list("");
+        } catch (IOException e) {
+            Log.e("tag", "Failed to get asset file list.", e);
+        }
+        for(String filename : files) {
+            InputStream in = null;
+            OutputStream out = null;
+            try {
+                in = assetManager.open(filename);
+                File outFile = new File(outPath, filename);
+                out = new FileOutputStream(outFile);
+                copyFile(in, out);
+            } catch(IOException e) {
+                Log.e("tag", "Failed to copy asset file: " + filename, e);
+            }
+            finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        // NOOP
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        // NOOP
+                    }
+                }
+            }
+        }
+    }
+    private static void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = in.read(buffer)) != -1){
+            out.write(buffer, 0, read);
+        }
     }
 
 }

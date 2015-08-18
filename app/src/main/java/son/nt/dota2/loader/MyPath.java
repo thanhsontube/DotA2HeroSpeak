@@ -16,7 +16,4 @@ public class MyPath {
     public String getHerosListPath() {
         return "http://www.dota2.com/heroes/";
     }
-
-
-
 }

@@ -2,7 +2,6 @@ package son.nt.dota2.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,15 +26,11 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
     String url = "http://38.media.tumblr.com/600b4ea2d2770bec97fd836a6b3c91f9/tumblr_n5u5px6X1Z1rwq84jo1_r1_400.gif";
     List<HeroEntry> mValues;
     Context context;
-    private int mBackground;
-    private final TypedValue mTypedValue = new TypedValue();
     private  final WeakReference<Context> contextWeakReference;
     public AdapterRcvHome (Context cx, List<HeroEntry> list) {
         this.mValues = list;
         this.context = cx;
         this.contextWeakReference = new WeakReference<>(cx);
-//        context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
-//        mBackground = mTypedValue.resourceId;
     }
 
 
@@ -84,7 +79,7 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
         View view;
         public ViewHolder(View itemView) {
             super(itemView);
-            this.view = itemView;
+            this.view = itemView.findViewById(R.id.card_view);
             this.imageView = (ImageView) itemView.findViewById(R.id.row_avatar);
             this.txtName = (TextView) itemView.findViewById(R.id.row_name);
 

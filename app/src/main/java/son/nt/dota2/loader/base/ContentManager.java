@@ -24,7 +24,7 @@ public class ContentManager {
     private LruCache<String, SoftReference<Bitmap>> mBitmapCache;
 
     public ContentManager(Context context, int cacheMB) throws IOException {
-        this.context = context.getApplicationContext();
+        this.context = context;
         this.mCacheDir = new File(context.getCacheDir(), ".cache");
         this.mCache = new LruCache<String, File>(cacheMB * 1024) {
             @Override

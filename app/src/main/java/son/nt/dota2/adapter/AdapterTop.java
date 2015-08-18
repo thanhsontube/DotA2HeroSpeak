@@ -16,6 +16,7 @@ import son.nt.dota2.fragment.HeroListFragment;
 public class AdapterTop extends BasePagerAdapter {
     private FragmentManager fm;
     private Fragment mPrimaryFragment;
+
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
@@ -23,7 +24,7 @@ public class AdapterTop extends BasePagerAdapter {
     }
 
     public HeroListFragment getCurrentFragment() {
-        return (HeroListFragment)mPrimaryFragment;
+        return (HeroListFragment) mPrimaryFragment;
     }
 
     public AdapterTop(FragmentManager fm) {

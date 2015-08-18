@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.squareup.otto.Subscribe;
 import com.twotoasters.jazzylistview.JazzyHelper;
 import com.twotoasters.jazzylistview.recyclerview.JazzyRecyclerViewScrollListener;
 
@@ -21,11 +22,12 @@ import java.util.List;
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
-import son.nt.dota2.activity.HeroActivity;
 import son.nt.dota2.activity.MainActivity;
 import son.nt.dota2.adapter.AdapterRcvHome;
 import son.nt.dota2.base.AFragment;
+import son.nt.dota2.dto.GalleryDto;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
 import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.TsScreen;
@@ -72,18 +74,29 @@ public class HeroListFragment extends AFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OttoBus.register(this);
         if (getArguments() != null) {
 //            heroList = (HeroList) getArguments().getSerializable(ARG_PARAM1);
             group = getArguments().getString(ARG_PARAM2);
-            if (group.equals(MsConst.GROUP_STR)) {
-                listHero = HeroManager.getInstance().getStrHeroes();
-            } else if (group.equals(MsConst.GROUP_AGI)) {
-                listHero = HeroManager.getInstance().getAgiHeroes();
-            } else if (group.equals(MsConst.GROUP_INTEL)) {
-                listHero = HeroManager.getInstance().getIntelHeroes();
-            }
+            getList();
 
         }
+    }
+
+    private void getList () {
+        if (group.equals(MsConst.GROUP_STR)) {
+            listHero = HeroManager.getInstance().getStrHeroes();
+        } else if (group.equals(MsConst.GROUP_AGI)) {
+            listHero = HeroManager.getInstance().getAgiHeroes();
+        } else if (group.equals(MsConst.GROUP_INTEL)) {
+            listHero = HeroManager.getInstance().getIntelHeroes();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        OttoBus.unRegister(this);
     }
 
     @Override
@@ -180,6 +193,13 @@ public class HeroListFragment extends AFragment {
 //        }
 //        return list;
 //    }
+
+    @Subscribe
+    public void updateAdapter (GalleryDto galleryDto) {
+        getList();
+        adapterHome.notifyDataSetChanged();
+    }
+
 
 
 }

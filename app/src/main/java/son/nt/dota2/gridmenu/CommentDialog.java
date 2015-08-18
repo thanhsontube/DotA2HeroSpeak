@@ -25,7 +25,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.SpeakDto;
-import son.nt.dota2.youtube.FacebookManager;
+import son.nt.dota2.FacebookManager;
 
 /**
  * Created by Sonnt on 8/10/15.

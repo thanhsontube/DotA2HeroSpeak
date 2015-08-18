@@ -21,7 +21,7 @@ import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.SoundUtils;
-import son.nt.dota2.youtube.FacebookManager;
+import son.nt.dota2.FacebookManager;
 
 /**
  * Created by 4210047 on 3/30/2015.
