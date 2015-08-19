@@ -106,7 +106,7 @@ public class LoginActivity extends AActivity {
 
 //        if (BuildConfig.DEBUG) {
 //            startActivity(new Intent(this, HomeActivity.class));
-//            finish();
+//            getCommentsDone();
 //        }
     }
 

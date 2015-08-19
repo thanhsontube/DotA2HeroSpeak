@@ -15,7 +15,6 @@ import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.comments.ChatDialog;
-import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.fragment.HeroFragment;
 import son.nt.dota2.gridmenu.CommentDialog;
@@ -129,17 +128,17 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
         }
     }
 
-    @Subscribe
-    public void goChatDialog (CommentDto dto) {
-        FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
-        Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
-        if (f != null) {
-            ft.remove(f);
-        }
-        ChatDialog dialog = ChatDialog.newInstance();
-        ft.add(dialog, "chat");
-        ft.commit();
-    }
+//    @Subscribe
+//    public void goChatDialog (CommentDto dto) {
+//        FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
+//        Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
+//        if (f != null) {
+//            ft.remove(f);
+//        }
+//        ChatDialog dialog = ChatDialog.newInstance();
+//        ft.add(dialog, "chat");
+//        ft.commit();
+//    }
 
 
 }

@@ -26,27 +26,35 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/row_chat_fromName"
-                style="@style/txt_white_14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Son Dota 2" />
-
-            <TextView
                 android:id="@+id/row_chat_message"
                 style="@style/txt_white_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="I love this voice so much" />
 
-            <TextView
-                android:id="@+id/row_chat_create_day"
-                style="@style/txt_gray_14"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="1 hour ago" />
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/row_chat_fromName"
+                    style="@style/txt_red_14"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Son Dota 2" />
+
+                <TextView
+                    android:id="@+id/row_chat_create_day"
+                    style="@style/txt_gray_14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="1 hour ago" />
+            </LinearLayout>
 
 
         </LinearLayout>
@@ -59,22 +67,41 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:background="@drawable/d_row_speak"
-        android:orientation="vertical"
-        android:paddingLeft="16dp">
+        android:orientation="horizontal"
+        android:paddingLeft="8dp">
 
-        <TextView
-            android:id="@+id/row_chat_heroID"
-            style="@style/txt_green_14"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Phantom Assassin" />
 
-        <TextView
-            android:id="@+id/row_chat_hero_text"
-            style="@style/txt_blue_14"
-            android:layout_width="match_parent"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/row_chat_hero"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_str_40" />
+        <LinearLayout
+            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="It's not time yet !" />
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/row_chat_hero_text"
+                style="@style/txt_white_14"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="4dp"
+                android:text="It's not time yet !"
+                android:textStyle="italic" />
+            <ImageView
+                android:layout_margin="8dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_volume_up_white_24dp"/>
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
 

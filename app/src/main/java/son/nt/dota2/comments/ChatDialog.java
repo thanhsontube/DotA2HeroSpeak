@@ -17,10 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -28,7 +24,6 @@ import java.util.List;
 
 import son.nt.dota2.CommentManager;
 import son.nt.dota2.R;
-import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.ottobus_entry.GoAdapterCmt;
 import son.nt.dota2.service.ServiceMedia;
 import son.nt.dota2.utils.NetworkUtils;
@@ -60,6 +55,7 @@ public class ChatDialog extends DialogFragment {
 
         }
     };
+
     public static ChatDialog newInstance() {
         ChatDialog f = new ChatDialog();
         return f;
@@ -95,7 +91,9 @@ public class ChatDialog extends DialogFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getData();
+                listValues.clear();
+                updateData();
+//                getData();
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -115,30 +113,19 @@ public class ChatDialog extends DialogFragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-
-        listValues.clear();
         listValues.addAll(CommentManager.getInstance().listCmts);
-
-
         adapterCmts = new AdapterCmts(getActivity(), listValues);
         recyclerView.setAdapter(adapterCmts);
 
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setView(view).create();
         alertDialog.setCanceledOnTouchOutside(false);
-        if (listValues.size() > 3) {
-
-            recyclerView.smoothScrollToPosition(listValues.size() -2);
-        }
-        if (listValues.size() == 0) {
-
-        getData();
-        }
+        updateData();
         return alertDialog;
 
     }
 
-    private void getData() {
+    private void updateData() {
         recyclerView.setVisibility(View.GONE);
         viewRefresh.setVisibility(View.GONE);
         viewLoading.setVisibility(View.VISIBLE);
@@ -150,72 +137,44 @@ public class ChatDialog extends DialogFragment {
             viewLoading.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
         }
-        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(CommentDto.class.getSimpleName());
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> list, ParseException e) {
-                CommentDto commentDto;
-                List<CommentDto> listCmts = new ArrayList<CommentDto>();
-                for (ParseObject p : list) {
 
-                    String message = p.getString("message");
-                    String fromID = p.getString("fromID");
-                    String fromName = p.getString("fromName");
-                    long createTime = p.getLong("createTime");
-                    String image = p.getString("fromImage");
-
-                    String heroText = p.getString("heroText");
-                    String heroLink = p.getString("heroLink");
-                    String heroID = p.getString("heroID");
-                    String heroGroup = p.getString("heroGroup");
-
-                    commentDto = new CommentDto();
-                    commentDto.setMessage(message);
-                    commentDto.setFromID(fromID);
-                    commentDto.setFromName(fromName);
-                    commentDto.setImage(image);
-                    commentDto.setCreateTime(createTime);
-
-                    SpeakDto speakDto = new SpeakDto();
-                    speakDto.heroId = heroID;
-                    speakDto.text = heroText;
-                    speakDto.voiceGroup = heroGroup;
-                    speakDto.link = heroLink;
-
-                    commentDto.setSpeakDto(speakDto);
-                    listCmts.add(commentDto);
-                }
-                swipeRefreshLayout.setRefreshing(false);
-                if (listCmts.size() == 0) {
-                    recyclerView.setVisibility(View.GONE);
-                    viewRefresh.setVisibility(View.VISIBLE);
-                    viewRefresh.setText("No comment on this Hero :( \n\r Click to reload");
-                    viewLoading.setVisibility(View.GONE);
-                } else {
-
+        if (listValues.size() == 0) {
+            CommentManager.getInstance().setCallback(new CommentManager.ICommentMng() {
+                @Override
+                public void getCommentsDone(List<CommentDto> list) {
                     listValues.clear();
-                    listValues.addAll(listCmts);
+                    listValues.addAll(list);
                     adapterCmts.notifyDataSetChanged();
 
-                    CommentManager.getInstance().listCmts.clear();
-                    CommentManager.getInstance().listCmts.addAll(listValues);
+                    swipeRefreshLayout.setRefreshing(false);
+                    if (listValues.size() == 0) {
+                        recyclerView.setVisibility(View.GONE);
+                        viewRefresh.setVisibility(View.VISIBLE);
+                        viewRefresh.setText("No comment on this Hero :( \n\r Click to reload");
+                        viewLoading.setVisibility(View.GONE);
+                    } else {
+                        recyclerView.setVisibility(View.VISIBLE);
+                        viewRefresh.setVisibility(View.GONE);
+                        viewLoading.setVisibility(View.GONE);
+                    }
+                    if (listValues.size() > 3) {
 
-                    recyclerView.setVisibility(View.VISIBLE);
-                    viewRefresh.setVisibility(View.GONE);
-                    viewLoading.setVisibility(View.GONE);
+                        recyclerView.smoothScrollToPosition(listValues.size() - 2);
+                    }
                 }
-                if (listValues.size() > 3) {
-
-                    recyclerView.smoothScrollToPosition(listValues.size() -2);
-                }
-
-
-            }
-        });
+            });
+            CommentManager.getInstance().getHistory(null);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            viewRefresh.setVisibility(View.GONE);
+            viewLoading.setVisibility(View.GONE);
+        }
     }
 
+
+
     @Subscribe
-    public void getDataAdapter (GoAdapterCmt dto) {
+    public void getDataAdapter(GoAdapterCmt dto) {
         if (serviceMedia != null) {
             serviceMedia.play(dto.link, dto.heroID);
         }

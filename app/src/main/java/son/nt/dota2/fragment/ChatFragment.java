@@ -61,6 +61,7 @@ public class ChatFragment extends AbsFragment {
     TextView viewRefresh;
     SwipeRefreshLayout swipeRefreshLayout;
     ServiceMedia serviceMedia;
+    View chatLL;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
@@ -107,8 +108,6 @@ public class ChatFragment extends AbsFragment {
     }
 
 
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -149,7 +148,6 @@ public class ChatFragment extends AbsFragment {
     }
 
 
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -173,6 +171,8 @@ public class ChatFragment extends AbsFragment {
 
     @Override
     public void initLayout(View view) {
+        chatLL = view.findViewById(R.id.chat_ll);
+        chatLL.setBackgroundColor(getResources().getColor(R.color.transparent));
         recyclerView = (RecyclerView) view.findViewById(R.id.chat_recycle_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -185,12 +185,36 @@ public class ChatFragment extends AbsFragment {
         viewRefresh = (TextView) view.findViewById(R.id.chat_refresh);
 
         viewRefresh = (TextView) view.findViewById(R.id.chat_refresh);
-                swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.chat_swipe_refresh);
-        swipeRefreshLayout.setEnabled(false);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.chat_swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData();
+            }
+        });
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int topRowVerticalPosition = (recyclerView == null || recyclerView.getChildCount() == 0) ? 0
+                        : recyclerView.getChildAt(0).getTop();
+                swipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+            }
+        });
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         getData();
-
-
     }
 
     @Override
@@ -205,16 +229,6 @@ public class ChatFragment extends AbsFragment {
     }
 
     private void getData() {
-//        listValues.clear();
-//        listValues.addAll(ChatHistoryManager.getInstance().getHeroHistory(heroID));
-//        if (listValues.size() > 0) {
-//            adapterCmts.notifyDataSetChanged();
-//            return;
-//        }
-
-//        ChatHistoryManager.getInstance().getHistory(null);
-
-
         recyclerView.setVisibility(View.GONE);
         viewRefresh.setVisibility(View.GONE);
         viewLoading.setVisibility(View.VISIBLE);
@@ -229,6 +243,7 @@ public class ChatFragment extends AbsFragment {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(CommentDto.class.getSimpleName());
         query.whereEqualTo("heroID", heroID);
         query.setLimit(200);
+        query.orderByAscending("updateAt");
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
@@ -264,6 +279,7 @@ public class ChatFragment extends AbsFragment {
                     commentDto.setSpeakDto(speakDto);
                     listCmts.add(commentDto);
                 }
+                swipeRefreshLayout.setRefreshing(false);
                 if (listCmts.size() == 0) {
                     recyclerView.setVisibility(View.GONE);
                     viewRefresh.setVisibility(View.VISIBLE);
@@ -295,9 +311,17 @@ public class ChatFragment extends AbsFragment {
 //    }
 
     @Subscribe
-    public void getDataAdapter (GoAdapterCmt dto) {
+    public void getDataAdapter(GoAdapterCmt dto) {
         if (serviceMedia != null) {
             serviceMedia.play(dto.link, dto.heroID);
+        }
+    }
+
+    //sub update the view after user comment
+    @Subscribe
+    public void updateListCmt(CommentDto dto) {
+        if (dto.getSpeakDto().heroId == heroID) {
+            getData();
         }
     }
 }

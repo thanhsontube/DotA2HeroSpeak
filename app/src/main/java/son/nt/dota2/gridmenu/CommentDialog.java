@@ -26,6 +26,7 @@ import son.nt.dota2.ResourceManager;
 import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.FacebookManager;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * Created by Sonnt on 8/10/15.
@@ -100,7 +101,7 @@ public class CommentDialog extends DialogFragment {
         return alertDialog;
     }
 
-    private void pushOnServer (CommentDto d) {
+    private void pushOnServer (final CommentDto d) {
 
         ParseObject p = new ParseObject(CommentDto.class.getSimpleName());
         p.put("message",d.getMessage());
@@ -123,6 +124,7 @@ public class CommentDialog extends DialogFragment {
                 } else {
                     Toast.makeText(ResourceManager.getInstance().getContext(), "Comment success !", Toast.LENGTH_SHORT).show();
                     CommentManager.getInstance().updateHistory();
+                    OttoBus.post(d);
                 }
 
             }

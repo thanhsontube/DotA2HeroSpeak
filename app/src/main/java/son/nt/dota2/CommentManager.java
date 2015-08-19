@@ -8,13 +8,13 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.SpeakDto;
-import son.nt.dota2.ottobus_entry.GoChatManager;
 import son.nt.dota2.utils.NetworkUtils;
-import son.nt.dota2.utils.OttoBus;
 
 /**
  * Created by Sonnt on 8/13/15.
@@ -45,6 +45,8 @@ public class CommentManager {
         if (heroID != null) {
             query.whereEqualTo("heroID", heroID);
         }
+        query.setLimit(200);
+        query.orderByAscending("updateAt");
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
@@ -81,7 +83,17 @@ public class CommentManager {
                 }
                 listCmts.clear();
                 listCmts.addAll(list_);
-                OttoBus.post(new GoChatManager());
+                Collections.sort(listCmts, new Comparator<CommentDto>() {
+                    @Override
+                    public int compare(CommentDto l1, CommentDto l2) {
+                        return l1.getCreateTime() >= l2.getCreateTime() ? 1 : 0;
+                    }
+                });
+
+                if (listener != null) {
+                    listener.getCommentsDone(listCmts);
+                }
+//                OttoBus.post(new GoChatManager());
 
             }
         });
@@ -114,5 +126,13 @@ public class CommentManager {
         }
 
         getHistory(null);
+    }
+
+    private ICommentMng listener;
+    public interface ICommentMng {
+        void getCommentsDone(List<CommentDto> list);
+    }
+    public void setCallback (ICommentMng callback) {
+        this.listener = callback;
     }
 }

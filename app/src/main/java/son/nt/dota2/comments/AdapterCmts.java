@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
 import son.nt.dota2.ottobus_entry.GoAdapterCmt;
 import son.nt.dota2.utils.OttoBus;
@@ -42,7 +43,7 @@ public class AdapterCmts extends RecyclerView.Adapter<AdapterCmts.ViewHolder> {
         TextView message;
         TextView createTime;
 
-        TextView heroID;
+        ImageView heroAvatar;
         TextView heroText;
 
         View viewVoice;
@@ -54,7 +55,7 @@ public class AdapterCmts extends RecyclerView.Adapter<AdapterCmts.ViewHolder> {
             this.fromName = (TextView) itemView.findViewById(R.id.row_chat_fromName);
             this.message = (TextView) itemView.findViewById(R.id.row_chat_message);
             this.createTime = (TextView) itemView.findViewById(R.id.row_chat_create_day);
-            this.heroID = (TextView) itemView.findViewById(R.id.row_chat_heroID);
+            this.heroAvatar = (ImageView) itemView.findViewById(R.id.row_chat_hero);
             this.heroText = (TextView) itemView.findViewById(R.id.row_chat_hero_text);
             this.viewVoice = itemView.findViewById(R.id.row_chat_play);
         }
@@ -69,16 +70,18 @@ public class AdapterCmts extends RecyclerView.Adapter<AdapterCmts.ViewHolder> {
                     .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(viewHolder.avatar);
+        Glide.with(viewHolder.heroAvatar.getContext()).load(HeroManager.getInstance().getHero(dto.getSpeakDto().heroId).avatarThumbnail)
+                .fitCenter()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(viewHolder.heroAvatar);
 
 
         viewHolder.createTime.setText(TsDate.getTimeAgo(dto.getCreateTime(), context));
-        viewHolder.heroID.setText(dto.getSpeakDto().heroId);
         viewHolder.heroText.setText(dto.getSpeakDto().text);
 
         viewHolder.viewVoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(context, "Play at:" + dto.getSpeakDto().link, Toast.LENGTH_SHORT).show();
                 OttoBus.post(new GoAdapterCmt(dto.getSpeakDto().link, dto.getSpeakDto().heroId));
             }
         });
