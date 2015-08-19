@@ -9,12 +9,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.fragment.LoginFragment;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
+import son.nt.dota2.utils.Logger;
 
 public class LoginActivity extends AActivity {
 
@@ -23,6 +27,8 @@ public class LoginActivity extends AActivity {
     protected Fragment onCreateMainFragment(Bundle savedInstanceState) {
         return LoginFragment.newInstance("", "");
     }
+    List<HeroEntry> listTemp = new ArrayList<>();
+    boolean isAbi = false;
 
     @Override
     protected int getFragmentContainerId() {
@@ -37,7 +43,16 @@ public class LoginActivity extends AActivity {
         HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
             @Override
             public void onFinish() {
-                Toast.makeText(getApplicationContext(), "Finish>>>>", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "Finish>>>>", Toast.LENGTH_SHORT).show();
+                if (isAbi) {
+                    Logger.debug(TAG, ">>>" + "Abi done:" + listTemp.get(listTemp.size() - 1).heroId + ";pos:" + listTemp.size());
+                    listTemp.remove(listTemp.size() - 1);
+                    if (listTemp.size() > 0) {
+                        HTTPParseUtils.getInstance().withAbility(listTemp.get(listTemp.size() - 1).heroId);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "We have done with Ability List", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
         findViewById(R.id.pre_heroList).setOnClickListener(new View.OnClickListener() {
@@ -59,10 +74,14 @@ public class LoginActivity extends AActivity {
         findViewById(R.id.pre_hero_ability).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HTTPParseUtils.getInstance().withVoices("Phoenix");
-                HTTPParseUtils.getInstance().withVoices("Terrorblade");
-                HTTPParseUtils.getInstance().withVoices("Io");
+                isAbi = true;
+                listTemp.clear();
+                listTemp.addAll(HeroManager.getInstance().listHeroes);
+                HTTPParseUtils.getInstance().withAbility(listTemp.get(listTemp.size() -1).heroId);
 
+//                for (HeroEntry p : HeroManager.getInstance().listHeroes) {
+//                    HTTPParseUtils.getInstance().withVoices(p.heroId);
+//                }
 
             }
         });

@@ -13,29 +13,30 @@ import java.util.List;
 import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.ottobus_entry.GoChatManager;
+import son.nt.dota2.utils.NetworkUtils;
 import son.nt.dota2.utils.OttoBus;
 
 /**
  * Created by Sonnt on 8/13/15.
  */
-public class ChatHistoryManager {
+public class CommentManager {
     public List<CommentDto> listCmts = new ArrayList<>();
     public List<CommentDto> listHeroCmts = new ArrayList<>();
 
-    static ChatHistoryManager INSTANCE = null;
+    static CommentManager INSTANCE = null;
 
     private Context context;
 
     public static void createInstance(Context context) {
-        INSTANCE = new ChatHistoryManager(context);
+        INSTANCE = new CommentManager(context);
     }
 
-    public ChatHistoryManager(Context context) {
+    public CommentManager(Context context) {
         this.context = context;
 //        getHistory(null);
     }
 
-    public static ChatHistoryManager getInstance () {
+    public static CommentManager getInstance () {
         return INSTANCE;
     }
 
@@ -104,6 +105,14 @@ public class ChatHistoryManager {
     }
 
     public void updateHistory () {
+        getHistory(null);
+    }
+
+    public void autoFetch () {
+        if (!NetworkUtils.isConnected(context)) {
+            return;
+        }
+
         getHistory(null);
     }
 }

@@ -144,8 +144,8 @@ public class HeroFragment extends AbsFragment {
         listFragments.clear();
         titles.add("Voice");
         listFragments.add(VoiceFragment.newInstance(heroEntry.heroId));
-//        titles.add("Ability");
-//        listFragments.add(AbilityFragment.newInstance(heroEntry.heroId));
+        titles.add("Ability");
+        listFragments.add(AbilityFragment.newInstance(heroEntry.heroId));
 //        titles.add("Introduce");
 //        listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
 //

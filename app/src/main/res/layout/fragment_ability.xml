@@ -1,19 +1,17 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="son.nt.dota2.fragment.AbilityFragment"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="son.nt.dota2.fragment.AbilityFragment">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
-        android:paddingBottom="50dp"
-        >
+        android:paddingBottom="50dp">
 
 
         <LinearLayout
@@ -32,7 +30,8 @@
 
             </android.support.design.widget.TabLayout>
 
-            <ScrollView
+            <com.melnykov.fab.ObservableScrollView
+                android:id="@+id/ability_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/transparent">
@@ -205,7 +204,7 @@
                     </LinearLayout>
                 </LinearLayout>
 
-            </ScrollView>
+            </com.melnykov.fab.ObservableScrollView>
 
 
         </LinearLayout>
@@ -213,12 +212,24 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.melnykov.fab.FloatingActionButton
         android:id="@+id/ability_muted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="8dp"
         android:src="@drawable/ic_volume_off_white_24dp"
-        android:tag="muted" />
+        android:tag="muted"
+        app:fab_colorNormal="?colorPrimary"
+        app:fab_colorPressed="?colorPrimaryDark"
+        app:fab_colorRipple="@color/md_red_500" />
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+    <!--android:id="@+id/ability_muted"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom|right"-->
+    <!--android:layout_margin="8dp"-->
+    <!--android:src="@drawable/ic_volume_off_white_24dp"-->
+    <!--android:tag="muted" />-->
 </FrameLayout>

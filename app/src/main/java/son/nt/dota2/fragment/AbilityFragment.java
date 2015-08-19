@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.melnykov.fab.ObservableScrollView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class AbilityFragment extends AbsFragment {
 
     ServiceMedia serviceMedia;
 
-    FloatingActionButton fabMuted;
+    com.melnykov.fab.FloatingActionButton fabMuted;
 
     public static AbilityFragment newInstance(String heroID) {
         AbilityFragment fragment = new AbilityFragment();
@@ -110,7 +110,10 @@ public class AbilityFragment extends AbsFragment {
 
     @Override
     public void initLayout(View view) {
-        fabMuted = (FloatingActionButton) view.findViewById(R.id.ability_muted);
+        fabMuted = (com.melnykov.fab.FloatingActionButton) view.findViewById(R.id.ability_muted);
+        ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.ability_scroll_view);
+        fabMuted.attachToScrollView(scrollView);
+
         tabLayout = (TabLayout) view.findViewById(R.id.ability_tab_layout);
         txtAbility = (TextView) view.findViewById(R.id.ability_abi);
         txtAffects = (TextView) view.findViewById(R.id.ability_aff);
@@ -223,10 +226,13 @@ public class AbilityFragment extends AbsFragment {
             }
 
 
-            txtLevel1.setText(d.list.get(0));
-            txtLevel2.setText(d.list.get(1));
-            txtLevel3.setText(d.list.get(2));
-            txtLevel4.setText(d.list.get(3));
+            if (d.list.size() >=4) {
+
+                txtLevel1.setText(d.list.get(0));
+                txtLevel2.setText(d.list.get(1));
+                txtLevel3.setText(d.list.get(2));
+                txtLevel4.setText(d.list.get(3));
+            }
             if (dto.isUltimate) {
                 txtLevel4.setVisibility(View.GONE);
             } else {
@@ -273,30 +279,7 @@ public class AbilityFragment extends AbsFragment {
                 }
             }
         });
-
-//        HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
-//            @Override
-//            public void onFinish() {
-//                listAbilities.clear();
-//                listAbilities.addAll(HeroManager.getInstance().getHero(heroId).listAbilities);
-//                tabLayout.removeAllTabs();
-//                for (AbilityDto dto : listAbilities) {
-//                    View vTab = inflater.inflate(R.layout.tab_ability, null);
-//                    ImageView img = (ImageView) vTab.findViewById(R.id.ability_icon);
-//                    TextView txt = (TextView) vTab.findViewById(R.id.ability_text);
-//                    txt.setText(dto.name);
-//                    Glide.with(getActivity()).load(dto.linkImage).fitCenter().into(img);
-//                    TabLayout.Tab tab = tabLayout.newTab().setCustomView(vTab);
-//                    tabLayout.addTab(tab);
-//                }
-//                for (int i = 0; i < listAbilities.size(); i ++) {
-//                    update(i);
-//                }
-//
-//            }
-//        });
-
-        testAbilityStrength();
+        getAbilityData();
 
 
         fabMuted.setOnClickListener(new View.OnClickListener() {
@@ -311,9 +294,6 @@ public class AbilityFragment extends AbsFragment {
                 }
             }
         });
-//        getData1();
-//        getDataAgi();
-
 
     }
 
@@ -406,9 +386,8 @@ public class AbilityFragment extends AbsFragment {
         }
     }
 
-    private void testAbilityStrength() {
+    private void getAbilityData() {
 
-//        for (HeroEntry p : HeroManager.getInstance().getAgiHeroes()) {
         final HeroEntry p = HeroManager.getInstance().getHero(heroId);
         try {
 
@@ -474,11 +453,8 @@ public class AbilityFragment extends AbsFragment {
             }
 
         } catch (Exception e) {
-            Logger.error(TAG, ">>>" + "testAbilityStrength error:" + e.toString());
+            Logger.error(TAG, ">>>" + "getAbilityData error:" + e.toString());
 
         }
-
-
-//        }
     }
 }

@@ -26,7 +26,7 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-import son.nt.dota2.ChatHistoryManager;
+import son.nt.dota2.CommentManager;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.ottobus_entry.GoAdapterCmt;
@@ -117,7 +117,7 @@ public class ChatDialog extends DialogFragment {
         recyclerView.setHasFixedSize(true);
 
         listValues.clear();
-        listValues.addAll(ChatHistoryManager.getInstance().listCmts);
+        listValues.addAll(CommentManager.getInstance().listCmts);
 
 
         adapterCmts = new AdapterCmts(getActivity(), listValues);
@@ -197,8 +197,8 @@ public class ChatDialog extends DialogFragment {
                     listValues.addAll(listCmts);
                     adapterCmts.notifyDataSetChanged();
 
-                    ChatHistoryManager.getInstance().listCmts.clear();
-                    ChatHistoryManager.getInstance().listCmts.addAll(listValues);
+                    CommentManager.getInstance().listCmts.clear();
+                    CommentManager.getInstance().listCmts.addAll(listValues);
 
                     recyclerView.setVisibility(View.VISIBLE);
                     viewRefresh.setVisibility(View.GONE);

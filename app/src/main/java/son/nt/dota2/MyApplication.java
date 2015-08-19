@@ -39,7 +39,7 @@ public class MyApplication extends MultiDexApplication {
         FacebookManager.createInstance(getApplicationContext());
 //
 //        //history chat
-        ChatHistoryManager.createInstance(getApplicationContext());
+        CommentManager.createInstance(getApplicationContext());
 
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)

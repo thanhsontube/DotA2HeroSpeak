@@ -20,7 +20,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
 
-import son.nt.dota2.ChatHistoryManager;
+import son.nt.dota2.CommentManager;
 import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.comments.CommentDto;
@@ -122,7 +122,7 @@ public class CommentDialog extends DialogFragment {
                     Toast.makeText(ResourceManager.getInstance().getContext(), "There is something wrong! Could n't push your comment on Server ! Sorry !", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(ResourceManager.getInstance().getContext(), "Comment success !", Toast.LENGTH_SHORT).show();
-                    ChatHistoryManager.getInstance().updateHistory();
+                    CommentManager.getInstance().updateHistory();
                 }
 
             }
