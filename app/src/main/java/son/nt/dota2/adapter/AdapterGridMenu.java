@@ -18,6 +18,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.gridmenu.GridMenuItem;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
+import son.nt.dota2.ottobus_entry.GoShare;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.SoundUtils;
@@ -36,6 +37,8 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
     public static final int CASE_COMMENTS = 3;
     public static final int CASE_COPY = 4;
     public static final int CASE_LIKE = 5;
+    public static final int CASE_SHARE_FACEBOOK = 6;
+    public static final int CASE_SHARE_OTHERS = 7;
     SpeakDto speakDto = null;
 
     public AdapterGridMenu(Context context, List<GridMenuItem> list, SpeakDto dto) {
@@ -163,6 +166,15 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
 
                     case CASE_LIKE:
                         break;
+                    case CASE_SHARE_FACEBOOK:
+                        //HeroActivity.goShare
+                        OttoBus.post(new GoShare("facebook", speakDto));
+                        break;
+                    case CASE_SHARE_OTHERS:
+                        FacebookManager.getInstance().shareViaTwitter(context, speakDto);
+
+                        break;
+
                 }
             }
         });

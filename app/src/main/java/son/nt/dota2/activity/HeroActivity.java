@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.squareup.otto.Subscribe;
 
+import son.nt.dota2.FacebookManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
@@ -21,6 +22,7 @@ import son.nt.dota2.gridmenu.CommentDialog;
 import son.nt.dota2.gridmenu.GridMenuDialog;
 import son.nt.dota2.gridmenu.SpeakLongClick;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
+import son.nt.dota2.ottobus_entry.GoShare;
 import son.nt.dota2.utils.OttoBus;
 
 public class HeroActivity extends AActivity implements HeroFragment.OnFragmentInteractionListener {
@@ -115,7 +117,7 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
         if (!dto.isLogin)
         {
 
-            startActivity(LoginActivity.getIntent(this));
+            startActivity(LoginActivity.getIntent(HeroActivity.this));
         } else {
             FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
             Fragment f = getSafeFragmentManager().findFragmentByTag("cmt");
@@ -125,6 +127,13 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
             CommentDialog dialog = CommentDialog.createInstance(dto.speakDto);
             ft.add(dialog, "cmt");
             ft.commit();
+        }
+    }
+
+    @Subscribe
+    public void goShare (GoShare dto) {
+        if (dto.type.equals("facebook")) {
+            FacebookManager.getInstance().shareViaDialogFb(HeroActivity.this, dto.speakDto);
         }
     }
 

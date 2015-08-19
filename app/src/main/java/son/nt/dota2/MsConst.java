@@ -5,6 +5,11 @@ package son.nt.dota2;
  */
 public class MsConst {
 
+    public static final String TRACK_SHARE_VOICE = "/TRACK_SHARE_VOICE";
+
+
+
+    public static final String LINK_STORE = "https://play.google.com/store/apps/details?id=son.nt.dota2";
     public static final boolean IS_HANDSOME = true;
     public static final String GROUP_STR = "Str";
     public static final String GROUP_AGI = "Agi";

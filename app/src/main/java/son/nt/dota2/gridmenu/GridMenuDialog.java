@@ -12,9 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.share.widget.LikeView;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterGridMenu;
 import son.nt.dota2.dto.SpeakDto;
@@ -55,6 +58,11 @@ public class GridMenuDialog extends DialogFragment {
         TextView txtContent = (TextView) view.findViewById(R.id.grid_menu_text);
         txtContent.setText(speakDto.text);
 
+        LikeView likeView = (LikeView) view.findViewById(R.id.grid_menu_like);
+        likeView.setLikeViewStyle(LikeView.Style.BOX_COUNT);
+        likeView.setObjectIdAndType(MsConst.FB_ID_POST_TO, LikeView.ObjectType.PAGE);
+        likeView.setFragment(this);
+
         View viewClose = view.findViewById(R.id.grid_menu_close);
         viewClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,9 +80,10 @@ public class GridMenuDialog extends DialogFragment {
         list.add(new GridMenuItem("Set Notification Sound", R.drawable.ic_alert_48));
         list.add(new GridMenuItem("Set Alarm ", R.drawable.ic_alarm_48));
         list.add(new GridMenuItem("Comments", R.drawable.ic_comment_48));
-        list.add(new GridMenuItem("Copy", R.drawable.ic_copy_48));
+        list.add(new GridMenuItem("Copy Text", R.drawable.ic_copy_48));
         list.add(new GridMenuItem("Like", R.drawable.ic_start_off_48));
-        list.add(new GridMenuItem("Share", R.drawable.ic_share_48));
+        list.add(new GridMenuItem("Facebook Share", R.drawable.ic_facebook_48));
+        list.add(new GridMenuItem("Other Share", R.drawable.ic_share_48));
 
         adapter = new AdapterGridMenu(getActivity(), list, speakDto);
         recyclerView.setAdapter(adapter);

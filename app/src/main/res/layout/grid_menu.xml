@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/red_transparent"
@@ -11,17 +12,17 @@
         android:orientation="vertical">
 
         <TextView
-            android:gravity="center"
             style="@style/txt_white_14"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="8dp"
+            android:gravity="center"
             android:text="What would you like to do with:" />
 
         <TextView
-            style="@style/txt_green_18"
             android:id="@+id/grid_menu_text"
+            style="@style/txt_green_18"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -45,16 +46,34 @@
             android:layout_marginTop="8dp"
             android:layout_weight="1"></android.support.v7.widget.RecyclerView>
 
-        <TextView
-
-            android:background="?selectableItemBackground"
-            android:id="@+id/grid_menu_close"
-            style="@style/txt_white_18"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:gravity="center"
-            android:text="CLOSE" />
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:id="@+id/grid_menu_close"
+                style="@style/txt_white_18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?selectableItemBackground"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="CLOSE" />
+
+            <com.facebook.share.widget.LikeView
+                android:id="@+id/grid_menu_like"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"></com.facebook.share.widget.LikeView>
+
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

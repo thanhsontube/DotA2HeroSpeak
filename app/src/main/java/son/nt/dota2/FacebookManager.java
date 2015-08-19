@@ -1,6 +1,9 @@
 package son.nt.dota2;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -13,10 +16,14 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 
 import java.util.Arrays;
 
+import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsGaTools;
 
 /**
  * Created by Sonnt on 8/10/15.
@@ -88,6 +95,33 @@ public class FacebookManager {
         Bundle bundle = new Bundle();
         graphRequest.setParameters(bundle);
         graphRequest.executeAsync();
+    }
+
+    public void shareViaDialogFb (Activity activity, SpeakDto dto) {
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            String title = dto.heroId + ">>> " + dto.text;
+            String text = MsConst.LINK_STORE;
+            TsGaTools.trackPages(MsConst.TRACK_SHARE_VOICE);
+            ShareLinkContent shareLinkContent = new ShareLinkContent.Builder()
+                    .setContentTitle(title)
+                    .setContentDescription(text)
+                    .setContentUrl(Uri.parse(dto.link))
+                    .build();
+
+            ShareDialog shareDialog = new ShareDialog(activity);
+            shareDialog.show(shareLinkContent);
+        }
+
+    }
+
+    public void shareViaTwitter (Context c, SpeakDto dto) {
+        String title = dto.heroId + ">>>" + dto.text;
+        String text = dto.heroId + ">>> " + dto.text + ">>>Download App:" + MsConst.LINK_STORE;
+        Intent tweet = new Intent(Intent.ACTION_SEND);
+        tweet.setType("text/plain");
+        tweet.putExtra(Intent.EXTRA_SUBJECT, title);
+        tweet.putExtra(Intent.EXTRA_TEXT, text);
+        c.startActivity(Intent.createChooser(tweet, String.format("Share %s via", dto.text)));
     }
 
 
