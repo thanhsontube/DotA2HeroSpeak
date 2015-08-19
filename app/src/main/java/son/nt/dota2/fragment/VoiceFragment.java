@@ -162,7 +162,7 @@ public class VoiceFragment extends AbsFragment {
 
 
         try {
-            AObject heroSpeak = FileUtil.getObject(getActivity(), heroID);
+            AObject heroSpeak = FileUtil.getObject(getActivity(), "voice_" + heroID);
             if (heroSpeak != null) {
                 Logger.debug(TAG, ">>>" + "heroSpeak != null");
                 HeroSpeakSaved heroSpeakSaved = (HeroSpeakSaved) heroSpeak;
@@ -176,7 +176,8 @@ public class VoiceFragment extends AbsFragment {
                 adapter.notifyDataSetChanged();
                 isLoaded = true;
                 startPrefetch();
-            } else {
+            }
+            else {
                 HTTPParseUtils.getInstance().withVoices(heroID);
                 HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
                     @Override
@@ -184,10 +185,6 @@ public class VoiceFragment extends AbsFragment {
                         Logger.debug(TAG, ">>>" + "withVoices onFinish");
                         list.clear();
                         List<SpeakDto> mList = HeroManager.getInstance().getHero(heroID).listSpeaks;
-
-//                        for (SpeakDto d : mList) {
-//                            Logger.debug(TAG, ">>>" + "Text:" + d.text + ";img:" + d.rivalImage);
-//                        }
                         if (mediaService != null) {
                             mediaService.setAdapterVoice(adapter, heroID);
                             mediaService.setListData(mList);
@@ -210,7 +207,6 @@ public class VoiceFragment extends AbsFragment {
 
 
     }
-
 
 
     ServiceConnection serviceConnectionMedia = new ServiceConnection() {
@@ -272,7 +268,7 @@ public class VoiceFragment extends AbsFragment {
         }
     }
 
-    private void createMenu () {
+    private void createMenu() {
     }
 
     @Override
@@ -294,14 +290,14 @@ public class VoiceFragment extends AbsFragment {
             listUsing.addAll(list);
         } else {
             for (SpeakDto p : list) {
-                if (p.voiceGroup.replace("_"," ").trim().equals(group)) {
+                if (p.voiceGroup.replace("_", " ").trim().equals(group)) {
                     listTemp.add(p);
                 }
             }
             listUsing.clear();
             listUsing.addAll(listTemp);
         }
-        for (SpeakDto p :listUsing) {
+        for (SpeakDto p : listUsing) {
             p.isPlaying = false;
         }
 

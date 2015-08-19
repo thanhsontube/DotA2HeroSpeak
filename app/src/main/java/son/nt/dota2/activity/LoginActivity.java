@@ -12,6 +12,7 @@ import android.widget.Toast;
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
+import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.fragment.LoginFragment;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 
@@ -50,7 +51,7 @@ public class LoginActivity extends AActivity {
         findViewById(R.id.pre_hero_bg).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HTTPParseUtils.getInstance().withBasicBg();
+//                HTTPParseUtils.getInstance().withBasicBg();
 
             }
         });
@@ -58,6 +59,9 @@ public class LoginActivity extends AActivity {
         findViewById(R.id.pre_hero_ability).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                HTTPParseUtils.getInstance().withVoices("Phoenix");
+                HTTPParseUtils.getInstance().withVoices("Terrorblade");
+                HTTPParseUtils.getInstance().withVoices("Io");
 
 
             }
@@ -66,6 +70,9 @@ public class LoginActivity extends AActivity {
         findViewById(R.id.pre_hero_speak).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                for (HeroEntry p : HeroManager.getInstance().listHeroes) {
+//                    HTTPParseUtils.getInstance().withVoices(p.heroId);
+                }
 
             }
         });

@@ -13,6 +13,7 @@
         android:id="@+id/toolbar_title"/>
 
     <android.support.v7.widget.AppCompatSpinner
+        android:popupBackground="@color/md_white_1000"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/toolbar_spinner">

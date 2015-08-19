@@ -21,12 +21,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -150,15 +144,15 @@ public class HeroFragment extends AbsFragment {
         listFragments.clear();
         titles.add("Voice");
         listFragments.add(VoiceFragment.newInstance(heroEntry.heroId));
-        titles.add("Ability");
-        listFragments.add(AbilityFragment.newInstance(heroEntry.heroId));
-        titles.add("Introduce");
-        listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
+//        titles.add("Ability");
+//        listFragments.add(AbilityFragment.newInstance(heroEntry.heroId));
+//        titles.add("Introduce");
+//        listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
+//
+//        titles.add("Comments");
+//        listFragments.add(ChatFragment.newInstance(heroEntry.heroId));
 
-        titles.add("Comments");
-        listFragments.add(ChatFragment.newInstance(heroEntry.heroId));
-
-//        adapter = new AdapterPagerHero(getSafeFragmentManager(), listFragments, titles);
+        adapter = new AdapterPagerHero(getSafeFragmentManager(), listFragments, titles);
 
     }
 
@@ -176,28 +170,20 @@ public class HeroFragment extends AbsFragment {
         listKenburns.add(heroEntry.bgLink);
         listKenburns.add(heroEntry.bgLink);
         updateKenBurns();
-//        getKenBurnsImage();
-//        int[] ids = new int[]{R.mipmap.ken2, R.mipmap.ken2};
-//        kenBurnsView.setResourceIds(ids);
-//        kenBurnsView.startLayoutAnimation();
-
 //        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.hero_coordinator);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.hero_appbarlayout);
         toolbar = (Toolbar) view.findViewById(R.id.hero_toolbar);
         tabLayout = (TabLayout) view.findViewById(R.id.hero_tablayout);
         pager = (ViewPager) view.findViewById(R.id.hero_pager);
-//        pager.setAdapter(adapter);
-//        tabLayout.setupWithViewPager(pager);
+        pager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(pager);
         floatingActionButton = (FloatingActionButton) view.findViewById(R.id.hero_fab);
         getSaveActivity().setSupportActionBar(toolbar);
-//
-//
-//        setupSpinner();
+        setupSpinner();
     }
 
     @Override
     public void initListener() {
-//        toolbar.setTitle(heroEntry.heroId);
         getSafeActionBar().setTitle(heroEntry.name);
         getSafeActionBar().setDisplayShowTitleEnabled(true);
 
@@ -216,31 +202,6 @@ public class HeroFragment extends AbsFragment {
 
     }
 
-
-    private void getKenBurnsImage() {
-        Logger.debug(TAG, ">>>" + "getKenBurnsImage");
-        try {
-            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Dota2BgDto");
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> list, ParseException e) {
-                    listKenburns.clear();
-                    if (list == null || list.size() == 0) {
-                        return;
-                    }
-                    for (ParseObject p : list) {
-                        String s = p.getString("link");
-                        listKenburns.add(s);
-
-                    }
-                    updateKenBurns();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void updateKenBurns() {
         kenBurnsView.setResourceUrl(listKenburns);
         kenBurnsView.startLayoutAnimation();
@@ -253,12 +214,12 @@ public class HeroFragment extends AbsFragment {
 
         AObject heroSpeak = null;
         try {
-            heroSpeak = FileUtil.getObject(getActivity(), heroID);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            heroSpeak = FileUtil.getObject(getActivity(), "voice_" +heroID);
+        } catch ( Exception e ) {
+
+
         }
+        Logger.debug(TAG, ">>>" + "setupSpinner:" + heroSpeak);
         if (heroSpeak != null) {
             Logger.debug(TAG, ">>>" + "heroSpeak != null");
             HeroSpeakSaved heroSpeakSaved = (HeroSpeakSaved) heroSpeak;
@@ -343,6 +304,7 @@ public class HeroFragment extends AbsFragment {
                 holder = (Holder) v.getTag();
             }
             holder.txtTitle.setText(list.get(position).getGroup());
+            holder.txtTitle.setTextColor(getResources().getColor(R.color.md_red_500));
             return v;
         }
 
@@ -355,6 +317,7 @@ public class HeroFragment extends AbsFragment {
                 v = layoutInflater.inflate(R.layout.row_spinner_toolbar, parent, false);
                 holder = new Holder();
                 holder.txtTitle = (TextView) v.findViewById(R.id.row_spinner_text);
+                holder.txtTitle.setTextColor(getResources().getColor(R.color.md_red_500));
                 holder.imgSelected = (ImageView) v.findViewById(R.id.row_spinner_img);
                 v.setTag(holder);
             } else {

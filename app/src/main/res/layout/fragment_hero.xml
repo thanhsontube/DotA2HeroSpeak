@@ -10,30 +10,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/hero_appbarlayout"
+    <LinearLayout
+        android:background="@mipmap/layer_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/red_transparent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/hero_toolbar"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/hero_appbarlayout"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize" />
+            android:layout_height="wrap_content"
+            android:background="@color/red_transparent">
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/hero_tablayout"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/hero_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize" />
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/hero_tablayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:tabTextColor="@color/md_yellow_200" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/hero_pager"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            app:tabTextColor="@color/md_yellow_200" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-    </android.support.design.widget.AppBarLayout>
+    </LinearLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/hero_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/hero_fab"

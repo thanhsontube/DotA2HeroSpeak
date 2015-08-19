@@ -423,7 +423,7 @@ public class HTTPParseUtils {
     }
 
     public void withVoices (final String heroId) {
-        Logger.debug(TAG, ">>>" + "withVoices:" + heroId);
+        Logger.debug(TAG, ">>>" + "====== withVoices:" + heroId);
         String pathSpeak = String.format(VoiceLoader.PATH, heroId);
         if (pathSpeak.contains("Natures_Prophet")) {
             pathSpeak = pathSpeak.replace("Natures", "Nature's");
@@ -437,19 +437,19 @@ public class HTTPParseUtils {
 
             @Override
             public void onContentLoaderSucceed(List<SpeakDto> entity) {
-                Logger.debug(TAG, ">>>" + "onContentLoaderSucceed :" + entity.size());
+                Logger.debug(TAG, ">>>" + "withVOICE:" + heroId + " onContentLoaderSucceed :" + entity.size());
                 for (SpeakDto p : entity) {
                     p.heroId = heroId;
                 }
-                HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
-                heroEntry.listSpeaks.clear();
-                heroEntry.listSpeaks.addAll(entity);
-
-                if (listener != null) {
-                    listener.onFinish();
-                }
+//                HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
+//                heroEntry.listSpeaks.clear();
+//                heroEntry.listSpeaks.addAll(entity);
+//
+//                if (listener != null) {
+//                    listener.onFinish();
+//                }
                 try {
-                    FileUtil.saveObject(context, new HeroSpeakSaved(heroId, entity), heroId);
+                    FileUtil.saveObject(context, new HeroSpeakSaved(heroId, entity), "voice_" + heroId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
