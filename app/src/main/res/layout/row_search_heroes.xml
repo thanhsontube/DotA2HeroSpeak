@@ -54,7 +54,7 @@
 
             <TextView
                 android:id="@+id/fullname"
-                style="@style/txt_black_14"
+                style="@style/txt_white_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Phantom" />

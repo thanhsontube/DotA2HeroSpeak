@@ -4,35 +4,39 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_action_settings"
+            android:icon="@drawable/ic_home_dark_48"
             android:title="Home" />
 
         <item
             android:id="@+id/nav_roles"
-            android:icon="@drawable/pip_carry"
-            android:title="Roles" />
+            android:icon="@drawable/ic_roles_dark_48"
+            android:title="Hero Roles" />
         <item
-            android:id="@+id/nav_messages"
-            android:icon="@drawable/ic_cast_light"
-            android:title="Messages" />
+            android:id="@+id/nav_playlist"
+            android:icon="@drawable/ic_playlist_dark_48"
+            android:title="My Playlist" />
         <item
+            android:visible="false"
             android:id="@+id/nav_friends"
             android:icon="@drawable/ic_action_settings"
             android:title="Friends" />
         <item
+            android:visible="false"
             android:id="@+id/nav_discussion"
             android:icon="@drawable/ic_action_settings"
             android:title="Discussion" />
     </group>
 
-    <item android:title="Sub items">
+    <item android:title="Others">
         <menu>
             <item
-                android:icon="@drawable/ic_action_settings"
-                android:title="Sub item 1" />
+                android:id="@+id/nav_rate"
+                android:icon="@drawable/ic_google_play_dark_48"
+                android:title="Rate/Comment/Idea" />
             <item
-                android:icon="@drawable/ic_action_settings"
-                android:title="Sub item 2" />
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_share_48"
+                android:title="Share this App" />
         </menu>
     </item>
 

@@ -1,11 +1,11 @@
 package son.nt.dota2.htmlcleaner.role;
 
-import java.io.Serializable;
+import son.nt.dota2.base.AObject;
 
 /**
  * Created by Sonnt on 7/13/15.
  */
-public class RoleDto implements Serializable{
+public class RoleDto extends AObject{
     public int no;
     public String name;
     public String linkIcon;

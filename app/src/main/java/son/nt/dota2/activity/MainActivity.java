@@ -30,6 +30,7 @@ import son.nt.dota2.adapter.AdapterDrawerRight;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.dto.HeroDto;
 import son.nt.dota2.dto.LeftDrawerDto;
+import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.facebook.UserDto;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.PlayListFragment;
@@ -678,4 +679,9 @@ public class MainActivity extends AActivity implements MainFragment.OnFragmentIn
         imgAvatarPostBy = (ImageView) findViewById(R.id.right_post_by_avatar);
         loginButtonOut = (LoginButton) findViewById(R.id.right_fb_logout);
     }*/
+
+    @Override
+    public void onSavedItemLongClick(SpeakDto dto) {
+
+    }
 }

@@ -14,15 +14,17 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.List;
 
+import son.nt.dota2.FacebookManager;
 import son.nt.dota2.R;
+import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.gridmenu.GridMenuItem;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
+import son.nt.dota2.ottobus_entry.GoSaved;
 import son.nt.dota2.ottobus_entry.GoShare;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.SoundUtils;
-import son.nt.dota2.FacebookManager;
 
 /**
  * Created by 4210047 on 3/30/2015.
@@ -36,7 +38,7 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
     public static final int CASE_ALARM = 2;
     public static final int CASE_COMMENTS = 3;
     public static final int CASE_COPY = 4;
-    public static final int CASE_LIKE = 5;
+    public static final int CASE_PLAYLIST = 5;
     public static final int CASE_SHARE_FACEBOOK = 6;
     public static final int CASE_SHARE_OTHERS = 7;
     SpeakDto speakDto = null;
@@ -66,6 +68,15 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
             holder.txtName.setText(dto.title);
         }
         holder.img.setImageResource(dto.iconID);
+        if (dto.title.equals("Add to Playlist")) {
+            if (TsSqlite.getInstance().isInsert(speakDto.link)) {
+                holder.img.setImageResource(dto.tempIcon);
+                holder.txtName.setText(dto.tempTitle);
+            } else {
+                holder.img.setImageResource(dto.iconID);
+                holder.txtName.setText(dto.title);
+            }
+        }
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,7 +175,41 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                         Toast.makeText(context, "copied:" + speakDto.text, Toast.LENGTH_SHORT).show();
                         break;
 
-                    case CASE_LIKE:
+                    case CASE_PLAYLIST:
+                        if (TsSqlite.getInstance().isInsert(speakDto.link)) {
+                            new MaterialDialog.Builder(context)
+                                    .title("Confirm Remove")
+                                    .positiveText("Yes")
+                                    .negativeText("Cancel")
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            super.onPositive(dialog);
+                                            TsSqlite.getInstance().remove(speakDto.link);
+                                            notifyDataSetChanged();
+                                            OttoBus.post(new GoSaved());
+                                        }
+
+                                        @Override
+                                        public void onNegative(MaterialDialog dialog) {
+                                            super.onNegative(dialog);
+                                        }
+                                    })
+                                    .show();
+                        } else {
+                            long insert  = TsSqlite.getInstance().insert(speakDto);
+                            if (insert == -2) {
+                                Toast.makeText(context, "This voice was added to Playlist before", Toast.LENGTH_SHORT).show();
+                            } else if (insert > 0){
+                                Toast.makeText(context, "Add to PlayList successful:" + speakDto.text, Toast.LENGTH_SHORT).show();
+                                OttoBus.post(new GoSaved());
+                            }
+                            if (listenerAdapter != null) {
+                                listenerAdapter.onClick(position, list.get(position));
+                            }
+                        }
+
+
                         break;
                     case CASE_SHARE_FACEBOOK:
                         //HeroActivity.goShare

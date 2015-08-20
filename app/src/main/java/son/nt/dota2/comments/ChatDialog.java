@@ -136,6 +136,7 @@ public class ChatDialog extends DialogFragment {
                     " Click to reload");
             viewLoading.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
+            return;
         }
 
         if (listValues.size() == 0) {

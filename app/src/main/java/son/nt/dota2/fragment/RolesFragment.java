@@ -14,13 +14,17 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterRoles;
+import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.AbsFragment;
+import son.nt.dota2.dto.save.SaveRoles;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
+import son.nt.dota2.utils.FileUtil;
 
 
 public class RolesFragment extends AbsFragment {
@@ -57,7 +61,7 @@ public class RolesFragment extends AbsFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        getSafeActionBar().setTitle("Roles");
+        getSafeActionBar().setTitle("Hero Roles");
     }
 
     @Override
@@ -78,11 +82,7 @@ public class RolesFragment extends AbsFragment {
 
     @Override
     public void initData() {
-
-
-
         adapterRoles = new AdapterRoles(getActivity(), list);
-
     }
 
     @Override
@@ -91,11 +91,7 @@ public class RolesFragment extends AbsFragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setAdapter(adapterRoles);
-
-
-
     }
 
     @Override
@@ -104,26 +100,46 @@ public class RolesFragment extends AbsFragment {
     }
 
     private void update() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(RoleDto.class.getSimpleName());
-        query.addAscendingOrder("no");
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> l, ParseException e) {
-                if (e != null) {
-                    return;
-                }
+        try
+        {
+            AObject aObject = FileUtil.getObject(getActivity(), SaveRoles.class.getSimpleName());
+            if (aObject != null) {
+                SaveRoles saveRoles = (SaveRoles) aObject;
                 list.clear();
-                RoleDto dto;
-                for (ParseObject p :l) {
-                    dto = new RoleDto();
-                    dto.name = p.getString("name");
-                    dto.slogan = p.getString("slogan");
-                    dto.linkIcon = p.getString("linkIcon");
-                    list.add(dto);
-                }
-
+                list.addAll(saveRoles.list);
                 adapterRoles.notifyDataSetChanged();
+                return;
             }
-        });
+            ParseQuery<ParseObject> query = ParseQuery.getQuery(RoleDto.class.getSimpleName());
+            query.addAscendingOrder("no");
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> l, ParseException e) {
+                    if (e != null) {
+                        return;
+                    }
+                    list.clear();
+                    RoleDto dto;
+                    for (ParseObject p :l) {
+                        dto = new RoleDto();
+                        dto.name = p.getString("name");
+                        dto.slogan = p.getString("slogan");
+                        dto.linkIcon = p.getString("linkIcon");
+                        list.add(dto);
+                    }
+                    try {
+                        FileUtil.saveObject(getActivity(),new SaveRoles(list),SaveRoles.class.getSimpleName());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    adapterRoles.notifyDataSetChanged();
+                }
+            });
+
+        } catch (Exception e) {
+
+        }
+
     }
 }

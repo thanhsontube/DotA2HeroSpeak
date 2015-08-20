@@ -6,27 +6,38 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="son.nt.dota2.activity.HomeActivity">
-
-
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <include layout="@layout/home_tool_bar"></include>
-
-        <FrameLayout
-            android:id="@+id/home_ll_main"
+        android:layout_height="match_parent">
+        <son.nt.dota2.customview.KenBurnsView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/home_kenburns"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@mipmap/layer_image">
 
-        </FrameLayout>
+            <include layout="@layout/home_tool_bar"></include>
 
-    </LinearLayout>
+            <FrameLayout
+                android:id="@+id/home_ll_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+
+
 
 
     <android.support.design.widget.NavigationView
-        app:theme="@style/ThemeOverlay.AppCompat.Light"
         android:id="@+id/home_navigation"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -35,7 +46,7 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/menu_home_drawer"
-        >
+        app:theme="@style/ThemeOverlay.AppCompat.Light">
 
     </android.support.design.widget.NavigationView>
 

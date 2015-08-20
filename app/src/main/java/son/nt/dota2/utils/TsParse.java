@@ -6,9 +6,11 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.HeroManager;
+import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.GalleryDto;
 import son.nt.dota2.dto.HeroEntry;
 
@@ -100,8 +102,34 @@ public class TsParse {
                 }
             }
         });
+    }
+    public static void getkensBurns () {
+        final List<String> listKens = new ArrayList<>();
+        try
+        {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Dota2BgDto");
+            query.whereNotEqualTo("group", "gif");
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> list, ParseException e) {
+                    if (e != null || list.size() == 0) {
+                        Logger.error(TAG, ">>>" + "Error getData nodata" + e.toString());
+                        return;
+                    }
+                    Logger.debug(TAG, ">>>" + "getData size:" + list.size());
+                    for (ParseObject p : list) {
 
+                        String linkGif = p.getString("link");
+                        listKens.add(linkGif);
+                    }
+                    ResourceManager.getInstance().listKenburns.clear();
+                    ResourceManager.getInstance().listKenburns.addAll(listKens);
 
+                }
+            });
 
+        } catch (Exception e) {
+
+        }
     }
 }

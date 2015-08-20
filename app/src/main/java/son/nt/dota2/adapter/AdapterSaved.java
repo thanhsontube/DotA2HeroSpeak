@@ -11,29 +11,31 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.ImageOptions;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
-import son.nt.dota2.data.SaveDto;
+import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * Created by 4210047 on 3/20/2015.
  */
 public class AdapterSaved extends RecyclerView.Adapter<AdapterSaved.Holder> {
     private Context context;
-    List<SaveDto> list;
+    List<SpeakDto> list;
     AQuery aq;
-    public AdapterSaved(Context context, List<SaveDto> list) {
+    public AdapterSaved(Context context, List<SpeakDto> list) {
         this.context = context;
         this.list = list;
         aq = new AQuery(context);
 
     }
 
-    public static class Holder extends RecyclerView.ViewHolder  implements View.OnClickListener {
+    public static class Holder extends RecyclerView.ViewHolder{
 
         TextView txtText;
         TextView txtNo;
@@ -43,11 +45,9 @@ public class AdapterSaved extends RecyclerView.Adapter<AdapterSaved.Holder> {
         View view;
         int holderId;
 
-        public Holder(View view, int viewType, IHolderListener callback) {
+        public Holder(View view, int viewType) {
             super(view);
-            this.mListener = callback;
             this.view = view;
-            this.view.setOnClickListener(this);
             holderId = viewType;
             txtNo = (TextView) view.findViewById(R.id.row_txt_no);
             txtText = (TextView) view.findViewById(R.id.row_text);
@@ -56,63 +56,58 @@ public class AdapterSaved extends RecyclerView.Adapter<AdapterSaved.Holder> {
             imgIcon = (ImageView) view.findViewById(R.id.row_img_more);
             imgHero = (ImageView) view.findViewById(R.id.row_img_saved_hero);
 
-            imgIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.onMoreClick(v, getPosition());
-                }
-            });
         }
 
-        @Override
-        public void onClick(View v) {
-            if (mListener != null) {
-                mListener.onClick(v, getPosition());
-            }
-        }
-        IHolderListener mListener;
-        public static interface IHolderListener {
-            void onClick(View v, int position);
-            void onMoreClick(View v, int position);
-        }
+
     }
 
     @Override
     public Holder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Holder holder = null;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view;
-        view = inflater.inflate(R.layout.row_saved, viewGroup, false);
-        holder = new Holder(view, viewType,listener);
-        return holder;
+        View view = inflater.inflate(R.layout.row_saved, viewGroup, false);
+        return new Holder(view, viewType);
     }
 
-    Holder.IHolderListener listener = new Holder.IHolderListener() {
-        @Override
-        public void onClick(View v, int position) {
-            if (listenerAdapter != null) {
-                listenerAdapter.onClick(position, list.get(position));
-            }
-
-        }
-
-        @Override
-        public void onMoreClick(View v, int position) {
-            if (listenerAdapter != null) {
-                createPopupMenu(v, position);
-            }
-        }
-    };
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
-        SaveDto dto = list.get(position);
-        holder.txtText.setText(dto.speakContent);
-        holder.txtTime.setText(dto.saveTime);
-        holder.txtNo.setText(dto.no);
-        ImageOptions options = new ImageOptions();
-        options.round = 90;
-        aq.id(holder.imgHero).image(dto.heroLink, options);
+    public void onBindViewHolder(Holder holder, final int position) {
+        SpeakDto dto = list.get(position);
+        holder.txtText.setText(dto.text);
+        holder.txtTime.setText(dto.voiceGroup);
+        holder.txtNo.setText("" + dto.no);
+        Glide.with(holder.imgHero.getContext()).load(HeroManager.getInstance().getHero(dto.heroId).avatarThumbnail)
+                .centerCrop()
+                .into(holder.imgHero);
+
+        Glide.with(holder.imgIcon.getContext()).load(dto.rivalImage)
+                .centerCrop()
+                .into(holder.imgIcon);
+
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list.get(position).position = position;
+                OttoBus.post(list.get(position));
+            }
+        });
+
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listenerAdapter != null) {
+                    listenerAdapter.onClick(position, list.get(position));
+                }
+            }
+        });
+        holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (listenerAdapter != null) {
+                    listenerAdapter.onLongClick(position, list.get(position));
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -120,7 +115,8 @@ public class AdapterSaved extends RecyclerView.Adapter<AdapterSaved.Holder> {
         return list.size();
     }
     public interface IAdapterCallback {
-        void onClick(int position, SaveDto dto);
+        void onClick(int position, SpeakDto dto);
+        void onLongClick (int position, SpeakDto dto);
         void onMenuClick(MsConst.MenuSelect action, int position);
     }
 

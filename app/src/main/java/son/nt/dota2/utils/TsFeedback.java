@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.support.v4.content.IntentCompat;
 import android.text.TextUtils;
 
+import son.nt.dota2.MsConst;
+
 public class TsFeedback {
     /**
      * send a email, using Gmail application;
@@ -56,6 +58,15 @@ public class TsFeedback {
         );
         i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.facebook.katana"));
         context.startActivity(i);
+    }
+
+    public static void shareApp (Context context) {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_TITLE, "Dota 2 Hero Speak");
+        i.putExtra(Intent.EXTRA_TEXT, MsConst.LINK_STORE);
+        context.startActivity(Intent.createChooser(i, "Share app via"));
+
     }
 
 }

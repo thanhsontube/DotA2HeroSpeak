@@ -2,64 +2,66 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="4dp"
     android:foreground="?android:attr/selectableItemBackground">
 
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/d_row_speak"
+        android:minHeight="70dp"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
         android:paddingLeft="16dp"
         android:paddingRight="8dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:background="@drawable/d_row_speak"
-        android:minHeight="70dp">
+        android:paddingTop="8dp">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/row_txt_no"
+                style="@style/txt_white_18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="99"
-                style="@style/txt_white_18"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:text="99" />
 
-            <ImageView
-                android:layout_marginLeft="8dp"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/row_img_saved_hero"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@mipmap/ic_launcher"
-                android:id="@+id/row_img_saved_hero"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:src="@mipmap/ic_launcher" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="8dp"
-                android:orientation="vertical"
-                android:layout_gravity="center_vertical">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/row_text"
+                    style="@style/txt_white_18"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="My List Has 5 names on it"
-                    style="@style/txt_white_18" />
+                    android:text="My List Has 5 names on it" />
 
                 <TextView
-                    android:layout_marginTop="4dp"
                     android:id="@+id/row_saved_time"
+                    style="@style/txt_gray_14"
+                    android:textColor="@color/md_yellow_200"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="12:12:12"
-                    style="@style/txt_white_14"
-                    android:textColor="@color/body_text_2"/>
+                     />
 
             </LinearLayout>
 
@@ -69,14 +71,14 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/row_img_more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@mipmap/ic_more" />
 
         </LinearLayout>

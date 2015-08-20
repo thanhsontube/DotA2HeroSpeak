@@ -50,6 +50,9 @@ public class CommentManager {
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
+                if (e != null) {
+                    return;
+                }
                 CommentDto commentDto;
                 List<CommentDto> list_ = new ArrayList<CommentDto>();
                 for (ParseObject p : list) {

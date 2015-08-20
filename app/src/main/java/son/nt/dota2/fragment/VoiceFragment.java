@@ -55,6 +55,11 @@ public class VoiceFragment extends AbsFragment {
     //MEDIA MUSIC service
     private ServiceMedia mediaService;
 
+    private RecyclerView recyclerView;
+    private AdapterVoice adapter;
+    private List<SpeakDto> list = new ArrayList<>();
+    private List<SpeakDto> listUsing = new ArrayList<>();
+
     public static VoiceFragment newInstance(String param1) {
         VoiceFragment fragment = new VoiceFragment();
         Bundle args = new Bundle();
@@ -122,10 +127,7 @@ public class VoiceFragment extends AbsFragment {
 
     }
 
-    private RecyclerView recyclerView;
-    private AdapterVoice adapter;
-    private List<SpeakDto> list = new ArrayList<>();
-    private List<SpeakDto> listUsing = new ArrayList<>();
+
 
     @Override
     public void initLayout(View view) {

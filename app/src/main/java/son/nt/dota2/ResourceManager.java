@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Environment;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import son.nt.dota2.loader.MyPath;
 import son.nt.dota2.loader.base.ContentManager;
@@ -31,6 +33,7 @@ public class ResourceManager {
 
 
     public String fileHeroList;
+    public List<String> listKenburns = new ArrayList<>();
 
 
     public ResourceManager(Context context) {

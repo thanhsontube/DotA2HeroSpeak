@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
@@ -21,18 +22,24 @@ import com.squareup.otto.Subscribe;
 
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
+import son.nt.dota2.ResourceManager;
 import son.nt.dota2.base.AActivity;
+import son.nt.dota2.customview.KenBurnsView;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.RolesFragment;
+import son.nt.dota2.fragment.SavedFragment;
 import son.nt.dota2.fragment.SearchableFragment;
+import son.nt.dota2.gridmenu.GridMenuDialog;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
+import son.nt.dota2.utils.TsFeedback;
 import son.nt.dota2.utils.TsGaTools;
 
 public class HomeActivity extends AActivity implements HomeFragment.OnFragmentInteractionListener,
-        MainFragment.OnFragmentInteractionListener, SearchableFragment.OnFragmentInteractionListener {
+        MainFragment.OnFragmentInteractionListener, SearchableFragment.OnFragmentInteractionListener, SavedFragment.OnFragmentInteractionListener {
 
     public static final String TAG = "HomeActivity";
     DrawerLayout drawerLayout;
@@ -41,6 +48,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     Toolbar toolbar;
     SearchView searchView;
     MenuItem menuSearch;
+    KenBurnsView kenBurnsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +57,14 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         initActionBar();
         initLayout();
         initListener();
+        updateKensburn();
         navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         handleSearch(getIntent());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private void initActionBar() {
@@ -75,6 +89,9 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
     private void initLayout() {
 
+        kenBurnsView = (KenBurnsView) findViewById(R.id.home_kenburns);
+
+
         navigationView = (NavigationView) findViewById(R.id.home_navigation);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.home_drawer_ll);
@@ -91,6 +108,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 menuItem.setChecked(true);
                 drawerLayout.closeDrawers();
+                updateKensburn();
 
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
@@ -100,9 +118,24 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
                         }
                         break;
                     case R.id.nav_roles:
-                        TsGaTools.trackPages("/Roles");
+                        TsGaTools.trackPages("/nav_roles");
                         showFragment(RolesFragment.newInstance("", ""), true);
                         break;
+                    case R.id.nav_playlist:
+                        TsGaTools.trackPages("/nav_playlist");
+                        showFragment(SavedFragment.newInstance("", ""), true);
+                        break;
+                    case R.id.nav_rate:
+                        TsGaTools.trackPages("/nav_rate");
+                        TsFeedback.rating(HomeActivity.this);
+
+                        break;
+                    case R.id.nav_share:
+                        TsGaTools.trackPages("/nav_share");
+                        TsFeedback.shareApp(HomeActivity.this);
+
+                        break;
+
                 }
                 return true;
             }
@@ -191,15 +224,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-//        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-//            return true;
-//        }
         int id = item.getItemId();
-//
-//        if (id == android.R.id.home) {
-//            getSafeFragmentManager().popBackStackImmediate();
-//        }
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -229,30 +254,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     @Subscribe
     public void handleAbility(HeroEntry heroEntry) {
         Logger.debug(TAG, ">>>" + "=========handleAbility:" + heroEntry.name);
-//        for (HeroEntry hero : HeroManager.getInstance().getHeroList().getListHeroes()) {
-//
-//            HTTPParseUtils.getInstance().withAbility(hero.heroId);
-//        }
-
-
-//        try {
-//            AObject heroSpeak = FileUtil.getObject(this, heroEntry.heroId);
-//            if (heroSpeak != null) {
-//                Logger.debug(TAG, ">>>" + "heroSpeak != null");
-//                HeroSpeakSaved heroSpeakSaved = (HeroSpeakSaved) heroSpeak;
-//                HeroManager.getInstance().getHero(heroEntry.heroId).listSpeaks.clear();
-//                HeroManager.getInstance().getHero(heroEntry.heroId).listSpeaks.addAll(heroSpeakSaved.listSpeaks);
-//            } else {
-//                HTTPParseUtils.getInstance().withVoices(heroEntry.heroId);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        HTTPParseUtils.getInstance().getAbilityFromServer(heroEntry.heroId);
-//        showFragment(VoiceFragment.newInstance(heroEntry.heroId, ""), true);
-
         Intent intent = new Intent(this, HeroActivity.class);
         intent.putExtra(MsConst.EXTRA_HERO, heroEntry);
         startActivity(intent);
@@ -264,4 +265,24 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         handleSearch(intent);
     }
 
+    @Override
+    public void onSavedItemLongClick(SpeakDto dto) {
+
+        FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
+        Fragment f = getSafeFragmentManager().findFragmentByTag("long-click");
+        if (f != null) {
+            ft.remove(f);
+        }
+        GridMenuDialog dialog = GridMenuDialog.newInstance(dto);
+        ft.add(dialog, "long-click");
+        ft.commit();
+    }
+
+    private void updateKensburn () {
+        if (ResourceManager.getInstance().listKenburns.size() > 0) {
+            kenBurnsView.setResourceUrl(ResourceManager.getInstance().listKenburns);
+            kenBurnsView.startLayoutAnimation();
+        }
+
+    }
 }

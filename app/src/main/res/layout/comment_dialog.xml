@@ -23,10 +23,6 @@
         android:gravity="center"
         android:text="Comment by Son nt 1" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Like it ?" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/cmt_text_input_layout"

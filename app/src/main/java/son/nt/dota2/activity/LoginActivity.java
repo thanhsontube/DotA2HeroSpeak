@@ -19,6 +19,7 @@ import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.fragment.LoginFragment;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsParse;
 
 public class LoginActivity extends AActivity {
 
@@ -40,6 +41,9 @@ public class LoginActivity extends AActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         HeroManager.getInstance().initDataSelf();
+
+        //get kensburn
+        TsParse.getkensBurns();
         HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
             @Override
             public void onFinish() {

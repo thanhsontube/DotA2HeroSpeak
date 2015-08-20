@@ -12,21 +12,25 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.squareup.otto.Subscribe;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterSaved;
 import son.nt.dota2.base.AFragment;
-import son.nt.dota2.data.SaveDto;
 import son.nt.dota2.data.TsSqlite;
+import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.ottobus_entry.GoSaved;
 import son.nt.dota2.service.ServiceMedia;
-import son.nt.dota2.utils.FileUtil;
+import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsLog;
 
 /**
@@ -49,8 +53,9 @@ public class SavedFragment extends AFragment {
     private String mParam2;
 
     private RecyclerView recyclerView;
-    private List<SaveDto> list;
     private AdapterSaved adapter;
+
+    private List<SpeakDto> listSave = new ArrayList<>();
 
     TsLog log = new TsLog(TAG);
 
@@ -99,10 +104,21 @@ public class SavedFragment extends AFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getSafeActionBar().setTitle("My Playlist");
+        OttoBus.register(this);
         initData();
         initLayout(view);
         initListener();
         updateLayout();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        listSave.clear();
+        listSave.addAll(TsSqlite.getInstance().getPlaylist());
+        adapter.notifyDataSetChanged();
+
     }
 
     private void initLayout (View view) {
@@ -110,7 +126,7 @@ public class SavedFragment extends AFragment {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new AdapterSaved(context, list);
+        adapter = new AdapterSaved(context, listSave);
         recyclerView.setAdapter(adapter);
 
     }
@@ -118,28 +134,23 @@ public class SavedFragment extends AFragment {
     private void initListener() {
         adapter.setOnCallback(new AdapterSaved.IAdapterCallback() {
             @Override
-            public void onClick(int position, SaveDto dto) {
-                Log.v("", "log>>>" + "Save F click:" + position);
+            public void onClick(int position, SpeakDto dto) {
+                Toast.makeText(getActivity(), "1 lick:" + dto.heroId, Toast.LENGTH_SHORT).show();
                 if (mediaService != null) {
-                    mediaService.play(dto.speakLink, "");
+                    mediaService.play(dto.link, dto.heroId);
                 }
+            }
 
+            @Override
+            public void onLongClick(int position, SpeakDto dto) {
+                Toast.makeText(getActivity(), "long click:" + dto.link, Toast.LENGTH_SHORT).show();
+                if (mListener != null) {
+                    mListener.onSavedItemLongClick(dto);
+                }
             }
 
             @Override
             public void onMenuClick(MsConst.MenuSelect action, int position) {
-                SaveDto dto = list.get(position);
-                switch (action) {
-                    case FAVORITE:
-                        sqlite.remove(list.get(position));
-                        list.remove(position);
-                        adapter.notifyDataSetChanged();
-                        break;
-                    case COPY:
-                        FileUtil.copy(context, dto.speakContent, dto.speakContent);
-                        break;
-                }
-
 
             }
         });
@@ -147,7 +158,7 @@ public class SavedFragment extends AFragment {
     }
 
     private void initData() {
-        list = TsSqlite.getInstance().getList();
+
 
     }
 
@@ -155,12 +166,6 @@ public class SavedFragment extends AFragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -189,7 +194,8 @@ public class SavedFragment extends AFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
+         void onFragmentInteraction(Uri uri);
+         void onSavedItemLongClick (SpeakDto dto);
     }
 
     //MEDIA MUSIC service
@@ -215,9 +221,16 @@ public class SavedFragment extends AFragment {
 
     @Override
     public void onDestroy() {
+        OttoBus.unRegister(this);
         super.onDestroy();
         if (mediaService != null) {
             context.unbindService(serviceConnectionMedia);
         }
+    }
+    @Subscribe
+    public void onUpdate (GoSaved dto) {
+        listSave.clear();
+        listSave.addAll(TsSqlite.getInstance().getPlaylist());
+        adapter.notifyDataSetChanged();
     }
 }

@@ -81,11 +81,22 @@ public class GridMenuDialog extends DialogFragment {
         list.add(new GridMenuItem("Set Alarm ", R.drawable.ic_alarm_48));
         list.add(new GridMenuItem("Comments", R.drawable.ic_comment_48));
         list.add(new GridMenuItem("Copy Text", R.drawable.ic_copy_48));
-        list.add(new GridMenuItem("Like", R.drawable.ic_start_off_48));
+        GridMenuItem playList = new GridMenuItem("Add to Playlist", R.drawable.ic_start_off_48);
+        playList.tempIcon = R.drawable.ic_start_on_48;
+        playList.tempTitle = "Remove out Playlist";
+        list.add(playList);
         list.add(new GridMenuItem("Facebook Share", R.drawable.ic_facebook_48));
         list.add(new GridMenuItem("Other Share", R.drawable.ic_share_48));
 
         adapter = new AdapterGridMenu(getActivity(), list, speakDto);
+        adapter.setOnCallback(new AdapterGridMenu.IAdapterCallback() {
+            @Override
+            public void onClick(int position, GridMenuItem dto) {
+                if (dto.title.equals("Add to Playlist")) {
+                    dismiss();
+                }
+            }
+        });
         recyclerView.setAdapter(adapter);
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setView(view).create();

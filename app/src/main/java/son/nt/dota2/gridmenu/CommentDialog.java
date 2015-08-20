@@ -26,6 +26,7 @@ import son.nt.dota2.ResourceManager;
 import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.FacebookManager;
+import son.nt.dota2.ottobus_entry.GoChatFragment;
 import son.nt.dota2.utils.OttoBus;
 
 /**
@@ -124,7 +125,7 @@ public class CommentDialog extends DialogFragment {
                 } else {
                     Toast.makeText(ResourceManager.getInstance().getContext(), "Comment success !", Toast.LENGTH_SHORT).show();
                     CommentManager.getInstance().updateHistory();
-                    OttoBus.post(d);
+                    OttoBus.post(new GoChatFragment(d.getSpeakDto().heroId));
                 }
 
             }
