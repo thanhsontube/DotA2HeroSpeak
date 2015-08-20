@@ -17,9 +17,15 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.share.widget.LikeView;
 import com.squareup.otto.Subscribe;
 
+import son.nt.dota2.FacebookManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
@@ -49,6 +55,9 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     SearchView searchView;
     MenuItem menuSearch;
     KenBurnsView kenBurnsView;
+    ImageView avatar;
+    TextView txtFromName;
+    LikeView likeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +107,27 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.action_clear, R.string.action_settings);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+
+        avatar = (ImageView) findViewById(R.id.nav_avatar);
+        txtFromName = (TextView) findViewById(R.id.nav_fromName);
+        if (FacebookManager.getInstance().isLogin()) {
+            Glide.with(this).load(FacebookManager.getInstance().getProfile().getProfilePictureUri(100,100).toString())
+                    .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
+            txtFromName.setText(FacebookManager.getInstance().getProfile().getName());
+        } else {
+            txtFromName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(LoginActivity.getIntent(HomeActivity.this));
+                }
+            });
+        }
+
+        likeView = (LikeView) findViewById(R.id.nav_likeview);
+        likeView.setObjectIdAndType(MsConst.FB_ID_POST_TO, LikeView.ObjectType.PAGE);
+        likeView.setLikeViewStyle(LikeView.Style.BOX_COUNT);
+
+
     }
 
     private void initListener() {
