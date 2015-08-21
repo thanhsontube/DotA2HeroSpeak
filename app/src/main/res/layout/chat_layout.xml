@@ -10,12 +10,27 @@
         android:layout_height="match_parent"
         android:background="@color/md_deep_purple_500"
         android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Comments" />
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Comments" />
+            <ImageView
+                android:layout_margin="8dp"
+                android:visibility="gone"
+                android:id="@+id/chat_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/com_facebook_close"/>
+        </LinearLayout>
+
+
 
         <FrameLayout
             android:layout_width="match_parent"

@@ -141,4 +141,16 @@ public class HeroManager extends AObject{
             e.printStackTrace();
         }
     }
+
+    public List<HeroEntry> getHeroesByRole (String role) {
+        List<HeroEntry> list = new ArrayList<>();
+        for (HeroEntry p : listHeroes) {
+            for (String s : p.roles) {
+                if (role.equalsIgnoreCase(s)) {
+                    list.add(p);
+                }
+            }
+        }
+        return list;
+    }
 }

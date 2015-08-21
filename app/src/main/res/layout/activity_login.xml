@@ -43,6 +43,12 @@
             android:id="@+id/push_common"
             android:text="Test Push to common"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/test_roles"
+            android:text="Roles"/>
+
 
 
 

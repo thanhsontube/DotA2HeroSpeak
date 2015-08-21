@@ -10,6 +10,8 @@
     card:contentPadding="8dp">
 
     <LinearLayout
+        android:id="@+id/row_roles_ll"
+        android:background="?selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

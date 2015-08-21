@@ -81,6 +81,14 @@ public class ChatDialog extends DialogFragment {
 
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.chat_layout, null);
+        View close = view.findViewById(R.id.chat_close);
+        close.setVisibility(View.VISIBLE);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         recyclerView = (RecyclerView) view.findViewById(R.id.chat_recycle_view);
         viewLoading = view.findViewById(R.id.chat_loading);
         viewRefresh = (TextView) view.findViewById(R.id.chat_refresh);

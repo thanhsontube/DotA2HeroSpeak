@@ -15,6 +15,8 @@ import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
+import son.nt.dota2.ottobus_entry.GoAdapterRoles;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * Created by Sonnt on 7/14/15.
@@ -36,11 +38,18 @@ public class AdapterRoles extends RecyclerView.Adapter<AdapterRoles.Holder> {
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        RoleDto dto = list.get(position);
+        final RoleDto dto = list.get(position);
         holder.txtName.setText(dto.name);
         holder.txtSlogan.setText(dto.slogan);
         Glide.with(holder.img.getContext()).load(dto.linkIcon).diskCacheStrategy(DiskCacheStrategy.ALL)
         .fitCenter().into(holder.img);
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OttoBus.post(new GoAdapterRoles(dto.name.trim()));
+
+            }
+        });
 
 
     }
@@ -54,9 +63,9 @@ public class AdapterRoles extends RecyclerView.Adapter<AdapterRoles.Holder> {
         ImageView img;
         TextView txtName, txtSlogan;
         View view;
-        public Holder(View itemView) {
-            super(itemView);
-            this.view = itemView;
+        public Holder(View view) {
+            super(view);
+            this.view = view.findViewById(R.id.row_roles_ll);
             img = (ImageView) view.findViewById(R.id.row_roles_icon);
             txtName = (TextView) view.findViewById(R.id.row_roles_name);
             txtSlogan = (TextView) view.findViewById(R.id.row_roles_slogan);

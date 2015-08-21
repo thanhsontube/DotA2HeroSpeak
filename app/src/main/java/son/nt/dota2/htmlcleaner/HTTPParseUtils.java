@@ -234,6 +234,13 @@ public class HTTPParseUtils {
                     heroEntry.roles.clear();
                     heroEntry.lore = entity.lore;
                     heroEntry.roles.addAll(entity.roles);
+                    Logger.debug(TAG, ">>>" + "----hero:" + entity.heroId);
+                    for (String s : entity.roles) {
+                        Logger.debug(TAG, ">>>" + "role:" + s);
+                    }
+                    if (listener != null) {
+                        listener.onFinish();
+                    }
 //                    updateHeroRole(entity);
 //                    updateStep2(entity);
                 }
@@ -414,9 +421,10 @@ public class HTTPParseUtils {
 
         for (HeroRoleDto d : list) {
             ParseObject p = new ParseObject(HeroRoleDto.class.getSimpleName());
-            p.put("heroId",d.heroId);
+            p.put("heroID",d.heroId);
             p.put("roleName",d.roleName);
             p.saveInBackground();
+            Logger.debug(TAG, ">>>" + "Success up roles:" + d.heroId + ";role:" + d.roleName);
 
 
         }

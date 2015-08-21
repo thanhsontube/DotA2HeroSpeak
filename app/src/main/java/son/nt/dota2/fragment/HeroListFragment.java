@@ -170,29 +170,6 @@ public class HeroListFragment extends AFragment {
         void heroSelected(HeroEntry HeroEntry);
     }
 
-//    private List<HeroEntry> getListHeros(String group) {
-//        List<HeroEntry> list = new ArrayList<>();
-//        if (group.equals(MsConst.GROUP_STR)) {
-//            for (HeroEntry dto : heroList.getListHeroes()) {
-//                if (dto.group.equals(MsConst.GROUP_STR)) {
-//                    list.add(dto);
-//                }
-//            }
-//        } else if (group.equals(MsConst.GROUP_AGI)) {
-//            for (HeroEntry dto : heroList.getListHeroes()) {
-//                if (dto.group.equals(MsConst.GROUP_AGI)) {
-//                    list.add(dto);
-//                }
-//            }
-//        } else if (group.equals(MsConst.GROUP_INTEL)) {
-//            for (HeroEntry dto : heroList.getListHeroes()) {
-//                if (dto.group.equals(MsConst.GROUP_INTEL)) {
-//                    list.add(dto);
-//                }
-//            }
-//        }
-//        return list;
-//    }
 
     @Subscribe
     public void updateAdapter (GalleryDto galleryDto) {

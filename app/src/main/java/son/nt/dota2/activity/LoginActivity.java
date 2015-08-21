@@ -37,6 +37,7 @@ public class LoginActivity extends AActivity {
 
     List<HeroEntry> listTemp = new ArrayList<>();
     boolean isAbi = false;
+    boolean isRoles = false;
 
     @Override
     protected int getFragmentContainerId() {
@@ -71,6 +72,12 @@ public class LoginActivity extends AActivity {
                         isAbi = false;
                     }
                 }
+
+                if (isRoles) {
+
+                }
+
+
             }
         });
         findViewById(R.id.pre_heroList).setOnClickListener(new View.OnClickListener() {
@@ -121,6 +128,30 @@ public class LoginActivity extends AActivity {
                 push.setChannel(MsConst.CHANNEL_COMMON);
                 push.setMessage("Test push common");
                 push.sendInBackground();
+            }
+        });
+
+        findViewById(R.id.test_roles).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                for (HeroEntry p : HeroManager.getInstance().getAgiHeroes()) {
+//                    Logger.debug(TAG, ">>>" + "----hero:" + p.heroId);
+//                    for (String s : p.roles) {
+//                        Logger.debug(TAG, ">>>" + "role:" + s);
+//                    }
+//                }
+
+//                for (HeroEntry k : HeroManager.getInstance().getAgiHeroes()) {
+//                    HTTPParseUtils.getInstance().withHeroName(k.heroId);
+//                }
+//
+//                for (HeroEntry k : HeroManager.getInstance().getIntelHeroes()) {
+//                    HTTPParseUtils.getInstance().withHeroName(k.heroId);
+//                }
+
+                TsParse.getHeroesRoles();
+
+
             }
         });
 

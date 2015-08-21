@@ -2,6 +2,7 @@ package son.nt.dota2.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,13 +10,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.R;
+import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.AbsFragment;
+import son.nt.dota2.dto.save.SaveRoles;
+import son.nt.dota2.htmlcleaner.role.RoleDto;
+import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 
 /**
@@ -37,6 +52,7 @@ public class IntroFragment extends AbsFragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    LinearLayout linearLayout;
 
     /**
      * Use this factory method to create a new instance of
@@ -106,11 +122,16 @@ public class IntroFragment extends AbsFragment {
 
     @Override
     public void initData() {
+        update();
 
     }
 
     private TextView txtLore;
     private ImageView img;
+    View view;
+    TextView txtRoles;
+    ImageView imgRole;
+    List<RoleDto> list = new ArrayList<RoleDto>();
 
     @Override
     public void initLayout(View view) {
@@ -123,10 +144,93 @@ public class IntroFragment extends AbsFragment {
         }
         img = (ImageView) view.findViewById(R.id.intro_image);
         Glide.with(getActivity()).load(HeroManager.getInstance().getHero(heroId).avatarThumbnail).fitCenter().into(img);
+
+        linearLayout = (LinearLayout) view.findViewById(R.id.intro_ll_roles);
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        try {
+            AObject aObject = FileUtil.getObject(getActivity(), SaveRoles.class.getSimpleName());
+            if (aObject != null) {
+                SaveRoles saveRoles = (SaveRoles) aObject;
+                list.clear();
+                list.addAll(saveRoles.list);
+            }
+
+        } catch (Exception e) {
+
+        }
+
+        for (String s: HeroManager.getInstance().getHero(heroId).roles) {
+            view = layoutInflater.inflate(R.layout.row_intro_role, null);
+            txtRoles = (TextView) view.findViewById(R.id.row_intro_name);
+            txtRoles.setText(s);
+            imgRole = (ImageView) view.findViewById(R.id.row_intro_image);
+
+            if (list.size() > 0) {
+                imgRole.setVisibility(View.VISIBLE);
+                Glide.with(imgRole.getContext()).load(getImg(s)).diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .fitCenter().into(imgRole);
+            } else {
+                imgRole.setVisibility(View.GONE);
+            }
+
+
+            linearLayout.addView(view);
+        }
+    }
+
+    private String getImg (String role) {
+        for (RoleDto d: list) {
+            if (d.name.trim().toLowerCase().equals(role.trim().toLowerCase())) {
+                return d.linkIcon;
+            }
+        }
+        return null;
     }
 
     @Override
     public void initListener() {
+
+    }
+
+    private void update() {
+        try
+        {
+            AObject aObject = FileUtil.getObject(getActivity(), SaveRoles.class.getSimpleName());
+            if (aObject != null) {
+                SaveRoles saveRoles = (SaveRoles) aObject;
+
+                return;
+            }
+            ParseQuery<ParseObject> query = ParseQuery.getQuery(RoleDto.class.getSimpleName());
+            query.addAscendingOrder("no");
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> l, ParseException e) {
+                    if (e != null) {
+                        return;
+                    }
+                    List<RoleDto> list = new ArrayList<RoleDto>();
+                    RoleDto dto;
+                    for (ParseObject p :l) {
+                        dto = new RoleDto();
+                        dto.name = p.getString("name");
+                        dto.slogan = p.getString("slogan");
+                        dto.linkIcon = p.getString("linkIcon");
+                        list.add(dto);
+                    }
+                    try {
+                        FileUtil.saveObject(getActivity(),new SaveRoles(list),SaveRoles.class.getSimpleName());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
+                }
+            });
+
+        } catch (Exception e) {
+
+        }
 
     }
 }

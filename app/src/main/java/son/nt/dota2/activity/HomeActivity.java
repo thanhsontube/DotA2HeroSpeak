@@ -42,10 +42,12 @@ import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
+import son.nt.dota2.fragment.RoleListFragment;
 import son.nt.dota2.fragment.RolesFragment;
 import son.nt.dota2.fragment.SavedFragment;
 import son.nt.dota2.fragment.SearchableFragment;
 import son.nt.dota2.gridmenu.GridMenuDialog;
+import son.nt.dota2.ottobus_entry.GoAdapterRoles;
 import son.nt.dota2.setting.SettingActivity;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
@@ -73,6 +75,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        OttoBus.register(this);
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -102,6 +105,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        OttoBus.unRegister(this);
     }
 
     private void initActionBar() {
@@ -352,17 +356,17 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        OttoBus.register(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        OttoBus.unRegister(this);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        OttoBus.register(this);
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        OttoBus.unRegister(this);
+//    }
 
     @Subscribe
     public void handleAbility(HeroEntry heroEntry) {
@@ -407,5 +411,10 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
     public static Intent getIntent (Context context) {
         return new Intent(context, HomeActivity.class);
+    }
+
+    @Subscribe
+    public void fromAdapterRoles (GoAdapterRoles dto) {
+        showFragment(RoleListFragment.newInstance(dto.role), true);
     }
 }

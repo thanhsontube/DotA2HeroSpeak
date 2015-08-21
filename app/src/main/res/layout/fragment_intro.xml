@@ -11,11 +11,29 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingTop="24dp">
-        <ImageView
-            android:id="@+id/intro_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/cheese_1"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:id="@+id/intro_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/cheese_1"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_margin="8dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:id="@+id/intro_ll_roles"/>
+        </LinearLayout>
+
+
+
 
         <TextView
             style="@style/txt_white_18"

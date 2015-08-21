@@ -7,6 +7,7 @@ import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,8 @@ import son.nt.dota2.ResourceManager;
 import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.GalleryDto;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.HeroRoleDto;
+import son.nt.dota2.dto.HeroSavedDto;
 
 /**
  * Created by Sonnt on 8/18/15.
@@ -149,5 +152,32 @@ public class TsParse {
 
         p.setMessage(s.toString());
         p.sendInBackground();
+    }
+
+    public static  void getHeroesRoles () {
+        Logger.debug(TAG, ">>>" + "=====getHeroesRoles");
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(HeroRoleDto.class.getSimpleName());
+        query.setLimit(400);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (e != null) {
+                    return;
+                }
+                for (ParseObject p : list) {
+                    String heroID = p.getString("heroID");
+                    String role = p.getString("roleName");
+                    HeroManager.getInstance().getHero(heroID).roles.add(role);
+
+                }
+                Logger.error(TAG, ">>>" + "---finsh getHeroesRoles");
+                try {
+                    FileUtil.saveObject(ResourceManager.getInstance().getContext(), new HeroSavedDto(HeroManager.getInstance().listHeroes),
+                            HeroSavedDto.class.getSimpleName());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
     }
 }

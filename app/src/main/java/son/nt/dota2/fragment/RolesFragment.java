@@ -64,6 +64,8 @@ public class RolesFragment extends AbsFragment {
         getSafeActionBar().setTitle("Hero Roles");
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -142,4 +144,6 @@ public class RolesFragment extends AbsFragment {
         }
 
     }
+
+
 }
