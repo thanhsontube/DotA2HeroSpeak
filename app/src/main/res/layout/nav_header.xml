@@ -20,7 +20,7 @@
 
         <com.facebook.share.widget.LikeView
             android:layout_marginLeft="16dp"
-            android:id="@+id/nav_likeview"
+            android:id="@+id/nav_like_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical" />

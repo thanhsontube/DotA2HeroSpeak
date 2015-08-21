@@ -35,6 +35,11 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="30dp"
             android:layout_marginTop="30dp" />
+        <com.facebook.share.widget.LikeView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_like_view"/>
 
         <TextView
             android:background="?selectableItemBackground"

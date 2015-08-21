@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -111,7 +113,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         avatar = (ImageView) findViewById(R.id.nav_avatar);
         txtFromName = (TextView) findViewById(R.id.nav_fromName);
         if (FacebookManager.getInstance().isLogin()) {
-            Glide.with(this).load(FacebookManager.getInstance().getProfile().getProfilePictureUri(100,100).toString())
+            Glide.with(this).load(FacebookManager.getInstance().getProfile().getProfilePictureUri(100, 100).toString())
                     .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
             txtFromName.setText(FacebookManager.getInstance().getProfile().getName());
         } else {
@@ -123,22 +125,31 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
             });
         }
 
-        likeView = (LikeView) findViewById(R.id.nav_likeview);
+        likeView = (LikeView)findViewById(R.id.nav_like_view);
         likeView.setObjectIdAndType(MsConst.FB_ID_POST_TO, LikeView.ObjectType.PAGE);
-        likeView.setLikeViewStyle(LikeView.Style.BOX_COUNT);
 
 
     }
+
+    Handler handler = new Handler();
 
     private void initListener() {
 
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                menuItem.setChecked(true);
-                drawerLayout.closeDrawers();
+            public boolean onNavigationItemSelected(final MenuItem menuItem) {
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawerLayout.closeDrawers();
+                        menuItem.setChecked(true);
+                    }
+                }, 250L);
                 updateKensburn();
+                FragmentManager fm = getSafeFragmentManager();
+                Fragment f = null;
 
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
@@ -149,11 +160,39 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
                         break;
                     case R.id.nav_roles:
                         TsGaTools.trackPages("/nav_roles");
-                        showFragment(RolesFragment.newInstance("", ""), true);
+                        if (mFragmentTagStack.size() > 0) {
+                            //check if current position is same as new position, do not reload fragment
+                            Fragment fTop = fm.findFragmentByTag(mFragmentTagStack.peek());
+                            if (!(fTop instanceof RolesFragment)) {
+                                while (mFragmentTagStack.size() > 0) {
+                                    getSupportFragmentManager().popBackStackImmediate();
+                                }
+                                f = RolesFragment.newInstance("", "");
+                                showFragment(f, false);
+                            }
+                        } else {
+                            f = RolesFragment.newInstance("", "");
+                            showFragment(f, false);
+                        }
+
+
                         break;
                     case R.id.nav_playlist:
                         TsGaTools.trackPages("/nav_playlist");
-                        showFragment(SavedFragment.newInstance("", ""), true);
+                        if (mFragmentTagStack.size() > 0) {
+                            //check if current position is same as new position, do not reload fragment
+                            Fragment fTop = fm.findFragmentByTag(mFragmentTagStack.peek());
+                            if (!(fTop instanceof SavedFragment)) {
+                                while (mFragmentTagStack.size() > 0) {
+                                    getSupportFragmentManager().popBackStackImmediate();
+                                }
+                                f = SavedFragment.newInstance("", "");
+                                showFragment(f, true);
+                            }
+                        } else {
+                            f = SavedFragment.newInstance("", "");
+                            showFragment(f, true);
+                        }
                         break;
                     case R.id.nav_rate:
                         TsGaTools.trackPages("/nav_rate");
@@ -174,7 +213,16 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
             @Override
             public void onClick(View v) {
                 if (mFragmentTagStack.size() > 0) {
-                    getSafeFragmentManager().popBackStackImmediate();
+                    Fragment fTop = getSafeFragmentManager().findFragmentByTag(mFragmentTagStack.peek());
+                    //need to list all Fragment Called from menu to enable menu icon
+                    if(fTop instanceof RolesFragment || fTop instanceof SavedFragment) {
+
+                        drawerLayout.openDrawer(Gravity.LEFT);
+                    } else {
+
+                        getSafeFragmentManager().popBackStackImmediate();
+                    }
+
                 } else {
                     drawerLayout.openDrawer(Gravity.LEFT);
                 }
@@ -192,18 +240,21 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     public void onBackStackChanged() {
         super.onBackStackChanged();
         if (mFragmentTagStack.size() > 0) {
-            if (menuSearch != null) {
-//                menuSearch.setVisible(false);
+
+            Fragment fTop = getSafeFragmentManager().findFragmentByTag(mFragmentTagStack.peek());
+            //need to list all Fragment Called from menu to enable menu icon
+            if(fTop instanceof RolesFragment || fTop instanceof SavedFragment) {
+                actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            } else {
+                actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
             }
-            actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         } else {
-            if (menuSearch != null) {
-//                menuSearch.setVisible(true);
-            }
             setTitle(getString(R.string.app_name));
-            navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+//            navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
             actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
@@ -308,7 +359,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         ft.commit();
     }
 
-    private void updateKensburn () {
+    private void updateKensburn() {
         if (ResourceManager.getInstance().listKenburns.size() > 0) {
             kenBurnsView.setResourceUrl(ResourceManager.getInstance().listKenburns);
             kenBurnsView.startLayoutAnimation();

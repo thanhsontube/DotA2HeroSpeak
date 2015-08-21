@@ -24,9 +24,11 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
+import com.facebook.share.widget.LikeView;
 
 import java.security.MessageDigest;
 
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.HomeActivity;
 import son.nt.dota2.base.AFragment;
@@ -124,6 +126,11 @@ public class LoginFragment extends AFragment {
             }
         };
         txtGuest = (TextView) view.findViewById(R.id.skip_login_button);
+
+        LikeView likeView = (LikeView)view.findViewById(R.id.login_like_view);
+        likeView.setLikeViewStyle(LikeView.Style.STANDARD);
+        likeView.setObjectIdAndType(MsConst.FB_ID_POST_TO, LikeView.ObjectType.PAGE);
+        likeView.setFragment(this);
     }
 
     @Override
