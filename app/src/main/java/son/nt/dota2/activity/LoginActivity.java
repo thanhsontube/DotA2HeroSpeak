@@ -41,13 +41,11 @@ public class LoginActivity extends AActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         HeroManager.getInstance().initDataSelf();
-
         //get kensburn
         TsParse.getkensBurns();
         HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
             @Override
             public void onFinish() {
-//                Toast.makeText(getApplicationContext(), "Finish>>>>", Toast.LENGTH_SHORT).show();
                 if (isAbi) {
                     Logger.debug(TAG, ">>>" + "Abi done:" + listTemp.get(listTemp.size() - 1).heroId + ";pos:" + listTemp.size());
                     listTemp.remove(listTemp.size() - 1);
@@ -107,6 +105,11 @@ public class LoginActivity extends AActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+//        if (FacebookManager.getInstance().isLogin()) {
+//            startActivity(HomeActivity.getIntent(this));
+//            finish();
+//        }
 
 //        if (BuildConfig.DEBUG) {
 //            startActivity(new Intent(this, HomeActivity.class));

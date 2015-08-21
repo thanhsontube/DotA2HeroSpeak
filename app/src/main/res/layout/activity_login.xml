@@ -36,6 +36,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/pre_hero_ability"
             android:text="Pre Hero Ability"/>
+
+
     </LinearLayout>
 
 </FrameLayout>

@@ -15,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
@@ -135,7 +134,6 @@ public class SavedFragment extends AFragment {
         adapter.setOnCallback(new AdapterSaved.IAdapterCallback() {
             @Override
             public void onClick(int position, SpeakDto dto) {
-                Toast.makeText(getActivity(), "1 lick:" + dto.heroId, Toast.LENGTH_SHORT).show();
                 if (mediaService != null) {
                     mediaService.play(dto.link, dto.heroId);
                 }
@@ -143,7 +141,6 @@ public class SavedFragment extends AFragment {
 
             @Override
             public void onLongClick(int position, SpeakDto dto) {
-                Toast.makeText(getActivity(), "long click:" + dto.link, Toast.LENGTH_SHORT).show();
                 if (mListener != null) {
                     mListener.onSavedItemLongClick(dto);
                 }

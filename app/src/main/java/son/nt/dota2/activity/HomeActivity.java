@@ -24,6 +24,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.facebook.share.widget.LikeView;
 import com.squareup.otto.Subscribe;
 
@@ -60,11 +65,30 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     ImageView avatar;
     TextView txtFromName;
     LikeView likeView;
+    CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        callbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                if (likeView != null) {
+                }
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+
+            }
+        });
         initActionBar();
         initLayout();
         initListener();
@@ -124,11 +148,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
                 }
             });
         }
-
-        likeView = (LikeView)findViewById(R.id.nav_like_view);
-        likeView.setObjectIdAndType(MsConst.FB_ID_POST_TO, LikeView.ObjectType.PAGE);
-
-
     }
 
     Handler handler = new Handler();
@@ -215,7 +234,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
                 if (mFragmentTagStack.size() > 0) {
                     Fragment fTop = getSafeFragmentManager().findFragmentByTag(mFragmentTagStack.peek());
                     //need to list all Fragment Called from menu to enable menu icon
-                    if(fTop instanceof RolesFragment || fTop instanceof SavedFragment) {
+                    if (fTop instanceof RolesFragment || fTop instanceof SavedFragment) {
 
                         drawerLayout.openDrawer(Gravity.LEFT);
                     } else {
@@ -243,7 +262,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
             Fragment fTop = getSafeFragmentManager().findFragmentByTag(mFragmentTagStack.peek());
             //need to list all Fragment Called from menu to enable menu icon
-            if(fTop instanceof RolesFragment || fTop instanceof SavedFragment) {
+            if (fTop instanceof RolesFragment || fTop instanceof SavedFragment) {
                 actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             } else {
@@ -269,10 +288,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setQueryHint(getString(R.string.action_search_hero));
-//        if (mFragmentTagStack.size() > 0) {
-//            menuSearch.setVisible(false);
-//        } else {
-//            menuSearch.setVisible(true);
 //        }
         return true;
     }
@@ -365,5 +380,15 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
             kenBurnsView.startLayoutAnimation();
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public static Intent getIntent (Context context) {
+        return new Intent(context, HomeActivity.class);
     }
 }

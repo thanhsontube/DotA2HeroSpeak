@@ -28,6 +28,7 @@ import com.facebook.share.widget.LikeView;
 
 import java.security.MessageDigest;
 
+import son.nt.dota2.FacebookManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.HomeActivity;
@@ -137,6 +138,10 @@ public class LoginFragment extends AFragment {
     public void onResume() {
         super.onResume();
         updateUI();
+        if (FacebookManager.getInstance().isLogin()) {
+            startActivity(HomeActivity.getIntent(getActivity()));
+            getActivity().finish();
+        }
     }
 
     private void updateUI() {
@@ -154,7 +159,8 @@ public class LoginFragment extends AFragment {
         txtGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), HomeActivity.class));
+                startActivity(HomeActivity.getIntent(getActivity()));
+                getActivity().finish();
             }
         });
 
