@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.melnykov.fab.FloatingActionButton;
 import com.squareup.otto.Subscribe;
 
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.HeroManager;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterVoice;
 import son.nt.dota2.base.AObject;
@@ -39,8 +41,10 @@ import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.NetworkUtils;
 import son.nt.dota2.utils.OttoBus;
+import son.nt.dota2.utils.PreferenceUtil;
 
 public class VoiceFragment extends AbsFragment {
+    public static final int MAX = 15;
     private static final String ARG_PARAM1 = "param1";
     private static final String TAG = "VoiceFragment";
 
@@ -82,6 +86,22 @@ public class VoiceFragment extends AbsFragment {
         OttoBus.register(this);
         getActivity().bindService(ServiceMedia.getIntentService(getActivity()), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
         getActivity().bindService(DownloadService.getIntent(getActivity()), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
+        int count = PreferenceUtil.getPreference(getActivity(), MsConst.KEY_HELP, 0);
+
+        if (count == 0 || count > MAX) {
+            MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                    .positiveText("Got it")
+                    .title("Long click into every row to discover lots of things \n\rGo to Menu >> Setting  to Enable/Disable Notification from app")
+                    .build();
+            materialDialog.show();
+            if (count > MAX) {
+                PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, 1);
+            }
+
+        } else  {
+
+            PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, count +1);
+        }
     }
 
     @Override
@@ -90,6 +110,9 @@ public class VoiceFragment extends AbsFragment {
         OttoBus.unRegister(this);
         if (downloadService != null) {
             downloadService.isQuit = true;
+        }
+        if (mediaService != null && mediaService.getPlayer().isPlaying()) {
+            mediaService.getPlayer().stop();
         }
         getActivity().unbindService(serviceConnectionMedia);
         getActivity().unbindService(serviceConnectionPrefetchAudio);
@@ -219,6 +242,9 @@ public class VoiceFragment extends AbsFragment {
         public void onServiceConnected(ComponentName name, IBinder service) {
             ServiceMedia.LocalBinder binder = (ServiceMedia.LocalBinder) service;
             mediaService = binder.getService();
+            if (mediaService.getPlayer() != null && mediaService.getPlayer().isPlaying()) {
+                mediaService.getPlayer().stop();
+            }
             prepareMedia();
         }
 
