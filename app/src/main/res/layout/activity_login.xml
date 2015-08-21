@@ -37,6 +37,14 @@
             android:id="@+id/pre_hero_ability"
             android:text="Pre Hero Ability"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/push_common"
+            android:text="Test Push to common"/>
+
+
+
 
     </LinearLayout>
 

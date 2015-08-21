@@ -6,6 +6,7 @@ package son.nt.dota2;
 public class MsConst {
 
     public static final String TRACK_SHARE_VOICE = "/TRACK_SHARE_VOICE";
+    public static final String TRACK_PUSH_COMMENT = "/TRACK_PUSH_COMMENT";
 
 
 
@@ -59,4 +60,6 @@ public class MsConst {
     public static final String FB_COMMENT_TO = "/1637431773159881/comments";
     public static final String FB_FETCH = "http://gdata.youtube.com/feeds/api/playlists/%s?v=2&alt=json";
     public static final String FB_AVATAR_LINK = "https://graph.facebook.com/%s/picture?type=normal";
+
+    public static final String CHANNEL_COMMON = "dota2_common_channel";
 }

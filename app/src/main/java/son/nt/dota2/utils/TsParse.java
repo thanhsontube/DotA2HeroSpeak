@@ -4,13 +4,16 @@ import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.HeroManager;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.ResourceManager;
+import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.GalleryDto;
 import son.nt.dota2.dto.HeroEntry;
 
@@ -131,5 +134,20 @@ public class TsParse {
         } catch (Exception e) {
 
         }
+    }
+
+    public static void push(CommentDto d) {
+        TsGaTools.trackPages(MsConst.TRACK_PUSH_COMMENT);
+        ParsePush p = new ParsePush();
+        p.setChannel(MsConst.CHANNEL_COMMON);
+        StringBuilder s = new StringBuilder();
+        s.append(d.getFromName());
+        s.append(">>>");
+        s.append(d.getSpeakDto().heroId);
+        s.append("(" + d.getSpeakDto().text + "):");
+        s.append(d.getMessage());
+
+        p.setMessage(s.toString());
+        p.sendInBackground();
     }
 }

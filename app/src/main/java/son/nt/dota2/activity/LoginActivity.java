@@ -3,16 +3,21 @@ package son.nt.dota2.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.parse.ParseAnalytics;
+import com.parse.ParsePush;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.HeroManager;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.dto.HeroEntry;
@@ -24,10 +29,12 @@ import son.nt.dota2.utils.TsParse;
 public class LoginActivity extends AActivity {
 
     public static final String TAG = "LoginActivity";
+
     @Override
     protected Fragment onCreateMainFragment(Bundle savedInstanceState) {
         return LoginFragment.newInstance("", "");
     }
+
     List<HeroEntry> listTemp = new ArrayList<>();
     boolean isAbi = false;
 
@@ -41,6 +48,14 @@ public class LoginActivity extends AActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         HeroManager.getInstance().initDataSelf();
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_get_push", true)) {
+            ParsePush.subscribeInBackground(MsConst.CHANNEL_COMMON);
+        } else {
+            ParsePush.unsubscribeInBackground(MsConst.CHANNEL_COMMON);
+        }
+
+        //track parse send open app
+        ParseAnalytics.trackAppOpenedInBackground(getIntent());
         //get kensburn
         TsParse.getkensBurns();
         HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
@@ -53,6 +68,7 @@ public class LoginActivity extends AActivity {
                         HTTPParseUtils.getInstance().withAbility(listTemp.get(listTemp.size() - 1).heroId);
                     } else {
                         Toast.makeText(getApplicationContext(), "We have done with Ability List", Toast.LENGTH_SHORT).show();
+                        isAbi = false;
                     }
                 }
             }
@@ -77,9 +93,9 @@ public class LoginActivity extends AActivity {
             @Override
             public void onClick(View v) {
                 isAbi = true;
-                listTemp.clear();
-                listTemp.addAll(HeroManager.getInstance().listHeroes);
-                HTTPParseUtils.getInstance().withAbility(listTemp.get(listTemp.size() -1).heroId);
+//                listTemp.clear();
+//                listTemp.addAll(HeroManager.getInstance().listHeroes);
+//                HTTPParseUtils.getInstance().withAbility(listTemp.get(listTemp.size() -1).heroId);
 
 //                for (HeroEntry p : HeroManager.getInstance().listHeroes) {
 //                    HTTPParseUtils.getInstance().withVoices(p.heroId);
@@ -98,23 +114,23 @@ public class LoginActivity extends AActivity {
             }
         });
 
-    }
+        findViewById(R.id.push_common).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParsePush push = new ParsePush();
+                push.setChannel(MsConst.CHANNEL_COMMON);
+                push.setMessage("Test push common");
+                push.sendInBackground();
+            }
+        });
 
+    }
 
 
     @Override
     protected void onResume() {
         super.onResume();
 
-//        if (FacebookManager.getInstance().isLogin()) {
-//            startActivity(HomeActivity.getIntent(this));
-//            finish();
-//        }
-
-//        if (BuildConfig.DEBUG) {
-//            startActivity(new Intent(this, HomeActivity.class));
-//            getCommentsDone();
-//        }
     }
 
     private void testAbilities() {
@@ -141,7 +157,7 @@ public class LoginActivity extends AActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static Intent getIntent (Context context) {
+    public static Intent getIntent(Context context) {
         return new Intent(context, LoginActivity.class);
     }
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="son.nt.dota2" >
+    package="son.nt.dota2">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -17,8 +17,9 @@
       IMPORTANT: Change "com.parse.starter.permission.C2D_MESSAGE" in the lines below
       to match your app's package name + ".permission.C2D_MESSAGE".
     -->
-    <permission android:protectionLevel="signature"
-        android:name="son.nt.dota2.permission.C2D_MESSAGE" />
+    <permission
+        android:name="son.nt.dota2.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
     <uses-permission android:name="son.nt.dota2.permission.C2D_MESSAGE" />
 
     <application
@@ -26,7 +27,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.TS" >
+        android:theme="@style/Theme.TS">
 
         <!-- This meta-data tag is required to use Google Play Services. -->
         <meta-data
@@ -40,7 +41,7 @@
         <activity
             android:name=".activity.TopActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -83,7 +84,7 @@
         <activity
             android:name=".youtube.WidgetVideoYoutubeActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.LoginActivity" >
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -93,7 +94,7 @@
         <activity
             android:name=".activity.HomeActivity"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustPan|adjustNothing" >
+            android:windowSoftInputMode="adjustPan|adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -105,19 +106,25 @@
         <activity
             android:name=".activity.HeroActivity"
             android:label="@string/title_activity_hero"
-            android:theme="@style/Theme.Hero">
-        </activity>
+            android:theme="@style/Theme.Hero"></activity>
+
+        <activity
+            android:name=".setting.SettingActivity"
+            android:label="User Setting"
+            android:theme="@android:style/Theme.Holo"/>
 
 
         <!--parse-->
         <service android:name="com.parse.PushService" />
+
         <receiver android:name="com.parse.ParseBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.parse.ParsePushBroadcastReceiver"
+        <receiver
+            android:name="com.parse.ParsePushBroadcastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
@@ -125,7 +132,8 @@
                 <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.parse.GcmBroadcastReceiver"
+        <receiver
+            android:name="com.parse.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />

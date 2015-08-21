@@ -46,6 +46,7 @@ import son.nt.dota2.fragment.RolesFragment;
 import son.nt.dota2.fragment.SavedFragment;
 import son.nt.dota2.fragment.SearchableFragment;
 import son.nt.dota2.gridmenu.GridMenuDialog;
+import son.nt.dota2.setting.SettingActivity;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsFeedback;
@@ -237,6 +238,8 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
                         TsFeedback.shareApp(HomeActivity.this);
 
                         break;
+                    case R.id.nav_settings:
+                        startActivity(new Intent(getApplicationContext(), SettingActivity.class));
 
                 }
                 return true;

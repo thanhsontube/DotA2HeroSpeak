@@ -28,6 +28,7 @@ import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.FacebookManager;
 import son.nt.dota2.ottobus_entry.GoChatFragment;
 import son.nt.dota2.utils.OttoBus;
+import son.nt.dota2.utils.TsParse;
 
 /**
  * Created by Sonnt on 8/10/15.
@@ -89,7 +90,6 @@ public class CommentDialog extends DialogFragment {
 
                     dismiss();
 
-//                    OttoBus.post(new CommentDto());
                 }
             }
         });
@@ -124,6 +124,7 @@ public class CommentDialog extends DialogFragment {
                     Toast.makeText(ResourceManager.getInstance().getContext(), "There is something wrong! Could n't push your comment on Server ! Sorry !", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(ResourceManager.getInstance().getContext(), "Comment success !", Toast.LENGTH_SHORT).show();
+                    TsParse.push (d);
                     CommentManager.getInstance().updateHistory();
                     OttoBus.post(new GoChatFragment(d.getSpeakDto().heroId));
                 }

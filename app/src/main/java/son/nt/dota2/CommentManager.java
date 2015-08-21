@@ -89,7 +89,7 @@ public class CommentManager {
                 Collections.sort(listCmts, new Comparator<CommentDto>() {
                     @Override
                     public int compare(CommentDto l1, CommentDto l2) {
-                        return l1.getCreateTime() >= l2.getCreateTime() ? 1 : 0;
+                        return l1.getCreateTime() >= l2.getCreateTime() ? 1 : -1;
                     }
                 });
 

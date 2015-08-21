@@ -1,52 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:background="@color/purple_transparent"
     android:gravity="center"
-    android:background="@color/transparent_gray"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <TextView
+        style="@style/txt_white_14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Volume"
-        style="@style/txt_white_14" />
+        android:text="Volume" />
 
     <SeekBar
-        android:layout_marginTop="8dp"
+        android:id="@+id/setting_volume"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/setting_volume"
+        android:layout_marginTop="8dp"
         android:background="@color/white" />
 
     <TextView
         android:id="@+id/setting_txt_volume"
-        android:layout_marginTop="8dp"
+        style="@style/txt_white_18"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
-        style="@style/txt_white_18" />
+        android:layout_marginTop="8dp"
+        android:text="0" />
 
     <TextView
-        android:layout_marginTop="16dp"
+        style="@style/txt_white_14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Repeat"
-        style="@style/txt_white_14" />
+        android:visibility="gone" />
 
     <FrameLayout
-        android:layout_marginTop="8dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/setting_repeat_one"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_repeat_one" />
+            android:src="@drawable/icon_repeat_one"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/setting_repeat_off"
@@ -56,19 +58,19 @@
             android:src="@drawable/icon_repeat_off" />
 
         <ImageView
-            android:visibility="gone"
             android:id="@+id/setting_repeat_on"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_repeat_on" />
+            android:src="@drawable/icon_repeat_on"
+            android:visibility="gone" />
     </FrameLayout>
 
     <Button
+        android:id="@+id/setting_btn_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Done"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:id="@+id/setting_btn_done"/>
+        android:text="Done" />
 
 </LinearLayout>
