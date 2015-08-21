@@ -205,33 +205,40 @@ public class FileUtil {
         } catch (IOException e) {
             Log.e("tag", "Failed to get asset file list.", e);
         }
+
         for(String filename : files) {
-            InputStream in = null;
-            OutputStream out = null;
             try {
-                in = assetManager.open(filename);
-                File outFile = new File(outPath, filename);
-                out = new FileOutputStream(outFile);
-                copyFile(in, out);
-            } catch(IOException e) {
-                Log.e("tag", "Failed to copy asset file: " + filename, e);
-            }
-            finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        // NOOP
+                InputStream in = null;
+                OutputStream out = null;
+                try {
+                    in = assetManager.open(filename);
+                    File outFile = new File(outPath, filename);
+                    out = new FileOutputStream(outFile);
+                    copyFile(in, out);
+                } catch(IOException e) {
+                    Log.e("tag", "Failed to copy asset file: " + filename, e);
+                }
+                finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            // NOOP
+                        }
+                    }
+                    if (out != null) {
+                        try {
+                            out.close();
+                        } catch (IOException e) {
+                            // NOOP
+                        }
                     }
                 }
-                if (out != null) {
-                    try {
-                        out.close();
-                    } catch (IOException e) {
-                        // NOOP
-                    }
-                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         }
     }
     private static void copyFile(InputStream in, OutputStream out) throws IOException {

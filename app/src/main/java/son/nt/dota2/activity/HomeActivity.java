@@ -24,11 +24,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.facebook.share.widget.LikeView;
 import com.squareup.otto.Subscribe;
 
@@ -69,31 +64,12 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     TextView txtFromName;
     TextView txtLogout;
     LikeView likeView;
-    CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         OttoBus.register(this);
-        callbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                if (likeView != null) {
-                }
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-
-            }
-        });
         initActionBar();
         initLayout();
         initListener();
@@ -144,10 +120,17 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         txtFromName = (TextView) findViewById(R.id.nav_fromName);
         txtLogout = (TextView) findViewById(R.id.nav_logout);
         if (FacebookManager.getInstance().isLogin()) {
-            Glide.with(this).load(FacebookManager.getInstance().getProfile().getProfilePictureUri(100, 100).toString())
-                    .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
-            txtFromName.setText(FacebookManager.getInstance().getProfile().getName());
-            txtLogout.setVisibility(View.VISIBLE);
+            try {
+//                String link = String.format(MsConst.FB_AVATAR_LINK, FacebookManager.getInstance().getProfile().getId());
+                String link = FacebookManager.getInstance().getLinkAvatar();
+                Glide.with(this).load(link)
+                        .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
+                txtFromName.setText(FacebookManager.getInstance().getProfile().getName());
+                txtLogout.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
+
+            }
+
         } else {
             txtFromName.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -403,11 +386,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
 
     public static Intent getIntent (Context context) {
         return new Intent(context, HomeActivity.class);

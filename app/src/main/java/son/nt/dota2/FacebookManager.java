@@ -45,6 +45,19 @@ public class FacebookManager {
         this.context = context;
         initFacebook();
     }
+    public String getLinkAvatar() {
+        if (isLogin() && getProfile() != null) {
+            return getProfile().getProfilePictureUri(100, 100).toString();
+        }
+        return null;
+    }
+
+    public String getFromName () {
+        if (isLogin() && getProfile() != null) {
+            return getProfile().getName();
+        }
+        return "";
+    }
 
     private void initFacebook () {
         callbackManager = CallbackManager.Factory.create();
@@ -66,6 +79,7 @@ public class FacebookManager {
             }
         });
     }
+
 
     public static FacebookManager getInstance () {
         return INSTANCE;

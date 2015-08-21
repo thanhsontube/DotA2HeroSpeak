@@ -62,7 +62,7 @@ public class CommentDialog extends DialogFragment {
         View submit = view.findViewById(R.id.cmt_submit);
 
         TextView txtFromName = (TextView) view.findViewById(R.id.cmt_from_name);
-        txtFromName.setText(FacebookManager.getInstance().getProfile().getName());
+        txtFromName.setText(FacebookManager.getInstance().getFromName());
         ProfilePictureView profilePictureView = (ProfilePictureView) view.findViewById(R.id.cmt_avatar);
         profilePictureView.setProfileId(FacebookManager.getInstance().getProfile().getId());
 
