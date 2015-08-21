@@ -64,6 +64,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     KenBurnsView kenBurnsView;
     ImageView avatar;
     TextView txtFromName;
+    TextView txtLogout;
     LikeView likeView;
     CallbackManager callbackManager;
 
@@ -136,10 +137,12 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
         avatar = (ImageView) findViewById(R.id.nav_avatar);
         txtFromName = (TextView) findViewById(R.id.nav_fromName);
+        txtLogout = (TextView) findViewById(R.id.nav_logout);
         if (FacebookManager.getInstance().isLogin()) {
             Glide.with(this).load(FacebookManager.getInstance().getProfile().getProfilePictureUri(100, 100).toString())
                     .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
             txtFromName.setText(FacebookManager.getInstance().getProfile().getName());
+            txtLogout.setVisibility(View.VISIBLE);
         } else {
             txtFromName.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -147,12 +150,23 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
                     startActivity(LoginActivity.getIntent(HomeActivity.this));
                 }
             });
+            txtLogout.setVisibility(View.GONE);
         }
+
     }
 
     Handler handler = new Handler();
 
     private void initListener() {
+
+        txtLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FacebookManager.getInstance().logout();
+                startActivity(LoginActivity.getIntent(HomeActivity.this));
+                finish();
+            }
+        });
 
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {

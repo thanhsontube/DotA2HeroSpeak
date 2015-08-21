@@ -124,5 +124,9 @@ public class FacebookManager {
         c.startActivity(Intent.createChooser(tweet, String.format("Share %s via", dto.text)));
     }
 
+    public void logout () {
+        LoginManager.getInstance().logOut();
+    }
+
 
 }
