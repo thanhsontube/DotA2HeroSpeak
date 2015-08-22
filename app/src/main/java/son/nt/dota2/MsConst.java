@@ -5,6 +5,11 @@ package son.nt.dota2;
  */
 public class MsConst {
 
+    public static final String TRACK_START = "/start";
+    public static final String TRACK_LOGIN = "/fb_login";
+    public static final String TRACK_LOGOUT = "/fb_logout";
+    public static final String TRACK_SEARCH = "/search";
+    public static final String TRACK_CHAT = "/chat_dialog";
     public static final String TRACK_SHARE_VOICE = "/TRACK_SHARE_VOICE";
     public static final String TRACK_PUSH_COMMENT = "/TRACK_PUSH_COMMENT";
 

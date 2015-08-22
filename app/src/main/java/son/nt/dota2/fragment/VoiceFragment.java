@@ -42,6 +42,7 @@ import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.NetworkUtils;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.PreferenceUtil;
+import son.nt.dota2.utils.TsGaTools;
 
 public class VoiceFragment extends AbsFragment {
     public static final int MAX = 15;
@@ -178,6 +179,7 @@ public class VoiceFragment extends AbsFragment {
         autoPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TsGaTools.trackPages("/autoPlay");
                 if (mediaService != null) {
                     if (mediaService.getPlayer().isPlaying()) {
 

@@ -17,6 +17,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.ottobus_entry.GoAdapterRoles;
 import son.nt.dota2.utils.OttoBus;
+import son.nt.dota2.utils.TsGaTools;
 
 /**
  * Created by Sonnt on 7/14/15.
@@ -46,6 +47,7 @@ public class AdapterRoles extends RecyclerView.Adapter<AdapterRoles.Holder> {
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TsGaTools.trackPages("/role:" + dto.name.trim());
                 OttoBus.post(new GoAdapterRoles(dto.name.trim()));
 
             }

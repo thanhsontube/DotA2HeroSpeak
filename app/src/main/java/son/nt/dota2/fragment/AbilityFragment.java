@@ -39,6 +39,7 @@ import son.nt.dota2.service.ServiceMedia;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.PreferenceUtil;
+import son.nt.dota2.utils.TsGaTools;
 
 public class AbilityFragment extends AbsFragment {
     private static final String ARG_PARAM1 = "param1";
@@ -261,6 +262,7 @@ public class AbilityFragment extends AbsFragment {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                TsGaTools.trackPages("/skill_click");
                 first ++;
                 HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
                 if (heroEntry != null && heroEntry.listAbilities.size() > 0 && !TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
@@ -301,6 +303,7 @@ public class AbilityFragment extends AbsFragment {
         fabMuted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TsGaTools.trackPages("/mute_click");
                 boolean isAllow = PreferenceUtil.getPreference(getActivity(), MsConst.KEY_ALLOW_PLAY, false);
                 PreferenceUtil.setPreference(getActivity(), MsConst.KEY_ALLOW_PLAY, !isAllow);
                 if (!isAllow) {

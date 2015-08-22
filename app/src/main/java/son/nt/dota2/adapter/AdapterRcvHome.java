@@ -17,6 +17,7 @@ import java.util.List;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.utils.OttoBus;
+import son.nt.dota2.utils.TsGaTools;
 
 /**
  * Created by Sonnt on 7/7/15.
@@ -62,6 +63,7 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TsGaTools.trackPages("/hero:" + dto.heroId);
                 OttoBus.post(dto);
 
             }

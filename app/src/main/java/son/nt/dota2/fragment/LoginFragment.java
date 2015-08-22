@@ -34,6 +34,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.activity.HomeActivity;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsGaTools;
 
 public class LoginFragment extends AFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -159,6 +160,7 @@ public class LoginFragment extends AFragment {
         txtGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TsGaTools.trackPages(MsConst.TRACK_LOGIN);
                 startActivity(HomeActivity.getIntent(getActivity()));
                 getActivity().finish();
             }

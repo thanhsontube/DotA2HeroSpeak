@@ -21,6 +21,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.gridmenu.SpeakLongClick;
 import son.nt.dota2.utils.OttoBus;
+import son.nt.dota2.utils.TsGaTools;
 
 /**
  * Created by Sonnt on 7/30/15.
@@ -91,6 +92,7 @@ public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
                 holder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        TsGaTools.trackPages("/row_voice_1_click");
                         list.get(position).position = position;
                         OttoBus.post(list.get(position));
                     }
@@ -99,6 +101,7 @@ public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
                 holder.view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
+                        TsGaTools.trackPages("/row_voice_long_click");
                         OttoBus.post(new SpeakLongClick(list.get(position)));
                         return true;
                     }

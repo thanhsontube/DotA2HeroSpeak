@@ -19,10 +19,12 @@ import com.twotoasters.jazzylistview.JazzyHelper;
 
 import java.util.Random;
 
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterTop;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.comments.ChatDialog;
+import son.nt.dota2.utils.TsGaTools;
 import son.nt.dota2.utils.TsScreen;
 
 
@@ -141,6 +143,7 @@ public class HomeFragment extends AFragment {
         fabChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TsGaTools.trackPages(MsConst.TRACK_CHAT);
                 FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
                 Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
                 if (f != null) {

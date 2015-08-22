@@ -29,6 +29,7 @@ import son.nt.dota2.gridmenu.SpeakLongClick;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.ottobus_entry.GoShare;
 import son.nt.dota2.utils.OttoBus;
+import son.nt.dota2.utils.TsGaTools;
 
 public class HeroActivity extends AActivity implements HeroFragment.OnFragmentInteractionListener {
     HeroEntry heroEntry;
@@ -52,6 +53,7 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
         fabChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TsGaTools.trackPages(MsConst.TRACK_CHAT);
                 FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
                 Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
                 if (f != null) {

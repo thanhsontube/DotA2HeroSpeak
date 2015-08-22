@@ -24,6 +24,7 @@ import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.fragment.LoginFragment;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsGaTools;
 import son.nt.dota2.utils.TsParse;
 
 public class LoginActivity extends AActivity {
@@ -47,6 +48,7 @@ public class LoginActivity extends AActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TsGaTools.trackPages(MsConst.TRACK_START);
         setContentView(R.layout.activity_login);
         HeroManager.getInstance().initDataSelf();
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_get_push", true)) {

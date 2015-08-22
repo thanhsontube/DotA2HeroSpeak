@@ -166,6 +166,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
             txtFromName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    TsGaTools.trackPages(MsConst.TRACK_LOGOUT);
                     startActivity(LoginActivity.getIntent(HomeActivity.this));
                 }
             });
@@ -256,9 +257,11 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
                         TsFeedback.shareApp(HomeActivity.this);
                         break;
                     case R.id.nav_share_fb:
+                        TsGaTools.trackPages("/nav_fb");
                         TsFeedback.likePage(HomeActivity.this, MsConst.FB_PAGE_ID);
                         break;
                     case R.id.nav_settings:
+                        TsGaTools.trackPages("/nav_setting");
                         startActivity(new Intent(getApplicationContext(), SettingActivity.class));
 
                 }
@@ -331,6 +334,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
     private void handleSearch(Intent intent) {
         if (Intent.ACTION_SEARCH.equalsIgnoreCase(intent.getAction())) {
+            TsGaTools.trackPages(MsConst.TRACK_SEARCH);
             String query = intent.getStringExtra(SearchManager.QUERY);
             Logger.debug(TAG, ">>>" + "handleSearch:" + query);
 
@@ -371,19 +375,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     public void onFragmentInteraction(Uri uri) {
 
     }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        OttoBus.register(this);
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        OttoBus.unRegister(this);
-//    }
-
     @Subscribe
     public void handleAbility(HeroEntry heroEntry) {
         Logger.debug(TAG, ">>>" + "=========handleAbility:" + heroEntry.name);

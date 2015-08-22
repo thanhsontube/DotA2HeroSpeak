@@ -25,6 +25,7 @@ import son.nt.dota2.ottobus_entry.GoShare;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.SoundUtils;
+import son.nt.dota2.utils.TsGaTools;
 
 /**
  * Created by 4210047 on 3/30/2015.
@@ -82,6 +83,7 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
             public void onClick(View v) {
                 switch (position) {
                     case CASE_RINGTONE:
+                        TsGaTools.trackPages("/set_ringtone");
                         new MaterialDialog.Builder(context)
                                 .title("Confirm Set Ringtone")
                                 .positiveText("Yes")
@@ -102,6 +104,7 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
 
                         break;
                     case CASE_NOTIFICATION:
+                        TsGaTools.trackPages("/set_notification");
                         new MaterialDialog.Builder(context)
                                 .title("Confirm Set Notification")
                                 .positiveText("Yes")
@@ -123,6 +126,7 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                         break;
 
                     case CASE_ALARM:
+                        TsGaTools.trackPages("/set_alarm");
                         new MaterialDialog.Builder(context)
                                 .title("Confirm Set Alarm")
                                 .positiveText("Yes")
@@ -144,6 +148,7 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                         break;
 
                     case CASE_COMMENTS:
+                        TsGaTools.trackPages("/set_comment");
                         if (FacebookManager.getInstance().isLogin()) {
                             GoLoginDto dto = new GoLoginDto(true);
                             dto.speakDto = speakDto;
@@ -171,11 +176,13 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                         break;
 
                     case CASE_COPY:
+                        TsGaTools.trackPages("/set_copy");
                         FileUtil.copy(context, speakDto.text, speakDto.text);
                         Toast.makeText(context, "copied:" + speakDto.text, Toast.LENGTH_SHORT).show();
                         break;
 
                     case CASE_PLAYLIST:
+                        TsGaTools.trackPages("/set_playlist");
                         if (TsSqlite.getInstance().isInsert(speakDto.link)) {
                             new MaterialDialog.Builder(context)
                                     .title("Confirm Remove")
@@ -212,10 +219,12 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
 
                         break;
                     case CASE_SHARE_FACEBOOK:
+                        TsGaTools.trackPages("/set_share_fb");
                         //HeroActivity.goShare
                         OttoBus.post(new GoShare("facebook", speakDto));
                         break;
                     case CASE_SHARE_OTHERS:
+                        TsGaTools.trackPages("/set_share_others");
                         FacebookManager.getInstance().shareViaTwitter(context, speakDto);
 
                         break;

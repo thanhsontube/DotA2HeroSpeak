@@ -16,6 +16,7 @@ import java.util.List;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.utils.OttoBus;
+import son.nt.dota2.utils.TsGaTools;
 
 /**
  * Created by Sonnt on 7/9/15.
@@ -71,6 +72,7 @@ public class AdapterSearchHero  extends RecyclerView.Adapter<AdapterSearchHero.V
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TsGaTools.trackPages("/search:" + dto.heroId);
                 OttoBus.post(dto);
             }
         });
