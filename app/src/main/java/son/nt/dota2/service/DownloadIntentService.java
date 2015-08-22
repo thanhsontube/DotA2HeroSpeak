@@ -62,7 +62,7 @@ public class DownloadIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        for (HeroEntry p : HeroManager.getInstance().getTest10()) {
+        for (HeroEntry p : HeroManager.getInstance().listHeroes) {
             group++;
             count = 0;
             //get list speak

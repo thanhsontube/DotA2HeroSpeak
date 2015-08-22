@@ -24,13 +24,17 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.facebook.share.widget.LikeView;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.squareup.otto.Subscribe;
 
 import son.nt.dota2.FacebookManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
+import son.nt.dota2.adMob.AdMobUtils;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.customview.KenBurnsView;
 import son.nt.dota2.dto.HeroEntry;
@@ -63,7 +67,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     ImageView avatar;
     TextView txtFromName;
     TextView txtLogout;
-    LikeView likeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,34 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         updateKensburn();
         navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         handleSearch(getIntent());
+        adMob();
+        isAddMob();
+
+    }
+
+    public void isAddMob() {
+        Logger.debug(TAG, ">>>" + "=====isAddMob");
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Admob");
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if (e != null) {
+                    return;
+                }
+                String enable = parseObject.getString("isEnable");
+                if (enable.equals("off")) {
+                    AdMobUtils.hide();
+                } else {
+                    AdMobUtils.show();
+                }
+            }
+        });
+
+    }
+
+    private void adMob() {
+        AdMobUtils.init(findViewById(R.id.ll_ads), R.id.adView);
+        AdMobUtils.hide();
     }
 
     @Override
@@ -389,12 +420,12 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     }
 
 
-    public static Intent getIntent (Context context) {
+    public static Intent getIntent(Context context) {
         return new Intent(context, HomeActivity.class);
     }
 
     @Subscribe
-    public void fromAdapterRoles (GoAdapterRoles dto) {
+    public void fromAdapterRoles(GoAdapterRoles dto) {
         showFragment(RoleListFragment.newInstance(dto.role), true);
     }
 }

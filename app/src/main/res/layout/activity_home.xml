@@ -24,12 +24,21 @@
 
             <include layout="@layout/home_tool_bar"></include>
 
-            <FrameLayout
-                android:id="@+id/home_ll_main"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/home_ll_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <include layout="@layout/ad_mob_ll"></include>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 

@@ -9,11 +9,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.squareup.otto.Subscribe;
 
 import son.nt.dota2.FacebookManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
+import son.nt.dota2.adMob.AdMobUtils;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.comments.ChatDialog;
 import son.nt.dota2.dto.HeroEntry;
@@ -58,7 +63,32 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
             }
         });
         OttoBus.register(this);
+        adMob();
+        isAddMob();
 
+    }
+    public void isAddMob() {
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Admob");
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if (e != null) {
+                    return;
+                }
+                String enable = parseObject.getString("isEnable");
+                if (enable.equals("off")) {
+                    AdMobUtils.hide();
+                } else {
+                    AdMobUtils.show();
+                }
+            }
+        });
+
+    }
+
+    private void adMob() {
+        AdMobUtils.init(findViewById(R.id.ll_ads), R.id.adView);
+        AdMobUtils.hide();
     }
 
     @Override
