@@ -64,5 +64,6 @@ public class MsConst {
     public static final String FB_AVATAR_LINK = "https://graph.facebook.com/%s/picture?type=normal";
 
     public static final String CHANNEL_COMMON = "dota2_common_channel";
+    public static final String FB_PAGE_ID = "1637205283182530";
 
 }

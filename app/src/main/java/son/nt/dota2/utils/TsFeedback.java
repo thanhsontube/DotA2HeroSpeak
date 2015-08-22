@@ -2,6 +2,7 @@ package son.nt.dota2.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.content.IntentCompat;
 import android.text.TextUtils;
@@ -66,7 +67,22 @@ public class TsFeedback {
         i.putExtra(Intent.EXTRA_TITLE, "Dota 2 Hero Speak");
         i.putExtra(Intent.EXTRA_TEXT, MsConst.LINK_STORE);
         context.startActivity(Intent.createChooser(i, "Share app via"));
+    }
 
+    public static void likePage (Context context, String pageID) {
+        Intent intent = null;
+        try {
+            context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
+             intent =  new Intent(Intent.ACTION_VIEW, Uri.parse("fb://page/" + pageID));
+            context.startActivity(intent);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+             intent =  new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/" + pageID));
+        }
+        if (intent!= null) {
+            context.startActivity(intent);
+        }
     }
 
 }

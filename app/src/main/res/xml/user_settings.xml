@@ -10,7 +10,12 @@
         <PreferenceScreen
             android:key="pref_volume"
             android:summary="Voice Volumn"
-            android:title="Voice Volume"></PreferenceScreen>
+            android:title="Voice Volume"/>
+
+        <PreferenceScreen
+            android:key="pref_prefetch"
+            android:summary="Download Hero Sounds for offline"
+            android:title="Download Hero Sounds for offline"/>
 
 
     </PreferenceCategory>

@@ -153,7 +153,7 @@ public class PrefetchService extends IntentService {
                     listSpeaks.add(speakDto);
                     lastTitle = builder.toString();
                 } else {
-                    // speak text and link
+                    // speak text and count
 
                     // normal
                     if (lastTitle.contains("Purchasing a Specific Item")  ||lastTitle.contains("Killing a Rival")
@@ -175,7 +175,7 @@ public class PrefetchService extends IntentService {
                                 headerTag = (TagNode) data[j];
                                 tagContent = (TagNode) dataContent[j];
                                 link = headerTag.getAttributeByName("href");
-//                                Log.i(TAG, "log>>>" + "LINK:" + link);
+//                                Log.i(TAG, "log>>>" + "LINK:" + count);
                                 builder = (StringBuilder) tagContent.getText();
 //                                Log.i(TAG, "log>>>" + "what:" + builder.toString());
 

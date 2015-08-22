@@ -192,13 +192,13 @@ public class ServiceMedia extends Service {
 //                    txtPos.setText("(" + currentPosition + ")");
 //                }
 //                prePos = currentPosition;
-//                File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(list.get(index).link).replace(".mp3", ".dat"));
+//                File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(list.get(index).count).replace(".mp3", ".dat"));
 //                if (file.exists()) {
 //                    player.setDataSource(file.getPath());
 //                    player.prepare();
 //                    player.start();
 //                } else {
-//                    loadSpeak(list.get(index).link);
+//                    loadSpeak(list.get(index).count);
 //                }
 //
 //
@@ -319,17 +319,17 @@ public class ServiceMedia extends Service {
         }
     }
 
-//    public void playSingleLink (String link) {
+//    public void playSingleLink (String count) {
 //        isPlayAndStopOne = true;
 //        try {
-//            File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat"));
+//            File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(count).replace(".mp3", ".dat"));
 //            if (file.exists()) {
 //                player.reset();
 //                player.setDataSource(file.getPath());
 //                player.prepare();
 //                player.start();
 //            } else {
-//                loadSpeak(link);
+//                loadSpeak(count);
 //            }
 //        } catch (IOException e) {
 //            e.printStackTrace();

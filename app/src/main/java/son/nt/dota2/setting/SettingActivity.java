@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -15,11 +16,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.ParsePush;
+import com.squareup.otto.Subscribe;
 
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
+import son.nt.dota2.ottobus_entry.GoDownload;
+import son.nt.dota2.service.DownloadIntentService;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * Created by Sonnt on 8/21/15.
@@ -30,15 +36,18 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     TextView txtVolume;
     AlertDialog alertDialog;
     PreferenceScreen preferenceScreen;
+    PreferenceScreen download;
     int max;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OttoBus.register(this);
         addPreferencesFromResource(R.xml.user_settings);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         preferenceScreen = (PreferenceScreen) findPreference("pref_volume");
+        download = (PreferenceScreen) findPreference("pref_prefetch");
         final AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
@@ -60,7 +69,6 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
                 });
                 volumeBar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
                 final int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-//              audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
                 volumeBar.setProgress(currentVolume);
                 txtVolume.setText(String.valueOf(currentVolume));
                 volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -99,6 +107,38 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
                 return false;
             }
         });
+        download.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+
+                boolean isWifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+                        .isConnectedOrConnecting();
+                if (isWifi) {
+
+                    startService(DownloadIntentService.getIntent(SettingActivity.this));
+                } else {
+                    Toast.makeText(getApplicationContext(), "Sorry ! Wifi is not available!!!", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OttoBus.unRegister(this);
+    }
+
+    @Subscribe
+    public void goFromDownloadIntentService(GoDownload dto) {
+        String text = ">>>" + "Download:" + dto.getGroup() + " heroID:" + dto.getHeroID() + ">" + dto.getCount() + ">count:" + dto.getLink();
+        download.setTitle("" + dto.getGroup() + " - " + dto.getHeroID());
+        download.setSummary("Downloading:" + dto.getCount() + ":" + dto.getVoiceText());
+    }
+
+    private void download() {
     }
 
     @Override

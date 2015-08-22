@@ -90,6 +90,17 @@ public class HeroManager extends AObject{
         return null;
     }
 
+    public List<HeroEntry> getTest10 () {
+        List<HeroEntry> list = new ArrayList<>();
+        for (HeroEntry dto : listHeroes) {
+            list.add(dto);
+            if (list.size() > 10) {
+                break;
+            }
+        }
+        return  list;
+    }
+
     public List<HeroEntry> getStrHeroes () {
         List<HeroEntry> list = new ArrayList<>();
         for (HeroEntry dto : listHeroes) {

@@ -223,7 +223,9 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
                     case R.id.nav_share:
                         TsGaTools.trackPages("/nav_share");
                         TsFeedback.shareApp(HomeActivity.this);
-
+                        break;
+                    case R.id.nav_share_fb:
+                        TsFeedback.likePage(HomeActivity.this, MsConst.FB_PAGE_ID);
                         break;
                     case R.id.nav_settings:
                         startActivity(new Intent(getApplicationContext(), SettingActivity.class));
