@@ -223,7 +223,7 @@ public class ChatFragment extends AbsFragment {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(CommentDto.class.getSimpleName());
         query.whereEqualTo("heroID", heroID);
         query.setLimit(200);
-        query.orderByAscending("updateAt");
+        query.orderByDescending("createdAt");
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
@@ -244,6 +244,7 @@ public class ChatFragment extends AbsFragment {
                     String fromName = p.getString("fromName");
                     long createTime = p.getLong("createTime");
                     String image = p.getString("fromImage");
+                    String createAt = p.getString("createdAt");
 
                     String heroText = p.getString("heroText");
                     String heroLink = p.getString("heroLink");
@@ -252,6 +253,7 @@ public class ChatFragment extends AbsFragment {
 
                     commentDto = new CommentDto();
                     commentDto.setMessage(message);
+                    commentDto.setCreateAt(createAt);
 
                     commentDto.setFromID(fromID);
                     commentDto.setFromName(fromName);

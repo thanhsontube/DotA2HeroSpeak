@@ -16,6 +16,7 @@ public class MsConst {
     public static final String GROUP_AGI = "Agi";
     public static final String GROUP_INTEL = "Intel";
     public static final String KEY_REPEAT = "KEY_REPEAT";
+    public static final String KEY_ALLOW_PLAY = "KEY_ALLOW_PLAY";
     public static final String KEY_HELP = "KEY_HELP";
 
     public static final String EXTRA_HERO = "EXTRA_HERO";

@@ -8,8 +8,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import son.nt.dota2.comments.CommentDto;
@@ -46,7 +44,7 @@ public class CommentManager {
             query.whereEqualTo("heroID", heroID);
         }
         query.setLimit(200);
-        query.orderByAscending("updateAt");
+        query.orderByDescending("createdAt");
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
@@ -62,6 +60,7 @@ public class CommentManager {
                     String fromName = p.getString("fromName");
                     long createTime = p.getLong("createTime");
                     String image = p.getString("fromImage");
+                    String createAt = p.getString("createdAt");
 
                     String heroText = p.getString("heroText");
                     String heroLink = p.getString("heroLink");
@@ -74,6 +73,7 @@ public class CommentManager {
                     commentDto.setFromName(fromName);
                     commentDto.setImage(image);
                     commentDto.setCreateTime(createTime);
+                    commentDto.setCreateAt(createAt);
 
                     SpeakDto speakDto = new SpeakDto();
                     speakDto.heroId = heroID;
@@ -86,13 +86,6 @@ public class CommentManager {
                 }
                 listCmts.clear();
                 listCmts.addAll(list_);
-                Collections.sort(listCmts, new Comparator<CommentDto>() {
-                    @Override
-                    public int compare(CommentDto l1, CommentDto l2) {
-                        return l1.getCreateTime() >= l2.getCreateTime() ? 1 : -1;
-                    }
-                });
-
                 if (listener != null) {
                     listener.getCommentsDone(listCmts);
                 }

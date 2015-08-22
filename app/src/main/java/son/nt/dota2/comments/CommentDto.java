@@ -14,6 +14,15 @@ public class CommentDto extends AObject{
     long createTime;
     String fromID;
     String fromName;
+    String createAt;
+
+    public String getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(String createAt) {
+        this.createAt = createAt;
+    }
 
     public int getId() {
         return id;

@@ -87,21 +87,25 @@ public class VoiceFragment extends AbsFragment {
         getActivity().bindService(ServiceMedia.getIntentService(getActivity()), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
         getActivity().bindService(DownloadService.getIntent(getActivity()), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
         int count = PreferenceUtil.getPreference(getActivity(), MsConst.KEY_HELP, 0);
-
-        if (count == 0 || count > MAX) {
+        if (count == 0) {
+            PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, count +1);
             MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
                     .positiveText("Got it")
                     .title("Long click into every row to discover lots of things \n\rGo to Menu >> Setting  to Enable/Disable Notification from app")
                     .build();
             materialDialog.show();
-            if (count > MAX) {
-                PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, 1);
-            }
-
-        } else  {
-
+        } else if (count > MAX) {
+            PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, 1);
+            MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                    .positiveText("Got it")
+                    .title("Long click into every row to discover lots of things \n\rGo to Menu >> Setting  to Enable/Disable Notification from app")
+                    .build();
+            materialDialog.show();
+        } else {
             PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, count +1);
         }
+
+
     }
 
     @Override

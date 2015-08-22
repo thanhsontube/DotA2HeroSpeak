@@ -90,8 +90,8 @@ public class ChatDialog extends DialogFragment {
             }
         });
         recyclerView = (RecyclerView) view.findViewById(R.id.chat_recycle_view);
-        viewLoading = view.findViewById(R.id.chat_loading);
         viewRefresh = (TextView) view.findViewById(R.id.chat_refresh);
+        viewLoading = view.findViewById(R.id.chat_loading);
         recyclerView.setVisibility(View.VISIBLE);
         viewRefresh.setVisibility(View.GONE);
         viewLoading.setVisibility(View.GONE);
@@ -166,10 +166,7 @@ public class ChatDialog extends DialogFragment {
                         viewRefresh.setVisibility(View.GONE);
                         viewLoading.setVisibility(View.GONE);
                     }
-                    if (listValues.size() > 3) {
 
-                        recyclerView.smoothScrollToPosition(listValues.size() - 2);
-                    }
                 }
             });
             CommentManager.getInstance().getHistory(null);

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.HeroManager;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.AbsFragment;
@@ -37,6 +38,7 @@ import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.service.ServiceMedia;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.PreferenceUtil;
 
 public class AbilityFragment extends AbsFragment {
     private static final String ARG_PARAM1 = "param1";
@@ -113,6 +115,15 @@ public class AbilityFragment extends AbsFragment {
         fabMuted = (com.melnykov.fab.FloatingActionButton) view.findViewById(R.id.ability_muted);
         ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.ability_scroll_view);
         fabMuted.attachToScrollView(scrollView);
+
+        boolean isAllow = PreferenceUtil.getPreference(getActivity(), MsConst.KEY_ALLOW_PLAY, false);
+        if (isAllow) {
+            fabMuted.setTag("normal");
+            fabMuted.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_up_white_24dp));
+        } else {
+            fabMuted.setTag("muted");
+            fabMuted.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_off_white_24dp));
+        }
 
         tabLayout = (TabLayout) view.findViewById(R.id.ability_tab_layout);
         txtAbility = (TextView) view.findViewById(R.id.ability_abi);
@@ -243,17 +254,22 @@ public class AbilityFragment extends AbsFragment {
         }
     }
 
+    int first = 0;
+
     @Override
     public void initListener() {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                first ++;
                 HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
                 if (heroEntry != null && heroEntry.listAbilities.size() > 0 && !TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
                     try {
-                        if (fabMuted.getTag().equals("normal")) {
+                        if (PreferenceUtil.getPreference(getActivity(), MsConst.KEY_ALLOW_PLAY, false)) {
+                            if (first > 1) {
+                                serviceMedia.play(heroEntry.listAbilities.get(tab.getPosition()).sound, heroId);
+                            }
 
-                            serviceMedia.play(heroEntry.listAbilities.get(tab.getPosition()).sound, heroId);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -272,7 +288,7 @@ public class AbilityFragment extends AbsFragment {
             public void onTabReselected(TabLayout.Tab tab) {
                 HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
                 if (!TextUtils.isEmpty(heroEntry.listAbilities.get(tab.getPosition()).sound)) {
-                    if (fabMuted.getTag().equals("normal")) {
+                    if (PreferenceUtil.getPreference(getActivity(), MsConst.KEY_ALLOW_PLAY, false)) {
 
                         serviceMedia.play(heroEntry.listAbilities.get(tab.getPosition()).sound, heroId);
                     }
@@ -285,7 +301,9 @@ public class AbilityFragment extends AbsFragment {
         fabMuted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (fabMuted.getTag().equals("muted")) {
+                boolean isAllow = PreferenceUtil.getPreference(getActivity(), MsConst.KEY_ALLOW_PLAY, false);
+                PreferenceUtil.setPreference(getActivity(), MsConst.KEY_ALLOW_PLAY, !isAllow);
+                if (!isAllow) {
                     fabMuted.setTag("normal");
                     fabMuted.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_up_white_24dp));
                 } else {

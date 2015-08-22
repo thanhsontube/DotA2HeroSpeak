@@ -77,6 +77,7 @@ public class AdapterCmts extends RecyclerView.Adapter<AdapterCmts.ViewHolder> {
 
 
         viewHolder.createTime.setText(TsDate.getTimeAgo(dto.getCreateTime(), context));
+//        viewHolder.createTime.setText(dto.getCreateAt());
         viewHolder.heroText.setText(dto.getSpeakDto().text);
 
         viewHolder.viewVoice.setOnClickListener(new View.OnClickListener() {
