@@ -1,7 +1,6 @@
 package son.nt.dota2;
 
 import android.content.Context;
-import android.os.Environment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,9 +51,9 @@ public class ResourceManager {
         try {
             myPath = new MyPath(context);
             contentManager = new ContentManager(context, 100);
-//            folderSave = getContext().getFilesDir().getPath();
+            folderSave = getContext().getFilesDir().getPath();
 
-            folderSave = Environment.getExternalStorageDirectory().toString() + ROOT;
+//            folderSave = Environment.getExternalStorageDirectory().toString() + ROOT;
             fileHeroList = folderSave +File.separator + "hero_list.dat";
             folderHero = folderSave+ File.separator + "hero" + File.separator;
 
