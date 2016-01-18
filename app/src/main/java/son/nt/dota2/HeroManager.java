@@ -50,7 +50,7 @@ public class HeroManager extends AObject{
     private void initData() {
         try {
             ResourceManager resource = ResourceManager.getInstance();
-            File fOut = new File(resource.folderSave, File.separator + "data.zip");
+            File fOut = new File(resource.getFolderSave(), File.separator + "data.zip");
             if (fOut.exists()) {
                 heroData = FileUtil.readHeroList(context);
                 return;
@@ -68,7 +68,7 @@ public class HeroManager extends AObject{
             in.close();
 
             //unzip
-            boolean isUnzip = FileUtil.unpackZip(resource.folderSave + File.separator, "data.zip");
+            boolean isUnzip = FileUtil.unpackZip(resource.getFolderSave() + File.separator, "data.zip");
             if (isUnzip) {
                 heroData = FileUtil.readHeroList(context);
 

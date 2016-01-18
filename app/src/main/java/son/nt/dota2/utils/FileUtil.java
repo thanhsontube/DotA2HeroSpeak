@@ -34,7 +34,7 @@ import son.nt.dota2.dto.HeroDto;
 public class FileUtil {
 
     public static void saveObject(Context context, AObject data, String name) throws IOException {
-        File woFile = new File(ResourceManager.getInstance().folderObject, name);
+        File woFile = new File(ResourceManager.getInstance().getFolderObject(), name);
         if (woFile.exists()) {
             woFile.delete();
         }
@@ -45,7 +45,7 @@ public class FileUtil {
     }
 
     public static AObject getObject(Context context, String name) throws IOException, ClassNotFoundException {
-        File woFile = new File(ResourceManager.getInstance().folderObject, name);
+        File woFile = new File(ResourceManager.getInstance().getFolderObject(), name);
         if (!woFile.exists()) {
             return null;
         }
@@ -85,7 +85,7 @@ public class FileUtil {
     }
 
     public static void saveHeroSpeak(Context context, HeroDto data, String name) throws IOException {
-        File woFile = new File(ResourceManager.getInstance().folderHero, File.separator + name);
+        File woFile = new File(ResourceManager.getInstance().getFolderHero(), File.separator + name);
         if (!woFile.exists()) {
             woFile.createNewFile();
         }
@@ -95,7 +95,7 @@ public class FileUtil {
     }
 
     public static HeroDto readHeroSpeak(Context context, String name) throws IOException, ClassNotFoundException {
-        File woFile = new File(ResourceManager.getInstance().folderHero, File.separator + name);
+        File woFile = new File(ResourceManager.getInstance().getFolderHero(), File.separator + name);
         if (!woFile.exists()) {
             return null;
         }
@@ -284,5 +284,6 @@ public class FileUtil {
         }
 
     }
+
 
 }

@@ -23,6 +23,7 @@ import son.nt.dota2.base.AActivity;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.fragment.LoginFragment;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
+import son.nt.dota2.test.TestActivity;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsGaTools;
 import son.nt.dota2.utils.TsParse;
@@ -85,7 +86,7 @@ public class LoginActivity extends AActivity {
         findViewById(R.id.pre_heroList).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HTTPParseUtils.getInstance().withHeroListFromParse();
+                startActivity(new Intent(getApplicationContext(), TestActivity.class));
 
             }
         });

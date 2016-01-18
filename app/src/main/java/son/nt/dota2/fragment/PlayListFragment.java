@@ -2,7 +2,6 @@ package son.nt.dota2.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +23,6 @@ import son.nt.dota2.base.Controller;
 import son.nt.dota2.dto.PlayListDto;
 import son.nt.dota2.loader.PlayListLoader;
 import son.nt.dota2.utils.TsLog;
-import son.nt.dota2.youtube.WidgetVideoYoutubeActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -106,9 +104,7 @@ public class PlayListFragment extends AFragment {
         adapter.setOnCallback(new AdapterPlayPlist.IAdapterCallback() {
             @Override
             public void onClick(int position, PlayListDto playListDto) {
-                Intent intent = new Intent(getActivity(), WidgetVideoYoutubeActivity.class);
-                intent.putExtra("youtube", playListDto);
-                startActivity(intent);
+
             }
         });
     }

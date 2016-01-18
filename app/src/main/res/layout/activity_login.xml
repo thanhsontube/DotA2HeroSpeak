@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/pre_heroList"
-            android:text="Pre Hero List"/>
+            android:text="Go to test activity"/>
 
         <Button
             android:layout_width="wrap_content"

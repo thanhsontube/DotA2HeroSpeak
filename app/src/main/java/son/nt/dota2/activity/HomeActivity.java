@@ -22,15 +22,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.squareup.otto.Subscribe;
 
-import son.nt.dota2.FacebookManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
@@ -152,46 +149,44 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         actionBarDrawerToggle.syncState();
 
         avatar = (ImageView) findViewById(R.id.nav_avatar);
-        txtFromName = (TextView) findViewById(R.id.nav_fromName);
-        txtLogout = (TextView) findViewById(R.id.nav_logout);
-        if (FacebookManager.getInstance().isLogin()) {
-            try {
-//                String link = String.format(MsConst.FB_AVATAR_LINK, FacebookManager.getInstance().getProfile().getId());
-                String link = FacebookManager.getInstance().getLinkAvatar();
-                Glide.with(this).load(link)
-                        .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
-                txtFromName.setText(FacebookManager.getInstance().getProfile().getName());
-                txtLogout.setVisibility(View.VISIBLE);
-            } catch (Exception e) {
-                e.printStackTrace();
-
-            }
-
-        } else {
-            txtFromName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TsGaTools.trackPages(MsConst.TRACK_LOGOUT);
-                    startActivity(LoginActivity.getIntent(HomeActivity.this));
-                }
-            });
-            txtLogout.setVisibility(View.GONE);
-        }
+//        txtFromName = (TextView) findViewById(R.id.nav_fromName);
+//        txtLogout = (TextView) findViewById(R.id.nav_logout);
+//        if (FacebookManager.getInstance().isLogin()) {
+//            try {
+//                String link = FacebookManager.getInstance().getLinkAvatar();
+//                Glide.with(this).load(link)
+//                        .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
+//                txtFromName.setText(FacebookManager.getInstance().getProfile().getName());
+//                txtLogout.setVisibility(View.VISIBLE);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//
+//            }
+//
+//        } else {
+//            txtFromName.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    TsGaTools.trackPages(MsConst.TRACK_LOGOUT);
+//                    startActivity(LoginActivity.getIntent(HomeActivity.this));
+//                }
+//            });
+//            txtLogout.setVisibility(View.GONE);
+//        }
 
     }
 
 
-
     private void initListener() {
 
-        txtLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FacebookManager.getInstance().logout();
-                startActivity(LoginActivity.getIntent(HomeActivity.this));
-                finish();
-            }
-        });
+//        txtLogout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                FacebookManager.getInstance().logout();
+//                startActivity(LoginActivity.getIntent(HomeActivity.this));
+//                finish();
+//            }
+//        });
 
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -380,6 +375,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     public void onFragmentInteraction(Uri uri) {
 
     }
+
     @Subscribe
     public void handleAbility(HeroEntry heroEntry) {
         Logger.debug(TAG, ">>>" + "=========handleAbility:" + heroEntry.name);

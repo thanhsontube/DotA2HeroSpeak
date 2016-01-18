@@ -57,6 +57,7 @@ public class ResourceManager {
             folderSave = getContext().getFilesDir().getPath();
 
             folderRoot = Environment.getExternalStorageDirectory().toString() + ROOT;
+            folderSave = folderRoot;
             File fRoot = new File(folderRoot);
             if (! fRoot.exists()) {
                 fRoot.mkdirs();
@@ -172,5 +173,45 @@ public class ResourceManager {
 
     public MyPath getMyPath() {
         return myPath;
+    }
+
+
+    public String getFolderAudio() {
+        File fileAudio =new File(getFolderSave(), "/audio/");
+        if (!fileAudio.exists()) {
+            fileAudio.mkdirs();
+        }
+        folderAudio = fileAudio.getPath();
+        return folderAudio;
+    }
+
+    public String getFolderHero() {
+        folderHero = getFolderSave()+ File.separator + "hero" + File.separator;
+        return folderHero;
+    }
+
+    public String getFolderBlur() {
+        return folderBlur;
+    }
+
+    public String getFolderObject() {
+
+        File fObject = new File(getFolderSave(), "/object/");
+        if (!fObject.exists()) {
+            fObject.mkdirs();
+        }
+
+        folderObject = fObject.getPath();
+
+
+        return folderObject;
+    }
+
+    public String getFolderSave () {
+        folderSave = getContext().getFilesDir().getPath();
+
+        //test
+        folderSave = Environment.getExternalStorageDirectory().toString() + ROOT;
+        return folderSave;
     }
 }

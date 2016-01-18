@@ -26,13 +26,13 @@ android {
 
     productFlavors {
         dev {
-            buildConfigField("String", "facebookID", "123123");
+            buildConfigField("String", "facebookID", '"123123"');
             resValue("string", "myFacebookId", "testDev")
 
         }
 
         real {
-            buildConfigField("String", "facebookID", "123123");
+            buildConfigField("String", "facebookID", '"123123"');
             resValue("string", "myFacebookId", "testReal")
         }
     }
