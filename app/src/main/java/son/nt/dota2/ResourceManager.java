@@ -1,6 +1,7 @@
 package son.nt.dota2;
 
 import android.content.Context;
+import android.os.Environment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class ResourceManager {
     public String folderHero;
     public String folderBlur;
     public String folderObject;
+
+    private String folderRoot;
     public String folderRingtone;
     public String folderNotification;
     public String folderAlarm;
@@ -53,7 +56,11 @@ public class ResourceManager {
             contentManager = new ContentManager(context, 100);
             folderSave = getContext().getFilesDir().getPath();
 
-//            folderSave = Environment.getExternalStorageDirectory().toString() + ROOT;
+            folderRoot = Environment.getExternalStorageDirectory().toString() + ROOT;
+            File fRoot = new File(folderRoot);
+            if (! fRoot.exists()) {
+                fRoot.mkdirs();
+            }
             fileHeroList = folderSave +File.separator + "hero_list.dat";
             folderHero = folderSave+ File.separator + "hero" + File.separator;
 
@@ -76,13 +83,22 @@ public class ResourceManager {
 
             folderObject = fObject.getPath();
 
-            File fRingtone = new File (folderSave, "/ringtone/");
+            File fRingtone = new File (folderRoot, "/ringtone/");
+            if (!fRingtone.exists()) {
+                fRingtone.mkdirs();
+            }
             folderRingtone = fRingtone.getPath();
 
-            File fNoti = new File (folderSave, "/notification/");
+            File fNoti = new File (folderRoot, "/notification/");
+            if (!fNoti.exists()) {
+                fNoti.mkdirs();
+            }
             folderNotification = fNoti.getPath();
 
-            File fAlarm = new File (folderSave, "/alarm/");
+            File fAlarm = new File (folderRoot, "/alarm/");
+            if (!fAlarm.exists()) {
+                fAlarm.mkdirs();
+            }
             folderAlarm = fAlarm.getPath();
 
         }catch (Exception e) {
@@ -114,7 +130,13 @@ public class ResourceManager {
         if (!f.exists()) {
             f.mkdirs();
         }
-        return ResourceManager.getInstance().folderRingtone + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
+
+        File fRingtone = new File (folderRoot, "/ringtone/");
+        if (!fRingtone.exists()) {
+            fRingtone.mkdirs();
+        }
+        folderRingtone = fRingtone.getPath();
+        return folderRingtone + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 
     public String getPathNotification (String link, String heroID) {
@@ -123,7 +145,14 @@ public class ResourceManager {
         if (!f.exists()) {
             f.mkdirs();
         }
-        return ResourceManager.getInstance().folderNotification + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
+
+
+        File fNoti = new File (folderRoot, "/notification/");
+        if (!fNoti.exists()) {
+            fNoti.mkdirs();
+        }
+        folderNotification = fNoti.getPath();
+        return folderNotification + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 
     public String getPathAlarm (String link, String heroID) {
@@ -132,7 +161,13 @@ public class ResourceManager {
         if (!f.exists()) {
             f.mkdirs();
         }
-        return ResourceManager.getInstance().folderAlarm + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
+
+        File fAlarm = new File (folderRoot, "/alarm/");
+        if (!fAlarm.exists()) {
+            fAlarm.mkdirs();
+        }
+        folderAlarm = fAlarm.getPath();
+        return folderAlarm + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 
     public MyPath getMyPath() {
