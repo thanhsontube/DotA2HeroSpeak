@@ -83,10 +83,7 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <!-- youtube activity -->
-        <activity
-            android:name=".youtube.WidgetVideoYoutubeActivity"
-            android:screenOrientation="portrait" />
+
         <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -109,7 +106,7 @@
         <activity
             android:name=".activity.HeroActivity"
             android:label="@string/title_activity_hero"
-            android:theme="@style/Theme.Hero"></activity>
+            android:theme="@style/Theme.Hero"/>
 
         <activity
             android:name=".setting.SettingActivity"

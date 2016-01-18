@@ -53,6 +53,10 @@ import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsFeedback;
 import son.nt.dota2.utils.TsGaTools;
 
+/**
+ * This class is called after login.
+ */
+
 public class HomeActivity extends AActivity implements HomeFragment.OnFragmentInteractionListener,
         MainFragment.OnFragmentInteractionListener, SearchableFragment.OnFragmentInteractionListener, SavedFragment.OnFragmentInteractionListener {
 
@@ -67,6 +71,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     ImageView avatar;
     TextView txtFromName;
     TextView txtLogout;
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +90,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     }
 
     public void isAddMob() {
-        Logger.debug(TAG, ">>>" + "=====isAddMob");
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Admob");
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
@@ -159,6 +163,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
                 txtFromName.setText(FacebookManager.getInstance().getProfile().getName());
                 txtLogout.setVisibility(View.VISIBLE);
             } catch (Exception e) {
+                e.printStackTrace();
 
             }
 
@@ -175,7 +180,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
     }
 
-    Handler handler = new Handler();
+
 
     private void initListener() {
 

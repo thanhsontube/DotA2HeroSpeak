@@ -166,9 +166,7 @@ public class LoginActivity extends AActivity {
 
     }
 
-    private void testAbilities() {
-        HTTPParseUtils.getInstance().withHeroListBasic();
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

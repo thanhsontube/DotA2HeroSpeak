@@ -47,5 +47,7 @@
     <color name="purple_transparent">#aa432677</color>
     <color name="holo_red_light_transparent">#aaff4444</color>
     <color name="transparent_gray">#aa7e7e7e</color>
+    <color name="transparent_primary">#aa03A9F4</color>
+
 
 </resources>

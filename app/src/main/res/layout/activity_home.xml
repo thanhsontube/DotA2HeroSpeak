@@ -22,7 +22,7 @@
             android:background="@mipmap/layer_image"
             android:orientation="vertical">
 
-            <include layout="@layout/home_tool_bar"></include>
+            <include layout="@layout/home_tool_bar"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
-                <include layout="@layout/ad_mob_ll"></include>
+                <include layout="@layout/ad_mob_ll"/>
 
             </LinearLayout>
 

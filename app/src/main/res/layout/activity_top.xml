@@ -7,7 +7,7 @@
         android:id="@+id/ll_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></FrameLayout>
+        android:layout_weight="1"/>
 
-    <include layout="@layout/ad_mob_ll"></include>
+    <include layout="@layout/ad_mob_ll"/>
 </LinearLayout>

@@ -27,7 +27,6 @@ import son.nt.dota2.comments.ChatDialog;
 import son.nt.dota2.utils.TsGaTools;
 import son.nt.dota2.utils.TsScreen;
 
-
 public class HomeFragment extends AFragment {
     public static final String TAG = "HomeFragment";
     private static final String ARG_PARAM1 = "param1";
@@ -47,7 +46,6 @@ public class HomeFragment extends AFragment {
 
     public static final String KEY_EFFECT_DEFAULT = "KEY_EFFECT_DEFAULT";
 
-
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -64,7 +62,7 @@ public class HomeFragment extends AFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setHasOptionsMenu(true);
+        //        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -74,8 +72,7 @@ public class HomeFragment extends AFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -110,8 +107,7 @@ public class HomeFragment extends AFragment {
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+            throw new ClassCastException(activity.toString() + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -121,12 +117,12 @@ public class HomeFragment extends AFragment {
         mListener = null;
     }
 
-
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
     }
 
     FloatingActionButton fabChat;
+
     private void initLayout(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.home_tabs);
         viewPager = (ViewPager) view.findViewById(R.id.home_view_pager);
@@ -155,7 +151,6 @@ public class HomeFragment extends AFragment {
             }
         });
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

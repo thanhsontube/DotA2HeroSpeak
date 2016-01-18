@@ -28,7 +28,7 @@ public class HeroManager extends AObject{
 
     public List<HeroEntry> listHeroes = new ArrayList<>();
 
-    public String[] groups = new String[]{"STRENGTH", "AGILITY", "INTELLIGENCE"};
+    public String[] groups = new String[]{"STRENGTH", "AGILITY", "INTEL"};
 
     static HeroManager INSTANCE = null;
 

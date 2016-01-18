@@ -3,4 +3,8 @@
     <color name="strength">@color/md_red_500</color>
     <color name="agi">@color/md_green_500</color>
     <color name="intel">@color/md_blue_500</color>
+    <color name="primary_color">@color/md_light_blue_500</color>
+    <color name="primary_dark_color">@color/md_light_blue_700</color>
+    <color name="accent_color">@color/md_deep_orange_A400</color>
+
 </resources>

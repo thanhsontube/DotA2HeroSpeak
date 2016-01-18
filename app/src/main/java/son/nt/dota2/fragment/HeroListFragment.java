@@ -1,6 +1,5 @@
 package son.nt.dota2.fragment;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,14 +31,7 @@ import son.nt.dota2.utils.TsGaTools;
 import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.TsScreen;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link HeroListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link HeroListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class HeroListFragment extends AFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -76,7 +68,6 @@ public class HeroListFragment extends AFragment {
         super.onCreate(savedInstanceState);
         OttoBus.register(this);
         if (getArguments() != null) {
-//            heroList = (HeroList) getArguments().getSerializable(ARG_PARAM1);
             group = getArguments().getString(ARG_PARAM2);
             getList();
 
@@ -164,9 +155,7 @@ public class HeroListFragment extends AFragment {
 
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
-
         void heroSelected(HeroEntry HeroEntry);
     }
 
