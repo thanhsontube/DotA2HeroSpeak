@@ -91,7 +91,7 @@ public class GridMenuDialog extends DialogFragment {
         list.add(new GridMenuItem("Other Share", R.drawable.ic_share_48));
 
         ParseUser parseUser = ParseUser.getCurrentUser();
-        if (!ParseFacebookUtils.isLinked(parseUser)) {
+        if (parseUser != null && !ParseFacebookUtils.isLinked(parseUser)) {
             likeView.setVisibility(View.INVISIBLE);
         }
 

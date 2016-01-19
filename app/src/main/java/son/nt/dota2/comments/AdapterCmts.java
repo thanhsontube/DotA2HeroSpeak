@@ -69,6 +69,8 @@ public class AdapterCmts extends RecyclerView.Adapter<AdapterCmts.ViewHolder> {
             Glide.with(viewHolder.avatar.getContext()).load(dto.getImage())
                     .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .fallback(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
                     .into(viewHolder.avatar);
         Glide.with(viewHolder.heroAvatar.getContext()).load(HeroManager.getInstance().getHero(dto.getSpeakDto().heroId).avatarThumbnail)
                 .fitCenter()

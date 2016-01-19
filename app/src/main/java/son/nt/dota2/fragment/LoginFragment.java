@@ -182,12 +182,12 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
 
     private void checkingLogin() {
         ParseUser parseUser = ParseUser.getCurrentUser();
-//        if (parseUser != null) {
-//            String name = parseUser.getString("name");
-//            Toast.makeText(getActivity(), "Welcome:" + name, Toast.LENGTH_SHORT).show();
-//            startActivity(HomeActivity.getIntent(getActivity()));
-//            getActivity().finish();
-//        }
+        if (parseUser != null) {
+            String name = parseUser.getString("name");
+            Toast.makeText(getActivity(), "Welcome:" + name, Toast.LENGTH_SHORT).show();
+            startActivity(HomeActivity.getIntent(getActivity()));
+            getActivity().finish();
+        }
     }
 
 
@@ -314,7 +314,7 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
                     return;
                 }
 
-                if (ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
+                if (ParseUser.getCurrentUser() != null && ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
                     Logger.debug(TAG, ">>>" + "user link fb already");
                     getUserInfo();
                     return;

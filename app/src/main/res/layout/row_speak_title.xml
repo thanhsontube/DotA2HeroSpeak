@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:text="Moving"
         style="@style/MoreTextStyle"
+        android:textSize="20sp"
         android:textColor="@color/white"
         android:textAllCaps="true"
         android:layout_gravity="center"/>

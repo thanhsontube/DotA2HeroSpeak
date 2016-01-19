@@ -165,7 +165,8 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
             txtFromName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    startActivity(LoginActivity.getIntent(HomeActivity.this));
+                    finish();
                 }
             });
         } else {

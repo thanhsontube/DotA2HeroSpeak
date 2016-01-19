@@ -57,7 +57,7 @@ public class ResourceManager {
             folderSave = getContext().getFilesDir().getPath();
 
             folderRoot = Environment.getExternalStorageDirectory().toString() + ROOT;
-            folderSave = folderRoot;
+
             File fRoot = new File(folderRoot);
             if (! fRoot.exists()) {
                 fRoot.mkdirs();
@@ -211,7 +211,7 @@ public class ResourceManager {
         folderSave = getContext().getFilesDir().getPath();
 
         //test
-        folderSave = Environment.getExternalStorageDirectory().toString() + ROOT;
+//        folderSave = Environment.getExternalStorageDirectory().toString() + ROOT;
         return folderSave;
     }
 }
