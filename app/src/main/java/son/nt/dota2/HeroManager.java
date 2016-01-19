@@ -134,6 +134,16 @@ public class HeroManager extends AObject{
 
     public void initDataSelf () {
         try {
+
+            File fo = new File(ResourceManager.getInstance().getFolderObject());
+            try {
+                FileUtil.deleteRecursive(fo);
+
+            }catch (Exception e) {
+                    e.printStackTrace();
+            }
+            //create folder object
+            ResourceManager.getInstance().getFolderObject();
             File fileBasicHeroList = new File (ResourceManager.getInstance().folderObject, HeroSavedDto.class.getSimpleName());
             if (!fileBasicHeroList.exists()) {
                 Logger.debug(TAG, ">>>" + "COPY>>>>>>>");
