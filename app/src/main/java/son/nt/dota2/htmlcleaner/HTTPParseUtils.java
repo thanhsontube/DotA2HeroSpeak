@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.HeroManager;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.AbilityDto;
 import son.nt.dota2.dto.AbilityItemAffectDto;
@@ -29,11 +30,13 @@ import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.dto.save.SaveBasicHeroData;
 import son.nt.dota2.dto.save.SaveHeroAbility;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
+import son.nt.dota2.htmlcleaner.abilities.ArcAbilitiesLoader;
 import son.nt.dota2.htmlcleaner.bg.BgModalLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroListLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroNameLoader;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
+import son.nt.dota2.htmlcleaner.voice.ArcVoiceLoader;
 import son.nt.dota2.htmlcleaner.voice.VoiceLoader;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
@@ -87,6 +90,48 @@ public class HTTPParseUtils {
     public void withAbility(final String heroID) {
         HttpGet httpGet = new HttpGet(AbilitiesLoader.PATH_ABILITY_ROOT + heroID);
         ResourceManager.getInstance().getContentManager().load(new AbilitiesLoader(httpGet, true) {
+            @Override
+            public void onContentLoaderStart() {
+                Logger.debug(TAG, ">>>" + "onContentLoaderStart");
+            }
+
+            @Override
+            public void onContentLoaderSucceed(List<AbilityDto> entity) {
+                for (AbilityDto d : entity) {
+                    d.heroId = heroID;
+                }
+                Logger.debug(TAG, ">>>=====>>>>" + "withAbility hero:" + heroID + ";total abilities:" + entity.size());
+                SaveHeroAbility saveHeroAbility = new SaveHeroAbility(heroID, entity);
+                try {
+                    FileUtil.saveAbilityObject(context, saveHeroAbility, heroID);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (listener!= null) {
+                    listener.onFinish();
+                }
+
+                //put this data on Parse
+
+//                    uploadAbilityToParse(entity, name);
+
+//                HeroEntry heroEntry = new HeroEntry();
+//                heroEntry.name = name;
+//                heroEntry.listAbilities.addAll(entity);
+//                OttoBus.post(heroEntry);
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>>" + "onContentLoaderFailed:" + e.toString());
+            }
+        });
+    }
+
+    public void withArcAbility(final String heroID) {
+        HttpGet httpGet = new HttpGet(MsConst.ROOT_DOTA2 + heroID);
+        ResourceManager.getInstance().getContentManager().load(new ArcAbilitiesLoader(httpGet, true) {
             @Override
             public void onContentLoaderStart() {
                 Logger.debug(TAG, ">>>" + "onContentLoaderStart");
@@ -470,6 +515,46 @@ public class HTTPParseUtils {
         });
 
     }
+
+    public void withArcVoices (final String heroId) {
+        Logger.debug(TAG, ">>>" + "====== withArcVoices:" + heroId);
+        String pathSpeak = String.format(VoiceLoader.PATH, heroId);
+        HttpGet httpGet = new HttpGet(pathSpeak);
+        ResourceManager.getInstance().getContentManager().load(new ArcVoiceLoader(httpGet, false) {
+            @Override
+            public void onContentLoaderStart() {
+                Logger.debug(TAG, ">>>" + "withArcVoices start");
+            }
+
+            @Override
+            public void onContentLoaderSucceed(List<SpeakDto> entity) {
+                Logger.debug(TAG, ">>>" + "withArcVoices:" + heroId + " onContentLoaderSucceed :" + entity.size());
+                for (SpeakDto p : entity) {
+                    p.heroId = heroId;
+                }
+//                HeroEntry heroEntry = HeroManager.getInstance().getHero(heroId);
+//                heroEntry.listSpeaks.clear();
+//                heroEntry.listSpeaks.addAll(entity);
+//
+//                if (listener != null) {
+//                    listener.onFinish();
+//                }
+                try {
+                    FileUtil.saveObject(context, new HeroSpeakSaved(heroId, entity), "voice_" + heroId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>>" + " withArcVoices Error:" + e);
+            }
+        });
+
+    }
+
+
 
 
     public void setCallback(IParseCallBack cb) {

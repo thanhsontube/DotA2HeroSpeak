@@ -26,10 +26,10 @@ public class TestActivity extends Activity implements View.OnClickListener {
                 getHeroFromParse();
                 break;
             case R.id.test_arc_voice:
-                HTTPParseUtils.getInstance().withVoices("Arc_Warden");
+                HTTPParseUtils.getInstance().withArcVoices("Arc_Warden");
                 break;
             case R.id.test_arc_ability:
-                HTTPParseUtils.getInstance().withAbility("Arc_Warden");
+                HTTPParseUtils.getInstance().withArcAbility("Arc_Warden");
                 break;
         }
     }

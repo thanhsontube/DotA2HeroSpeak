@@ -25,6 +25,9 @@ public class MsConst {
     public static final String KEY_HELP = "KEY_HELP";
 
     public static final String EXTRA_HERO = "EXTRA_HERO";
+    public static final String ROOT_DOTA2 = "http://www.dota2.com/hero/";
+
+
 
     public static enum RepeatMode {
         MODE_ON (0),
