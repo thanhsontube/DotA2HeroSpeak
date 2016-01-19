@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.share.widget.LikeView;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +89,11 @@ public class GridMenuDialog extends DialogFragment {
         list.add(playList);
         list.add(new GridMenuItem("Facebook Share", R.drawable.ic_facebook_48));
         list.add(new GridMenuItem("Other Share", R.drawable.ic_share_48));
+
+        ParseUser parseUser = ParseUser.getCurrentUser();
+        if (!ParseFacebookUtils.isLinked(parseUser)) {
+            likeView.setVisibility(View.INVISIBLE);
+        }
 
         adapter = new AdapterGridMenu(getActivity(), list, speakDto);
         adapter.setOnCallback(new AdapterGridMenu.IAdapterCallback() {

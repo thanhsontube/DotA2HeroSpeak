@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/brown_500"
     tools:context="son.nt.dota2.activity.HeroActivity">
 
     <LinearLayout
@@ -15,7 +16,7 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <include layout="@layout/ad_mob_ll"></include>
+        <include layout="@layout/ad_mob_ll"/>
 
     </LinearLayout>
 

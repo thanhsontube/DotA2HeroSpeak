@@ -1,7 +1,6 @@
 package son.nt.dota2.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,20 +36,12 @@ import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link HeroFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link HeroFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class HeroFragment extends AbsFragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String TAG = "HeroFragment";
 
-    // TODO: Rename and change types of parameters
     private HeroEntry heroEntry;
 
     private OnFragmentInteractionListener mListener;
@@ -64,14 +55,6 @@ public class HeroFragment extends AbsFragment {
     private List<String> listKenburns = new ArrayList<>();
     String heroID;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment HeroFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static HeroFragment newInstance(HeroEntry param1) {
         HeroFragment fragment = new HeroFragment();
         Bundle args = new Bundle();
@@ -146,7 +129,7 @@ public class HeroFragment extends AbsFragment {
         listFragments.add(VoiceFragment.newInstance(heroEntry.heroId));
         titles.add("Ability");
         listFragments.add(AbilityFragment.newInstance(heroEntry.heroId));
-        titles.add("Hero Info");
+        titles.add("BIO");
         listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
         titles.add("Comments");
         listFragments.add(ChatFragment.newInstance(heroEntry.heroId));

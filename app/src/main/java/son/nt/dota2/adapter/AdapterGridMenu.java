@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.parse.ParseUser;
 
 import java.util.List;
 
@@ -149,7 +150,7 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
 
                     case CASE_COMMENTS:
                         TsGaTools.trackPages("/set_comment");
-                        if (FacebookManager.getInstance().isLogin()) {
+                        if (ParseUser.getCurrentUser() != null) {
                             GoLoginDto dto = new GoLoginDto(true);
                             dto.speakDto = speakDto;
                             OttoBus.post(dto);

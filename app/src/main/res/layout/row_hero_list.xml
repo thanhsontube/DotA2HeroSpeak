@@ -5,7 +5,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
+    android:background="@color/transparent"
     android:clickable="true"
+    card_view:cardBackgroundColor="@color/transparent"
     card_view:cardCornerRadius="8dp"
     card_view:cardElevation="4dp"
     card_view:cardUseCompatPadding="true">
@@ -22,7 +24,7 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_gravity="center"
-            android:background="@color/md_grey_300"
+            android:background="@color/transparent"
             android:contentDescription="@string/action_settings"
             android:scaleType="fitXY" />
 
@@ -31,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="#1976D2"
+            android:background="@color/blue_transparent"
             android:gravity="center_horizontal"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"

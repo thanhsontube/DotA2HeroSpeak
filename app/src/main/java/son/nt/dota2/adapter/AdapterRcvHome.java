@@ -47,11 +47,11 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
 
         viewHolder.txtName.setText(dto.fullName);
         if (dto.group.equalsIgnoreCase("Str")) {
-            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.strength));
+            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.holo_red_light_transparent));
         } else if (dto.group.equalsIgnoreCase("Agi")){
-            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.agi));
+            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.green_transparent));
         } else {
-            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.intel));
+            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.blue_transparent));
         }
         if (contextWeakReference.get() != null) {
             Glide.with(viewHolder.imageView.getContext()).load(dto.avatarThumbnail)
