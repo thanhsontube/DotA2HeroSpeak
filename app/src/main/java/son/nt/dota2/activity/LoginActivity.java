@@ -2,6 +2,7 @@ package son.nt.dota2.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -22,13 +23,14 @@ import son.nt.dota2.R;
 import son.nt.dota2.base.AActivity;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.fragment.LoginFragment;
+import son.nt.dota2.fragment.SignUpFragment;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.test.TestActivity;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsGaTools;
 import son.nt.dota2.utils.TsParse;
 
-public class LoginActivity extends AActivity {
+public class LoginActivity extends AActivity implements LoginFragment.OnFragmentInteractionListener {
 
     public static final String TAG = "LoginActivity";
 
@@ -191,5 +193,16 @@ public class LoginActivity extends AActivity {
 
     public static Intent getIntent(Context context) {
         return new Intent(context, LoginActivity.class);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onSignUp(String email, String password) {
+        showFragment(SignUpFragment.newInstance(email, password), true);
+
     }
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTextViewStyle">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+    <style name="AppTextViewStyle.Header" parent="AppTextViewStyle">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Headline</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
+
+    <style name="AppTextViewStyle.Header.Light" parent="AppTextViewStyle.Header">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTextViewStyle.Normal" parent="AppTextViewStyle">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+    </style>
+
+    <style name="AppTextViewStyle.Normal.Grey_600" parent="AppTextViewStyle">
+        <item name="android:textColor">@color/md_grey_600</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+    </style>
+
+    <style name="MoreTextStyle" parent="AppTextViewStyle">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Button</item>
+        <item name="android:textColor">@color/md_red_500</item>
+    </style>
+
+    <style name="ButtonTextStyle" parent="AppTextViewStyle">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+        <item name="android:textColor">@color/md_blue_500</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="AppTextViewStyle.Normal.Light" parent="AppTextViewStyle.Normal">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+</resources>

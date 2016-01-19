@@ -457,6 +457,4 @@ public abstract class AbilitiesLoader extends ContentLoader<List<AbilityDto>> {
         }
         return abilityDto;
     }
-
-
 }

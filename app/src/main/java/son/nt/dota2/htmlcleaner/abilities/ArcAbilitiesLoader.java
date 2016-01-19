@@ -79,15 +79,18 @@ public abstract class ArcAbilitiesLoader extends ContentLoader<List<AbilityDto>>
             String xPath = "//div[@id ='overviewHeroAbilities']";
             Object[] obs = nodeA.evaluateXPath(xPath);
             Logger.debug(TAG, ">>>" + "obs:" + obs.length);
-//            TagNode tagAbis = nodeA.findElementByAttValue("id", "overviewHeroAbilities",false, false);
             TagNode tagAbis = (TagNode) obs[0];
             for (TagNode tag  : tagAbis.getChildTagList()) {
                 TagNode tagIcon = tag.getChildTagList().get(0);
                 TagNode tagDes = tag.getChildTagList().get(1);
-
                 String image = tagIcon.getChildTagList().get(0).getAttributeByName("src");
-
-                Logger.debug(TAG, ">>>" + "tagDes:" + tagDes.getChildTagList().size() + ";des:" + tagDes.getText());
+                List<TagNode> listDes = tagDes.getChildTagList();
+                AbilityDto dto = new AbilityDto();
+                dto.name = listDes.get(0).getText().toString().trim();
+                dto.description = listDes.get(1).getText().toString().trim();
+                Logger.debug(TAG, ">>>" +  tagDes.getText());
+                dto.linkImage = image;
+                listAbilities.add(dto);
 
             }
         } catch (XPatherException e) {

@@ -70,39 +70,39 @@ public abstract class ArcVoiceLoader extends ContentLoader<List<SpeakDto>> {
             listSpeaks.addAll(getKillingSpecial(nodeA));
             listSpeaks.addAll(getMeeting(nodeA));
 
-           /* //Killing_a_Rival
-            for (int i = 0; i < tagNodes.size(); i++) {
-
-                TagNode tag = tagNodes.get(i);
-                try {
-                    String xpathA = "//span[@id='Killing_a_Rival']";
-                    Object[] objA = tag.evaluateXPath(xpathA);
-                    if (objA.length > 0) {
-                        normalNode = tagNodes.get(i + 1);
-                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Killing_a_Rival"));
-                        break;
-                    }
-                } catch (XPatherException e) {
-                    e.printStackTrace();
-                }
-            }
+            //Killing_a_Rival
+//            for (int i = 0; i < tagNodes.size(); i++) {
+//
+//                TagNode tag = tagNodes.get(i);
+//                try {
+//                    String xpathA = "//span[@id='Killing_a_Rival']";
+//                    Object[] objA = tag.evaluateXPath(xpathA);
+//                    if (objA.length > 0) {
+//                        normalNode = tagNodes.get(i + 1);
+//                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Killing_a_Rival"));
+//                        break;
+//                    }
+//                } catch (XPatherException e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
             //Meeting_an_Ally
-            for (int i = 0; i < tagNodes.size(); i++) {
-
-                TagNode tag = tagNodes.get(i);
-                try {
-                    String xpathA = "//span[@id='Meeting_an_Ally']";
-                    Object[] objA = tag.evaluateXPath(xpathA);
-                    if (objA.length > 0) {
-                        normalNode = tagNodes.get(i + 1);
-                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Meeting_an_Ally"));
-                        break;
-                    }
-                } catch (XPatherException e) {
-                    e.printStackTrace();
-                }
-            }
+//            for (int i = 0; i < tagNodes.size(); i++) {
+//
+//                TagNode tag = tagNodes.get(i);
+//                try {
+//                    String xpathA = "//span[@id='Meeting_an_Ally']";
+//                    Object[] objA = tag.evaluateXPath(xpathA);
+//                    if (objA.length > 0) {
+//                        normalNode = tagNodes.get(i + 1);
+//                        listSpeaks.addAll(getVoiceWithImage(normalNode, "Meeting_an_Ally"));
+//                        break;
+//                    }
+//                } catch (XPatherException e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
             //Beginning_the_Battle
 
@@ -282,7 +282,7 @@ public abstract class ArcVoiceLoader extends ContentLoader<List<SpeakDto>> {
                 } catch (XPatherException e) {
                     e.printStackTrace();
                 }
-            }*/
+            }
 
 
 

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.androidquery.AQuery;
 
+import butterknife.ButterKnife;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.loader.MyPath;
@@ -54,6 +55,20 @@ public class AFragment extends Fragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
+    }
+
+
+    @Override
+    public void onDestroy() {
+        ButterKnife.unbind(this);
+        super.onDestroy();
+    }
 
 
     protected FragmentManager getSafeFragmentManager() {

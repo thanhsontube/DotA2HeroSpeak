@@ -22,10 +22,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.parse.GetCallback;
+import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.squareup.otto.Subscribe;
 
 import son.nt.dota2.MsConst;
@@ -148,9 +152,40 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-        avatar = (ImageView) findViewById(R.id.nav_avatar);
-//        txtFromName = (TextView) findViewById(R.id.nav_fromName);
-//        txtLogout = (TextView) findViewById(R.id.nav_logout);
+        View headerView = navigationView.getHeaderView(0);
+        avatar = (ImageView) headerView.findViewById(R.id.nav_avatar);
+        txtFromName = (TextView) headerView.findViewById(R.id.nav_fromName);
+        txtLogout = (TextView) headerView.findViewById(R.id.nav_logout);
+
+
+        ParseUser parseUser = ParseUser.getCurrentUser();
+        if (parseUser == null) {
+            txtFromName.setText("Login");
+            txtLogout.setVisibility(View.GONE);
+            txtFromName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+        } else {
+            txtLogout.setVisibility(View.VISIBLE);
+            txtFromName.setText(parseUser.getString("name"));
+            Glide.with(this).load(parseUser.getString("avatar"))
+                        .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
+            txtLogout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ParseUser.getCurrentUser().logOutInBackground(new LogOutCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            startActivity(LoginActivity.getIntent(HomeActivity.this));
+                            finish();
+                        }
+                    });
+                }
+            });
+        }
 //        if (FacebookManager.getInstance().isLogin()) {
 //            try {
 //                String link = FacebookManager.getInstance().getLinkAvatar();

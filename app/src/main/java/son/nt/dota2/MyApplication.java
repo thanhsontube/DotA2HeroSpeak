@@ -1,9 +1,10 @@
 package son.nt.dota2;
 
-import android.support.multidex.MultiDexApplication;
+import android.app.Application;
 
 import com.facebook.FacebookSdk;
 import com.parse.Parse;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 
 import son.nt.dota2.data.TsSqlite;
@@ -14,7 +15,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 /**
  * Created by Sonnt on 3/14/2015.
  */
-public class MyApplication extends MultiDexApplication {
+public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
@@ -34,6 +35,7 @@ public class MyApplication extends MultiDexApplication {
 //
         Parse.initialize(this, "MXj3eiU5G9qQxEHD9aVFdbHZbtcInx6v1VNIjmyf", "LsnCDCPtmWxnLVeKQg7Vc5oSEYQGJR6Tcz3Ettwi");
         ParseInstallation.getCurrentInstallation().saveInBackground();
+        ParseFacebookUtils.initialize(getApplicationContext());
 //
         FacebookManager.createInstance(getApplicationContext());
 //
