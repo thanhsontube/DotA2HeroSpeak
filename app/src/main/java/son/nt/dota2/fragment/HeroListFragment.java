@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -127,15 +126,15 @@ public class HeroListFragment extends AFragment {
         recyclerView.setHasFixedSize(true);
         jazzyRecyclerViewScrollListener = new JazzyRecyclerViewScrollListener();
         setEffect();
-//        recyclerView.addOnScrollListener(jazzyRecyclerViewScrollListener);
+        recyclerView.addOnScrollListener(jazzyRecyclerViewScrollListener);
         int row = 2;
         if (TsScreen.isLandscape(getActivity())) {
             row = 4;
         }
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(row, StaggeredGridLayoutManager.VERTICAL);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-//        recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        recyclerView.setLayoutManager(gridLayoutManager);
+//        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+//        recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapterHome);
 
     }

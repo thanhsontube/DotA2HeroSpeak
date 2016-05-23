@@ -50,28 +50,29 @@ public abstract class MusicPackLoader extends ContentLoader<List<MusicPackDto>> 
                 dto.setName(tag.getText().toString());
                 dto.setCoverColor("#8847ff");
                 TagNode note = tag.getChildTagList().get(0).getChildTagList().get(0);
-                String herf = "http://dota2.gamepedia.com" + note.getAttributeByName("href");
-                dto.setLinkDetails(herf);
+                String detail = "http://dota2.gamepedia.com" + note.getAttributeByName("href");
+                dto.setLinkDetails(detail);
                 TagNode imageNote = note.getChildTagList().get(0);
                 String src = imageNote.getAttributeByName("src").replace("100px", "200px");
                 Logger.debug(TAG, ">>>" + "src:" + src);
+                dto.setHref(src);
 
 
                 list.add(dto);
+
             }
             nodeA = (TagNode) data[1];
             for (TagNode tag : nodeA.getChildTagList()) {
-                Logger.debug(TAG, ">>>" + "----Tag:" + i++);
-                Logger.debug(TAG, ">>>" + "Text:" + tag.getName() + ";text:" + tag.getText());
                 dto = new MusicPackDto();
                 dto.setName(tag.getText().toString());
-                dto.setCoverColor("#8847ff");
+                dto.setCoverColor("#d32ce6");
                 TagNode note = tag.getChildTagList().get(0).getChildTagList().get(0);
-                String herf = "http://dota2.gamepedia.com" + note.getAttributeByName("href");
-                dto.setLinkDetails(herf);
+                String detail = "http://dota2.gamepedia.com" + note.getAttributeByName("href");
+                dto.setLinkDetails(detail);
                 TagNode imageNote = note.getChildTagList().get(0);
                 String src = imageNote.getAttributeByName("src").replace("100px", "200px");
                 Logger.debug(TAG, ">>>" + "src:" + src);
+                dto.setHref(src);
 
 
                 list.add(dto);

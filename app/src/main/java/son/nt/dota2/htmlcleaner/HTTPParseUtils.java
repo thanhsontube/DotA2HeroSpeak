@@ -40,8 +40,10 @@ import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
 import son.nt.dota2.htmlcleaner.voice.ArcVoiceLoader;
 import son.nt.dota2.htmlcleaner.voice.VoiceLoader;
+import son.nt.dota2.ottobus_entry.GoAdapterMusicPackHome;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsParse;
 
 /**
@@ -643,6 +645,7 @@ public class HTTPParseUtils {
             @Override
             public void onContentLoaderSucceed(List<MusicPackDto> entity) {
                 Logger.debug(TAG, ">>> :" + "withMusicPacksList onContentLoaderSucceed:");
+                OttoBus.post(new GoAdapterMusicPackHome(entity));
 
             }
 
