@@ -1,6 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent"
@@ -9,9 +9,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/voice_recycleview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:scrollbarAlwaysDrawVerticalTrack="true"/>
+        android:layout_height="match_parent" />
+
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/voice_fab"
         android:layout_width="wrap_content"

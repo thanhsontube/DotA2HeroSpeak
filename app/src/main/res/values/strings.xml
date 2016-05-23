@@ -33,7 +33,7 @@
     <string name="male">Male</string>
     <string name="create_account">Create Account</string>
     <string name="error_create_account">Error creating account</string>
-
+    <string name="title_activity_music_pack_list">MusicPackListActivity</string>
 
 
 </resources>

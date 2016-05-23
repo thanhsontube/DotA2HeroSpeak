@@ -6,7 +6,7 @@ import android.util.Log;
  * Created by Sonnt on 4/26/15.
  */
 public final class Logger {
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
 
     private Logger() {
         // enforcing singleton

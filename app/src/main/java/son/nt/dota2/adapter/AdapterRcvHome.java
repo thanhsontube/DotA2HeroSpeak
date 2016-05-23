@@ -24,7 +24,6 @@ import son.nt.dota2.utils.TsGaTools;
  */
 public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHolder> {
 
-    String url = "http://38.media.tumblr.com/600b4ea2d2770bec97fd836a6b3c91f9/tumblr_n5u5px6X1Z1rwq84jo1_r1_400.gif";
     List<HeroEntry> mValues;
     Context context;
     private  final WeakReference<Context> contextWeakReference;

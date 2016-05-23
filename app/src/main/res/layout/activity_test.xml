@@ -31,6 +31,17 @@
             android:text="get Arc Ability"
             android:id="@+id/test_arc_ability"/>
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Music Packs List"
+            android:id="@+id/test_music_packs_list"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Music Packs Download"
+            android:id="@+id/test_music_packs_list_download"/>
+
     </LinearLayout>
 
 </ScrollView>

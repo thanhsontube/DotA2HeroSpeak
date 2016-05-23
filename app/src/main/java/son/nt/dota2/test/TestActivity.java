@@ -1,11 +1,13 @@
 package son.nt.dota2.test;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import son.nt.dota2.R;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
+import son.nt.dota2.musicPack.MusicPackListActivity;
 
 public class TestActivity extends Activity implements View.OnClickListener {
 
@@ -16,6 +18,8 @@ public class TestActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.test_get_hero).setOnClickListener(this);
         findViewById(R.id.test_arc_voice).setOnClickListener(this);
         findViewById(R.id.test_arc_ability).setOnClickListener(this);
+        findViewById(R.id.test_music_packs_list).setOnClickListener(this);
+        findViewById(R.id.test_music_packs_list_download).setOnClickListener(this);
 
     }
 
@@ -31,6 +35,16 @@ public class TestActivity extends Activity implements View.OnClickListener {
             case R.id.test_arc_ability:
                 HTTPParseUtils.getInstance().withArcAbility("Arc_Warden");
                 break;
+            case R.id.test_music_packs_list:
+            {
+                startActivity(new Intent(this, MusicPackListActivity.class));
+                break;
+            }
+            case R.id.test_music_packs_list_download:
+            {
+                HTTPParseUtils.getInstance().withMusicPacksList();
+                break;
+            }
         }
     }
 

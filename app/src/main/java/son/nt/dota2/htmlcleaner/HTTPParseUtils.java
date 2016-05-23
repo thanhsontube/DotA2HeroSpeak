@@ -27,6 +27,7 @@ import son.nt.dota2.dto.HeroRoleDto;
 import son.nt.dota2.dto.HeroSavedDto;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.musicPack.MusicPackDto;
 import son.nt.dota2.dto.save.SaveBasicHeroData;
 import son.nt.dota2.dto.save.SaveHeroAbility;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
@@ -34,6 +35,7 @@ import son.nt.dota2.htmlcleaner.abilities.ArcAbilitiesLoader;
 import son.nt.dota2.htmlcleaner.bg.BgModalLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroListLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroNameLoader;
+import son.nt.dota2.htmlcleaner.musicPack.MusicPackLoader;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
 import son.nt.dota2.htmlcleaner.voice.ArcVoiceLoader;
@@ -108,7 +110,7 @@ public class HTTPParseUtils {
                     e.printStackTrace();
                 }
 
-                if (listener!= null) {
+                if (listener != null) {
                     listener.onFinish();
                 }
 
@@ -150,7 +152,7 @@ public class HTTPParseUtils {
                     e.printStackTrace();
                 }
 
-                if (listener!= null) {
+                if (listener != null) {
                     listener.onFinish();
                 }
 
@@ -217,7 +219,7 @@ public class HTTPParseUtils {
         });
     }
 
-    public void withHeroListFromParse () {
+    public void withHeroListFromParse() {
         Logger.debug(TAG, ">>>" + ">>>withHeroListFromParse<<<");
         try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
@@ -253,7 +255,7 @@ public class HTTPParseUtils {
                 }
             });
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -330,15 +332,15 @@ public class HTTPParseUtils {
                     p.saveInBackground();
 
                     //upload AbilityLevelDto
-                    for (AbilityLevelDto d: dto.listAbilityPerLevel) {
+                    for (AbilityLevelDto d : dto.listAbilityPerLevel) {
                         ParseObject p1 = new ParseObject(AbilityLevelDto.class.getSimpleName());
                         p1.put("heroId", dto.heroId);
                         p1.put("abilityName", dto.name);
                         p1.put("abilityLevelName", d.name);
                         StringBuilder value = new StringBuilder();
-                        for (int j = 0; j < d.list.size(); j ++) {
+                        for (int j = 0; j < d.list.size(); j++) {
                             value.append(d.list.get(j));
-                            if (j < d.list.size() -1) {
+                            if (j < d.list.size() - 1) {
                                 value.append("/");
                             }
                         }
@@ -352,9 +354,9 @@ public class HTTPParseUtils {
                         ParseObject p1 = new ParseObject(AbilityItemAffectDto.class.getSimpleName());
                         p1.put("heroId", dto.heroId);
                         p1.put("abilityName", dto.name);
-                        p1.put("src", TextUtils.isEmpty(d.src)? "": d.src);
-                        p1.put("alt", TextUtils.isEmpty(d.alt)? "": d.alt);
-                        p1.put("text", TextUtils.isEmpty(d.text)? "": d.text);
+                        p1.put("src", TextUtils.isEmpty(d.src) ? "" : d.src);
+                        p1.put("alt", TextUtils.isEmpty(d.alt) ? "" : d.alt);
+                        p1.put("text", TextUtils.isEmpty(d.text) ? "" : d.text);
                         p1.saveInBackground();
                         Logger.debug(TAG, ">>>" + "OK AbilityItemAffectDto");
                     }
@@ -364,7 +366,7 @@ public class HTTPParseUtils {
                         ParseObject p1 = new ParseObject(AbilityNotesDto.class.getSimpleName());
                         p1.put("heroId", dto.heroId);
                         p1.put("abilityName", dto.name);
-                        p1.put("notes", TextUtils.isEmpty(d.notes)? "": d. notes);
+                        p1.put("notes", TextUtils.isEmpty(d.notes) ? "" : d.notes);
                         p1.saveInBackground();
                         Logger.debug(TAG, ">>>" + "OK AbilityNotesDto");
                     }
@@ -388,6 +390,7 @@ public class HTTPParseUtils {
 
 
     int count = 1;
+
     private void updateStep1() {
 
         for (final HeroEntry dto : HeroManager.getInstance().listHeroes) {
@@ -426,39 +429,38 @@ public class HTTPParseUtils {
     private void updateStep2(final HeroEntry dto) {
         Logger.debug(TAG, ">>>" + "updateStep2:" + dto.heroId);
 
-            ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
-            query.whereEqualTo("heroId", dto.heroId);
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> list, ParseException e) {
-                    if (e != null || list.size() > 0) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
+        query.whereEqualTo("heroId", dto.heroId);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (e != null || list.size() > 0) {
 
-                        ParseObject p = list.get(0);
-                        String objectId = p.getObjectId();
-                        Logger.debug(TAG, ">>>" + "objectId:" + objectId);
+                    ParseObject p = list.get(0);
+                    String objectId = p.getObjectId();
+                    Logger.debug(TAG, ">>>" + "objectId:" + objectId);
 
-                        ParseQuery<ParseObject> mQuery = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
-                        mQuery.getInBackground(objectId, new GetCallback<ParseObject>() {
-                            @Override
-                            public void done(ParseObject p, ParseException e) {
-                                p.put("fullName", dto.fullName);
-                                p.put("name", dto.name);
-                                p.put("lore", dto.lore);
-                                p.saveInBackground();
-                                Logger.debug(TAG, ">>>" + "updateStep2 OK with:" + dto.fullName);
-                            }
-                        });
+                    ParseQuery<ParseObject> mQuery = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
+                    mQuery.getInBackground(objectId, new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject p, ParseException e) {
+                            p.put("fullName", dto.fullName);
+                            p.put("name", dto.name);
+                            p.put("lore", dto.lore);
+                            p.saveInBackground();
+                            Logger.debug(TAG, ">>>" + "updateStep2 OK with:" + dto.fullName);
+                        }
+                    });
 
-                    }
                 }
-            });
-
+            }
+        });
 
 
     }
 
     private void updateHeroRole(HeroEntry heroEntry) {
-        List <HeroRoleDto> list = new ArrayList<>();
+        List<HeroRoleDto> list = new ArrayList<>();
         for (String s : heroEntry.roles) {
             HeroRoleDto heroRoleDto = new HeroRoleDto(heroEntry.heroId, s);
             list.add(heroRoleDto);
@@ -466,8 +468,8 @@ public class HTTPParseUtils {
 
         for (HeroRoleDto d : list) {
             ParseObject p = new ParseObject(HeroRoleDto.class.getSimpleName());
-            p.put("heroID",d.heroId);
-            p.put("roleName",d.roleName);
+            p.put("heroID", d.heroId);
+            p.put("roleName", d.roleName);
             p.saveInBackground();
             Logger.debug(TAG, ">>>" + "Success up roles:" + d.heroId + ";role:" + d.roleName);
 
@@ -475,7 +477,7 @@ public class HTTPParseUtils {
         }
     }
 
-    public void withVoices (final String heroId) {
+    public void withVoices(final String heroId) {
         Logger.debug(TAG, ">>>" + "====== withVoices:" + heroId);
         String pathSpeak = String.format(VoiceLoader.PATH, heroId);
         if (pathSpeak.contains("Natures_Prophet")) {
@@ -516,7 +518,7 @@ public class HTTPParseUtils {
 
     }
 
-    public void withArcVoices (final String heroId) {
+    public void withArcVoices(final String heroId) {
         Logger.debug(TAG, ">>>" + "====== withArcVoices:" + heroId);
         String pathSpeak = String.format(VoiceLoader.PATH, heroId);
         HttpGet httpGet = new HttpGet(pathSpeak);
@@ -555,8 +557,6 @@ public class HTTPParseUtils {
     }
 
 
-
-
     public void setCallback(IParseCallBack cb) {
         this.listener = cb;
 
@@ -567,8 +567,8 @@ public class HTTPParseUtils {
     public interface IParseCallBack {
         void onFinish();
     }
-    
-    public void getAbilityFromServer (final String heroId) {
+
+    public void getAbilityFromServer(final String heroId) {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(AbilityDto.class.getSimpleName());
         query.whereEqualTo("heroId", heroId);
         query.orderByAscending("no");
@@ -610,7 +610,7 @@ public class HTTPParseUtils {
         });
     }
 
-    public void withBasicBg () {
+    public void withBasicBg() {
         Logger.debug(TAG, ">>>" + "======= withBasicBg ====");
         HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Model_pictures");
         ResourceManager.getInstance().getContentManager().load(new BgModalLoader(httpGet, true) {
@@ -629,6 +629,26 @@ public class HTTPParseUtils {
 
             @Override
             public void onContentLoaderFailed(Throwable e) {
+            }
+        });
+    }
+
+    public void withMusicPacksList() {
+        HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Music");
+        ResourceManager.getInstance().getContentManager().load(new MusicPackLoader(httpGet, true) {
+            @Override
+            public void onContentLoaderStart() {
+            }
+
+            @Override
+            public void onContentLoaderSucceed(List<MusicPackDto> entity) {
+                Logger.debug(TAG, ">>> :" + "withMusicPacksList onContentLoaderSucceed:");
+
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>> Error:" + "withMusicPacksList onContentLoaderFailed:" + e);
             }
         });
     }
