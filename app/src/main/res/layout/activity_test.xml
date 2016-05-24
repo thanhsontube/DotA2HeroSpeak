@@ -42,6 +42,18 @@
             android:text="Music Packs Download"
             android:id="@+id/test_music_packs_list_download"/>
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Music Packs Details"
+            android:id="@+id/test_music_packs_list_details"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="READ Music Packs Details"
+            android:id="@+id/test_music_packs_list_read"/>
+
     </LinearLayout>
 
 </ScrollView>

@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.dto.save.SaveMusicPack;
 import son.nt.dota2.loader.MyPath;
 import son.nt.dota2.loader.base.ContentManager;
 import son.nt.dota2.utils.FileUtil;
@@ -36,6 +37,7 @@ public class ResourceManager {
 
     public String fileHeroList;
     public List<String> listKenburns = new ArrayList<>();
+    public SaveMusicPack saveMusicPack;
 
 
     public ResourceManager(Context context) {
@@ -55,6 +57,8 @@ public class ResourceManager {
             myPath = new MyPath(context);
             contentManager = new ContentManager(context, 100);
             folderSave = getContext().getFilesDir().getPath();
+
+            saveMusicPack = new SaveMusicPack();
 
             folderRoot = Environment.getExternalStorageDirectory().toString() + ROOT;
 

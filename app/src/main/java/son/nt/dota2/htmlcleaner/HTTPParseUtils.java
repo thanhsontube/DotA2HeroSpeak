@@ -3,6 +3,7 @@ package son.nt.dota2.htmlcleaner;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -11,7 +12,13 @@ import com.parse.ParseQuery;
 
 import org.apache.http.client.methods.HttpGet;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,13 +35,16 @@ import son.nt.dota2.dto.HeroSavedDto;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.dto.musicPack.MusicPackDto;
+import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
 import son.nt.dota2.dto.save.SaveBasicHeroData;
 import son.nt.dota2.dto.save.SaveHeroAbility;
+import son.nt.dota2.dto.save.SaveMusicPack;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
 import son.nt.dota2.htmlcleaner.abilities.ArcAbilitiesLoader;
 import son.nt.dota2.htmlcleaner.bg.BgModalLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroListLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroNameLoader;
+import son.nt.dota2.htmlcleaner.musicPack.MusicPackDetailsLoader;
 import son.nt.dota2.htmlcleaner.musicPack.MusicPackLoader;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
@@ -646,6 +656,7 @@ public class HTTPParseUtils {
             public void onContentLoaderSucceed(List<MusicPackDto> entity) {
                 Logger.debug(TAG, ">>> :" + "withMusicPacksList onContentLoaderSucceed:");
                 OttoBus.post(new GoAdapterMusicPackHome(entity));
+                ResourceManager.getInstance().saveMusicPack.list = entity;
 
             }
 
@@ -654,6 +665,138 @@ public class HTTPParseUtils {
                 Logger.error(TAG, ">>> Error:" + "withMusicPacksList onContentLoaderFailed:" + e);
             }
         });
+    }
+
+    public void withMusicPacksDetails() {
+        HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Heroes_Within_Music_Pack");
+        ResourceManager.getInstance().getContentManager().load(new MusicPackDetailsLoader(httpGet, true) {
+            @Override
+            public void onContentLoaderStart() {
+            }
+
+            @Override
+            public void onContentLoaderSucceed(List<MusicPackSoundDto> entity) {
+                Logger.debug(TAG, ">>> :" + "withMusicPacksDetails onContentLoaderSucceed:");
+//                OttoBus.post(new GoAdapterMusicPackHome(entity));
+
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>> Error:" + "withMusicPacksDetails onContentLoaderFailed:" + e);
+            }
+        });
+    }
+
+    int i = 0;
+
+    public void withMusicPacksDetails2() {
+        String linkDetails = ResourceManager.getInstance().saveMusicPack.list.get(i).getLinkDetails();
+//        HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Heroes_Within_Music_Pack");
+        HttpGet httpGet = new HttpGet(linkDetails);
+        ResourceManager.getInstance().getContentManager().load(new MusicPackDetailsLoader(httpGet, true) {
+            @Override
+            public void onContentLoaderStart() {
+            }
+
+            @Override
+            public void onContentLoaderSucceed(List<MusicPackSoundDto> entity) {
+                Logger.debug(TAG, ">>> :" + "withMusicPacksDetails onContentLoaderSucceed:" + i);
+                ResourceManager.getInstance().saveMusicPack.list.get(i).setList(entity);
+                if (i < ResourceManager.getInstance().saveMusicPack.list.size() -1) {
+                    i++;
+                    withMusicPacksDetails2();
+                } else {
+                    int size = ResourceManager.getInstance().saveMusicPack.list.get(9).getList().size();
+                    Logger.debug(TAG, ">>>" + "DONE  final size:" + size);
+//                    saveFile();
+                    saveObject();
+                    //write to file:
+
+
+
+//                OttoBus.post(new GoAdapterMusicPackHome(entity));
+                }
+
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>> Error:" + "withMusicPacksDetails onContentLoaderFailed:" + e);
+            }
+        });
+    }
+
+    private void saveObject ()
+    {
+        try
+        {
+            File woFile = new File(ResourceManager.getInstance().folderRingtone + File.separator + "musicPackData.json");
+            if (woFile.exists()) {
+                woFile.delete();
+            }
+            woFile.createNewFile();
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(woFile));
+            oos.writeObject(ResourceManager.getInstance().saveMusicPack);
+            oos.close();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void readObject ()
+    {
+        try
+        {
+            File woFile = new File(ResourceManager.getInstance().folderRingtone + File.separator + "musicPackData.json");
+            if (!woFile.exists()) {
+                return ;
+            }
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(woFile));
+            SaveMusicPack wo = ((SaveMusicPack) ois.readObject());
+            ois.close();
+            Logger.debug(TAG, ">>>" + "wo:" + wo.list.size());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void saveFile ()
+    {
+        try
+        {
+            Gson gson = new Gson();
+
+            // 1. Java object to JSON, and save into a file
+            gson.toJson(ResourceManager.getInstance().saveMusicPack, new FileWriter(ResourceManager.getInstance().folderRingtone + File.separator + "musicPack.json"));
+
+//             2. Java object to JSON, and assign to a String
+//            String jsonInString = gson.toJson(obj);
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void readFile ()
+    {
+        try
+        {
+            Gson gson = new Gson();
+
+
+            // 1. Java object to JSON, and save into a file
+            gson.toJson(ResourceManager.getInstance().saveMusicPack, new FileWriter(ResourceManager.getInstance().folderRingtone + File.separator + "musicPack.json"));
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
 

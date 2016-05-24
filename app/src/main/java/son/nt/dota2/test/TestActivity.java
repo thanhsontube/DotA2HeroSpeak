@@ -20,6 +20,8 @@ public class TestActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.test_arc_ability).setOnClickListener(this);
         findViewById(R.id.test_music_packs_list).setOnClickListener(this);
         findViewById(R.id.test_music_packs_list_download).setOnClickListener(this);
+        findViewById(R.id.test_music_packs_list_details).setOnClickListener(this);
+        findViewById(R.id.test_music_packs_list_read).setOnClickListener(this);
 
     }
 
@@ -35,14 +37,21 @@ public class TestActivity extends Activity implements View.OnClickListener {
             case R.id.test_arc_ability:
                 HTTPParseUtils.getInstance().withArcAbility("Arc_Warden");
                 break;
-            case R.id.test_music_packs_list:
-            {
+            case R.id.test_music_packs_list: {
                 startActivity(new Intent(this, MusicPackListActivity.class));
                 break;
             }
-            case R.id.test_music_packs_list_download:
-            {
+            case R.id.test_music_packs_list_download: {
                 HTTPParseUtils.getInstance().withMusicPacksList();
+                break;
+            }
+
+            case R.id.test_music_packs_list_details: {
+                HTTPParseUtils.getInstance().withMusicPacksDetails2();
+                break;
+            }
+            case R.id.test_music_packs_list_read: {
+                HTTPParseUtils.getInstance().readObject();
                 break;
             }
         }

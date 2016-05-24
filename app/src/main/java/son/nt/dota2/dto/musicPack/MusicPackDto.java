@@ -2,11 +2,13 @@ package son.nt.dota2.dto.musicPack;
 
 import java.util.List;
 
+import son.nt.dota2.base.AObject;
+
 /**
  * Created by sonnt on 5/23/16.
  * Music packs dto, contains things regarding this music pack, including the sounds when clicking that
  */
-public class MusicPackDto {
+public class MusicPackDto extends AObject{
     String group;
     String name;
     String href;

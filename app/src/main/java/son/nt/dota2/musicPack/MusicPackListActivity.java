@@ -8,11 +8,15 @@ import android.view.View;
 
 import com.squareup.otto.Subscribe;
 
+import java.io.IOException;
+
 import butterknife.Bind;
 import son.nt.dota2.R;
 import son.nt.dota2.base.ASafeActivity;
+import son.nt.dota2.dto.save.SaveMusicPack;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.ottobus_entry.GoAdapterMusicPackHome;
+import son.nt.dota2.utils.FileUtil;
 
 public class MusicPackListActivity extends ASafeActivity {
     @Bind(R.id.music_pack_home_rcv)
@@ -36,6 +40,18 @@ public class MusicPackListActivity extends ASafeActivity {
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
+
+        try {
+            SaveMusicPack saveMusicPack = (SaveMusicPack) FileUtil.getMusicPackObject(this);
+            if (saveMusicPack != null)
+            {
+                mAdapter.setData(saveMusicPack.list);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         findViewById(R.id.test_click_1).setOnClickListener(new View.OnClickListener() {
             @Override

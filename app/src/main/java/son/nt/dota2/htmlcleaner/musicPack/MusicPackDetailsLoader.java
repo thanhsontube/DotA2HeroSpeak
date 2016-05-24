@@ -10,22 +10,22 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import son.nt.dota2.dto.musicPack.MusicPackDto;
+import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
 import son.nt.dota2.loader.base.ContentLoader;
 import son.nt.dota2.utils.Logger;
 
 /**
  * Created by Sonnt on 8/19/15.
  */
-public abstract class MusicPackDetailsLoader extends ContentLoader<List<MusicPackDto>> {
-    public static final String TAG = "BgModalLoader";
+public abstract class MusicPackDetailsLoader extends ContentLoader<List<MusicPackSoundDto>> {
+    public static final String TAG = MusicPackDetailsLoader.class.getSimpleName();
 
     public MusicPackDetailsLoader(HttpUriRequest request, boolean useCache) {
         super(request, useCache);
     }
 
     @Override
-    protected List<MusicPackDto> handleStream(InputStream in) throws IOException {
+    protected List<MusicPackSoundDto> handleStream(InputStream in) throws IOException {
         try {
             HtmlCleaner cleaner = new HtmlCleaner();
             CleanerProperties props = cleaner.getProperties();
@@ -35,47 +35,35 @@ public abstract class MusicPackDetailsLoader extends ContentLoader<List<MusicPac
             props.setOmitComments(true);
 
             TagNode tagNode = cleaner.clean(in);
-            String xPath = "//div[@style='padding:0em 0.25em']";
+            String xPath = "//div[@id='mw-content-text']";
             Object[] data = tagNode.evaluateXPath(xPath);
 
             TagNode nodeA = (TagNode) data[0];
             Logger.debug(TAG, ">>>" + "nodA:" + nodeA.getChildTagList().size());
-            int i = 1;
-            List<MusicPackDto> list = new ArrayList<>();
-            MusicPackDto dto;
+            List<MusicPackSoundDto> list = new ArrayList<>();
+            MusicPackSoundDto dto;
+
+
             for (TagNode tag : nodeA.getChildTagList()) {
-                Logger.debug(TAG, ">>>" + "----Tag:" + i++);
-                Logger.debug(TAG, ">>>" + "Text:" + tag.getName() + ";text:" + tag.getText());
-                dto = new MusicPackDto();
-                dto.setName(tag.getText().toString());
-                dto.setCoverColor("#8847ff");
-                TagNode note = tag.getChildTagList().get(0).getChildTagList().get(0);
-                String herf = "http://dota2.gamepedia.com" + note.getAttributeByName("href");
-                dto.setLinkDetails(herf);
-                TagNode imageNote = note.getChildTagList().get(0);
-                String src = imageNote.getAttributeByName("src").replace("100px", "200px");
-                Logger.debug(TAG, ">>>" + "src:" + src);
 
+                dto = new MusicPackSoundDto();
+                String tagName = tag.getName();
+                if ("ul".equals(tagName))
+                {
+                    Logger.debug(TAG, ">>>" + "tag name:" + tagName + ";size:" + tag.getChildTagList().size());
+                    for (TagNode t : tag.getChildTagList())
+                    {
+                        dto.setName(t.getText().toString());
+                        Logger.debug(TAG, ">>>" + "t:" + t.getText()) ;
+                        String link = t.getChildTagList().get(0).getAttributeByName("href");
+                        Logger.debug(TAG, ">>>" + "link:" + link);
+                        dto.setLink(link);
+                        list.add(dto);
+                    }
+                }
 
-                list.add(dto);
             }
-            nodeA = (TagNode) data[1];
-            for (TagNode tag : nodeA.getChildTagList()) {
-                Logger.debug(TAG, ">>>" + "----Tag:" + i++);
-                Logger.debug(TAG, ">>>" + "Text:" + tag.getName() + ";text:" + tag.getText());
-                dto = new MusicPackDto();
-                dto.setName(tag.getText().toString());
-                dto.setCoverColor("#8847ff");
-                TagNode note = tag.getChildTagList().get(0).getChildTagList().get(0);
-                String herf = "http://dota2.gamepedia.com" + note.getAttributeByName("href");
-                dto.setLinkDetails(herf);
-                TagNode imageNote = note.getChildTagList().get(0);
-                String src = imageNote.getAttributeByName("src").replace("100px", "200px");
-                Logger.debug(TAG, ">>>" + "src:" + src);
-
-
-                list.add(dto);
-            }
+            
 
             Logger.debug(TAG, ">>>" + "total:" + list.size());
 

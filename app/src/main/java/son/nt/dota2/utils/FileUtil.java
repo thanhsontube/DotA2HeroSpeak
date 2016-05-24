@@ -28,9 +28,7 @@ import son.nt.dota2.base.AObject;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
 
-/**
- * Created by tiennt on 2/5/15.
- */
+
 public class FileUtil {
 
     public static void saveObject(Context context, AObject data, String name) throws IOException {
@@ -61,6 +59,10 @@ public class FileUtil {
 
     public static AObject getAbilityObject(Context context, String name) throws IOException, ClassNotFoundException {
         return getObject(context, "abi_" +name);
+    }
+
+    public static AObject getMusicPackObject(Context context) throws IOException, ClassNotFoundException {
+        return getObject(context, "musicPackData.json");
     }
 
     public static void saveHeroList(Context context, HeroData data) throws IOException {
