@@ -88,5 +88,6 @@ dependencies {
     compile('com.github.afollestad.material-dialogs:core:0.8.5.1@aar') {
         transitive = true
     }
+    compile 'jp.wasabeef:glide-transformations:2.0.0'
 }
 

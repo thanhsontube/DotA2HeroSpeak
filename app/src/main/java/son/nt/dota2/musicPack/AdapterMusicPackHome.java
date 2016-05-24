@@ -30,12 +30,6 @@ public class AdapterMusicPackHome extends RecyclerView.Adapter<AdapterMusicPackH
     Context context;
     private final WeakReference<Context> contextWeakReference;
 
-    public AdapterMusicPackHome(Context cx, List<MusicPackDto> list) {
-        this.mValues = list;
-        this.context = cx;
-        this.contextWeakReference = new WeakReference<>(cx);
-    }
-
     public AdapterMusicPackHome(Context cx) {
         this.context = cx;
         this.contextWeakReference = new WeakReference<>(cx);

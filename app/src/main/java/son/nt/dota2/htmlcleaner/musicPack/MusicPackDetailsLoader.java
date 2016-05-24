@@ -46,26 +46,32 @@ public abstract class MusicPackDetailsLoader extends ContentLoader<List<MusicPac
 
             for (TagNode tag : nodeA.getChildTagList()) {
 
-                dto = new MusicPackSoundDto();
+
                 String tagName = tag.getName();
-                if ("ul".equals(tagName))
-                {
-                    Logger.debug(TAG, ">>>" + "tag name:" + tagName + ";size:" + tag.getChildTagList().size());
-                    for (TagNode t : tag.getChildTagList())
-                    {
-                        dto.setName(t.getText().toString());
-                        Logger.debug(TAG, ">>>" + "t:" + t.getText()) ;
+                if ("ul".equals(tagName)) {
+                    for (TagNode t : tag.getChildTagList()) {
+                        dto = new MusicPackSoundDto();
+//                        Logger.debug(TAG, ">>>" + "t:" + t.getText());
+                        String text = t.getText().toString().replace("Play ", "");
+                        dto.setName(text);
                         String link = t.getChildTagList().get(0).getAttributeByName("href");
-                        Logger.debug(TAG, ">>>" + "link:" + link);
+//                        Logger.debug(TAG, ">>>" + "link:" + link);
                         dto.setLink(link);
-                        list.add(dto);
+                        if (link != null && link.contains("https")) {
+                            Logger.debug(TAG, ">>>" + "text:" + text + ";link:" + link);
+                            list.add(dto);
+                        }
                     }
                 }
 
             }
-            
+
 
             Logger.debug(TAG, ">>>" + "total:" + list.size());
+            for (MusicPackSoundDto d1 : list)
+            {
+                Logger.debug(TAG, ">>>" + "text1:" + d1.getName() + ";link1:" + d1.getLink());
+            }
 
 
             return list;

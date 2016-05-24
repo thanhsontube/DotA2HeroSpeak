@@ -3,7 +3,6 @@ package son.nt.dota2.htmlcleaner;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -15,7 +14,6 @@ import org.apache.http.client.methods.HttpGet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -50,7 +48,7 @@ import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
 import son.nt.dota2.htmlcleaner.voice.ArcVoiceLoader;
 import son.nt.dota2.htmlcleaner.voice.VoiceLoader;
-import son.nt.dota2.ottobus_entry.GoAdapterMusicPackHome;
+import son.nt.dota2.ottobus_entry.GoAdapterMusicPackDetails;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
@@ -655,7 +653,7 @@ public class HTTPParseUtils {
             @Override
             public void onContentLoaderSucceed(List<MusicPackDto> entity) {
                 Logger.debug(TAG, ">>> :" + "withMusicPacksList onContentLoaderSucceed:");
-                OttoBus.post(new GoAdapterMusicPackHome(entity));
+                OttoBus.post(new SaveMusicPack(entity));
                 ResourceManager.getInstance().saveMusicPack.list = entity;
 
             }
@@ -667,8 +665,12 @@ public class HTTPParseUtils {
         });
     }
 
-    public void withMusicPacksDetails() {
-        HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Heroes_Within_Music_Pack");
+    public void withMusicPacksDetails(String link) {
+        if (link == null)
+        {
+            link = "http://dota2.gamepedia.com/Heroes_Within_Music_Pack";
+        }
+        HttpGet httpGet = new HttpGet(link);
         ResourceManager.getInstance().getContentManager().load(new MusicPackDetailsLoader(httpGet, true) {
             @Override
             public void onContentLoaderStart() {
@@ -677,7 +679,7 @@ public class HTTPParseUtils {
             @Override
             public void onContentLoaderSucceed(List<MusicPackSoundDto> entity) {
                 Logger.debug(TAG, ">>> :" + "withMusicPacksDetails onContentLoaderSucceed:");
-//                OttoBus.post(new GoAdapterMusicPackHome(entity));
+                OttoBus.post(new GoAdapterMusicPackDetails(entity));
 
             }
 
@@ -703,19 +705,15 @@ public class HTTPParseUtils {
             public void onContentLoaderSucceed(List<MusicPackSoundDto> entity) {
                 Logger.debug(TAG, ">>> :" + "withMusicPacksDetails onContentLoaderSucceed:" + i);
                 ResourceManager.getInstance().saveMusicPack.list.get(i).setList(entity);
-                if (i < ResourceManager.getInstance().saveMusicPack.list.size() -1) {
+                if (i < ResourceManager.getInstance().saveMusicPack.list.size() - 1) {
                     i++;
                     withMusicPacksDetails2();
                 } else {
                     int size = ResourceManager.getInstance().saveMusicPack.list.get(9).getList().size();
                     Logger.debug(TAG, ">>>" + "DONE  final size:" + size);
-//                    saveFile();
                     saveObject();
-                    //write to file:
 
-
-
-//                OttoBus.post(new GoAdapterMusicPackHome(entity));
+                    OttoBus.post(ResourceManager.getInstance().saveMusicPack);
                 }
 
             }
@@ -727,10 +725,8 @@ public class HTTPParseUtils {
         });
     }
 
-    private void saveObject ()
-    {
-        try
-        {
+    private void saveObject() {
+        try {
             File woFile = new File(ResourceManager.getInstance().folderRingtone + File.separator + "musicPackData.json");
             if (woFile.exists()) {
                 woFile.delete();
@@ -739,64 +735,26 @@ public class HTTPParseUtils {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(woFile));
             oos.writeObject(ResourceManager.getInstance().saveMusicPack);
             oos.close();
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public void readObject ()
-    {
-        try
-        {
+    public void readObject() {
+        try {
             File woFile = new File(ResourceManager.getInstance().folderRingtone + File.separator + "musicPackData.json");
             if (!woFile.exists()) {
-                return ;
+                return;
             }
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(woFile));
             SaveMusicPack wo = ((SaveMusicPack) ois.readObject());
             ois.close();
             Logger.debug(TAG, ">>>" + "wo:" + wo.list.size());
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-    }
-
-    private void saveFile ()
-    {
-        try
-        {
-            Gson gson = new Gson();
-
-            // 1. Java object to JSON, and save into a file
-            gson.toJson(ResourceManager.getInstance().saveMusicPack, new FileWriter(ResourceManager.getInstance().folderRingtone + File.separator + "musicPack.json"));
-
-//             2. Java object to JSON, and assign to a String
-//            String jsonInString = gson.toJson(obj);
-
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    private void readFile ()
-    {
-        try
-        {
-            Gson gson = new Gson();
-
-
-            // 1. Java object to JSON, and save into a file
-            gson.toJson(ResourceManager.getInstance().saveMusicPack, new FileWriter(ResourceManager.getInstance().folderRingtone + File.separator + "musicPack.json"));
-
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 
 

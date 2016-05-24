@@ -134,6 +134,10 @@
         <activity
             android:name=".musicPack.MusicPackListActivity"
             android:label="@string/title_activity_music_pack_list"
+            android:theme="@style/Theme.TS" />
+        <activity
+            android:name=".musicPack.MusicPackDetailsActivity"
+            android:label="@string/title_activity_music_pack_details"
             android:theme="@style/Theme.TS"></activity>
     </application>
 

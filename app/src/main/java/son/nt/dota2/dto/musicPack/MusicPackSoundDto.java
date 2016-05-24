@@ -5,9 +5,10 @@ import son.nt.dota2.base.AObject;
 /**
  * Created by sonnt on 5/23/16.
  */
-public class MusicPackSoundDto extends AObject{
+public class MusicPackSoundDto extends AObject {
     String name;
     String link;
+    boolean isPlaying;
 
     public String getName() {
         return name;
@@ -23,5 +24,13 @@ public class MusicPackSoundDto extends AObject{
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public void setPlaying(boolean playing) {
+        isPlaying = playing;
     }
 }

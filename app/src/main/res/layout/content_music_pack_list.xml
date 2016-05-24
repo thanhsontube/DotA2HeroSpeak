@@ -9,6 +9,7 @@
     tools:context="son.nt.dota2.musicPack.MusicPackListActivity"
     tools:showIn="@layout/activity_music_pack_list">
     <Button
+        android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/test_click_1"

@@ -10,4 +10,11 @@ import son.nt.dota2.dto.musicPack.MusicPackDto;
  */
 public class SaveMusicPack extends AObject{
     public List<MusicPackDto> list;
+
+    public SaveMusicPack() {
+    }
+
+    public SaveMusicPack(List<MusicPackDto> list) {
+        this.list = list;
+    }
 }
