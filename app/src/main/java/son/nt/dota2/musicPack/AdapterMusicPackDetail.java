@@ -35,6 +35,10 @@ public class AdapterMusicPackDetail extends RecyclerView.Adapter<AdapterMusicPac
         notifyDataSetChanged();
     }
 
+    public MusicPackSoundDto getItem(int position) {
+        return mValues.get(position);
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {

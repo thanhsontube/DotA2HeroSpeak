@@ -23,12 +23,11 @@ import java.util.List;
 
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
 import son.nt.dota2.utils.Logger;
-import son.nt.dota2.utils.TsLog;
 
 public class DownloadService extends Service {
     private static final String TAG = "DownloadService";
-    TsLog log = new TsLog(TAG);
 
     LocalBinder binder = new LocalBinder();
 
@@ -42,9 +41,11 @@ public class DownloadService extends Service {
             return DownloadService.this;
         }
     }
+
     public static Intent getIntent(Context context) {
         return new Intent(context, DownloadService.class);
     }
+
     public DownloadService() {
     }
 
@@ -63,15 +64,9 @@ public class DownloadService extends Service {
         super.onDestroy();
     }
 
-    public void addLink(List<String> list, String heroId) {
-        log.d("log>>>" + "addLink:" + list.size());
-        int i = 0;
-        for (String link : list) {
-            log.d("log>>>" + "=============download:" + i + "============");
-            downloadLink(link);
-            i++;
-            stopSelf();
-        }
+    public void addLinkMusicPack(List<MusicPackSoundDto> list) {
+        DownloadLoaderMusicPack loader = new DownloadLoaderMusicPack();
+        loader.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, list);
     }
 
     public void addLinkDto(List<SpeakDto> list, String heroId) {
@@ -86,14 +81,15 @@ public class DownloadService extends Service {
         protected Integer doInBackground(List<SpeakDto>... params) {
             try {
                 List<SpeakDto> list = params[0];
-                log.d("log>>>" + "addLinkDto:" + list.size());
+
                 int i = 0;
                 for (SpeakDto dto : list) {
-    //                log.d("log>>>" + "=============download:" + i + "============");
-                    if(isQuit) {
+                    //                log.d("log>>>" + "=============download:" + i + "============");
+                    if (isQuit) {
                         return -1;
                     }
-                    downloadLink(dto.link);
+                    File fileTo = new File(ResourceManager.getInstance().getPathAudio(dto.link, heroId));
+                    downloadLink(dto.link, fileTo);
                     i++;
                 }
                 return 0;
@@ -106,16 +102,46 @@ public class DownloadService extends Service {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            log.d("log>>>" + "===FINISHED prefetch===");
             stopSelf();
         }
     }
 
-    public void downloadLink(String linkSpeak) {
-        if(TextUtils.isEmpty(linkSpeak)) {
+    class DownloadLoaderMusicPack extends AsyncTask<List<MusicPackSoundDto>, Void, Integer> {
+        @Override
+        protected Integer doInBackground(List<MusicPackSoundDto>... params) {
+            try {
+                List<MusicPackSoundDto> list = params[0];
+                Logger.debug(TAG, ">>>" + "addLinkDto:" + list.size());
+                int i = 0;
+                for (MusicPackSoundDto dto : list) {
+                    //                log.d("log>>>" + "=============download:" + i + "============");
+                    if (isQuit) {
+                        return -1;
+                    }
+                    File fileTo = new File(ResourceManager.getInstance().getPathMusicPack(dto.getLink()));
+                    downloadLinkMusicPacks(dto.getLink(), fileTo);
+                    i++;
+                }
+                return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            Logger.debug(TAG, ">>>" + "===FINISHED prefetch===");
+            stopSelf();
+        }
+    }
+
+    public void downloadLink(String linkSpeak, File fileTo) {
+        if (TextUtils.isEmpty(linkSpeak)) {
             return;
         }
-        File fileTo = new File(ResourceManager.getInstance().getPathAudio(linkSpeak, heroId));
+
         if (fileTo.exists()) {
             return;
         }
@@ -132,10 +158,10 @@ public class DownloadService extends Service {
                 if (!f.exists()) {
                     f.mkdirs();
                 }
-                File fileOut = new File(path,"down_temp");
+                File fileOut = new File(path, "down_temp");
 
                 OutputStream out = new FileOutputStream(fileOut, false);
-                byte []buffer = new byte[1024];
+                byte[] buffer = new byte[1024];
                 int read;
                 while ((read = in.read(buffer)) != -1) {
                     out.write(buffer, 0, read);
@@ -145,15 +171,61 @@ public class DownloadService extends Service {
                 in.close();
 
                 if (fileOut.renameTo(fileTo)) {
-                    log.d("log>>>" + "downloadLink SUCCESS");
+                    Logger.debug(TAG, ">>>" + "downloadLink SUCCESS");
                 }
 
             } else {
-                log.e("log>>>" + "Download FAIL:" + status.getStatusCode());
+                Logger.error(TAG, ">>>" + "Download FAIL:" + status.getStatusCode());
             }
 
         } catch (Exception e) {
-            log.e("log>>>" + "downloadLink err:" + e);
+            Logger.error(TAG, ">>>" + "downloadLink err:" + e);
+        }
+    }
+
+    public void downloadLinkMusicPacks(String linkSpeak, File fileTo) {
+        if (TextUtils.isEmpty(linkSpeak)) {
+            return;
+        }
+
+        if (fileTo.exists()) {
+            return;
+        }
+
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse response = httpClient.execute(new HttpGet(linkSpeak));
+            StatusLine status = response.getStatusLine();
+            if (status.getStatusCode() == HttpStatus.SC_OK) {
+
+                InputStream in = response.getEntity().getContent();
+                String path = ResourceManager.getInstance().folderMusicPack + File.separator ;
+                File f = new File((path));
+                if (!f.exists()) {
+                    f.mkdirs();
+                }
+                File fileOut = new File(path, "down_temp");
+
+                OutputStream out = new FileOutputStream(fileOut, false);
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
+                out.flush();
+                out.close();
+                in.close();
+
+                if (fileOut.renameTo(fileTo)) {
+                    Logger.debug(TAG, ">>>" + "downloadLink SUCCESS");
+                }
+
+            } else {
+                Logger.error(TAG, ">>>" + "Download FAIL:" + status.getStatusCode());
+            }
+
+        } catch (Exception e) {
+            Logger.error(TAG, ">>>" + "downloadLink err:" + e);
         }
     }
 }

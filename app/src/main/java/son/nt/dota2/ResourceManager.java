@@ -25,6 +25,7 @@ public class ResourceManager {
 
     public String folderSave;
     public String folderAudio;
+    public String folderMusicPack;
     public String folderHero;
     public String folderBlur;
     public String folderObject;
@@ -49,9 +50,10 @@ public class ResourceManager {
         return INSTANCE;
     }
 
-    public static void createInstance (Context context) {
+    public static void createInstance(Context context) {
         INSTANCE = new ResourceManager(context);
     }
+
     private void initialize() {
         try {
             myPath = new MyPath(context);
@@ -63,19 +65,28 @@ public class ResourceManager {
             folderRoot = Environment.getExternalStorageDirectory().toString() + ROOT;
 
             File fRoot = new File(folderRoot);
-            if (! fRoot.exists()) {
+            if (!fRoot.exists()) {
                 fRoot.mkdirs();
             }
-            fileHeroList = folderSave +File.separator + "hero_list.dat";
-            folderHero = folderSave+ File.separator + "hero" + File.separator;
+            fileHeroList = folderSave + File.separator + "hero_list.dat";
+            folderHero = folderSave + File.separator + "hero" + File.separator;
 
-            File fileAudio =new File(folderSave, "/audio/");
+            File fileAudio = new File(folderSave, "/audio/");
             if (!fileAudio.exists()) {
                 fileAudio.mkdirs();
             }
             folderAudio = fileAudio.getPath();
 
-            File fileBlur =new File(folderSave, "/blur/");
+//            File fileMusicPack = new File(folderSave, "/musicPack/");
+            //todo hack
+            File fileMusicPack = new File(folderRoot, "/musicPack/");
+            if (!fileMusicPack.exists()) {
+                fileMusicPack.mkdirs();
+            }
+            folderMusicPack = fileMusicPack.getPath();
+
+
+            File fileBlur = new File(folderSave, "/blur/");
             if (!fileBlur.exists()) {
                 fileBlur.mkdirs();
             }
@@ -88,25 +99,25 @@ public class ResourceManager {
 
             folderObject = fObject.getPath();
 
-            File fRingtone = new File (folderRoot, "/ringtone/");
+            File fRingtone = new File(folderRoot, "/ringtone/");
             if (!fRingtone.exists()) {
                 fRingtone.mkdirs();
             }
             folderRingtone = fRingtone.getPath();
 
-            File fNoti = new File (folderRoot, "/notification/");
+            File fNoti = new File(folderRoot, "/notification/");
             if (!fNoti.exists()) {
                 fNoti.mkdirs();
             }
             folderNotification = fNoti.getPath();
 
-            File fAlarm = new File (folderRoot, "/alarm/");
+            File fAlarm = new File(folderRoot, "/alarm/");
             if (!fAlarm.exists()) {
                 fAlarm.mkdirs();
             }
             folderAlarm = fAlarm.getPath();
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -120,7 +131,7 @@ public class ResourceManager {
         return contentManager;
     }
 
-    public String getPathAudio (String link, String heroID) {
+    public String getPathAudio(String link, String heroID) {
         String path = ResourceManager.getInstance().folderAudio + File.separator + heroID + File.separator;
         File f = new File((path));
         if (!f.exists()) {
@@ -129,14 +140,20 @@ public class ResourceManager {
         return ResourceManager.getInstance().folderAudio + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat");
     }
 
-    public String getPathRingtone (String link, String heroID) {
+    public String getPathMusicPack(String link) {
+
+//        return ResourceManager.getInstance().folderMusicPack + File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat");
+        return ResourceManager.getInstance().folderMusicPack + File.separator + FileUtil.createPathFromUrl(link);
+    }
+
+    public String getPathRingtone(String link, String heroID) {
         String path = ResourceManager.getInstance().folderRingtone + File.separator + heroID + File.separator;
         File f = new File((path));
         if (!f.exists()) {
             f.mkdirs();
         }
 
-        File fRingtone = new File (folderRoot, "/ringtone/");
+        File fRingtone = new File(folderRoot, "/ringtone/");
         if (!fRingtone.exists()) {
             fRingtone.mkdirs();
         }
@@ -144,7 +161,7 @@ public class ResourceManager {
         return folderRingtone + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 
-    public String getPathNotification (String link, String heroID) {
+    public String getPathNotification(String link, String heroID) {
         String path = ResourceManager.getInstance().folderNotification + File.separator + heroID + File.separator;
         File f = new File((path));
         if (!f.exists()) {
@@ -152,7 +169,7 @@ public class ResourceManager {
         }
 
 
-        File fNoti = new File (folderRoot, "/notification/");
+        File fNoti = new File(folderRoot, "/notification/");
         if (!fNoti.exists()) {
             fNoti.mkdirs();
         }
@@ -160,14 +177,14 @@ public class ResourceManager {
         return folderNotification + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 
-    public String getPathAlarm (String link, String heroID) {
+    public String getPathAlarm(String link, String heroID) {
         String path = ResourceManager.getInstance().folderAlarm + File.separator + heroID + File.separator;
         File f = new File((path));
         if (!f.exists()) {
             f.mkdirs();
         }
 
-        File fAlarm = new File (folderRoot, "/alarm/");
+        File fAlarm = new File(folderRoot, "/alarm/");
         if (!fAlarm.exists()) {
             fAlarm.mkdirs();
         }
@@ -181,7 +198,7 @@ public class ResourceManager {
 
 
     public String getFolderAudio() {
-        File fileAudio =new File(getFolderSave(), "/audio/");
+        File fileAudio = new File(getFolderSave(), "/audio/");
         if (!fileAudio.exists()) {
             fileAudio.mkdirs();
         }
@@ -190,7 +207,7 @@ public class ResourceManager {
     }
 
     public String getFolderHero() {
-        folderHero = getFolderSave()+ File.separator + "hero" + File.separator;
+        folderHero = getFolderSave() + File.separator + "hero" + File.separator;
         return folderHero;
     }
 
@@ -211,7 +228,7 @@ public class ResourceManager {
         return folderObject;
     }
 
-    public String getFolderSave () {
+    public String getFolderSave() {
         folderSave = getContext().getFilesDir().getPath();
 
         //test

@@ -19,53 +19,49 @@ import java.util.List;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.adapter.AdapterSpeak;
-import son.nt.dota2.adapter.AdapterVoice;
-import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
 import son.nt.dota2.loader.MediaLoader;
+import son.nt.dota2.musicPack.AdapterMusicPackDetail;
 import son.nt.dota2.utils.PreferenceUtil;
-import son.nt.dota2.utils.TsLog;
 
-public class ServiceMedia extends Service {
+public class PlayService extends Service {
 
-    private static final String TAG = "ServiceMedia";
-    TsLog log = new TsLog(TAG);
+    private static final String TAG = PlayService.class.getSimpleName();
     private MediaPlayer player;
     private LocalBinder mBinder = new LocalBinder();
     private String source;
-    public List<SpeakDto> list = new ArrayList<SpeakDto>();
+    public List<MusicPackSoundDto> list = new ArrayList<MusicPackSoundDto>();
     private MsConst.RepeatMode repeatMode = MsConst.RepeatMode.MODE_OFF;
     public int currentPosition = 0;
     public int prePos = 0;
     public String heroID;
 
     private boolean isPlayAndStopOne = false;
-    AdapterVoice adapterVoice;
+    AdapterMusicPackDetail adapterVoice;
 
-    public void setAdapterVoice(AdapterVoice adapterVoice, String heroID) {
+    public void setAdapterVoice(AdapterMusicPackDetail adapterVoice, String heroID) {
         this.adapterVoice = adapterVoice;
         this.heroID = heroID;
     }
 
     public static Intent getIntentService(Context context) {
-        return new Intent(context, ServiceMedia.class);
+        return new Intent(context, PlayService.class);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        log.v("log>>>" + "ServiceMedia onCreate");
         initController();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        log.e("log>>>" + "ServiceMedia onDestroy");
     }
 
     public class LocalBinder extends Binder {
-        public ServiceMedia getService() {
-            return ServiceMedia.this;
+        public PlayService getService() {
+            return PlayService.this;
         }
     }
 
@@ -144,9 +140,9 @@ public class ServiceMedia extends Service {
             if (list.size() >= currentPosition) {
                 if (adapterVoice != null) {
                     if (currentPosition > 0) {
-                        adapterVoice.getItem(prePos).isPlaying = false;
+                        adapterVoice.getItem(prePos).setPlaying(false);
                     }
-                    adapterVoice.getItem(currentPosition).isPlaying = true;
+                    adapterVoice.getItem(currentPosition).setPlaying(true);
                     adapterVoice.notifyDataSetChanged();
 
                 }
@@ -155,19 +151,18 @@ public class ServiceMedia extends Service {
                     txtPos.setText("(" + currentPosition + ")");
                 }
                 prePos = currentPosition;
-                File file = new File(ResourceManager.getInstance().getPathAudio(list.get(index).link, heroID));
+                File file = new File(ResourceManager.getInstance().getPathMusicPack(list.get(index).getLink()));
                 if (file.exists()) {
                     player.setDataSource(file.getPath());
                     player.prepare();
                     player.start();
                 } else {
-                    loadSpeak(list.get(index).link, heroID);
+                    loadSpeak(list.get(index).getLink(), heroID);
                 }
 
 
             }
         } catch (Exception e) {
-            log.e("log>>>" + "MediaService error play song:" + currentPosition + ":" + e.toString());
             if (!isPlayAndStopOne) {
                 playNextVideo();
             }
@@ -204,8 +199,7 @@ public class ServiceMedia extends Service {
         this.source = source;
     }
 
-    public void setListData(List<SpeakDto> list) {
-        log.d("log>>>" + "MediaService setListData:" + list.size());
+    public void setListData(List<MusicPackSoundDto> list) {
         currentPosition = 0;
         prePos = 0;
         this.list.clear();
@@ -240,7 +234,7 @@ public class ServiceMedia extends Service {
                 public void onContentLoaderSucceed(File entity) {
                     Log.v(TAG, "log>>>" + "onContentLoaderSucceed:" + entity.getPath());
                     try {
-                        File file = new File(ResourceManager.getInstance().getPathAudio(linkSpeak, heroID));
+                        File file = new File(ResourceManager.getInstance().getPathMusicPack(linkSpeak));
                         Log.v(TAG, "log>>>" + "file:" + file.getPath());
                         entity.renameTo(file);
                         player.setDataSource(file.getPath());

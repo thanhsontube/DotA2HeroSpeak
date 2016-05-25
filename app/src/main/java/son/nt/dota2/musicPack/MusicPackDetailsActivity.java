@@ -1,22 +1,27 @@
 package son.nt.dota2.musicPack;
 
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-
-import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
 import son.nt.dota2.R;
 import son.nt.dota2.base.ASafeActivity;
 import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.dto.musicPack.MusicPackDto;
-import son.nt.dota2.ottobus_entry.GoAdapterMusicPackDetails;
+import son.nt.dota2.service.DownloadService;
+import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.NetworkUtils;
 
 public class MusicPackDetailsActivity extends ASafeActivity {
+    private static final String TAG = MusicPackDetailsActivity.class.getSimpleName();
     private static final String DATA = "DATA";
     @Bind(R.id.music_pack_detail_rcv)
     RecyclerView mRecyclerView;
@@ -26,6 +31,10 @@ public class MusicPackDetailsActivity extends ASafeActivity {
 
     private AdapterMusicPackDetail mAdapter;
     private MusicPackDto mMusicPackDto;
+
+    DownloadService downloadService;
+    boolean isBind = false;
+
 
     public static void startActivity(Context context, MusicPackDto dto) {
         Intent intent = new Intent(context, MusicPackDetailsActivity.class);
@@ -46,20 +55,32 @@ public class MusicPackDetailsActivity extends ASafeActivity {
 
         mRecyclerView.setAdapter(mAdapter);
 
-        if (getIntent() != null) {
-            mMusicPackDto = (MusicPackDto) getIntent().getSerializableExtra(DATA);
-            if (mMusicPackDto == null)
-            {
-                return;
-            }
-            setupToolbar(toolbar, -1, mMusicPackDto.getName());
-            kenBurnsView2.setResourceUrl(mMusicPackDto.getHref(), false);
-//            HTTPParseUtils.getInstance().withMusicPacksDetails(mMusicPackDto.getLinkDetails());
-            mAdapter.setData(mMusicPackDto.getList());
+        if (getIntent() == null) {
+            finish();
+            return;
 
         }
+        mMusicPackDto = (MusicPackDto) getIntent().getSerializableExtra(DATA);
+        if (mMusicPackDto == null) {
+            return;
+        }
+        setupToolbar(toolbar, -1, mMusicPackDto.getName());
+        kenBurnsView2.setResourceUrl(mMusicPackDto.getHref(), false);
+        mAdapter.setData(mMusicPackDto.getList());
+        bindService(DownloadService.getIntent(this), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (downloadService != null) {
+            downloadService.isQuit = true;
+        }
+        if (serviceConnectionPrefetchAudio != null) {
+            unbindService(serviceConnectionPrefetchAudio);
+        }
     }
 
     @Override
@@ -67,9 +88,26 @@ public class MusicPackDetailsActivity extends ASafeActivity {
         return R.layout.activity_music_pack_details;
     }
 
-    @Subscribe
-    public void getData (GoAdapterMusicPackDetails goAdapterMusicPackDetails)
-    {
-        mAdapter.setData(goAdapterMusicPackDetails.list);
+    ServiceConnection serviceConnectionPrefetchAudio = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            DownloadService.LocalBinder binder = (DownloadService.LocalBinder) service;
+            downloadService = binder.getService();
+            isBind = true;
+            startPrefetch();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBind = true;
+        }
+    };
+
+    private void startPrefetch() {
+        Logger.debug(TAG, ">>>" + "startPrefetch isBind" + isBind);
+        if (isBind && NetworkUtils.isConnected(getApplicationContext())) {
+            downloadService.addLinkMusicPack(mMusicPackDto.getList());
+        }
     }
+
 }

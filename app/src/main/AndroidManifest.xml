@@ -60,6 +60,10 @@
             android:name=".service.ServiceMedia"
             android:enabled="true"
             android:exported="true" />
+        <service
+            android:name=".service.PlayService"
+            android:enabled="true"
+            android:exported="true" />
         <!-- check on build productFlavors -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
