@@ -142,6 +142,7 @@
         <activity
             android:name=".musicPack.MusicPackDetailsActivity"
             android:label="@string/title_activity_music_pack_details"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.TS"></activity>
     </application>
 

@@ -653,6 +653,16 @@ public class HTTPParseUtils {
             @Override
             public void onContentLoaderSucceed(List<MusicPackDto> entity) {
                 Logger.debug(TAG, ">>> :" + "withMusicPacksList onContentLoaderSucceed:");
+
+
+                //add the default
+                MusicPackDto dto = new MusicPackDto();
+                dto.setName("Default Music Pack");
+                dto.setLinkDetails("http://dota2.gamepedia.com/Music");
+                dto.setCoverColor("#8847ff");
+                dto.setHref("http://images.akamai.steamusercontent.com/ugc/433773677027904120/CC1E0F736AB7FAFFC297C87732B56422FEF9BF8D/");
+                entity.add(0, dto);
+
                 OttoBus.post(new SaveMusicPack(entity));
                 ResourceManager.getInstance().saveMusicPack.list = entity;
 

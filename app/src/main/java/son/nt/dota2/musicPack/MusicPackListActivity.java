@@ -16,6 +16,7 @@ import son.nt.dota2.base.ASafeActivity;
 import son.nt.dota2.dto.musicPack.MusicPackDto;
 import son.nt.dota2.dto.save.SaveMusicPack;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
+import son.nt.dota2.service.PlayService;
 import son.nt.dota2.utils.FileUtil;
 
 public class MusicPackListActivity extends ASafeActivity {
@@ -23,6 +24,7 @@ public class MusicPackListActivity extends ASafeActivity {
     RecyclerView mRecyclerView;
 
     private AdapterMusicPackHome mAdapter;
+    private PlayService mPlayService;
 
     @Override
     public int getContentViewID() {
@@ -59,6 +61,14 @@ public class MusicPackListActivity extends ASafeActivity {
                 HTTPParseUtils.getInstance().withMusicPacksList();
             }
         });
+
+        startService(PlayService.getIntentService(this));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(PlayService.getIntentService(this));
     }
 
     @Subscribe

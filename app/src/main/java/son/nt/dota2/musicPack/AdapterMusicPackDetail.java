@@ -13,6 +13,7 @@ import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
+import son.nt.dota2.ottobus_entry.GoAdapterMusicPackDetail;
 import son.nt.dota2.utils.OttoBus;
 
 /**
@@ -71,7 +72,7 @@ public class AdapterMusicPackDetail extends RecyclerView.Adapter<AdapterMusicPac
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OttoBus.post(dto);
+                OttoBus.post(new GoAdapterMusicPackDetail(position, dto));
 
             }
         });

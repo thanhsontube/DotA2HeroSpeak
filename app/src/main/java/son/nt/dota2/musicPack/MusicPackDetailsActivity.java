@@ -11,12 +11,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
+import com.squareup.otto.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import son.nt.dota2.R;
 import son.nt.dota2.base.ASafeActivity;
+import son.nt.dota2.base.MediaItem;
 import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.dto.musicPack.MusicPackDto;
+import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
+import son.nt.dota2.ottobus_entry.GoAdapterMusicPackDetail;
 import son.nt.dota2.service.DownloadService;
+import son.nt.dota2.service.PlayService;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.NetworkUtils;
 
@@ -34,6 +43,8 @@ public class MusicPackDetailsActivity extends ASafeActivity {
 
     DownloadService downloadService;
     boolean isBind = false;
+
+    private PlayService mPlayService;
 
 
     public static void startActivity(Context context, MusicPackDto dto) {
@@ -68,6 +79,10 @@ public class MusicPackDetailsActivity extends ASafeActivity {
         kenBurnsView2.setResourceUrl(mMusicPackDto.getHref(), false);
         mAdapter.setData(mMusicPackDto.getList());
         bindService(DownloadService.getIntent(this), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
+        if (mPlayService == null) {
+
+            bindService(PlayService.getIntent(this), serviceConnectionPlayer, Service.BIND_AUTO_CREATE);
+        }
 
 
     }
@@ -78,8 +93,13 @@ public class MusicPackDetailsActivity extends ASafeActivity {
         if (downloadService != null) {
             downloadService.isQuit = true;
         }
-        if (serviceConnectionPrefetchAudio != null) {
+        if (downloadService != null) {
             unbindService(serviceConnectionPrefetchAudio);
+        }
+
+        if (mPlayService != null)
+        {
+            unbindService(serviceConnectionPlayer);
         }
     }
 
@@ -93,21 +113,52 @@ public class MusicPackDetailsActivity extends ASafeActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             DownloadService.LocalBinder binder = (DownloadService.LocalBinder) service;
             downloadService = binder.getService();
-            isBind = true;
             startPrefetch();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            downloadService = null;
+        }
+    };
+
+    ServiceConnection serviceConnectionPlayer = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            PlayService.LocalBinder binder = (PlayService.LocalBinder) service;
+            mPlayService = binder.getService();
             isBind = true;
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBind = false;
+            mPlayService = null;
         }
     };
 
     private void startPrefetch() {
         Logger.debug(TAG, ">>>" + "startPrefetch isBind" + isBind);
-        if (isBind && NetworkUtils.isConnected(getApplicationContext())) {
+        if (NetworkUtils.isConnected(getApplicationContext())) {
             downloadService.addLinkMusicPack(mMusicPackDto.getList());
         }
+    }
+
+    @Subscribe
+    public void itemClick(GoAdapterMusicPackDetail goAdapterMusicPackDetail) {
+        if (!isSafe()) {
+            return;
+        }
+        if (mPlayService == null) {
+            return;
+        }
+        List<MediaItem> mediaItemList = new ArrayList<>();
+        for (MusicPackSoundDto dto : mAdapter.mValues) {
+            mediaItemList.add(new MediaItem(dto.getName(), dto.getLink(), null, mMusicPackDto.getName()));
+        }
+        mPlayService.setCurrentList(mediaItemList);
+        mPlayService.playSong(goAdapterMusicPackDetail.getPosition(), false);
     }
 
 }

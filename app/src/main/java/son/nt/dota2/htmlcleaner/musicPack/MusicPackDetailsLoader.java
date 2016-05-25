@@ -50,17 +50,23 @@ public abstract class MusicPackDetailsLoader extends ContentLoader<List<MusicPac
                 String tagName = tag.getName();
                 if ("ul".equals(tagName)) {
                     for (TagNode t : tag.getChildTagList()) {
-                        dto = new MusicPackSoundDto();
+                        try {
+                            dto = new MusicPackSoundDto();
 //                        Logger.debug(TAG, ">>>" + "t:" + t.getText());
-                        String text = t.getText().toString().replace("Play ", "");
-                        dto.setName(text);
-                        String link = t.getChildTagList().get(0).getAttributeByName("href");
+                            String text = t.getText().toString().replace("Play ", "");
+                            dto.setName(text);
+                            String link = t.getChildTagList().get(0).getAttributeByName("href");
 //                        Logger.debug(TAG, ">>>" + "link:" + link);
-                        dto.setLink(link);
-                        if (link != null && link.contains("https")) {
-                            Logger.debug(TAG, ">>>" + "text:" + text + ";link:" + link);
-                            list.add(dto);
+                            dto.setLink(link);
+                            if (link != null && link.contains("https") && !link.contains("youtube")) {
+                                Logger.debug(TAG, ">>>" + "text:" + text + ";link:" + link);
+                                list.add(dto);
+                            }
+                        } catch (Exception e)
+                        {
+                            e.printStackTrace();
                         }
+
                     }
                 }
 

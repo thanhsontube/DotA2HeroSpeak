@@ -22,6 +22,7 @@ public class TestActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.test_music_packs_list_download).setOnClickListener(this);
         findViewById(R.id.test_music_packs_list_details).setOnClickListener(this);
         findViewById(R.id.test_music_packs_list_read).setOnClickListener(this);
+        findViewById(R.id.test_music_packs_default).setOnClickListener(this);
 
     }
 
@@ -52,6 +53,10 @@ public class TestActivity extends Activity implements View.OnClickListener {
             }
             case R.id.test_music_packs_list_read: {
                 HTTPParseUtils.getInstance().readObject();
+                break;
+            }
+            case R.id.test_music_packs_default: {
+                HTTPParseUtils.getInstance().withMusicPacksDetails("http://dota2.gamepedia.com/Music");
                 break;
             }
         }
