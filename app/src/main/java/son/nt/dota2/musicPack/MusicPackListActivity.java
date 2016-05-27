@@ -52,8 +52,7 @@ public class MusicPackListActivity extends ASafeActivity {
 
         try {
             SaveMusicPack saveMusicPack = (SaveMusicPack) FileUtil.getMusicPackObject(this);
-            if (saveMusicPack != null)
-            {
+            if (saveMusicPack != null) {
                 mAdapter.setData(saveMusicPack.list);
             }
         } catch (IOException e) {
@@ -80,14 +79,12 @@ public class MusicPackListActivity extends ASafeActivity {
     }
 
     @Subscribe
-    public void getData (SaveMusicPack goAdapterMusicPackHome)
-    {
+    public void getData(SaveMusicPack goAdapterMusicPackHome) {
         mAdapter.setData(goAdapterMusicPackHome.list);
     }
 
     @Subscribe
-    public void itemClick (MusicPackDto musicPackDto)
-    {
+    public void itemClick(MusicPackDto musicPackDto) {
         MusicPackDetailsActivity.startActivity(this, musicPackDto);
     }
 
