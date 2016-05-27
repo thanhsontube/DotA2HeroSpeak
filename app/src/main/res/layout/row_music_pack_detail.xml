@@ -1,60 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:id="@+id/row_voice_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:id="@+id/row_voice_main"
     android:background="@drawable/d_row_speak"
     android:descendantFocusability="blocksDescendants"
-    android:minHeight="70dp">
+    android:minHeight="70dp"
+    android:orientation="horizontal"
+    android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp">
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/row_voice_no"
+            style="@style/txt_white_14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="99"
-            style="@style/txt_white_18"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:text="99" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/row_voice_rival"
-            android:layout_gravity="center"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_agi_40"/>
+            android:layout_gravity="center"
+            android:src="@drawable/ic_agi_40" />
 
         <TextView
-            android:layout_marginLeft="8dp"
             android:id="@+id/row_voice_text"
+            style="@style/txt_white_14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="My List Has 5 names on it"
-            style="@style/txt_white_18"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="8dp"
+            android:text="My List Has 5 names on it" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <ImageView
-            android:visibility="gone"
             android:id="@+id/row_voice_playing"
-            android:layout_marginLeft="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_playing" />
+            android:layout_marginLeft="8dp"
+            android:src="@mipmap/ic_playing"
+            android:visibility="gone" />
 
     </LinearLayout>
 

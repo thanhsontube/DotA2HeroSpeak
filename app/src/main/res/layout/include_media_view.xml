@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     tools:background="@color/black">
-
     <ImageView
         android:id="@+id/player_play"
         android:layout_width="wrap_content"
@@ -40,23 +39,29 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/btn_fav"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_start_off_48" />
+                android:background="?selectableItemBackground"
+                android:src="@drawable/ic_fav_light" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_agi_24" />
+                android:layout_marginLeft="8dp"
+                android:background="?selectableItemBackground"
+                android:src="@drawable/ic_download_light" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_share_48" />
+                android:layout_marginLeft="8dp"
+                android:background="?selectableItemBackground"
+                android:src="@drawable/ic_share_light" />
         </LinearLayout>
 
 
