@@ -46,6 +46,8 @@ public class MusicPackListActivity extends ASafeActivity {
                 return position == 0 ? 2 : 1;
             }
         });
+
+
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);

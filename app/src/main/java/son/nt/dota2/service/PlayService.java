@@ -79,16 +79,16 @@ public class PlayService extends Service {
 
     public void togglePlay() {
         if (player == null) {
-            OttoBus.post(new GoPlayer(GoPlayer.DO_PAUSE));
+            OttoBus.post(new GoPlayer(GoPlayer.DO_PAUSE, currentPosition));
             return;
         }
 
         if (player.isPlaying()) {
-            OttoBus.post(new GoPlayer(GoPlayer.DO_PAUSE));
+            OttoBus.post(new GoPlayer(GoPlayer.DO_PAUSE, currentPosition));
             player.pause();
             return;
         }
-        OttoBus.post(new GoPlayer(GoPlayer.DO_PLAY));
+        OttoBus.post(new GoPlayer(GoPlayer.DO_PLAY, currentPosition));
         player.start();
 
     }
