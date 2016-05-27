@@ -724,12 +724,16 @@ public class HTTPParseUtils {
                     //update inside
                     for (MusicPackDto dto : ResourceManager.getInstance().saveMusicPack.list)
                     {
-                        for (MusicPackSoundDto d : dto.getList())
+                        if (dto.getList() != null)
                         {
-                            d.setGroup(dto.getName());
-                            d.setImage(dto.getHref());
-                            d.setItemId("music_pack_" + FileUtil.createPathFromUrl(d.getLink()));
+                            for (MusicPackSoundDto d : dto.getList())
+                            {
+                                d.setGroup(dto.getName());
+                                d.setImage(dto.getHref());
+                                d.setItemId("music_pack_" + FileUtil.createPathFromUrl(d.getLink()));
+                            }
                         }
+
                     }
 
 

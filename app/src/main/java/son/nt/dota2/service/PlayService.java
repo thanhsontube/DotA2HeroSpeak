@@ -200,7 +200,10 @@ public class PlayService extends Service {
                     player.setDataSource(file.getPath());
                     player.prepare();
                     player.start();
-                    OttoBus.post(new GoPlayer(GoPlayer.DO_PLAY, list.get(currentPosition)));
+                    /**
+                     * @see MusicPackDetailsActivity#commandFromServiceMedia
+                     */
+                    OttoBus.post(new GoPlayer(GoPlayer.DO_PLAY, list.get(currentPosition), currentPosition));
                 } else {
                     loadMedia(list.get(index).getLink());
                 }
@@ -263,7 +266,7 @@ public class PlayService extends Service {
                         player.setDataSource(file.getPath());
                         player.prepare();
                         player.start();
-                        OttoBus.post(new GoPlayer(GoPlayer.DO_PLAY, list.get(currentPosition)));
+                        OttoBus.post(new GoPlayer(GoPlayer.DO_PLAY, list.get(currentPosition), currentPosition));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

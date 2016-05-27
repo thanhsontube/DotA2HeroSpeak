@@ -3,7 +3,7 @@ package son.nt.dota2.base;
 /**
  * Created by sonnt on 5/25/16.
  */
-public class MediaItem extends AObject{
+public class MediaItem extends AObject {
     String itemId;
 
     String title;
@@ -13,16 +13,18 @@ public class MediaItem extends AObject{
 
     long duration;
     String sub;
-    int favorite;
 
     int totalLike;
     int totalComments;
 
+    boolean isPlaying;
+    boolean isFavorite;
+    boolean isLiked;
+
     public MediaItem() {
     }
 
-    public MediaItem(String name, String link, String o, String g)
-    {
+    public MediaItem(String name, String link, String o, String g) {
         title = name;
         this.link = link;
         image = o;
@@ -51,14 +53,6 @@ public class MediaItem extends AObject{
 
     public void setSub(String sub) {
         this.sub = sub;
-    }
-
-    public int getFavorite() {
-        return favorite;
-    }
-
-    public void setFavorite(int favorite) {
-        this.favorite = favorite;
     }
 
     public int getTotalLike() {
@@ -107,5 +101,29 @@ public class MediaItem extends AObject{
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public void setPlaying(boolean playing) {
+        isPlaying = playing;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 }

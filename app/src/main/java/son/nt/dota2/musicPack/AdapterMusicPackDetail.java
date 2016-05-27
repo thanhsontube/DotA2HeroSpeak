@@ -29,6 +29,8 @@ public class AdapterMusicPackDetail extends RecyclerView.Adapter<AdapterMusicPac
     Context context;
     private final WeakReference<Context> contextWeakReference;
 
+    private int previous = 0;
+
     public AdapterMusicPackDetail(Context cx) {
         this.context = cx;
         this.contextWeakReference = new WeakReference<>(cx);
@@ -50,9 +52,19 @@ public class AdapterMusicPackDetail extends RecyclerView.Adapter<AdapterMusicPac
         return new ViewHolder(view);
     }
 
+    public void setNewPos(int pos) {
+        mValues.get(previous).setPlaying(false);
+        notifyItemChanged(previous);
+        mValues.get(pos).setPlaying(true);
+        notifyItemChanged(pos);
+
+        previous = pos;
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        final MusicPackSoundDto dto = mValues.get(position);
+        MusicPackSoundDto musicPackSoundDto = mValues.get(position);
+        final MusicPackSoundDto dto = musicPackSoundDto;
 
         String no = String.valueOf(position).trim();
         if (no.length() == 1) {
@@ -64,7 +76,7 @@ public class AdapterMusicPackDetail extends RecyclerView.Adapter<AdapterMusicPac
 
         viewHolder.txtName.setText(dto.getTitle());
 
-        if (position == 0) {
+        if (musicPackSoundDto.isPlaying()) {
             viewHolder.view.setBackgroundResource(R.drawable.d_row_speaking);
             viewHolder.imageView.setVisibility(View.VISIBLE);
         } else {
@@ -72,16 +84,8 @@ public class AdapterMusicPackDetail extends RecyclerView.Adapter<AdapterMusicPac
             viewHolder.view.setBackgroundResource(android.R.color.transparent);
         }
 
-        Glide.with(context).load(mValues.get(position).getImage()).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).into(viewHolder.imageGroup);
+        Glide.with(context).load(musicPackSoundDto.getImage()).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).into(viewHolder.imageGroup);
 
-
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OttoBus.post(new GoAdapterMusicPackDetail(position, dto));
-
-            }
-        });
 
     }
 
@@ -104,6 +108,17 @@ public class AdapterMusicPackDetail extends RecyclerView.Adapter<AdapterMusicPac
             this.imageGroup = (ImageView) itemView.findViewById(R.id.row_voice_rival);
             this.txtName = (TextView) itemView.findViewById(R.id.row_voice_text);
             txtNo = (TextView) itemView.findViewById(R.id.row_voice_no);
+
+            this.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    /**
+                     * @see MusicPackDetailsActivity#itemClick(GoAdapterMusicPackDetail)
+                     */
+                    OttoBus.post(new GoAdapterMusicPackDetail(getAdapterPosition()));
+
+                }
+            });
 
         }
     }

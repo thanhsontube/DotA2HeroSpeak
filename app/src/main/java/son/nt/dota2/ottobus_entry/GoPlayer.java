@@ -10,13 +10,15 @@ public class GoPlayer {
     public static final int DO_PAUSE = 2;
     public int command;
     public MediaItem mediaItem;
+    public int pos;
 
     public GoPlayer(int command) {
         this.command = command;
     }
 
-    public GoPlayer(int command, MediaItem mediaItem) {
+    public GoPlayer(int command, MediaItem mediaItem, int pos) {
         this.command = command;
         this.mediaItem = mediaItem;
+        this.pos = pos;
     }
 }

@@ -99,8 +99,8 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
         initView();
 
     }
-    private void initView ()
-    {
+
+    private void initView() {
         mTxtName.setText(mMusicPackDto.getName());
         mTxtGroup.setText("" + mMusicPackDto.getList().size() + " tracks");
     }
@@ -168,10 +168,6 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
             case R.id.player_play: {
                 if (mPlayService != null) {
                     if (mPlayService.getList().isEmpty()) {
-//                        List<MediaItem> mediaItemList = new ArrayList<>();
-//                        for (MusicPackSoundDto dto : mAdapter.mValues) {
-//                            mediaItemList.add(new MediaItem(dto.getName(), dto.getLink(), null, mMusicPackDto.getName()));
-//                        }
                         mPlayService.setCurrentList(mAdapter.mValues);
                         mPlayService.playSong(0, false);
 
@@ -193,10 +189,6 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
         if (mPlayService == null) {
             return;
         }
-//        List<MediaItem> mediaItemList = new ArrayList<>();
-//        for (MusicPackSoundDto dto : mAdapter.mValues) {
-//            mediaItemList.add(new MediaItem(dto.getName(), dto.getLink(), null, mMusicPackDto.getName()));
-//        }
         mPlayService.setCurrentList(mAdapter.mValues);
         mPlayService.playSong(goAdapterMusicPackDetail.getPosition(), false);
     }
@@ -214,6 +206,7 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
                 }
                 break;
         }
+        mAdapter.setNewPos(goPlayer.pos);
     }
 
     private void updateMediaWidget(MediaItem mediaItem) {
