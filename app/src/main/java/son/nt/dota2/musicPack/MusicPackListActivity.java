@@ -35,7 +35,7 @@ public class MusicPackListActivity extends ASafeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setupToolbar(toolbar, -1, null);
+        setupToolbar(toolbar, -1, "Dota 2 Music Pack");
 
         mAdapter = new AdapterMusicPackHome(this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
@@ -66,7 +66,7 @@ public class MusicPackListActivity extends ASafeActivity {
         findViewById(R.id.test_click_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HTTPParseUtils.getInstance().withMusicPacksList();
+                HTTPParseUtils.getInstance().withMusicPacksDetails2();
             }
         });
 

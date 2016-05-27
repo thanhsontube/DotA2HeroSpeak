@@ -54,7 +54,7 @@ public abstract class MusicPackDetailsLoader extends ContentLoader<List<MusicPac
                             dto = new MusicPackSoundDto();
 //                        Logger.debug(TAG, ">>>" + "t:" + t.getText());
                             String text = t.getText().toString().replace("Play ", "");
-                            dto.setName(text);
+                            dto.setTitle(text);
                             String link = t.getChildTagList().get(0).getAttributeByName("href");
 //                        Logger.debug(TAG, ">>>" + "link:" + link);
                             dto.setLink(link);
@@ -73,11 +73,11 @@ public abstract class MusicPackDetailsLoader extends ContentLoader<List<MusicPac
             }
 
 
-            Logger.debug(TAG, ">>>" + "total:" + list.size());
-            for (MusicPackSoundDto d1 : list)
-            {
-                Logger.debug(TAG, ">>>" + "text1:" + d1.getName() + ";link1:" + d1.getLink());
-            }
+//            Logger.debug(TAG, ">>>" + "total:" + list.size());
+//            for (MusicPackSoundDto d1 : list)
+//            {
+//                Logger.debug(TAG, ">>>" + "text1:" + d1.getName() + ";link1:" + d1.getLink());
+//            }
 
 
             return list;

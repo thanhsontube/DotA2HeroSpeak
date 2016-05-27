@@ -659,11 +659,12 @@ public class HTTPParseUtils {
                 MusicPackDto dto = new MusicPackDto();
                 dto.setName("Default Music Pack");
                 dto.setLinkDetails("http://dota2.gamepedia.com/Music");
-                dto.setCoverColor("#8847ff");
+                dto.setCoverColor("#000000");
                 dto.setHref("http://images.akamai.steamusercontent.com/ugc/433773677027904120/CC1E0F736AB7FAFFC297C87732B56422FEF9BF8D/");
                 entity.add(0, dto);
 
                 OttoBus.post(new SaveMusicPack(entity));
+
                 ResourceManager.getInstance().saveMusicPack.list = entity;
 
             }
@@ -676,8 +677,7 @@ public class HTTPParseUtils {
     }
 
     public void withMusicPacksDetails(String link) {
-        if (link == null)
-        {
+        if (link == null) {
             link = "http://dota2.gamepedia.com/Heroes_Within_Music_Pack";
         }
         HttpGet httpGet = new HttpGet(link);
@@ -719,8 +719,20 @@ public class HTTPParseUtils {
                     i++;
                     withMusicPacksDetails2();
                 } else {
-                    int size = ResourceManager.getInstance().saveMusicPack.list.get(9).getList().size();
-                    Logger.debug(TAG, ">>>" + "DONE  final size:" + size);
+                    Logger.debug(TAG, ">>>" + "DONE  final ");
+
+                    //update inside
+                    for (MusicPackDto dto : ResourceManager.getInstance().saveMusicPack.list)
+                    {
+                        for (MusicPackSoundDto d : dto.getList())
+                        {
+                            d.setGroup(dto.getName());
+                            d.setImage(dto.getHref());
+                            d.setItemId("music_pack_" + FileUtil.createPathFromUrl(d.getLink()));
+                        }
+                    }
+
+
                     saveObject();
 
                     OttoBus.post(ResourceManager.getInstance().saveMusicPack);

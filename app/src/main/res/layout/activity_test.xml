@@ -30,6 +30,12 @@
             android:layout_height="wrap_content"
             android:text="get Arc Ability"
             android:id="@+id/test_arc_ability"/>
+        <TextView
+            android:background="@color/green_100"
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Music Pack"/>
 
         <Button
             android:layout_width="match_parent"

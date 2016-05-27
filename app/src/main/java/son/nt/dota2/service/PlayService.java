@@ -35,7 +35,7 @@ public class PlayService extends Service {
     private MediaPlayer player;
     private LocalBinder mBinder = new LocalBinder();
 
-    private List<MediaItem> list = new ArrayList<>();
+    private List<? extends MediaItem> list = new ArrayList<>();
 
     private Notification mNotification;
 
@@ -51,7 +51,7 @@ public class PlayService extends Service {
         return new Intent(context, PlayService.class);
     }
 
-    public void setCurrentList(List<MediaItem> list) {
+    public void setCurrentList(List<? extends MediaItem> list) {
         this.list = list;
     }
 
@@ -195,14 +195,14 @@ public class PlayService extends Service {
 //                }
 
                 prePos = currentPosition;
-                File file = new File(ResourceManager.getInstance().getPathMusicPack(list.get(index).getmUrl()));
+                File file = new File(ResourceManager.getInstance().getPathMusicPack(list.get(index).getLink()));
                 if (file.exists()) {
                     player.setDataSource(file.getPath());
                     player.prepare();
                     player.start();
                     OttoBus.post(new GoPlayer(GoPlayer.DO_PLAY, list.get(currentPosition)));
                 } else {
-                    loadMedia(list.get(index).getmUrl());
+                    loadMedia(list.get(index).getLink());
                 }
 
 
@@ -240,7 +240,7 @@ public class PlayService extends Service {
         }
     }
 
-    public List<MediaItem> getList() {
+    public List<? extends MediaItem> getList() {
         return list;
     }
 

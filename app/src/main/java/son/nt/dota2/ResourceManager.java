@@ -142,8 +142,8 @@ public class ResourceManager {
 
     public String getPathMusicPack(String link) {
 
-//        return ResourceManager.getInstance().folderMusicPack + File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat");
-        return ResourceManager.getInstance().folderMusicPack + File.separator + FileUtil.createPathFromUrl(link);
+        return ResourceManager.getInstance().folderMusicPack + File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat");
+//        return ResourceManager.getInstance().folderMusicPack + File.separator + FileUtil.createPathFromUrl(link);
     }
 
     public String getPathRingtone(String link, String heroID) {

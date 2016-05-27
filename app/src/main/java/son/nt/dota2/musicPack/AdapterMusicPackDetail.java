@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -59,15 +62,18 @@ public class AdapterMusicPackDetail extends RecyclerView.Adapter<AdapterMusicPac
         }
         viewHolder.txtNo.setText(no);
 
-        viewHolder.txtName.setText(dto.getName());
+        viewHolder.txtName.setText(dto.getTitle());
 
-        if (true) {
+        if (position == 0) {
             viewHolder.view.setBackgroundResource(R.drawable.d_row_speaking);
             viewHolder.imageView.setVisibility(View.VISIBLE);
         } else {
             viewHolder.imageView.setVisibility(View.GONE);
             viewHolder.view.setBackgroundResource(android.R.color.transparent);
         }
+
+        Glide.with(context).load(mValues.get(position).getImage()).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).into(viewHolder.imageGroup);
+
 
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +92,7 @@ public class AdapterMusicPackDetail extends RecyclerView.Adapter<AdapterMusicPac
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        ImageView imageGroup;
         TextView txtName;
         View view;
         TextView txtNo;
@@ -94,6 +101,7 @@ public class AdapterMusicPackDetail extends RecyclerView.Adapter<AdapterMusicPac
             super(itemView);
             this.view = itemView.findViewById(R.id.row_voice_main);
             this.imageView = (ImageView) itemView.findViewById(R.id.row_voice_playing);
+            this.imageGroup = (ImageView) itemView.findViewById(R.id.row_voice_rival);
             this.txtName = (TextView) itemView.findViewById(R.id.row_voice_text);
             txtNo = (TextView) itemView.findViewById(R.id.row_voice_no);
 

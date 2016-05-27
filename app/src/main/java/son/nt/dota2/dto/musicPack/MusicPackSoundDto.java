@@ -1,36 +1,16 @@
 package son.nt.dota2.dto.musicPack;
 
-import son.nt.dota2.base.AObject;
+import son.nt.dota2.base.MediaItem;
 
 /**
  * Created by sonnt on 5/23/16.
  */
-public class MusicPackSoundDto extends AObject {
-    String name;
-    String link;
-    boolean isPlaying;
+public class MusicPackSoundDto extends MediaItem {
 
-    public String getName() {
-        return name;
+    public MusicPackSoundDto() {
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public boolean isPlaying() {
-        return isPlaying;
-    }
-
-    public void setPlaying(boolean playing) {
-        isPlaying = playing;
+    public MusicPackSoundDto(String name, String link, String o, String g) {
+        super(name, link, o, g);
     }
 }

@@ -16,16 +16,12 @@ import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.Bind;
 import son.nt.dota2.R;
 import son.nt.dota2.base.ASafeActivity;
 import son.nt.dota2.base.MediaItem;
 import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.dto.musicPack.MusicPackDto;
-import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
 import son.nt.dota2.ottobus_entry.GoAdapterMusicPackDetail;
 import son.nt.dota2.ottobus_entry.GoPlayer;
 import son.nt.dota2.service.DownloadService;
@@ -88,7 +84,7 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
 
         }
         mMusicPackDto = (MusicPackDto) getIntent().getSerializableExtra(DATA);
-        if (mMusicPackDto == null) {
+        if (mMusicPackDto == null || mMusicPackDto.getList() == null) {
             return;
         }
         setupToolbar(toolbar, -1, mMusicPackDto.getName());
@@ -172,11 +168,11 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
             case R.id.player_play: {
                 if (mPlayService != null) {
                     if (mPlayService.getList().isEmpty()) {
-                        List<MediaItem> mediaItemList = new ArrayList<>();
-                        for (MusicPackSoundDto dto : mAdapter.mValues) {
-                            mediaItemList.add(new MediaItem(dto.getName(), dto.getLink(), null, mMusicPackDto.getName()));
-                        }
-                        mPlayService.setCurrentList(mediaItemList);
+//                        List<MediaItem> mediaItemList = new ArrayList<>();
+//                        for (MusicPackSoundDto dto : mAdapter.mValues) {
+//                            mediaItemList.add(new MediaItem(dto.getName(), dto.getLink(), null, mMusicPackDto.getName()));
+//                        }
+                        mPlayService.setCurrentList(mAdapter.mValues);
                         mPlayService.playSong(0, false);
 
                     } else {
@@ -197,11 +193,11 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
         if (mPlayService == null) {
             return;
         }
-        List<MediaItem> mediaItemList = new ArrayList<>();
-        for (MusicPackSoundDto dto : mAdapter.mValues) {
-            mediaItemList.add(new MediaItem(dto.getName(), dto.getLink(), null, mMusicPackDto.getName()));
-        }
-        mPlayService.setCurrentList(mediaItemList);
+//        List<MediaItem> mediaItemList = new ArrayList<>();
+//        for (MusicPackSoundDto dto : mAdapter.mValues) {
+//            mediaItemList.add(new MediaItem(dto.getName(), dto.getLink(), null, mMusicPackDto.getName()));
+//        }
+        mPlayService.setCurrentList(mAdapter.mValues);
         mPlayService.playSong(goAdapterMusicPackDetail.getPosition(), false);
     }
 
@@ -229,6 +225,5 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
         mTxtGroup.setText(mediaItem.getGroup());
 
     }
-
 
 }
