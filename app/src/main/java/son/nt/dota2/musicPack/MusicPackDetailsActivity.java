@@ -10,6 +10,9 @@ import android.os.IBinder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -24,12 +27,13 @@ import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.dto.musicPack.MusicPackDto;
 import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
 import son.nt.dota2.ottobus_entry.GoAdapterMusicPackDetail;
+import son.nt.dota2.ottobus_entry.GoPlayer;
 import son.nt.dota2.service.DownloadService;
 import son.nt.dota2.service.PlayService;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.NetworkUtils;
 
-public class MusicPackDetailsActivity extends ASafeActivity {
+public class MusicPackDetailsActivity extends ASafeActivity implements View.OnClickListener {
     private static final String TAG = MusicPackDetailsActivity.class.getSimpleName();
     private static final String DATA = "DATA";
     @Bind(R.id.music_pack_detail_rcv)
@@ -37,6 +41,15 @@ public class MusicPackDetailsActivity extends ASafeActivity {
 
     @Bind(R.id.kenburn)
     KenBurnsView2 kenBurnsView2;
+
+    @Bind(R.id.player_play)
+    ImageView mImgPlay;
+
+    @Bind(R.id.txt_media_name)
+    TextView mTxtName;
+
+    @Bind(R.id.txt_media_group)
+    TextView mTxtGroup;
 
     private AdapterMusicPackDetail mAdapter;
     private MusicPackDto mMusicPackDto;
@@ -58,6 +71,9 @@ public class MusicPackDetailsActivity extends ASafeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_details);
+
+        //listener
+        mImgPlay.setOnClickListener(this);
 
         mAdapter = new AdapterMusicPackDetail(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -84,7 +100,13 @@ public class MusicPackDetailsActivity extends ASafeActivity {
             bindService(PlayService.getIntent(this), serviceConnectionPlayer, Service.BIND_AUTO_CREATE);
         }
 
+        initView();
 
+    }
+    private void initView ()
+    {
+        mTxtName.setText(mMusicPackDto.getName());
+        mTxtGroup.setText("" + mMusicPackDto.getList().size() + " tracks");
     }
 
     @Override
@@ -97,8 +119,7 @@ public class MusicPackDetailsActivity extends ASafeActivity {
             unbindService(serviceConnectionPrefetchAudio);
         }
 
-        if (mPlayService != null)
-        {
+        if (mPlayService != null) {
             unbindService(serviceConnectionPlayer);
         }
     }
@@ -145,6 +166,29 @@ public class MusicPackDetailsActivity extends ASafeActivity {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.player_play: {
+                if (mPlayService != null) {
+                    if (mPlayService.getList().isEmpty()) {
+                        List<MediaItem> mediaItemList = new ArrayList<>();
+                        for (MusicPackSoundDto dto : mAdapter.mValues) {
+                            mediaItemList.add(new MediaItem(dto.getName(), dto.getLink(), null, mMusicPackDto.getName()));
+                        }
+                        mPlayService.setCurrentList(mediaItemList);
+                        mPlayService.playSong(0, false);
+
+                    } else {
+
+                        mPlayService.togglePlay();
+                    }
+                }
+                break;
+            }
+        }
+    }
+
     @Subscribe
     public void itemClick(GoAdapterMusicPackDetail goAdapterMusicPackDetail) {
         if (!isSafe()) {
@@ -160,5 +204,31 @@ public class MusicPackDetailsActivity extends ASafeActivity {
         mPlayService.setCurrentList(mediaItemList);
         mPlayService.playSong(goAdapterMusicPackDetail.getPosition(), false);
     }
+
+    @Subscribe
+    public void commandFromServiceMedia(GoPlayer goPlayer) {
+        switch (goPlayer.command) {
+            case GoPlayer.DO_PAUSE:
+                mImgPlay.setImageResource(R.drawable.icon_played);
+                break;
+            case GoPlayer.DO_PLAY:
+                mImgPlay.setImageResource(R.drawable.icon_paused);
+                if (goPlayer.mediaItem != null) {
+                    updateMediaWidget(goPlayer.mediaItem);
+                }
+                break;
+        }
+    }
+
+    private void updateMediaWidget(MediaItem mediaItem) {
+        if (!isSafe()) {
+            return;
+        }
+
+        mTxtName.setText(mediaItem.getTitle());
+        mTxtGroup.setText(mediaItem.getGroup());
+
+    }
+
 
 }

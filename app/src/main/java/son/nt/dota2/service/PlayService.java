@@ -24,6 +24,8 @@ import son.nt.dota2.ResourceManager;
 import son.nt.dota2.base.MediaItem;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.musicPack.MusicPackDetailsActivity;
+import son.nt.dota2.ottobus_entry.GoPlayer;
+import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.PreferenceUtil;
 
 public class PlayService extends Service {
@@ -34,15 +36,14 @@ public class PlayService extends Service {
     private LocalBinder mBinder = new LocalBinder();
 
     private List<MediaItem> list = new ArrayList<>();
+
     private Notification mNotification;
 
 
-    private String source;
     //    public List<MusicPackSoundDto> list = new ArrayList<MusicPackSoundDto>();
     private MsConst.RepeatMode repeatMode = MsConst.RepeatMode.MODE_OFF;
     public int currentPosition = 0;
     public int prePos = 0;
-    public String heroID;
 
     private boolean isPlayAndStopOne = false;
 
@@ -74,6 +75,22 @@ public class PlayService extends Service {
             player.release();
             player = null;
         }
+    }
+
+    public void togglePlay() {
+        if (player == null) {
+            OttoBus.post(new GoPlayer(GoPlayer.DO_PAUSE));
+            return;
+        }
+
+        if (player.isPlaying()) {
+            OttoBus.post(new GoPlayer(GoPlayer.DO_PAUSE));
+            player.pause();
+            return;
+        }
+        OttoBus.post(new GoPlayer(GoPlayer.DO_PLAY));
+        player.start();
+
     }
 
     public class LocalBinder extends Binder {
@@ -183,8 +200,9 @@ public class PlayService extends Service {
                     player.setDataSource(file.getPath());
                     player.prepare();
                     player.start();
+                    OttoBus.post(new GoPlayer(GoPlayer.DO_PLAY, list.get(currentPosition)));
                 } else {
-                    loadSpeak(list.get(index).getmUrl(), heroID);
+                    loadMedia(list.get(index).getmUrl());
                 }
 
 
@@ -222,20 +240,16 @@ public class PlayService extends Service {
         }
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public List<MediaItem> getList() {
+        return list;
     }
 
 
-    public MediaPlayer getPlayer() {
-        return player;
-    }
 
-
-    private void loadSpeak(final String linkSpeak, final String heroID) {
+    private void loadMedia(final String linkUrl) {
         try {
 
-            HttpGet httpGet = new HttpGet(linkSpeak);
+            HttpGet httpGet = new HttpGet(linkUrl);
 
             MediaLoader dataLoader = new MediaLoader(httpGet, false) {
 
@@ -243,12 +257,13 @@ public class PlayService extends Service {
                 public void onContentLoaderSucceed(File entity) {
                     Log.v(TAG, "log>>>" + "onContentLoaderSucceed:" + entity.getPath());
                     try {
-                        File file = new File(ResourceManager.getInstance().getPathMusicPack(linkSpeak));
+                        File file = new File(ResourceManager.getInstance().getPathMusicPack(linkUrl));
                         Log.v(TAG, "log>>>" + "file:" + file.getPath());
                         entity.renameTo(file);
                         player.setDataSource(file.getPath());
                         player.prepare();
                         player.start();
+                        OttoBus.post(new GoPlayer(GoPlayer.DO_PLAY, list.get(currentPosition)));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -281,7 +296,7 @@ public class PlayService extends Service {
                 player.prepare();
                 player.start();
             } else {
-                loadSpeak(link, heroID);
+                loadMedia(link);
             }
         } catch (IOException e) {
             e.printStackTrace();

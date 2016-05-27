@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTextViewStyle">
-        <item name="android:fontFamily">sans-serif-condensed</item>
-    </style>
+
+    <style name="AppTextViewStyle" parent="@style/FontRegular"></style>
+
     <style name="AppTextViewStyle.Header" parent="AppTextViewStyle">
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:textColor">@android:color/black</item>

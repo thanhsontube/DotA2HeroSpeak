@@ -45,9 +45,8 @@ public class MyApplication extends Application {
 
     }
 
-    private void setupCalligraphy()
-    {
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/Roboto-Regular.ttf").setFontAttrId(R.attr.fontPath).build());
+    private void setupCalligraphy() {
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/Roboto-Regular.ttf")
+                .setFontAttrId(R.attr.fontPath).build());
     }
 }

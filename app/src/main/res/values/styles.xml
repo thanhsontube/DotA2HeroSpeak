@@ -1,6 +1,38 @@
 <resources>
 
+    <style name="Theme.TS" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/primary_dark_color</item>
+        <item name="colorAccent">@color/accent_color</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="Theme.Hero" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/com_facebook_blue</item>
+        <item name="colorPrimaryDark">@color/md_indigo_500</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
     <style name="Theme.TS.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.TS.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="FontRegular">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+    </style>
+    <style name="FontLight">
+        <item name="fontPath">fonts/Roboto-Light.ttf</item>
+    </style>
+
+    <style name="FontMedium">
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+    </style>
+
+    <style name="FontLightItalic">
+        <item name="fontPath">fonts/Roboto-LightItalic.ttf</item>
+    </style>
 </resources>

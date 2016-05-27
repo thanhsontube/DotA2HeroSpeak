@@ -59,7 +59,12 @@ public class AdapterMusicPackHome extends RecyclerView.Adapter<AdapterMusicPackH
                     .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(viewHolder.imageView);
-            viewHolder.viewCover.setBackgroundColor(Color.parseColor(dto.getCoverColor()));
+            if (i == 0) {
+                viewHolder.viewCover.setBackgroundColor(Color.TRANSPARENT);
+            } else {
+
+                viewHolder.viewCover.setBackgroundColor(Color.parseColor(dto.getCoverColor()));
+            }
         }
 
         viewHolder.view.setOnClickListener(new View.OnClickListener() {

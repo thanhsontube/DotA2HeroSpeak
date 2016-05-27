@@ -39,6 +39,13 @@ public class MusicPackListActivity extends ASafeActivity {
 
         mAdapter = new AdapterMusicPackHome(this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        // Create a custom SpanSizeLookup where the first item spans both columns
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return position == 0 ? 2 : 1;
+            }
+        });
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
@@ -55,6 +62,7 @@ public class MusicPackListActivity extends ASafeActivity {
             e.printStackTrace();
         }
 
+        findViewById(R.id.test_click_1).setVisibility(View.GONE);
         findViewById(R.id.test_click_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
