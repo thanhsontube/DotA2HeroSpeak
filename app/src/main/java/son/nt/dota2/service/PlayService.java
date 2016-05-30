@@ -185,15 +185,6 @@ public class PlayService extends Service {
             startForeground(NOTIFICATION_ID, mNotification);
             player.reset();
             if (list.size() >= currentPosition) {
-//                if (adapterVoice != null) {
-//                    if (currentPosition > 0) {
-//                        adapterVoice.getItem(prePos).setPlaying(false);
-//                    }
-//                    adapterVoice.getItem(currentPosition).setPlaying(true);
-//                    adapterVoice.notifyDataSetChanged();
-//
-//                }
-
                 prePos = currentPosition;
                 File file = new File(ResourceManager.getInstance().getPathMusicPack(list.get(index).getLink()));
                 if (file.exists()) {
@@ -246,7 +237,6 @@ public class PlayService extends Service {
     public List<? extends MediaItem> getList() {
         return list;
     }
-
 
 
     private void loadMedia(final String linkUrl) {
