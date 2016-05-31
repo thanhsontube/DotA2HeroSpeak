@@ -162,6 +162,9 @@ public class PlayService extends Service {
 
     public void playSong(int index, boolean isItemClick) {
         isPlayAndStopOne = isItemClick;
+        if (list == null || list.isEmpty()) {
+            return;
+        }
         playSong(index);
     }
 

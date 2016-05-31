@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.squareup.otto.Subscribe;
@@ -16,7 +17,7 @@ import son.nt.dota2.base.ASafeActivity;
 import son.nt.dota2.dto.musicPack.MusicPackDto;
 import son.nt.dota2.dto.save.SaveMusicPack;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
-import son.nt.dota2.service.PlayService;
+import son.nt.dota2.musicPack.fav.MusicPackFavActivity;
 import son.nt.dota2.utils.FileUtil;
 
 public class MusicPackListActivity extends ASafeActivity {
@@ -24,7 +25,6 @@ public class MusicPackListActivity extends ASafeActivity {
     RecyclerView mRecyclerView;
 
     private AdapterMusicPackHome mAdapter;
-    private PlayService mPlayService;
 
     @Override
     public int getContentViewID() {
@@ -43,7 +43,7 @@ public class MusicPackListActivity extends ASafeActivity {
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return position == 0 ? 2 : 1;
+                return position == 0 || position == 1 ? 2 : 1;
             }
         });
 
@@ -71,14 +71,8 @@ public class MusicPackListActivity extends ASafeActivity {
             }
         });
 
-        startService(PlayService.getIntentService(this));
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopService(PlayService.getIntentService(this));
-    }
 
     @Subscribe
     public void getData(SaveMusicPack goAdapterMusicPackHome) {
@@ -87,7 +81,15 @@ public class MusicPackListActivity extends ASafeActivity {
 
     @Subscribe
     public void itemClick(MusicPackDto musicPackDto) {
-        MusicPackDetailsActivity.startActivity(this, musicPackDto);
+        if (!isSafe() || musicPackDto == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(musicPackDto.getLinkDetails())) {
+            MusicPackFavActivity.startActivity(this);
+        } else {
+
+            MusicPackDetailsActivity.startActivity(this, musicPackDto);
+        }
     }
 
 }

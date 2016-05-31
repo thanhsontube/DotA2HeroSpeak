@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import son.nt.dota2.R;
@@ -96,6 +97,9 @@ public class MusicPackFavActivity extends ASafeActivity implements View.OnClickL
 
         setupToolbar(toolbar, -1, "My favorites Music Packs");
         mAdapter.setData(soundDtoList);
+        if (soundDtoList.isEmpty()) {
+            ButterKnife.findById(this, R.id.media_view).setVisibility(View.GONE);
+        }
         if (mPlayService == null) {
 
             bindService(PlayService.getIntent(this), serviceConnectionPlayer, Service.BIND_AUTO_CREATE);
@@ -107,7 +111,7 @@ public class MusicPackFavActivity extends ASafeActivity implements View.OnClickL
 
 
     private void initView() {
-        mTxtName.setText("Favorite Tracks");
+        mTxtName.setText("My Favorite Tracks");
         mTxtGroup.setText("" + mAdapter.mValues.size() + " tracks");
     }
 
@@ -225,6 +229,16 @@ public class MusicPackFavActivity extends ASafeActivity implements View.OnClickL
         if (!isSafe()) {
             return;
         }
+        RealmResults<MusicPackSoundRealm> list = mRealm.where(MusicPackSoundRealm.class).findAll();
+
+        mImgFav.setImageResource(R.drawable.ic_fav_light);
+        for (MusicPackSoundRealm d : list) {
+            if (d.getItemId().equals(mediaItem.getItemId())) {
+                mImgFav.setImageResource(R.drawable.ic_fav_light_on);
+                break;
+            }
+        }
+
 
         mTxtName.setText(mediaItem.getTitle());
         mTxtGroup.setText(mediaItem.getGroup());

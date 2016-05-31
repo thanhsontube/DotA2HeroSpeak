@@ -37,6 +37,11 @@ public class AdapterMusicPackHome extends RecyclerView.Adapter<AdapterMusicPackH
 
     public void setData(List<MusicPackDto> mValues) {
         this.mValues = mValues;
+        MusicPackDto top1 = new MusicPackDto();
+        top1.setCoverColor("#ff00ff");
+        top1.setName("Favorite tracks");
+        top1.setHref("http://cdn.dota2.com/apps/dota2/images/blogfiles/ti6_aegis_banner.jpg");
+        this.mValues.add(0, top1);
         notifyDataSetChanged();
     }
 
@@ -59,7 +64,7 @@ public class AdapterMusicPackHome extends RecyclerView.Adapter<AdapterMusicPackH
                     .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(viewHolder.imageView);
-            if (i == 0) {
+            if (i == 0 || i == 1) {
                 viewHolder.viewCover.setBackgroundColor(Color.TRANSPARENT);
             } else {
 
@@ -70,6 +75,9 @@ public class AdapterMusicPackHome extends RecyclerView.Adapter<AdapterMusicPackH
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /**
+                 * @see MusicPackListActivity#itemClick
+                 */
                 OttoBus.post(dto);
 
             }

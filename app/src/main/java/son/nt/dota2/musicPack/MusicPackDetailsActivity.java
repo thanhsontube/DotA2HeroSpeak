@@ -18,6 +18,7 @@ import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import son.nt.dota2.R;
 import son.nt.dota2.base.ASafeActivity;
 import son.nt.dota2.base.MediaItem;
@@ -100,6 +101,7 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
         }
         setupToolbar(toolbar, -1, mMusicPackDto.getName());
         kenBurnsView2.setResourceUrl(mMusicPackDto.getHref(), false);
+
         mAdapter.setData(mMusicPackDto.getList());
         bindService(DownloadService.getIntent(this), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
         if (mPlayService == null) {
@@ -255,6 +257,16 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
         if (!isSafe()) {
             return;
         }
+        RealmResults<MusicPackSoundRealm> list = mRealm.where(MusicPackSoundRealm.class).equalTo("group", mMusicPackDto.getName()).findAll();
+
+        mImgFav.setImageResource(R.drawable.ic_fav_light);
+        for (MusicPackSoundRealm d : list) {
+            if (d.getItemId().equals(mediaItem.getItemId())) {
+                mImgFav.setImageResource(R.drawable.ic_fav_light_on);
+                break;
+            }
+        }
+
 
         mTxtName.setText(mediaItem.getTitle());
         mTxtGroup.setText(mediaItem.getGroup());
