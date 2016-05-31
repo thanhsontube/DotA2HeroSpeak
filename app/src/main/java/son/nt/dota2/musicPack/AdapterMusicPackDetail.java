@@ -25,7 +25,7 @@ import son.nt.dota2.utils.OttoBus;
 public class AdapterMusicPackDetail extends RecyclerView.Adapter<AdapterMusicPackDetail.ViewHolder> {
 
     private static final String TAG = AdapterMusicPackDetail.class.getSimpleName();
-    List<MusicPackSoundDto> mValues;
+    public List<MusicPackSoundDto> mValues;
     Context context;
     private final WeakReference<Context> contextWeakReference;
 

@@ -25,6 +25,24 @@ public class MusicPackSoundRealm extends RealmObject {
     boolean isPlaying;
     boolean isFavorite;
     boolean isLiked;
+
+    public static MusicPackSoundDto copyData(MusicPackSoundRealm dto) {
+
+        MusicPackSoundDto result = new MusicPackSoundDto();
+        result.setItemId(dto.getItemId());
+        result.setTitle(dto.getTitle());
+        result.setLink(dto.getLink());
+        result.setImage(dto.getImage());
+        result.setGroup(dto.getGroup());
+        result.setDuration(dto.getDuration());
+        result.setSub(dto.getSub());
+        result.setTotalLike(dto.getTotalLike());
+        result.setTotalComments(dto.getTotalComments());
+        result.setPlaying(dto.isPlaying());
+        result.setFavorite(dto.isFavorite());
+        result.setLiked(dto.isLiked());
+        return result;
+    }
     
     public void createDb (MusicPackSoundDto dto)
     {

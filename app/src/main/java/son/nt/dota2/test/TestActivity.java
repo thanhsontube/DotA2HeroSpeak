@@ -8,6 +8,7 @@ import android.view.View;
 import son.nt.dota2.R;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.musicPack.MusicPackListActivity;
+import son.nt.dota2.musicPack.fav.MusicPackFavActivity;
 
 public class TestActivity extends Activity implements View.OnClickListener {
 
@@ -23,6 +24,7 @@ public class TestActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.test_music_packs_list_details).setOnClickListener(this);
         findViewById(R.id.test_music_packs_list_read).setOnClickListener(this);
         findViewById(R.id.test_music_packs_default).setOnClickListener(this);
+        findViewById(R.id.test_music_packs_fav).setOnClickListener(this);
 
     }
 
@@ -57,6 +59,10 @@ public class TestActivity extends Activity implements View.OnClickListener {
             }
             case R.id.test_music_packs_default: {
                 HTTPParseUtils.getInstance().withMusicPacksDetails("http://dota2.gamepedia.com/Music");
+                break;
+            }
+            case R.id.test_music_packs_fav: {
+                MusicPackFavActivity.startActivity(this);
                 break;
             }
         }
