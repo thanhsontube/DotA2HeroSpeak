@@ -17,11 +17,14 @@ import android.widget.TextView;
 import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
+import io.realm.Realm;
 import son.nt.dota2.R;
 import son.nt.dota2.base.ASafeActivity;
 import son.nt.dota2.base.MediaItem;
 import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.dto.musicPack.MusicPackDto;
+import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
+import son.nt.dota2.dto.musicPack.MusicPackSoundRealm;
 import son.nt.dota2.ottobus_entry.GoAdapterMusicPackDetail;
 import son.nt.dota2.ottobus_entry.GoPlayer;
 import son.nt.dota2.service.DownloadService;
@@ -47,6 +50,9 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
     @Bind(R.id.txt_media_group)
     TextView mTxtGroup;
 
+    @Bind(R.id.btn_fav)
+    ImageView mImgFav;
+
     private AdapterMusicPackDetail mAdapter;
     private MusicPackDto mMusicPackDto;
 
@@ -54,6 +60,7 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
     boolean isBind = false;
 
     private PlayService mPlayService;
+    private Realm mRealm;
 
 
     public static void startActivity(Context context, MusicPackDto dto) {
@@ -67,9 +74,13 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_details);
-
+        mRealm = Realm.getDefaultInstance();
         //listener
+        /**
+         * @see #onClick
+         */
         mImgPlay.setOnClickListener(this);
+        mImgFav.setOnClickListener(this);
 
         mAdapter = new AdapterMusicPackDetail(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -100,6 +111,7 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
 
     }
 
+
     private void initView() {
         mTxtName.setText(mMusicPackDto.getName());
         mTxtGroup.setText("" + mMusicPackDto.getList().size() + " tracks");
@@ -108,6 +120,7 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mRealm.close();
         if (downloadService != null) {
             downloadService.isQuit = true;
         }
@@ -178,7 +191,36 @@ public class MusicPackDetailsActivity extends ASafeActivity implements View.OnCl
                 }
                 break;
             }
+            case R.id.btn_fav: {
+                if (mPlayService == null) {
+                    return;
+                }
+                checkAndAddFav();
+
+
+                break;
+            }
         }
+    }
+
+    private void checkAndAddFav() {
+        MusicPackSoundDto musicPackSoundDto = mMusicPackDto.getList().get(mPlayService.currentPosition);
+        if (musicPackSoundDto == null) {
+            return;
+        }
+        MusicPackSoundRealm doCheckDto = mRealm.where(MusicPackSoundRealm.class).equalTo("itemId", musicPackSoundDto.getItemId()).findFirst();
+        mRealm.beginTransaction();
+        if (doCheckDto == null) {
+            MusicPackSoundRealm musicPackSoundRealm = mRealm.createObject(MusicPackSoundRealm.class);
+            musicPackSoundRealm.createDb(musicPackSoundDto);
+            mImgFav.setImageResource(R.drawable.ic_fav_light_on);
+        } else {
+            doCheckDto.deleteFromRealm();
+            mImgFav.setImageResource(R.drawable.ic_fav_light);
+        }
+        mRealm.commitTransaction();
+
+
     }
 
     @Subscribe

@@ -7,6 +7,8 @@ import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.TsGaTools;
@@ -42,7 +44,13 @@ public class MyApplication extends Application {
 //        //history chat
         CommentManager.createInstance(getApplicationContext());
         setupCalligraphy();
+        setupRealm();
 
+    }
+
+    private void setupRealm() {
+        RealmConfiguration config = new RealmConfiguration.Builder(this).build();
+        Realm.setDefaultConfiguration(config);
     }
 
     private void setupCalligraphy() {
