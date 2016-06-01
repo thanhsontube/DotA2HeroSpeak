@@ -37,7 +37,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.adMob.AdMobUtils;
 import son.nt.dota2.base.AActivity;
-import son.nt.dota2.customview.KenBurnsView;
+import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.fragment.HomeFragment;
@@ -68,7 +68,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
     Toolbar toolbar;
     SearchView searchView;
     MenuItem menuSearch;
-    KenBurnsView kenBurnsView;
+    KenBurnsView2 kenBurnsView;
     ImageView avatar;
     TextView txtFromName;
     TextView txtLogout;
@@ -142,7 +142,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
     private void initLayout() {
 
-        kenBurnsView = (KenBurnsView) findViewById(R.id.home_kenburns);
+        kenBurnsView = (KenBurnsView2) findViewById(R.id.home_kenburns);
 
 
         navigationView = (NavigationView) findViewById(R.id.home_navigation);
@@ -173,7 +173,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
             txtLogout.setVisibility(View.VISIBLE);
             txtFromName.setText(parseUser.getString("name"));
             Glide.with(this).load(parseUser.getString("avatar"))
-                        .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
+                    .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
             txtLogout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -364,7 +364,6 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setQueryHint(getString(R.string.action_search_hero));
-//        }
         return true;
     }
 
