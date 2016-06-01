@@ -14,6 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.CropSquareTransformation;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.utils.OttoBus;
@@ -26,8 +27,9 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
 
     List<HeroEntry> mValues;
     Context context;
-    private  final WeakReference<Context> contextWeakReference;
-    public AdapterRcvHome (Context cx, List<HeroEntry> list) {
+    private final WeakReference<Context> contextWeakReference;
+
+    public AdapterRcvHome(Context cx, List<HeroEntry> list) {
         this.mValues = list;
         this.context = cx;
         this.contextWeakReference = new WeakReference<>(cx);
@@ -47,7 +49,7 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
         viewHolder.txtName.setText(dto.fullName);
         if (dto.group.equalsIgnoreCase("Str")) {
             viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.holo_red_light_transparent));
-        } else if (dto.group.equalsIgnoreCase("Agi")){
+        } else if (dto.group.equalsIgnoreCase("Agi")) {
             viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.green_transparent));
         } else {
             viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.blue_transparent));
@@ -56,6 +58,7 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
             Glide.with(viewHolder.imageView.getContext()).load(dto.avatarThumbnail)
                     .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .bitmapTransform(new CropSquareTransformation(viewHolder.imageView.getContext()))
                     .into(viewHolder.imageView);
         }
 
@@ -69,15 +72,17 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
         });
 
     }
+
     @Override
     public int getItemCount() {
         return mValues.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView txtName;
         View view;
+
         public ViewHolder(View itemView) {
             super(itemView);
             this.view = itemView.findViewById(R.id.card_view);

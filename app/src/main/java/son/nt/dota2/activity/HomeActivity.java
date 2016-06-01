@@ -61,7 +61,7 @@ import son.nt.dota2.utils.TsGaTools;
 public class HomeActivity extends AActivity implements HomeFragment.OnFragmentInteractionListener,
         MainFragment.OnFragmentInteractionListener, SearchableFragment.OnFragmentInteractionListener, SavedFragment.OnFragmentInteractionListener {
 
-    public static final String TAG = "HomeActivity";
+    public static final String TAG = HomeActivity.class.getSimpleName();
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ActionBarDrawerToggle actionBarDrawerToggle;
