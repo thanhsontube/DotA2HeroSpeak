@@ -7,35 +7,20 @@ import android.view.ViewGroup;
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.base.BasePagerAdapter;
-import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.fragment.HeroListFragment;
 
 /**
  * Created by Sonnt on 3/14/2015.
  */
 public class AdapterTop extends BasePagerAdapter {
-    private FragmentManager fm;
-    private Fragment mPrimaryFragment;
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
-        mPrimaryFragment = (Fragment) object;
-    }
-
-    public HeroListFragment getCurrentFragment() {
-        return (HeroListFragment) mPrimaryFragment;
     }
 
     public AdapterTop(FragmentManager fm) {
         super(fm);
-        this.fm = fm;
-
-    }
-
-    public AdapterTop(FragmentManager fm, HeroData data) {
-        super(fm);
-        this.fm = fm;
     }
 
 

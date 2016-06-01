@@ -132,7 +132,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
     @Override
     protected Fragment onCreateMainFragment(Bundle savedInstanceState) {
-        return HomeFragment.newInstance("", "");
+        return HomeFragment.newInstance();
     }
 
     @Override

@@ -14,9 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.twotoasters.jazzylistview.JazzyHelper;
-import com.twotoasters.jazzylistview.recyclerview.JazzyRecyclerViewScrollListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +47,6 @@ public class RoleListFragment extends AFragment {
     List<HeroEntry> list = new ArrayList<>();
 
     CoordinatorLayout coordinatorLayout;
-    JazzyRecyclerViewScrollListener jazzyRecyclerViewScrollListener;
 
     public static RoleListFragment newInstance(String role) {
         RoleListFragment fragment = new RoleListFragment();
@@ -128,9 +124,6 @@ public class RoleListFragment extends AFragment {
     private void initLayout (View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.search_rcv);
         recyclerView.setHasFixedSize(true);
-        jazzyRecyclerViewScrollListener = new JazzyRecyclerViewScrollListener();
-        jazzyRecyclerViewScrollListener.setTransitionEffect(JazzyHelper.CURL);
-        recyclerView.addOnScrollListener(jazzyRecyclerViewScrollListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         adapterSearchHero = new AdapterSearchHero(getActivity(), list);

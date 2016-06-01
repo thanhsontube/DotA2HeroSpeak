@@ -4,16 +4,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.squareup.otto.Subscribe;
-import com.twotoasters.jazzylistview.JazzyHelper;
-import com.twotoasters.jazzylistview.recyclerview.JazzyRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,22 +30,16 @@ import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.TsScreen;
 
 public class HeroListFragment extends AFragment {
-    private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final String TAG = "HeroListFragment";
-    public static final int EFFECT_DEFAULT = JazzyHelper.GROW;
-    int currentEffect = EFFECT_DEFAULT;
-
-    public static final String KEY_EFFECT_DEFAULT = "KEY_EFFECT_DEFAULT";
+    private static final String TAG = HeroListFragment.class.getSimpleName();
     //    private HeroList heroList;
     private AdapterRcvHome adapterHome;
     private List<HeroEntry> listHero = new ArrayList<>();
 
     private String group = "Str";
     RecyclerView recyclerView;
-    StaggeredGridLayoutManager staggeredGridLayoutManager;
+    GridLayoutManager mGridLayoutManager;
 
-    JazzyRecyclerViewScrollListener jazzyRecyclerViewScrollListener;
     private OnFragmentInteractionListener mListener;
     TsLog log = new TsLog(TAG);
 
@@ -91,7 +83,6 @@ public class HeroListFragment extends AFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_hero_list, container, false);
     }
 
@@ -99,44 +90,20 @@ public class HeroListFragment extends AFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         log.d("log>>>" + "onViewCreated heroList");
-        initData();
         initLayout(view);
         initListener();
 
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_EFFECT_DEFAULT, currentEffect);
-    }
-
-    private void setEffect() {
-        jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
-    }
-
-    private void initData() {
-        //        listHero.clear();
-        //        listHero.addAll(getListHeros(group));
-    }
 
     private void initLayout(View view) {
         adapterHome = new AdapterRcvHome(context, listHero);
         recyclerView = (RecyclerView) view.findViewById(R.id.home_recycle_view);
         recyclerView.setHasFixedSize(true);
-        jazzyRecyclerViewScrollListener = new JazzyRecyclerViewScrollListener();
-        setEffect();
-        recyclerView.addOnScrollListener(jazzyRecyclerViewScrollListener);
-        int row = 2;
-        if (TsScreen.isLandscape(getActivity())) {
-            row = 4;
-        }
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(row, StaggeredGridLayoutManager.VERTICAL);
-//        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
-//        recyclerView.setLayoutManager(gridLayoutManager);
+        final int row = TsScreen.isLandscape(getActivity()) ? 4 : 2;
+        mGridLayoutManager = new GridLayoutManager(getContext(), row);
+        recyclerView.setLayoutManager(mGridLayoutManager);
         recyclerView.setAdapter(adapterHome);
-
     }
 
     AdapterView.OnItemClickListener onClickGrid = new AdapterView.OnItemClickListener() {
@@ -155,7 +122,7 @@ public class HeroListFragment extends AFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri);
 
         void heroSelected(HeroEntry HeroEntry);
     }
