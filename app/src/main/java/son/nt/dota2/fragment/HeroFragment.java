@@ -39,8 +39,8 @@ import son.nt.dota2.utils.OttoBus;
 
 public class HeroFragment extends AbsFragment {
 
+    private static final String TAG = HeroFragment.class.getSimpleName();
     private static final String ARG_PARAM1 = "param1";
-    private static final String TAG = "HeroFragment";
 
     private HeroEntry heroEntry;
 
@@ -126,10 +126,10 @@ public class HeroFragment extends AbsFragment {
         listFragments.clear();
         titles.add("Voice");
         listFragments.add(VoiceFragment.newInstance(heroEntry.heroId));
-        titles.add("Ability");
+        titles.add("Skills");
         listFragments.add(AbilityFragment.newInstance(heroEntry.heroId));
-        titles.add("BIO");
-        listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
+//        titles.add("BIO");
+//        listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
         titles.add("Comments");
         listFragments.add(ChatFragment.newInstance(heroEntry.heroId));
 
@@ -148,7 +148,6 @@ public class HeroFragment extends AbsFragment {
 
         spinner = (Spinner) view.findViewById(R.id.hero_spinner);
         updateKenBurns();
-//        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.hero_coordinator);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.hero_appbarlayout);
         toolbar = (Toolbar) view.findViewById(R.id.hero_toolbar);
         tabLayout = (TabLayout) view.findViewById(R.id.hero_tablayout);

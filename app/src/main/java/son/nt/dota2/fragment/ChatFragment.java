@@ -1,7 +1,6 @@
 package son.nt.dota2.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
@@ -36,14 +35,6 @@ import son.nt.dota2.service.ServiceMedia;
 import son.nt.dota2.utils.NetworkUtils;
 import son.nt.dota2.utils.OttoBus;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ChatFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ChatFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ChatFragment extends AbsFragment {
     private static final String ARG_PARAM1 = "param1";
 
@@ -75,14 +66,7 @@ public class ChatFragment extends AbsFragment {
         }
     };
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment ChatFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static ChatFragment newInstance(String param1) {
         ChatFragment fragment = new ChatFragment();
         Bundle args = new Bundle();

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/media_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/media_view"
     android:orientation="horizontal"
     tools:background="@color/black">
+
     <ImageView
         android:id="@+id/player_play"
         android:layout_width="wrap_content"
@@ -51,6 +52,7 @@
                 android:src="@drawable/ic_fav_light" />
 
             <ImageView
+                android:id="@+id/btn_download"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
@@ -62,7 +64,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:background="?selectableItemBackground"
-                android:src="@drawable/ic_share_light" />
+                android:src="@drawable/ic_share_light"
+                android:visibility="gone" />
         </LinearLayout>
 
 

@@ -47,6 +47,7 @@ import son.nt.dota2.fragment.RolesFragment;
 import son.nt.dota2.fragment.SavedFragment;
 import son.nt.dota2.fragment.SearchableFragment;
 import son.nt.dota2.gridmenu.GridMenuDialog;
+import son.nt.dota2.musicPack.MusicPackListActivity;
 import son.nt.dota2.ottobus_entry.GoAdapterRoles;
 import son.nt.dota2.setting.SettingActivity;
 import son.nt.dota2.utils.Logger;
@@ -247,6 +248,11 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
                             getSafeFragmentManager().popBackStackImmediate();
                         }
                         break;
+                    case R.id.nav_music_packs: {
+                        TsGaTools.trackPages("/nav_music_packs");
+                        startActivity(new Intent(getApplicationContext(), MusicPackListActivity.class));
+                        break;
+                    }
                     case R.id.nav_roles:
                         TsGaTools.trackPages("/nav_roles");
                         if (mFragmentTagStack.size() > 0) {

@@ -137,12 +137,16 @@
             android:label="@string/title_activity_test" />
         <activity
             android:name=".musicPack.MusicPackListActivity"
-            android:label="@string/title_activity_music_pack_list" />
+            android:label="@string/title_activity_music_pack_list"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".musicPack.MusicPackDetailsActivity"
             android:label="@string/title_activity_music_pack_details"
-            android:launchMode="singleTop" />
-        <activity android:name=".musicPack.fav.MusicPackFavActivity" />
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".musicPack.fav.MusicPackFavActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -192,6 +192,17 @@ public class ResourceManager {
         return folderAlarm + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 
+    public String getPathDownloadMusicPack(String link) {
+        File save  = new File(Environment.getExternalStorageDirectory(), "DownloadDota2Sound");
+        if (!save.exists())
+        {
+            save.mkdirs();
+        }
+
+        File fDetails = new File(save, link + ".mp3");
+        return fDetails.getPath();
+    }
+
     public MyPath getMyPath() {
         return myPath;
     }

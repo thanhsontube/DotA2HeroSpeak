@@ -10,6 +10,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.http.client.methods.HttpGet;
 
@@ -25,6 +26,7 @@ import son.nt.dota2.base.MediaItem;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.musicPack.MusicPackDetailsActivity;
 import son.nt.dota2.ottobus_entry.GoPlayer;
+import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.PreferenceUtil;
 
@@ -90,6 +92,24 @@ public class PlayService extends Service {
         }
         OttoBus.post(new GoPlayer(GoPlayer.DO_PLAY, currentPosition));
         player.start();
+
+    }
+
+    public void downloadCurrent() {
+        try {
+            MediaItem mediaItem = list.get(currentPosition);
+            File file = new File(ResourceManager.getInstance().getPathMusicPack(mediaItem.getLink()));
+            if (!file.exists()) {
+                Toast.makeText(getApplicationContext(), "Sorry, Can not download this file!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String link = mediaItem.getGroup() + "_" + mediaItem.getTitle() + "_" + currentPosition;
+            FileUtil.copyFile(file.getPath(), ResourceManager.getInstance().getPathDownloadMusicPack(link));
+            Toast.makeText(getApplicationContext(), "Downloaded at:" + ResourceManager.getInstance().getPathDownloadMusicPack(link), Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

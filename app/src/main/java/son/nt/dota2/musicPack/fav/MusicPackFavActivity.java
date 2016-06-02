@@ -55,6 +55,9 @@ public class MusicPackFavActivity extends ASafeActivity implements View.OnClickL
     @Bind(R.id.btn_fav)
     ImageView mImgFav;
 
+    @Bind(R.id.btn_download)
+    ImageView mImgDownload;
+
     private AdapterMusicPackDetail mAdapter;
 
     boolean isBind = false;
@@ -80,6 +83,7 @@ public class MusicPackFavActivity extends ASafeActivity implements View.OnClickL
          */
         mImgPlay.setOnClickListener(this);
         mImgFav.setOnClickListener(this);
+        mImgDownload.setOnClickListener(this);
 
         mAdapter = new AdapterMusicPackDetail(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -172,6 +176,12 @@ public class MusicPackFavActivity extends ASafeActivity implements View.OnClickL
                 checkAndAddFav();
 
 
+                break;
+            }
+            case R.id.btn_download: {
+                if (mPlayService != null) {
+                    mPlayService.downloadCurrent();
+                }
                 break;
             }
         }
