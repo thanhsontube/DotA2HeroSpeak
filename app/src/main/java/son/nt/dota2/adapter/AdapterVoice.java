@@ -48,13 +48,13 @@ public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = null;
         switch (viewType) {
+            case TYPE_TITLE:
+                view = inflater.inflate(R.layout.row_speak_title, parent, false);
+                break;
             case TYPE_SPEAK:
                 view = inflater.inflate(R.layout.row_voice, parent, false);
                 break;
 
-            case TYPE_TITLE:
-                view = inflater.inflate(R.layout.row_speak_title, parent, false);
-                break;
 
         }
         return new Holder(view);
@@ -117,7 +117,7 @@ public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
                 break;
             case TYPE_TITLE:
                 if (dto.text != null) {
-                    holder.title.setText(dto.text.replace("_"," "));
+                    holder.title.setText(dto.text.replace("_", " "));
                 }
                 break;
         }
@@ -147,7 +147,7 @@ public class AdapterVoice extends RecyclerView.Adapter<AdapterVoice.Holder> {
         View view;
 
         static int[] colors = new int[]{R.color.md_purple_500, R.color.md_orange_500, R.color.md_blue_500, R.color.md_green_500,
-        R.color.md_red_500, R.color.md_cyan_500};
+                R.color.md_red_500, R.color.md_cyan_500};
 
         public Holder(View v) {
             super(v);

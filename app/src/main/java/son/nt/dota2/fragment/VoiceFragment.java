@@ -89,7 +89,7 @@ public class VoiceFragment extends AbsFragment {
         getActivity().bindService(DownloadService.getIntent(getActivity()), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
         int count = PreferenceUtil.getPreference(getActivity(), MsConst.KEY_HELP, 0);
         if (count == 0) {
-            PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, count +1);
+            PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, count + 1);
             MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
                     .positiveText("Got it")
                     .title("Long click into every row to discover lots of things \n\rGo to Menu >> Setting  to Enable/Disable Notification from app")
@@ -103,7 +103,7 @@ public class VoiceFragment extends AbsFragment {
                     .build();
             materialDialog.show();
         } else {
-            PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, count +1);
+            PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, count + 1);
         }
 
 
@@ -154,7 +154,6 @@ public class VoiceFragment extends AbsFragment {
     public void initData() {
 
     }
-
 
 
     @Override
@@ -209,8 +208,7 @@ public class VoiceFragment extends AbsFragment {
                 adapter.notifyDataSetChanged();
                 isLoaded = true;
                 startPrefetch();
-            }
-            else {
+            } else {
                 HTTPParseUtils.getInstance().withVoices(heroID);
                 HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
                     @Override
@@ -304,8 +302,6 @@ public class VoiceFragment extends AbsFragment {
         }
     }
 
-    private void createMenu() {
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
