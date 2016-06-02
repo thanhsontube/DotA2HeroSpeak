@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +38,7 @@ public class HeroListFragment extends AFragment {
 
     private String group = "Str";
     RecyclerView recyclerView;
-    GridLayoutManager mGridLayoutManager;
+    StaggeredGridLayoutManager mLayoutMng;
 
     private OnFragmentInteractionListener mListener;
     TsLog log = new TsLog(TAG);
@@ -100,9 +100,9 @@ public class HeroListFragment extends AFragment {
         adapterHome = new AdapterRcvHome(context, listHero);
         recyclerView = (RecyclerView) view.findViewById(R.id.home_recycle_view);
         recyclerView.setHasFixedSize(true);
-        final int row = TsScreen.isLandscape(getActivity()) ? 4 : 2;
-        mGridLayoutManager = new GridLayoutManager(getContext(), row);
-        recyclerView.setLayoutManager(mGridLayoutManager);
+        final int row = TsScreen.isLandscape(getActivity()) ? 4 : 3;
+        mLayoutMng = new StaggeredGridLayoutManager(row, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(mLayoutMng);
         recyclerView.setAdapter(adapterHome);
     }
 

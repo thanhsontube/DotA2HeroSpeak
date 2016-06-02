@@ -1,6 +1,7 @@
 package son.nt.dota2.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,11 +49,11 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
 
         viewHolder.txtName.setText(dto.fullName);
         if (dto.group.equalsIgnoreCase("Str")) {
-            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.holo_red_light_transparent));
+            viewHolder.txtName.setBackgroundColor(ContextCompat.getColor(context, R.color.holo_red_light_transparent));
         } else if (dto.group.equalsIgnoreCase("Agi")) {
-            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.green_transparent));
+            viewHolder.txtName.setBackgroundColor(ContextCompat.getColor(context, R.color.green_transparent));
         } else {
-            viewHolder.txtName.setBackgroundColor(context.getResources().getColor(R.color.blue_transparent));
+            viewHolder.txtName.setBackgroundColor(ContextCompat.getColor(context, R.color.blue_transparent));
         }
         if (contextWeakReference.get() != null) {
             Glide.with(viewHolder.imageView.getContext()).load(dto.avatarThumbnail)
