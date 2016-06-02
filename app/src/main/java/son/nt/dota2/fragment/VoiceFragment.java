@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.melnykov.fab.FloatingActionButton;
 import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
@@ -168,7 +168,6 @@ public class VoiceFragment extends AbsFragment {
         recyclerView.setAdapter(adapter);
 
         autoPlay = (FloatingActionButton) view.findViewById(R.id.voice_fab);
-        autoPlay.attachToRecyclerView(recyclerView);
 
     }
 
