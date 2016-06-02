@@ -9,7 +9,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -54,6 +54,13 @@ public class HeroFragment extends AbsFragment {
     KenBurnsView kenBurnsView;
     private List<String> listKenburns = new ArrayList<>();
     String heroID;
+
+    Spinner spinner;
+    CoordinatorLayout coordinatorLayout;
+    AppBarLayout appBarLayout;
+    Toolbar toolbar;
+    TabLayout tabLayout;
+    ViewPager pager;
 
     public static HeroFragment newInstance(HeroEntry param1) {
         HeroFragment fragment = new HeroFragment();
@@ -138,11 +145,6 @@ public class HeroFragment extends AbsFragment {
 
     }
 
-    CoordinatorLayout coordinatorLayout;
-    AppBarLayout appBarLayout;
-    Toolbar toolbar;
-    TabLayout tabLayout;
-    ViewPager pager;
 
     @Override
     public void initLayout(View view) {
@@ -151,6 +153,8 @@ public class HeroFragment extends AbsFragment {
         listKenburns.clear();
         listKenburns.add(heroEntry.bgLink);
         listKenburns.add(heroEntry.bgLink);
+
+        spinner = (Spinner) view.findViewById(R.id.hero_spinner);
         updateKenBurns();
 //        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.hero_coordinator);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.hero_appbarlayout);
@@ -196,8 +200,8 @@ public class HeroFragment extends AbsFragment {
 
         AObject heroSpeak = null;
         try {
-            heroSpeak = FileUtil.getObject(getActivity(), "voice_" +heroID);
-        } catch ( Exception e ) {
+            heroSpeak = FileUtil.getObject(getActivity(), "voice_" + heroID);
+        } catch (Exception e) {
 
 
         }
@@ -216,15 +220,16 @@ public class HeroFragment extends AbsFragment {
 
             adapterSpinner = new VoiceSpinnerAdapter(getActivity(), listSpinner);
 
-            View spinnerContainer = LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_spiner, toolbar, false);
-            Toolbar.LayoutParams lp = new Toolbar.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            toolbar.addView(spinnerContainer, lp);
+//            View spinnerContainer = LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_spiner, toolbar, false);
+//            Toolbar.LayoutParams lp = new Toolbar.LayoutParams(
+//                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//            toolbar.addView(spinnerContainer, lp);
 
-            TextView toolbarTitle = (TextView) spinnerContainer.findViewById(R.id.toolbar_title);
-            toolbarTitle.setText(heroEntry.fullName);
+//            TextView toolbarTitle = (TextView) spinnerContainer.findViewById(R.id.toolbar_title);
+//            toolbarTitle.setText(heroEntry.fullName);
+            toolbar.setTitle(heroEntry.fullName);
 
-            AppCompatSpinner spinner = (AppCompatSpinner) spinnerContainer.findViewById(R.id.toolbar_spinner);
+//            AppCompatSpinner spinner = (AppCompatSpinner) spinnerContainer.findViewById(R.id.toolbar_spinner);
             spinner.setAdapter(adapterSpinner);
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -286,7 +291,7 @@ public class HeroFragment extends AbsFragment {
                 holder = (Holder) v.getTag();
             }
             holder.txtTitle.setText(list.get(position).getGroup());
-            holder.txtTitle.setTextColor(getResources().getColor(R.color.md_red_500));
+            holder.txtTitle.setTextColor(getResources().getColor(R.color.white));
             return v;
         }
 
@@ -299,7 +304,7 @@ public class HeroFragment extends AbsFragment {
                 v = layoutInflater.inflate(R.layout.row_spinner_toolbar, parent, false);
                 holder = new Holder();
                 holder.txtTitle = (TextView) v.findViewById(R.id.row_spinner_text);
-                holder.txtTitle.setTextColor(getResources().getColor(R.color.md_red_500));
+                holder.txtTitle.setTextColor(getResources().getColor(R.color.black));
                 holder.imgSelected = (ImageView) v.findViewById(R.id.row_spinner_img);
                 v.setTag(holder);
             } else {
