@@ -448,6 +448,8 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         if (ResourceManager.getInstance().listKenburns.size() > 0) {
             kenBurnsView.setResourceUrl(ResourceManager.getInstance().listKenburns);
             kenBurnsView.startLayoutAnimation();
+        } else {
+            kenBurnsView.setResourceUrl("http://dota2walls.com/wp-content/uploads/2014/11/invoker-arsenal-magus-wallpaper.png", false);
         }
 
     }

@@ -14,12 +14,17 @@
         android:fitsSystemWindows="true">
 
         <son.nt.dota2.customview.KenBurnsView2
-            android:fitsSystemWindows="true"
             android:id="@+id/home_kenburns"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true" />
 
-        <include layout="@layout/content_home"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/layer_image" />
+
+        <include layout="@layout/content_home" />
 
 
     </FrameLayout>

@@ -138,15 +138,15 @@
         <activity
             android:name=".musicPack.MusicPackListActivity"
             android:label="@string/title_activity_music_pack_list"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.Normal" />
         <activity
             android:name=".musicPack.MusicPackDetailsActivity"
             android:label="@string/title_activity_music_pack_details"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.Normal" />
         <activity
             android:name=".musicPack.fav.MusicPackFavActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.Normal" />
     </application>
 
 </manifest>

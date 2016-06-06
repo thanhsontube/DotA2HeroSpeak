@@ -7,49 +7,49 @@
     <FrameLayout
         android:id="@+id/login_ll_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
     <LinearLayout
-        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
+
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/pre_heroList"
-            android:text="Go to test activity"/>
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Go to test activity" />
+
+        <Button
             android:id="@+id/pre_hero_bg"
-            android:text="Pre Hero BG"/>
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Pre Hero BG" />
+
+        <Button
             android:id="@+id/pre_hero_speak"
-            android:text="Pre Hero Speak"/>
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Pre Hero Speak" />
+
+        <Button
             android:id="@+id/pre_hero_ability"
-            android:text="Pre Hero Ability"/>
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Pre Hero Ability" />
+
+        <Button
             android:id="@+id/push_common"
-            android:text="Test Push to common"/>
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Test Push to common" />
+
+        <Button
             android:id="@+id/test_roles"
-            android:text="Roles"/>
-
-
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Roles" />
 
 
     </LinearLayout>
