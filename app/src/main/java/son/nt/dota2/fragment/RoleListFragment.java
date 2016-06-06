@@ -65,7 +65,6 @@ public class RoleListFragment extends AFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             role = getArguments().getString(ARG_PARAM1);
-            role.trim();
             list.clear();
             list.addAll(HeroManager.getInstance().getHeroesByRole(role));
         }

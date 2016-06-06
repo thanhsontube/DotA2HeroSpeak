@@ -40,20 +40,22 @@
 
                 <TextView
                     android:id="@+id/row_chat_fromName"
-                    style="@style/txt_red_14"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Son Dota 2" />
+                    android:text="Son Dota 2"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/red_500" />
 
                 <TextView
                     android:id="@+id/row_chat_create_day"
-                    style="@style/txt_gray_14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:text="1 hour ago" />
+                    android:text="1 hour ago"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/grey_500" />
             </LinearLayout>
 
 

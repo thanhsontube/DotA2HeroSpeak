@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="4dp"
     android:foreground="?android:attr/selectableItemBackground">
 
@@ -25,7 +25,7 @@
 
             <TextView
                 android:id="@+id/row_txt_no"
-                style="@style/txt_white_18"
+                style="@style/txt_white_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -48,7 +48,7 @@
 
                 <TextView
                     android:id="@+id/row_text"
-                    style="@style/txt_white_18"
+                    style="@style/txt_white_14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="My List Has 5 names on it" />
@@ -56,12 +56,11 @@
                 <TextView
                     android:id="@+id/row_saved_time"
                     style="@style/txt_gray_14"
-                    android:textColor="@color/md_yellow_200"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="12:12:12"
-                     />
+                    android:textColor="@color/md_green_500" />
 
             </LinearLayout>
 

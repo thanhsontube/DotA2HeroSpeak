@@ -1,6 +1,5 @@
 package son.nt.dota2.fragment;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,13 +18,11 @@ import java.util.List;
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
-import son.nt.dota2.activity.MainActivity;
 import son.nt.dota2.adapter.AdapterRcvHome;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.dto.GalleryDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.utils.OttoBus;
-import son.nt.dota2.utils.TsGaTools;
 import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.TsScreen;
 
@@ -110,10 +107,7 @@ public class HeroListFragment extends AFragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view,
                                 int position, long id) {
-            TsGaTools.trackPages("/" + listHero.get(position).name);
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.putExtra("data", listHero.get(position));
-            startActivity(intent);
+
         }
     };
 
