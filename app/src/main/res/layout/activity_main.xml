@@ -202,7 +202,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/txt_white_14"
-                        android:text="Kens Burns )" />
+                        android:text="Kens Burns" />
                 </LinearLayout>
                 <!--log out-->
                 <com.facebook.widget.LoginButton
