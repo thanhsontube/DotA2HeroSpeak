@@ -78,7 +78,6 @@ public class ResourceManager {
             folderAudio = fileAudio.getPath();
 
 //            File fileMusicPack = new File(folderSave, "/musicPack/");
-            //todo hack
             File fileMusicPack = new File(folderRoot, "/musicPack/");
             if (!fileMusicPack.exists()) {
                 fileMusicPack.mkdirs();
@@ -143,7 +142,6 @@ public class ResourceManager {
     public String getPathMusicPack(String link) {
 
         return ResourceManager.getInstance().folderMusicPack + File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat");
-//        return ResourceManager.getInstance().folderMusicPack + File.separator + FileUtil.createPathFromUrl(link);
     }
 
     public String getPathRingtone(String link, String heroID) {
@@ -241,9 +239,6 @@ public class ResourceManager {
 
     public String getFolderSave() {
         folderSave = getContext().getFilesDir().getPath();
-
-        //test
-//        folderSave = Environment.getExternalStorageDirectory().toString() + ROOT;
         return folderSave;
     }
 }
