@@ -9,8 +9,8 @@ public class TsLog {
     public static final int LOG_LEVEL_VERBOSE = 2;
     public static final int LOG_LEVEL_WARN = 5;
     public static final int LOG_LEVEL_ERROR = 6;
-//    public static int LOG_LEVEL = LOG_LEVEL_VERBOSE;
-    public static int           LOG_LEVEL         = LOG_LEVEL_NONE;
+    public static int LOG_LEVEL = LOG_LEVEL_VERBOSE;
+//    public static int           LOG_LEVEL         = LOG_LEVEL_NONE;
     //    public static final int LOG_LEVEL = LOG_LEVEL_INFO; 
 
     private static final String LOG_DEFAULT_TAG = "";

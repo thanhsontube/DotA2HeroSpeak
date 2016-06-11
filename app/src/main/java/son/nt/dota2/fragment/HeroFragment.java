@@ -5,7 +5,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -56,7 +55,6 @@ public class HeroFragment extends AbsFragment {
     String heroID;
 
     Spinner spinner;
-    CoordinatorLayout coordinatorLayout;
     AppBarLayout appBarLayout;
     Toolbar toolbar;
     TabLayout tabLayout;

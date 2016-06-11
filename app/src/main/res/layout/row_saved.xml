@@ -51,7 +51,8 @@
                     style="@style/txt_white_14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="My List Has 5 names on it" />
+                    android:text="My List Has 5 names on it"
+                    android:textColor="@color/amber_500" />
 
                 <TextView
                     android:id="@+id/row_saved_time"
@@ -60,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="12:12:12"
-                    android:textColor="@color/md_green_500" />
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 

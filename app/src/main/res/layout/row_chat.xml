@@ -28,6 +28,7 @@
             <TextView
                 android:id="@+id/row_chat_message"
                 style="@style/txt_white_14"
+                android:textColor="@color/amber_500"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="I love this voice so much" />
@@ -45,7 +46,7 @@
                     android:layout_weight="1"
                     android:text="Son Dota 2"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/red_500" />
+                    android:textColor="@color/green_500" />
 
                 <TextView
                     android:id="@+id/row_chat_create_day"
@@ -55,7 +56,7 @@
                     android:layout_marginRight="8dp"
                     android:text="1 hour ago"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/grey_500" />
+                    android:textColor="@color/green_200" />
             </LinearLayout>
 
 

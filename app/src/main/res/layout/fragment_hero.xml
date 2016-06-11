@@ -50,7 +50,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabMode="scrollable"
-                app:tabTextAppearance="@style/TextAppearance.AppCompat.Small" />
+                app:tabSelectedTextColor="@color/amber_500"
+                app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
+                app:tabTextColor="@color/white" />
 
         </android.support.design.widget.AppBarLayout>
 

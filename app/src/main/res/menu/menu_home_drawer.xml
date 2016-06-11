@@ -5,18 +5,19 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_dark_48"
-            android:title="Home" />
+            android:title="Hero Voices" />
 
         <item
             android:id="@+id/nav_music_packs"
             android:icon="@drawable/ic_music_pack"
-            android:title="Dota 2 Music Packs" />
+            android:title="DoTa2 Music Background" />
 
 
         <item
             android:id="@+id/nav_roles"
             android:icon="@drawable/ic_roles_dark_48"
-            android:title="Hero Roles" />
+            android:title="Hero Roles"
+            android:visible="false" />
         <item
             android:id="@+id/nav_playlist"
             android:icon="@drawable/ic_playlist_dark_48"
@@ -38,15 +39,15 @@
             <item
                 android:id="@+id/nav_rate"
                 android:icon="@drawable/ic_google_play_dark_48"
-                android:title="Rate/Comment/Idea" />
+                android:title="Rate me 5 stars" />
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_share_48"
-                android:title="Share this App" />
+                android:title="Share me with friends" />
             <item
                 android:id="@+id/nav_share_fb"
                 android:icon="@drawable/ic_facebook_48"
-                android:title="Like Dota2 Hero Speak Page" />
+                android:title="Facebook Page" />
         </menu>
     </item>
     <item android:title="Settings">

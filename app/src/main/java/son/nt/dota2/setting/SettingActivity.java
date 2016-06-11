@@ -118,7 +118,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
 
                     startService(DownloadIntentService.getIntent(SettingActivity.this));
                 } else {
-                    Toast.makeText(getApplicationContext(), "Sorry ! Wifi is not available!!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Sorry! Wifi is not available!!!", Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }

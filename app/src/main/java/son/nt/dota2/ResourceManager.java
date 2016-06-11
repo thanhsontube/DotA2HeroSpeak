@@ -77,8 +77,8 @@ public class ResourceManager {
             }
             folderAudio = fileAudio.getPath();
 
-//            File fileMusicPack = new File(folderSave, "/musicPack/");
-            File fileMusicPack = new File(folderRoot, "/musicPack/");
+            File fileMusicPack = new File(folderSave, "/musicPack/");
+//            File fileMusicPack = new File(folderRoot, "/musicPack/");
             if (!fileMusicPack.exists()) {
                 fileMusicPack.mkdirs();
             }
