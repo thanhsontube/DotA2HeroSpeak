@@ -21,8 +21,8 @@ android {
     defaultConfig {
         applicationId "son.nt.dota2"
         minSdkVersion 15
-        versionCode 6
-        versionName "6.0.0"
+        versionCode 7
+        versionName "6.1.0"
     }
     repositories {
         maven { url "https://jitpack.io" }

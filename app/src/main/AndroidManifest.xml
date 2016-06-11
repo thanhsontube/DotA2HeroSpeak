@@ -38,6 +38,7 @@
         <provider
             android:name=".provider.SearchableProvider"
             android:authorities=".provider.SearchableProvider" />
+
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
@@ -45,9 +46,6 @@
 
         <service
             android:name=".service.PrefetchService"
-            android:exported="false" />
-        <service
-            android:name=".service.DownloadIntentService"
             android:exported="false" />
         <service
             android:name=".service.DownloadService"
@@ -144,6 +142,11 @@
         <activity
             android:name=".musicPack.fav.MusicPackFavActivity"
             android:theme="@style/AppTheme.Normal" />
+
+        <service
+            android:name=".service.SettingDownloadService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

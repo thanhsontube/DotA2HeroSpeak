@@ -11,6 +11,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +25,7 @@ import com.squareup.otto.Subscribe;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.ottobus_entry.GoDownload;
-import son.nt.dota2.service.DownloadIntentService;
+import son.nt.dota2.service.SettingDownloadService;
 import son.nt.dota2.utils.OttoBus;
 
 /**
@@ -38,6 +39,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     PreferenceScreen preferenceScreen;
     PreferenceScreen download;
     int max;
+    private boolean isStarted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,8 +117,15 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
                 boolean isWifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
                         .isConnectedOrConnecting();
                 if (isWifi) {
+                    if (isStarted)
+                    {
+                        Toast.makeText(getApplicationContext(), "Download for offline is running!!!", Toast.LENGTH_SHORT).show();
+                    } else
+                    {
+                        isStarted = true;
+                        startService(SettingDownloadService.getIntent(SettingActivity.this));
+                    }
 
-                    startService(DownloadIntentService.getIntent(SettingActivity.this));
                 } else {
                     Toast.makeText(getApplicationContext(), "Sorry! Wifi is not available!!!", Toast.LENGTH_SHORT).show();
                 }
@@ -129,16 +138,16 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     protected void onDestroy() {
         super.onDestroy();
         OttoBus.unRegister(this);
+        stopService(SettingDownloadService.getIntent(SettingActivity.this));
     }
 
     @Subscribe
     public void goFromDownloadIntentService(GoDownload dto) {
-        String text = ">>>" + "Download:" + dto.getGroup() + " heroID:" + dto.getHeroID() + ">" + dto.getCount() + ">count:" + dto.getLink();
-        download.setTitle("" + dto.getGroup() + " - " + dto.getHeroID());
-        download.setSummary("Downloading:" + dto.getCount() + ":" + dto.getVoiceText());
-    }
-
-    private void download() {
+        if (dto == null || TextUtils.isEmpty(dto.getHeroID()) || TextUtils.isEmpty(dto.getVoiceText())) {
+            return;
+        }
+        download.setTitle("Downloading for offline");
+        download.setSummary(dto.getHeroID() + ":" + dto.getVoiceText());
     }
 
     @Override
