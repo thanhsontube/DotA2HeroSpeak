@@ -66,7 +66,7 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TsGaTools.trackPages("/hero:" + dto.heroId);
+                TsGaTools.trackHero("/hero:" + dto.heroId);
                 OttoBus.post(dto);
 
             }

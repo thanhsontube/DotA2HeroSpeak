@@ -243,18 +243,18 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
-                        TsGaTools.trackPages("/Home");
+                        TsGaTools.trackNav("/Home");
                         while (mFragmentTagStack.size() > 0) {
                             getSafeFragmentManager().popBackStackImmediate();
                         }
                         break;
                     case R.id.nav_music_packs: {
-                        TsGaTools.trackPages("/nav_music_packs");
+                        TsGaTools.trackNav("/nav_music_packs");
                         startActivity(new Intent(getApplicationContext(), MusicPackListActivity.class));
                         break;
                     }
                     case R.id.nav_roles:
-                        TsGaTools.trackPages("/nav_roles");
+                        TsGaTools.trackNav("/nav_roles");
                         if (mFragmentTagStack.size() > 0) {
                             //check if current position is same as new position, do not reload fragment
                             Fragment fTop = fm.findFragmentByTag(mFragmentTagStack.peek());
@@ -273,7 +273,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
                         break;
                     case R.id.nav_playlist:
-                        TsGaTools.trackPages("/nav_playlist");
+                        TsGaTools.trackNav("/nav_playlist");
                         if (mFragmentTagStack.size() > 0) {
                             //check if current position is same as new position, do not reload fragment
                             Fragment fTop = fm.findFragmentByTag(mFragmentTagStack.peek());
@@ -290,20 +290,20 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
                         }
                         break;
                     case R.id.nav_rate:
-                        TsGaTools.trackPages("/nav_rate");
+                        TsGaTools.trackNav("/nav_rate");
                         TsFeedback.rating(HomeActivity.this);
 
                         break;
                     case R.id.nav_share:
-                        TsGaTools.trackPages("/nav_share");
+                        TsGaTools.trackNav("/nav_share");
                         TsFeedback.shareApp(HomeActivity.this);
                         break;
                     case R.id.nav_share_fb:
-                        TsGaTools.trackPages("/nav_fb");
+                        TsGaTools.trackNav("/nav_fb");
                         TsFeedback.likePage(HomeActivity.this, MsConst.FB_PAGE_ID);
                         break;
                     case R.id.nav_settings:
-                        TsGaTools.trackPages("/nav_setting");
+                        TsGaTools.trackNav("/nav_setting");
                         startActivity(new Intent(getApplicationContext(), SettingActivity.class));
 
                 }
@@ -375,7 +375,7 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
 
     private void handleSearch(Intent intent) {
         if (Intent.ACTION_SEARCH.equalsIgnoreCase(intent.getAction())) {
-            TsGaTools.trackPages(MsConst.TRACK_SEARCH);
+            TsGaTools.trackNav(MsConst.TRACK_SEARCH);
             String query = intent.getStringExtra(SearchManager.QUERY);
             Logger.debug(TAG, ">>>" + "handleSearch:" + query);
 

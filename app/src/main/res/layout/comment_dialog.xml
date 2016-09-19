@@ -20,6 +20,9 @@
         app:riv_corner_radius="34dp"
         app:riv_oval="true" />
 
+    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:src="@drawable/com_facebook_close"/>
+
 
     <TextView
         android:id="@+id/cmt_from_name"

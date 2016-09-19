@@ -37,7 +37,6 @@
         <provider
             android:name=".provider.SearchableProvider"
             android:authorities=".provider.SearchableProvider" />
-
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
