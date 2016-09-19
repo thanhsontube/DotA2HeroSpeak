@@ -1,16 +1,17 @@
 package son.nt.dota2;
 
-import android.app.Application;
-
 import com.facebook.FacebookSdk;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 
+import android.app.Application;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
+import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsGaTools;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -23,13 +24,15 @@ public class MyApplication extends Application {
         super.onCreate();
         ResourceManager.createInstance(getApplicationContext());
 
+        HeroManager.createInstance(getApplicationContext());
+
         //FACEBOOK SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
 
 
         TsSqlite.createInstance(getApplicationContext());
         TsGaTools.createInstance(getApplicationContext());
-        HeroManager.createInstance(getApplicationContext());
+
         HTTPParseUtils.createInstance(getApplicationContext());
 //
 //        // Enable Local Datastore.
@@ -45,6 +48,8 @@ public class MyApplication extends Application {
         CommentManager.createInstance(getApplicationContext());
         setupCalligraphy();
         setupRealm();
+
+        Logger.setDEBUG(BuildConfig.DEBUG);
 
     }
 

@@ -8,6 +8,10 @@ import android.util.Log;
 public final class Logger {
     public static boolean DEBUG = true;
 
+    public static void setDEBUG (boolean isDebug) {
+        DEBUG = isDebug;
+    }
+
     private Logger() {
         // enforcing singleton
         super();

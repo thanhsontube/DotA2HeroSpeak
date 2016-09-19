@@ -13,6 +13,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hero Icons"
+                android:id="@+id/hero_icons"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hero AVATAR"
+                android:id="@+id/hero_avatar"/>
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

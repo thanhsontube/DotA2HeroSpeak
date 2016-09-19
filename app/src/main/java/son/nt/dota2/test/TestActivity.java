@@ -7,10 +7,12 @@ import android.view.View;
 
 import son.nt.dota2.R;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
+import son.nt.dota2.jsoup.JsoupLoader;
 import son.nt.dota2.musicPack.MusicPackListActivity;
 import son.nt.dota2.musicPack.fav.MusicPackFavActivity;
 
 public class TestActivity extends Activity implements View.OnClickListener {
+    JsoupLoader mJsoupLoader = new JsoupLoader();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,8 @@ public class TestActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.test_music_packs_list_read).setOnClickListener(this);
         findViewById(R.id.test_music_packs_default).setOnClickListener(this);
         findViewById(R.id.test_music_packs_fav).setOnClickListener(this);
+        findViewById(R.id.hero_icons).setOnClickListener(this);
+        findViewById(R.id.hero_avatar).setOnClickListener(this);
 
     }
 
@@ -63,6 +67,14 @@ public class TestActivity extends Activity implements View.OnClickListener {
             }
             case R.id.test_music_packs_fav: {
                 MusicPackFavActivity.startActivity(this);
+                break;
+            }
+            case R.id.hero_icons: {
+                mJsoupLoader.withGetHeroBasic_Icon();
+                break;
+            }
+            case R.id.hero_avatar: {
+                mJsoupLoader.withGetHeroBasic_Avatar_Description();
                 break;
             }
         }

@@ -97,5 +97,8 @@ dependencies {
         transitive = true
     }
     compile 'jp.wasabeef:glide-transformations:2.0.0'
+
+    //jsoup for download html
+    compile 'org.jsoup:jsoup:1.9.2'
 }
 

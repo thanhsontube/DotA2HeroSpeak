@@ -11,11 +11,14 @@ import son.nt.dota2.dto.save.SaveMusicPack;
 import son.nt.dota2.loader.MyPath;
 import son.nt.dota2.loader.base.ContentManager;
 import son.nt.dota2.utils.FileUtil;
+import son.nt.dota2.utils.Logger;
 
 /**
  * Created by Sonnt on 3/14/2015.
  */
 public class ResourceManager {
+
+    private static final String TAG = ResourceManager.class.getSimpleName();
     static ResourceManager INSTANCE = null;
     public static final String ROOT = "/00-Dota2";
     private Context context;
@@ -23,14 +26,15 @@ public class ResourceManager {
     private ContentManager contentManager;
 
 
-    public String folderSave;
+    public String mAppInternalFolder;
     public String folderAudio;
     public String folderMusicPack;
     public String folderHero;
     public String folderBlur;
     public String folderObject;
 
-    private String folderRoot;
+    private String mAppExternalFolder;
+
     public String folderRingtone;
     public String folderNotification;
     public String folderAlarm;
@@ -58,66 +62,79 @@ public class ResourceManager {
         try {
             myPath = new MyPath(context);
             contentManager = new ContentManager(context, 100);
-            folderSave = getContext().getFilesDir().getPath();
+            if (BuildConfig.DEBUG) {
+                mAppInternalFolder = getContext().getFilesDir().getPath();
+            } else {
+                mAppExternalFolder = Environment.getExternalStorageState() + File.separator + "00_dota_internal_debug";
+            }
 
             saveMusicPack = new SaveMusicPack();
 
-            folderRoot = Environment.getExternalStorageDirectory().toString() + ROOT;
+            if (BuildConfig.DEBUG) {
+                mAppExternalFolder = Environment.getExternalStorageState() + File.separator + "00_dota_external_debug";
+            } else {
+                mAppExternalFolder = Environment.getExternalStorageDirectory() + ROOT;
+            }
 
-            File fRoot = new File(folderRoot);
+            Logger.debug(TAG, ">>>" + "mAppInternalFolder:" + mAppInternalFolder);
+
+            Logger.debug(TAG, ">>>" + "mAppExternalFolder:" + mAppExternalFolder);
+
+
+            File fRoot = new File(mAppExternalFolder);
             if (!fRoot.exists()) {
                 fRoot.mkdirs();
             }
-            fileHeroList = folderSave + File.separator + "hero_list.dat";
-            folderHero = folderSave + File.separator + "hero" + File.separator;
 
-            File fileAudio = new File(folderSave, "/audio/");
+            fileHeroList = mAppInternalFolder + File.separator + "hero_list.dat";
+            folderHero = mAppInternalFolder + File.separator + "hero" + File.separator;
+
+            File fileAudio = new File(mAppInternalFolder, "/audio/");
             if (!fileAudio.exists()) {
                 fileAudio.mkdirs();
             }
             folderAudio = fileAudio.getPath();
 
-            File fileMusicPack = new File(folderSave, "/musicPack/");
-//            File fileMusicPack = new File(folderRoot, "/musicPack/");
+            File fileMusicPack = new File(mAppInternalFolder, "/musicPack/");
             if (!fileMusicPack.exists()) {
                 fileMusicPack.mkdirs();
             }
             folderMusicPack = fileMusicPack.getPath();
 
 
-            File fileBlur = new File(folderSave, "/blur/");
+            File fileBlur = new File(mAppInternalFolder, "/blur/");
             if (!fileBlur.exists()) {
                 fileBlur.mkdirs();
             }
             folderBlur = fileBlur.getPath();
 
-            File fObject = new File(folderSave, "/object/");
+            File fObject = new File(mAppInternalFolder, "/object/");
             if (!fObject.exists()) {
                 fObject.mkdirs();
             }
 
             folderObject = fObject.getPath();
 
-            File fRingtone = new File(folderRoot, "/ringtone/");
+            File fRingtone = new File(mAppExternalFolder, "/ringtone/");
             if (!fRingtone.exists()) {
                 fRingtone.mkdirs();
             }
             folderRingtone = fRingtone.getPath();
 
-            File fNoti = new File(folderRoot, "/notification/");
+            File fNoti = new File(mAppExternalFolder, "/notification/");
             if (!fNoti.exists()) {
                 fNoti.mkdirs();
             }
             folderNotification = fNoti.getPath();
 
-            File fAlarm = new File(folderRoot, "/alarm/");
+            File fAlarm = new File(mAppExternalFolder, "/alarm/");
             if (!fAlarm.exists()) {
                 fAlarm.mkdirs();
             }
             folderAlarm = fAlarm.getPath();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(TAG, ">>> Error:" + "e:" + e.toString());
         }
     }
 
@@ -151,7 +168,7 @@ public class ResourceManager {
             f.mkdirs();
         }
 
-        File fRingtone = new File(folderRoot, "/ringtone/");
+        File fRingtone = new File(mAppExternalFolder, "/ringtone/");
         if (!fRingtone.exists()) {
             fRingtone.mkdirs();
         }
@@ -167,7 +184,7 @@ public class ResourceManager {
         }
 
 
-        File fNoti = new File(folderRoot, "/notification/");
+        File fNoti = new File(mAppExternalFolder, "/notification/");
         if (!fNoti.exists()) {
             fNoti.mkdirs();
         }
@@ -182,7 +199,7 @@ public class ResourceManager {
             f.mkdirs();
         }
 
-        File fAlarm = new File(folderRoot, "/alarm/");
+        File fAlarm = new File(mAppExternalFolder, "/alarm/");
         if (!fAlarm.exists()) {
             fAlarm.mkdirs();
         }
@@ -191,9 +208,8 @@ public class ResourceManager {
     }
 
     public String getPathDownloadMusicPack(String link) {
-        File save  = new File(Environment.getExternalStorageDirectory(), "DownloadDota2Sound");
-        if (!save.exists())
-        {
+        File save = new File(Environment.getExternalStorageDirectory(), "DownloadDota2Sound");
+        if (!save.exists()) {
             save.mkdirs();
         }
 
@@ -207,7 +223,7 @@ public class ResourceManager {
 
 
     public String getFolderAudio() {
-        File fileAudio = new File(getFolderSave(), "/audio/");
+        File fileAudio = new File(mAppInternalFolder, "/audio/");
         if (!fileAudio.exists()) {
             fileAudio.mkdirs();
         }
@@ -216,17 +232,13 @@ public class ResourceManager {
     }
 
     public String getFolderHero() {
-        folderHero = getFolderSave() + File.separator + "hero" + File.separator;
+        folderHero = mAppInternalFolder + File.separator + "hero" + File.separator;
         return folderHero;
-    }
-
-    public String getFolderBlur() {
-        return folderBlur;
     }
 
     public String getFolderObject() {
 
-        File fObject = new File(getFolderSave(), "/object/");
+        File fObject = new File(mAppInternalFolder, "/object/");
         if (!fObject.exists()) {
             fObject.mkdirs();
         }
@@ -237,8 +249,8 @@ public class ResourceManager {
         return folderObject;
     }
 
-    public String getFolderSave() {
-        folderSave = getContext().getFilesDir().getPath();
-        return folderSave;
+    public String getAppInternalFolder() {
+//        mAppInternalFolder = getContext().getFilesDir().getPath();
+        return mAppInternalFolder;
     }
 }
