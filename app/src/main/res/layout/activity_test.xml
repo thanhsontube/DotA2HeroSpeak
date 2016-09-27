@@ -23,8 +23,8 @@
         <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hero AVATAR"
-                android:id="@+id/hero_avatar"/>
+                android:text="Hero LORD"
+                android:id="@+id/hero_lord"/>
 
         <Button
             android:layout_width="match_parent"

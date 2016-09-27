@@ -28,7 +28,7 @@ public class TestActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.test_music_packs_default).setOnClickListener(this);
         findViewById(R.id.test_music_packs_fav).setOnClickListener(this);
         findViewById(R.id.hero_icons).setOnClickListener(this);
-        findViewById(R.id.hero_avatar).setOnClickListener(this);
+        findViewById(R.id.hero_lord).setOnClickListener(this);
 
     }
 
@@ -73,8 +73,8 @@ public class TestActivity extends Activity implements View.OnClickListener {
                 mJsoupLoader.withGetHeroBasic_Icon();
                 break;
             }
-            case R.id.hero_avatar: {
-                mJsoupLoader.withGetHeroBasic_Avatar_Description();
+            case R.id.hero_lord: {
+                mJsoupLoader.withGetHeroBasic_Lord();
                 break;
             }
         }
