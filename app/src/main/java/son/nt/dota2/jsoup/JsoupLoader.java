@@ -1,7 +1,6 @@
 package son.nt.dota2.jsoup;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -22,6 +21,8 @@ public class JsoupLoader {
     public static final String HERO_ICON = "http://dota2.gamepedia.com/Heroes_by_release";
     public static final String HERO_AVATAR = "http://dota2.gamepedia.com/Heroes";
     public static final String HERO_LORD = "http://dota2.gamepedia.com/Anti-Mage/Lore";
+    public static final String HERO_LORD2 = "http://dota2.gamepedia.com/Underlord/Lore";
+    public static final String HERO_RESPONSE = "http://dota2.gamepedia.com/Queen_of_Pain/Responses";
 
     public void withGetHeroBasic_Avatar_Description() {
         new GetHeroBasic_Avatar_Description().execute();
@@ -30,6 +31,11 @@ public class JsoupLoader {
     public void withGetHeroBasic_Lord() {
         Logger.debug(TAG, ">>>" + "withGetHeroBasic_Lord");
         new GetHeroBasic_Lord().execute();
+    }
+
+    public void withGetHeroBasic_Response() {
+        Logger.debug(TAG, ">>>" + "withGetHeroBasic_Response");
+        new GetHeroBasic_Responses().execute();
     }
 
     /**
@@ -150,52 +156,62 @@ public class JsoupLoader {
         protected Void doInBackground(Void... params) {
             try {
                 Document document = Jsoup.connect(HERO_LORD).get();
-                Elements main = document.select("div[id=mw-content-text]");
-                List<DataNode> dataNodes = main.get(0).dataNodes();
-                Logger.debug(TAG, ">>>" + "dataNodes:" + dataNodes.size());
+                Elements mains = document.select("div[id=mw-content-text]").get(0).getElementsByTag("ul");
+                Logger.debug(TAG, ">>>" + "mains:" + mains.size());
 
-                for (DataNode e : dataNodes) {
-                    Logger.debug(TAG, ">>>" + "e:" + e.nodeName());
+                for (Element element : mains) {
+                    Logger.debug(TAG, ">>>" + "-----");
+                    Element before = element.previousElementSibling();
+                    if (before.text().contains("Allies meeting")) {
+                        Logger.debug(TAG, ">>>" + "***Allies meeting");
+                        final Elements text = element.getElementsByTag("li");
+                        for (Element d : text) {
+                            Logger.debug(TAG, ">>>" + "d:" + d.ownText());
+                            String mp3 = d.select("a[class=sm2_button]").attr("href");
+                            Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+
+                            String id = d.select("img[alt]").get(0).parent().attr("href");
+                            Logger.debug(TAG, ">>>" + "id:" + id);
+                        }
+
+
+                    }
+                    if (before.text().contains("Enemies killing")) {
+                        Logger.debug(TAG, ">>>" + "***Enemies killing");
+                        final Elements href = element.getElementsByAttribute("href");
+                        final Elements text = element.getElementsByTag("li");
+                        for (Element d : text) {
+                            Logger.debug(TAG, ">>>" + "d:" + d.ownText());
+                            String mp3 = d.select("a[class=sm2_button]").attr("href");
+                            Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+
+                            String id = d.select("img[alt]").get(0).parent().attr("href");
+                            Logger.debug(TAG, ">>>" + "id:" + id);
+
+
+                        }
+
+
+                    }
+                    if (before.text().contains("Others")) {
+                        Logger.debug(TAG, ">>>" + "***Others");
+                        final Elements href = element.getElementsByAttribute("href");
+                        final Elements text = element.getElementsByTag("li");
+                        for (Element d : text) {
+                            Logger.debug(TAG, ">>>" + "d:" + d.ownText());
+                            String mp3 = d.select("a[class=sm2_button]").attr("href");
+                            Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+
+                            String id = d.select("img[alt]").get(0).parent().attr("href");
+                            Logger.debug(TAG, ">>>" + "id:" + id);
+
+
+                        }
+
+                    }
+
+
                 }
-//
-//                int nodeMeeting;
-//                int nodeKilling;
-//                int nodeOthers;
-//
-//                Element elementMeeting = null;
-//                Element elementKilling = null;
-//                int i = 0;
-//                for (Element element : elements) {
-//                    if (element.nodeName().equalsIgnoreCase("p") && element.text() != null && element.text().contains("Allies meeting")) {
-//                        Logger.error(TAG, ">>> Error nodeMeeting:" + i + ":" + element.text());
-//                        nodeMeeting = i;
-//                        elementMeeting = elements.get(nodeMeeting + 1);
-//                    }
-//
-//                    if (element.nodeName().equalsIgnoreCase("p") && element.text() != null && element.text().contains("Enemies killing ")) {
-//                        Logger.error(TAG, ">>> Error nodeKilling:" + i + ":" + element.text());
-//                        nodeKilling = i;
-//                        elementKilling = elements.get(nodeKilling + 1);
-//                    }
-//
-//                    if (element.nodeName().equalsIgnoreCase("p") && element.text() != null && element.text().contains("Others ")) {
-//                        Logger.error(TAG, ">>> Error nodeOthers:" + i + ":" + element.text());
-//                        nodeOthers = i;
-//                    }
-//
-//                    i++;
-//                }
-//
-//                if (elementMeeting != null) {
-//
-//                    Logger.debug(TAG, ">>>" + "elementMeeting:" + elementMeeting.getAllElements().size());
-//                }
-//
-//                if (elementKilling != null) {
-//
-//                    Logger.debug(TAG, ">>>" + "elementKilling:" + elementKilling.getAllElements().size());
-//                }
-
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -203,6 +219,51 @@ public class JsoupLoader {
             return null;
         }
     }
+
+    //http://dota2.gamepedia.com/Queen_of_Pain/Responses
+    class GetHeroBasic_Responses extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Document document = Jsoup.connect(HERO_RESPONSE).get();
+                Elements mains = document.select("div[id=mw-content-text]").get(0).getElementsByTag("ul");
+                Logger.debug(TAG, ">>>" + "mains:" + mains.size());
+
+                int i = 0;
+                for (Element element : mains) {
+                    Logger.debug(TAG, ">>>" + "****:" + i + ";element:" + element.tagName());
+                    Element before = element.previousElementSibling();
+                    Logger.debug(TAG, ">>>" + "before:" + (before == null ? "NULL" : before.tagName()));
+                    if (before != null && before.tagName().equals("p"))
+                    {
+                        Logger.debug(TAG, ">>>" + "P:" + before.text());
+                    }
+//                    if (before != null && before.tagName() != null) {
+//                        if (before.tagName().equals("h2")) {
+//                            Logger.debug(TAG, ">>>" + "Group:" + before.text());
+//                        } else if (before.tagName().equals("p")) {
+//                            before = before.previousElementSibling();
+//                            if (before != null) {
+//                                Logger.debug(TAG, ">>>" + "Group (P) :" + before.text());
+//                            }
+//                        }
+//                        Logger.debug(TAG, ">>>" + "before:" + before.tag().getName());
+//                    }
+
+
+
+                    i ++;
+
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
 
     private void getLordVoice() {
 

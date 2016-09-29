@@ -29,6 +29,7 @@ public class TestActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.test_music_packs_fav).setOnClickListener(this);
         findViewById(R.id.hero_icons).setOnClickListener(this);
         findViewById(R.id.hero_lord).setOnClickListener(this);
+        findViewById(R.id.hero_response).setOnClickListener(this);
 
     }
 
@@ -75,6 +76,10 @@ public class TestActivity extends Activity implements View.OnClickListener {
             }
             case R.id.hero_lord: {
                 mJsoupLoader.withGetHeroBasic_Lord();
+                break;
+            }
+            case R.id.hero_response: {
+                mJsoupLoader.withGetHeroBasic_Response();
                 break;
             }
         }
