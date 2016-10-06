@@ -1,5 +1,9 @@
 package son.nt.dota2.jsoup;
 
+import org.htmlcleaner.CleanerProperties;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
+import org.htmlcleaner.XPatherException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -7,6 +11,7 @@ import org.jsoup.select.Elements;
 
 import android.os.AsyncTask;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +28,11 @@ public class JsoupLoader {
     public static final String HERO_LORD = "http://dota2.gamepedia.com/Anti-Mage/Lore";
     public static final String HERO_LORD2 = "http://dota2.gamepedia.com/Underlord/Lore";
     public static final String HERO_RESPONSE = "http://dota2.gamepedia.com/Queen_of_Pain/Responses";
+    public static final String HERO_RESPONSE2 = "http://dota2.gamepedia.com/Drow_Ranger/Responses";
+    public static final String HERO_RESPONSE_Crystal = "http://dota2.gamepedia.com/Crystal_Maiden/Responses";
+
+
+    public static final String HERO_RESPONSE3 = "http://dota2.gamepedia.com/index.php?title=Drow_Ranger/Responses&action=edit";
 
     public void withGetHeroBasic_Avatar_Description() {
         new GetHeroBasic_Avatar_Description().execute();
@@ -224,43 +234,201 @@ public class JsoupLoader {
     class GetHeroBasic_Responses extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            try {
-                Document document = Jsoup.connect(HERO_RESPONSE).get();
-                Elements mains = document.select("div[id=mw-content-text]").get(0).getElementsByTag("ul");
-                Logger.debug(TAG, ">>>" + "mains:" + mains.size());
+            getResponseWithHtml();
+//            getResponseWithJsoup();
+            return null;
+        }
+    }
 
-                int i = 0;
-                for (Element element : mains) {
-                    Logger.debug(TAG, ">>>" + "****:" + i + ";element:" + element.tagName());
-                    Element before = element.previousElementSibling();
-                    Logger.debug(TAG, ">>>" + "before:" + (before == null ? "NULL" : before.tagName()));
-                    if (before != null && before.tagName().equals("p"))
-                    {
-                        Logger.debug(TAG, ">>>" + "P:" + before.text());
-                    }
-//                    if (before != null && before.tagName() != null) {
-//                        if (before.tagName().equals("h2")) {
-//                            Logger.debug(TAG, ">>>" + "Group:" + before.text());
-//                        } else if (before.tagName().equals("p")) {
-//                            before = before.previousElementSibling();
-//                            if (before != null) {
-//                                Logger.debug(TAG, ">>>" + "Group (P) :" + before.text());
-//                            }
-//                        }
-//                        Logger.debug(TAG, ">>>" + "before:" + before.tag().getName());
-//                    }
+    private void getResponseWithHtml() {
+        try {
+            CleanerProperties props = new CleanerProperties();
 
+            props.setTranslateSpecialEntities(true);
+            props.setTransResCharsToNCR(true);
+            props.setOmitComments(true);
 
+            TagNode tagNode = new HtmlCleaner(props).clean(
+                    new URL(HERO_RESPONSE_Crystal));
+            String xPath = "//div[@id='mw-content-text']";
+            Object[] data = tagNode.evaluateXPath(xPath);
+            TagNode nodeA = (TagNode) data[0];
+            List<TagNode> tagNodes = nodeA.getChildTagList();
+            Logger.debug(TAG, ">>>" + "tagNodes:" + tagNodes.size());
+            int i = 1;
 
-                    i ++;
-
-
+            boolean isProcess = false;
+            for (TagNode tag : tagNodes) {
+//                Logger.debug(TAG, ">>>" + "tag:" + i + ":" + tag.getText()
+//                        + ";hasChildren:" + tag.hasChildren()
+//                        + ";getName:" + tag.getName()
+//                        + ";tag.hasAttribute(\"id\"):" + tag.hasAttribute("id")
+//                        + ";class:" + tag.hasAttribute("class"));
+                if (isProcess) {
+                    workWithImage(tag);
+                    return;
                 }
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                if (tag.getName().contains("h2")) {
+//                    Logger.debug(TAG, ">>>" + i + " h2:" + tag.getText());
+                    if (tag.getText().toString().contains("Killing an enemy")) {
+//                        workWithImage(tag);
+                        isProcess = true;
+                    }
+                }
+
+//                if (tag.getName().contains("h2")) {
+//                    String group = tag.getText().toString().trim();
+//                    TagNode responseGroup = tagNodes.get(i + 1);
+//                    processResponse(group, responseGroup);
+//                }
+
+//                if (tag.getText().toString().contains("Killing a specific enemy")) {
+//                    String group = tag.getText().toString().trim();
+//                    TagNode responseGroup = tagNodes.get(i + 1);
+//                    processResponseIcon(group, responseGroup);
+//                }
+
+//
+//                Logger.debug(TAG, ">>>" + "tag:" + tag.getName());
+//                if (tag.getName().equals("h2")) {
+//                    Logger.debug(TAG, ">>>" + "h2:" + tag.getText());
+//                }
+//                if (tag.getName().equals("div")) {
+////                    Logger.debug(TAG, ">>>" + tag.getText());
+//
+//                    if (tag.getText().toString().contains("Killing a specific enemy")) {
+//                        String group = tag.getText().toString().trim();
+//                        TagNode responseGroup = tagNodes.get(i + 1);
+//                        processResponseIcon(group, responseGroup);
+//                    }
+//
+//                }
+
+//                Logger.debug(TAG, ">>>" + tag.getText());
+                i++;
             }
-            return null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void workWithImage(TagNode tagNode) {
+        try {
+
+            Logger.debug(TAG, ">>>" + "workWithImage:" + tagNode.getChildTagList().size());
+            int i = 0;
+            for (TagNode tag : tagNode.getChildTagList()) {
+
+
+                Logger.debug(TAG, ">>>" + "*********i:*********" + i + "*********");
+                Logger.debug(TAG, ">>>" + "tag:" + tag.getName());
+                if (tag.getName().contains("p")) {
+                    Logger.debug(TAG, ">>>" + "text:" + tag.getText());
+//                    if (tag.getText().toString().contains("Killing a specific enemy")) {
+//                        getKillingEnemy(tagNode.getChildTagList().get(i + 1));
+//                        return;
+//                    }
+                }
+
+                i++;
+
+            }
+
+//            TagNode tag = tagNode.getChildTagList().get(1);
+//            Logger.debug(TAG, ">>>" + "tag:" + tag. );
+//            Logger.debug(TAG, ">>>" + "ok:" + tagNode.getChildTagList().get(1).getChildTagList().size());
+//            for (TagNode tag : tagNode.getChildTagList()) {
+//                Logger.debug(TAG, ">>>" + "tag:" + tag.getText());
+//            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void getKillingEnemy(TagNode nodeA) {
+
+        try {
+            Logger.debug(TAG, ">>>" + "getKillingEnemy:" + nodeA.getChildTagList().size());
+            for (TagNode tag : nodeA.getChildTagList()) {
+                String text = tag.getText().toString().replace("Play","").replace("u ","").trim();
+                Logger.debug(TAG, ">>>" + "tag text:" + text);
+                
+//                Logger.debug(TAG, ">>>" + "size:" + tag.getChildTagList().size());
+                TagNode tagMp3 = tag.getChildTagList().get(0);
+
+                String mp3 = tagMp3.getAttributeByName("href");
+                Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+
+                if (tag.getChildTagList().size() > 1) {
+                    TagNode tagHero = tag.getChildTagList().get(1);
+                    String rivalName = tagHero.getAttributeByName("href");
+                    rivalName = rivalName.substring(0, rivalName.lastIndexOf("?version"));
+                    Logger.debug(TAG, ">>>" + "rivalName:" + rivalName);
+                }
+
+
+
+            }
+
+
+
+        } catch (Exception e) {
+            Logger.error(TAG, ">>> Error:" + "error:" + e.toString());
+        }
+    }
+
+    private void processResponse(String group, TagNode tagNode) {
+        try {
+            Logger.debug(TAG, ">>>" + "processResponse group:" + group + ";tagNode:" + tagNode.getAllChildren().size());
+
+            String xpathA = "//a[@class='sm2_button']";
+            Object[] objA = tagNode.evaluateXPath(xpathA);
+            if (objA == null || objA.length == 0) {
+                return;
+            }
+
+            for (Object object : objA) {
+                TagNode nodeTitle = (TagNode) object;
+                String mp3 = nodeTitle.getAttributeByName("href");
+                Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+            }
+        } catch (XPatherException e) {
+            Logger.error(TAG, ">>> Error:" + group + ":" + e);
+        }
+    }
+
+    private void processResponseIcon(String group, TagNode tagNode) {
+        try {
+            Logger.debug(TAG, ">>>" + "processResponseIcon group:" + group + ";tagNode:" + tagNode.getAllChildren().size());
+
+            String xpathA = "//a[@class='sm2_button']";
+            Object[] objA = tagNode.evaluateXPath(xpathA);
+            if (objA == null || objA.length == 0) {
+                return;
+            }
+
+            for (Object object : objA) {
+                TagNode nodeTitle = (TagNode) object;
+                String mp3 = nodeTitle.getAttributeByName("href");
+                Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+            }
+        } catch (XPatherException e) {
+            Logger.error(TAG, ">>> Error:" + group + ":" + e);
+        }
+    }
+
+    private void getResponseWithJsoup() {
+        Logger.debug(TAG, ">>>" + "*****getResponseWithJsoup****");
+        try {
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
