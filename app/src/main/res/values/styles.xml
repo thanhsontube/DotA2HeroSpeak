@@ -1,27 +1,27 @@
 <resources>
 
 
-        <!-- Base application theme. -->
-        <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-            <!-- Customize your theme here. -->
-            <item name="colorPrimary">@color/primary_color</item>
-            <item name="colorPrimaryDark">@color/primary_dark_color</item>
-            <item name="colorAccent">@color/accent_color</item>
-        </style>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="colorAccent">@color/accent_color</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item> //21 +
+        <item name="android:statusBarColor">@android:color/transparent</item> //21 +
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
 
     <style name="AppTheme.Normal">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-        <style name="AppTheme.NoActionBar">
-            <item name="windowActionBar">false</item>
-            <item name="windowNoTitle">true</item>
-        </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-        <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-        <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
     <style name="Theme.TS" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -45,18 +45,7 @@
 
     <style name="Theme.TS.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="FontRegular">
-        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
-    </style>
-    <style name="FontLight">
-        <item name="fontPath">fonts/Roboto-Light.ttf</item>
-    </style>
 
-    <style name="FontMedium">
-        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
-    </style>
 
-    <style name="FontLightItalic">
-        <item name="fontPath">fonts/Roboto-LightItalic.ttf</item>
-    </style>
+
 </resources>

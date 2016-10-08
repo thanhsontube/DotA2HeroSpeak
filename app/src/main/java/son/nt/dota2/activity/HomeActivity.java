@@ -32,6 +32,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.squareup.otto.Subscribe;
 
+import son.nt.dota2.BuildConfig;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
@@ -59,8 +60,11 @@ import son.nt.dota2.utils.TsGaTools;
  * This class is called after login.
  */
 
-public class HomeActivity extends AActivity implements HomeFragment.OnFragmentInteractionListener,
-        MainFragment.OnFragmentInteractionListener, SearchableFragment.OnFragmentInteractionListener, SavedFragment.OnFragmentInteractionListener {
+public class HomeActivity extends AActivity implements
+        HomeFragment.OnFragmentInteractionListener,
+        MainFragment.OnFragmentInteractionListener,
+        SearchableFragment.OnFragmentInteractionListener,
+        SavedFragment.OnFragmentInteractionListener {
 
     public static final String TAG = HomeActivity.class.getSimpleName();
     DrawerLayout drawerLayout;
@@ -87,7 +91,9 @@ public class HomeActivity extends AActivity implements HomeFragment.OnFragmentIn
         navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         handleSearch(getIntent());
         adMob();
-        isAddMob();
+        if (!BuildConfig.DEBUG) {
+            isAddMob();
+        }
 
     }
 

@@ -1,11 +1,11 @@
 package son.nt.dota2;
 
+import android.app.Application;
+
 import com.facebook.FacebookSdk;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
-
-import android.app.Application;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -59,7 +59,7 @@ public class MyApplication extends Application {
     }
 
     private void setupCalligraphy() {
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/Roboto-Regular.ttf")
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/DroidSans.ttf")
                 .setFontAttrId(R.attr.fontPath).build());
     }
 }
