@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="?selectableItemBackground"
+    android:orientation="vertical">
+
+
+    <FrameLayout
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/row_avatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_minor"
+            android:contentDescription="Hero Avatar"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_ken_6"
+            app:riv_border_color="@android:color/white"
+            app:riv_border_width="2dp"
+            app:riv_corner_radius="34dp"
+            app:riv_oval="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:padding="@dimen/spacing_minor"
+            android:src="@drawable/ic_start_on_48"
+            android:visibility="visible" />
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/row_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?selectableItemBackground"
+        android:gravity="center_horizontal"
+        android:padding="8dp"
+        android:textSize="12sp"
+        tools:text="@string/hero" />
+
+</LinearLayout>

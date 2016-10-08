@@ -5,7 +5,7 @@
     <style name="AppTheme" parent="Theme.AppCompat">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primary_color</item>
-        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="colorPrimaryDark">@color/primary_dark_color</item>
         <item name="colorAccent">@color/accent_color</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

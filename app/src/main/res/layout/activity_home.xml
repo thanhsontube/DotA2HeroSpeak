@@ -10,11 +10,11 @@
 
 
     <son.nt.dota2.customview.KenBurnsView2
-        android:visibility="visible"
         android:id="@+id/home_kenburns"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
+        android:fitsSystemWindows="false"
+        android:visibility="visible"
         tools:background="@drawable/cheese_1" />
 
     <ImageView

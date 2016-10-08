@@ -1,13 +1,13 @@
 package son.nt.dota2.adapter;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -23,6 +23,7 @@ import son.nt.dota2.utils.TsGaTools;
 
 /**
  * Created by Sonnt on 7/7/15.
+ * Adapter showed hero item (Basic) on the Home screen.
  */
 public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHolder> {
 
@@ -39,21 +40,39 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_hero_list, viewGroup, false);
-        return new ViewHolder(view);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_hero_list, viewGroup, false);
+        final ViewHolder viewHolder = new ViewHolder(view);
+        viewHolder.txtName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HeroEntry dto = mValues.get(viewHolder.getAdapterPosition());
+                Toast.makeText(viewHolder.txtName.getContext(), "" + dto.fullName, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        viewHolder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HeroEntry dto = mValues.get(viewHolder.getAdapterPosition());
+                TsGaTools.trackHero("/hero:" + dto.heroId);
+                OttoBus.post(dto);
+            }
+        });
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int i) {
         final HeroEntry dto = mValues.get(i);
 
-        viewHolder.txtName.setText(dto.fullName);
+        viewHolder.txtName.setText(dto.name);
         if (dto.group.equalsIgnoreCase("Str")) {
-            viewHolder.txtName.setBackgroundColor(ContextCompat.getColor(context, R.color.holo_red_light_transparent));
+            viewHolder.imageView.setBorderColor(Color.RED);
         } else if (dto.group.equalsIgnoreCase("Agi")) {
-            viewHolder.txtName.setBackgroundColor(ContextCompat.getColor(context, R.color.green_transparent));
+            viewHolder.imageView.setBorderColor(Color.GREEN);
         } else {
-            viewHolder.txtName.setBackgroundColor(ContextCompat.getColor(context, R.color.blue_transparent));
+            viewHolder.imageView.setBorderColor(Color.BLUE);
         }
         if (contextWeakReference.get() != null) {
             Glide.with(viewHolder.imageView.getContext()).load(dto.avatarThumbnail)
@@ -63,14 +82,14 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
                     .into(viewHolder.imageView);
         }
 
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TsGaTools.trackHero("/hero:" + dto.heroId);
-                OttoBus.post(dto);
-
-            }
-        });
+//        viewHolder.view.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                TsGaTools.trackHero("/hero:" + dto.heroId);
+//                OttoBus.post(dto);
+//
+//            }
+//        });
 
     }
 
@@ -80,14 +99,14 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        com.makeramen.roundedimageview.RoundedImageView imageView;
         TextView txtName;
         View view;
 
         public ViewHolder(View itemView) {
             super(itemView);
             this.view = itemView.findViewById(R.id.card_view);
-            this.imageView = (ImageView) itemView.findViewById(R.id.row_avatar);
+            this.imageView = (com.makeramen.roundedimageview.RoundedImageView) itemView.findViewById(R.id.row_avatar);
             this.txtName = (TextView) itemView.findViewById(R.id.row_name);
 
         }
