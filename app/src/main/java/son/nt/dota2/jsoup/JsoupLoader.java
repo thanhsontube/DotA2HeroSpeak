@@ -1,5 +1,7 @@
 package son.nt.dota2.jsoup;
 
+import android.os.AsyncTask;
+
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
@@ -9,13 +11,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import android.os.AsyncTask;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import son.nt.dota2.home.HeroBasicDto;
+import io.realm.Realm;
+import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.utils.Logger;
 
 /**
@@ -94,6 +95,10 @@ public class JsoupLoader {
 
 
     //http://dota2.gamepedia.com/Heroes_by_release
+
+    /**
+     * this one gets heroID and heroIcon
+     */
     public void withGetHeroBasic_Icon() {
         new GetHeroBasic_Icon().execute();
 
@@ -133,29 +138,32 @@ public class JsoupLoader {
                     no++;
                 }
 
+//                for (HeroBasicDto hero : heroes) {
+//
+//                    final String avatar = getAvatar(hero.heroId);
+//                    if (avatar == null) {
+//                        Logger.error(TAG, ">>> Error:" + "Null avatar:" + avatar);
+//                    } else {
+//                        hero.avatar = avatar;
+//                    }
+//
+//                }
+
+
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
+                realm.delete(HeroBasicDto.class);
+                realm.commitTransaction();
                 for (HeroBasicDto hero : heroes) {
-
-                    final String avatar = getAvatar(hero.heroId);
-                    if (avatar == null) {
-                        Logger.error(TAG, ">>> Error:" + "Null avatar:" + avatar);
-                    } else {
-                        hero.avatar = avatar;
-                    }
-
+                    realm.beginTransaction();
+                    realm.copyToRealm(hero);
+                    realm.commitTransaction();
                 }
-
-
-//                Realm realm = Realm.getDefaultInstance();
-//                realm.beginTransaction();
-//
-//
-//
-//                realm.commitTransaction();
-//                realm.close();
+                realm.close();
 
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.error(TAG, ">>> Error:" + e);
             }
             return null;
         }

@@ -1,4 +1,6 @@
-package son.nt.dota2.home;
+package son.nt.dota2.dto.home;
+
+import com.google.gson.Gson;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -41,5 +43,11 @@ public class HeroBasicDto extends RealmObject {
     public String href;
 
     public HeroBasicDto() {
+    }
+
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

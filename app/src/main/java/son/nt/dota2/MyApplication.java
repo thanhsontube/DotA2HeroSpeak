@@ -1,6 +1,8 @@
 package son.nt.dota2;
 
-import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 import com.facebook.FacebookSdk;
 import com.parse.Parse;
@@ -18,7 +20,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 /**
  * Created by Sonnt on 3/14/2015.
  */
-public class MyApplication extends Application {
+public class MyApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
@@ -51,6 +53,12 @@ public class MyApplication extends Application {
 
         Logger.setDEBUG(BuildConfig.DEBUG);
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private void setupRealm() {
