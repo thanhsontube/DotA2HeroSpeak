@@ -36,7 +36,7 @@ public class LoginActivity extends AActivity implements LoginFragment.OnFragment
 
     @Override
     protected Fragment onCreateMainFragment(Bundle savedInstanceState) {
-        return LoginFragment.newInstance("", "");
+        return LoginFragment.newInstance();
     }
 
     List<HeroEntry> listTemp = new ArrayList<>();

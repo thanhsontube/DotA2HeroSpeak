@@ -31,6 +31,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
 import com.facebook.share.widget.LikeView;
+import com.google.android.gms.common.SignInButton;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
@@ -44,6 +45,9 @@ import son.nt.dota2.R;
 import son.nt.dota2.activity.HomeActivity;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.facebook.UserDto;
+import son.nt.dota2.login.LoginContract;
+import son.nt.dota2.login.LoginPresenter;
+import son.nt.dota2.login.LoginRepo;
 import son.nt.dota2.parse.AppAPI;
 import son.nt.dota2.parse.IUserParse;
 import son.nt.dota2.parse.UpdateUserInfoDto;
@@ -51,13 +55,8 @@ import son.nt.dota2.utils.KeyBoardUtils;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsGaTools;
 
-public class LoginFragment extends AFragment implements View.OnClickListener {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
+public class LoginFragment extends AFragment implements View.OnClickListener,
+        LoginContract.View {
     public static final String TAG = "LoginFragment";
 
     TextView txtGuest;
@@ -83,22 +82,17 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
     @Bind(R.id.login_password)
     AppCompatEditText txtPassword;
 
+    @Bind(R.id.sign_in_button)
+    SignInButton mSignInButton;
+
     AppAPI appAPI;
 
+    LoginContract.Presenter mPresenter;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
-     */
-    public static LoginFragment newInstance(String param1, String param2) {
+
+    public static LoginFragment newInstance() {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -110,18 +104,14 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         setHasOptionsMenu(false);
+        mPresenter = new LoginPresenter(this, new LoginRepo());
         appAPI = new AppAPI(getContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_new_login, container, false);
     }
 
@@ -131,11 +121,13 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
 //        initData();
 //        initLayout(view);
 //        initListener();
+        mPresenter.checkLogin();
         checkingLogin();
 
         txtForgotPassword.setOnClickListener(this);
         txtSignUp.setOnClickListener(this);
         loginWithFacebook.setOnClickListener(this);
+        mSignInButton.setOnClickListener(this);
 
 
         view.findViewById(R.id.login_enter).setOnClickListener(new View.OnClickListener() {
@@ -377,7 +369,11 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
             case R.id.login_by_facebook:
                 loginByFacebook();
 
+
                 break;
+            case R.id.sign_in_button: {
+                break;
+            }
 
         }
     }
@@ -399,8 +395,37 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
 
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
+
         void onSignUp(String email, String password);
     }
 
     OnFragmentInteractionListener mListener;
+
+    //Contract - View
+
+    @Override
+    public void loginFacebook() {
+
+    }
+
+    @Override
+    public void loginGoogle() {
+
+    }
+
+    @Override
+    public void loginEmail(String email, String password) {
+
+    }
+
+    @Override
+    public void showLogin(String userName) {
+        Toast.makeText(getContext(), "Hello:" + userName, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showNotLogin() {
+
+
+    }
 }

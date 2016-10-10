@@ -1,159 +1,178 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    tools:context="son.nt.hellochao.fragment.LoginFragment">
+    android:fitsSystemWindows="true">
 
-    <FrameLayout
+    <include layout="@layout/include_ken_burn" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            style="@style/txt_black_18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:textColor="@color/green_500"
-            android:text="Welcome to DOTA 2 Hero Speak"
-            android:textAllCaps="true"
-            android:textAppearance="?android:textAppearanceLarge" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:src="@mipmap/ic_launcher" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_major">
 
 
-    </FrameLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:orientation="vertical">
-
-        <android.support.design.widget.TextInputLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatEditText
-                tools:text="t1@gmail.com"
-                android:id="@+id/login_username"
-                android:layout_width="match_parent"
+            <TextView
+                style="@style/txt_black_18"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:text="Welcome to DOTA 2 Hero Speak"
+                android:textAllCaps="true"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:textColor="@color/green_500" />
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/login_password"
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Password"
-                android:inputType="textPassword" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:src="@mipmap/ic_launcher" />
+
+
+        </FrameLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
-            <!--log in-->
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/box_blue_with_corner">
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/login_enter"
-                    style="@style/txt_blue_14"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="?selectableItemBackground"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:padding="12dp"
-                    android:text="Login"
-                    android:textStyle="bold" />
-            </FrameLayout>
-
-            <!--Sign up-->
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/box_blue_with_corner">
-
-                <TextView
-                    android:id="@+id/login_txt_sign_up"
-                    style="@style/txt_blue_14"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="?selectableItemBackground"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:padding="12dp"
-                    android:text="Create New"
-                    android:textStyle="bold" />
-            </FrameLayout>
-
-        </LinearLayout>
-
-        <TextView
-            android:visibility="visible"
-            android:id="@+id/login_forgot_password"
-            style="@style/txt_red_18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:background="?selectableItemBackground"
-            android:padding="8dp"
-            android:text="Skip Login" />
-
-        <!--social login-->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/box_facebook">
-
-            <TextView
-                android:id="@+id/login_by_facebook"
-                style="@style/txt_white_18"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_marginTop="12dp">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/login_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    tools:text="t1@gmail.com" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/login_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Password"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+                <!--log in-->
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/box_blue_with_corner">
+
+                    <TextView
+                        android:id="@+id/login_enter"
+                        style="@style/txt_blue_14"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?selectableItemBackground"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:text="Login"
+                        android:textStyle="bold" />
+                </FrameLayout>
+
+                <!--Sign up-->
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/box_blue_with_corner">
+
+                    <TextView
+                        android:id="@+id/login_txt_sign_up"
+                        style="@style/txt_blue_14"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?selectableItemBackground"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:text="Create New"
+                        android:textStyle="bold" />
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/login_forgot_password"
+                style="@style/txt_red_18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
                 android:background="?selectableItemBackground"
-                android:drawableLeft="@drawable/com_facebook_button_icon"
-                android:drawableStart="@drawable/com_facebook_button_icon"
-                android:gravity="center"
-                android:maxLines="1"
-                android:padding="12dp"
-                android:text="Login by Facebook"
-                android:textStyle="bold" />
-        </FrameLayout>
+                android:padding="8dp"
+                android:text="Skip Login"
+                android:visibility="visible" />
+
+            <!--social login-->
+
+            <!--Google-->
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_in_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="true" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/box_facebook">
+
+                <TextView
+                    android:id="@+id/login_by_facebook"
+                    style="@style/txt_white_18"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?selectableItemBackground"
+                    android:drawableLeft="@drawable/com_facebook_button_icon"
+                    android:drawableStart="@drawable/com_facebook_button_icon"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:padding="12dp"
+                    android:text="Login by Facebook"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+
+        </LinearLayout>
 
 
     </LinearLayout>
 
+</FrameLayout>
 
-</LinearLayout>

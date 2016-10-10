@@ -8,21 +8,8 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
+    <include layout="@layout/include_ken_burn"/>
 
-    <son.nt.dota2.customview.KenBurnsView2
-        android:id="@+id/home_kenburns"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="false"
-        android:visibility="visible"
-        tools:background="@drawable/cheese_1" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:scaleType="fitXY"
-        android:src="@mipmap/layer_image" />
 
     <include
         layout="@layout/home_app_bar"
