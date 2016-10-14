@@ -1,5 +1,35 @@
 package son.nt.dota2.fragment;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.facebook.login.widget.ProfilePictureView;
+import com.facebook.share.widget.LikeView;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +38,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.Base64;
 import android.util.Log;
@@ -21,22 +53,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.Profile;
-import com.facebook.ProfileTracker;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.facebook.login.widget.ProfilePictureView;
-import com.facebook.share.widget.LikeView;
-import com.google.android.gms.common.SignInButton;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseUser;
-
 import java.security.MessageDigest;
 
 import butterknife.Bind;
@@ -45,19 +61,25 @@ import son.nt.dota2.R;
 import son.nt.dota2.activity.HomeActivity;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.facebook.UserDto;
+import son.nt.dota2.firebase.DaggerGoogleApiComponent;
+import son.nt.dota2.firebase.GoogleApiClientModule;
 import son.nt.dota2.login.LoginContract;
 import son.nt.dota2.login.LoginPresenter;
 import son.nt.dota2.login.LoginRepo;
 import son.nt.dota2.parse.AppAPI;
 import son.nt.dota2.parse.IUserParse;
 import son.nt.dota2.parse.UpdateUserInfoDto;
+import son.nt.dota2.rx.SchedulerProvider;
+import son.nt.dota2.test.TestActivity;
 import son.nt.dota2.utils.KeyBoardUtils;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsGaTools;
 
 public class LoginFragment extends AFragment implements View.OnClickListener,
-        LoginContract.View {
+        LoginContract.View, GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = "LoginFragment";
+
+    private static final int RC_SIGN_IN = 9001;
 
     TextView txtGuest;
 
@@ -89,6 +111,14 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
 
     LoginContract.Presenter mPresenter;
 
+    //    @Inject
+    FirebaseAuth mFirebaseAuth;
+    //    @Inject
+    FirebaseUser mFirebaseUser;
+
+    //    @Inject
+    GoogleApiClient mGoogleApiClient;
+
 
     public static LoginFragment newInstance() {
         LoginFragment fragment = new LoginFragment();
@@ -105,8 +135,36 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
-        mPresenter = new LoginPresenter(this, new LoginRepo());
+        mPresenter = new LoginPresenter(this, new LoginRepo(), SchedulerProvider.getInstance());
         appAPI = new AppAPI(getContext());
+
+//        setupDI();
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+//
+        if (mFirebaseUser != null) {
+            mFirebaseAuth.signOut();
+        }
+
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .enableAutoManage(getActivity() /* FragmentActivity */,
+                        this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+
+
+    }
+
+    private void setupDI() {
+        GoogleApiClientModule googleApiClientModule = new GoogleApiClientModule((AppCompatActivity) getActivity(), getString(R.string.default_web_client_id), this);
+        DaggerGoogleApiComponent.builder().googleApiClientModule(googleApiClientModule).build().inject(this);
+
     }
 
     @Override
@@ -122,7 +180,17 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
 //        initLayout(view);
 //        initListener();
         mPresenter.checkLogin();
-        checkingLogin();
+//        checkingLogin();
+
+
+        //todo hack
+        view.findViewById(R.id.login_welcome).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), TestActivity.class));
+//                FireBaseUtils.find(HeroBasicDto.class.getSimpleName(), "heroId", "Sven");
+            }
+        });
 
         txtForgotPassword.setOnClickListener(this);
         txtSignUp.setOnClickListener(this);
@@ -278,8 +346,18 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
-//        callbackManager.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = result.getSignInAccount();
+                firebaseAuthWithGoogle(account);
+            } else {
+                // Google Sign In failed
+                Log.e(TAG, "Google Sign In failed.");
+            }
+        }
     }
 
     private void loginByFacebook() {
@@ -372,6 +450,7 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
 
                 break;
             case R.id.sign_in_button: {
+                loginGoogle();
                 break;
             }
 
@@ -401,6 +480,37 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
 
     OnFragmentInteractionListener mListener;
 
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGooogle:" + acct.getId());
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+
+        mFirebaseAuth.signInWithCredential(credential)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        Logger.debug(TAG, ">>>" + "onSuccess");
+                        showLogin(authResult.getUser().getDisplayName());
+
+                    }
+                })
+
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Logger.debug(TAG, ">>>" + "onFailure:" + e);
+
+                    }
+                });
+
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
     //Contract - View
 
     @Override
@@ -410,7 +520,8 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
 
     @Override
     public void loginGoogle() {
-
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
@@ -421,11 +532,12 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
     @Override
     public void showLogin(String userName) {
         Toast.makeText(getContext(), "Hello:" + userName, Toast.LENGTH_SHORT).show();
+        startActivity(HomeActivity.getIntent(getActivity()));
     }
 
     @Override
     public void showNotLogin() {
-
+        Toast.makeText(getContext(), "Hello:" + "Login please", Toast.LENGTH_SHORT).show();
 
     }
 }

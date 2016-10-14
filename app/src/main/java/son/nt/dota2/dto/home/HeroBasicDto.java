@@ -1,6 +1,10 @@
 package son.nt.dota2.dto.home;
 
+import com.google.firebase.database.Exclude;
 import com.google.gson.Gson;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -27,7 +31,6 @@ public class HeroBasicDto extends RealmObject {
      */
     @PrimaryKey
     public String heroId; //Dragon_Knight
-
     public int no;
     public int priority = 999;
     public String name; //Juggernaut
@@ -41,6 +44,9 @@ public class HeroBasicDto extends RealmObject {
     public String description;
     public String avatar2;
     public String href;
+    public String group;
+    public String bgLink;
+
 
     public HeroBasicDto() {
     }
@@ -49,5 +55,26 @@ public class HeroBasicDto extends RealmObject {
     public String toString() {
         Gson gson = new Gson();
         return gson.toJson(this);
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("heroId",heroId);
+        result.put("no",no);
+        result.put("priority",priority);
+        result.put("name",name);
+        result.put("fullName",fullName);
+        result.put("avatar",avatar);
+        result.put("heroIcon",heroIcon);
+        result.put("welcomeVoice",welcomeVoice);
+        result.put("attribute",attribute);
+        result.put("roles",roles);
+        result.put("description",description);
+        result.put("avatar2",avatar2);
+        result.put("href",href);
+        result.put("group",group);
+        result.put("bgLink",bgLink);
+        return result;
     }
 }

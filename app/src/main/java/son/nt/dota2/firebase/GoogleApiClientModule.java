@@ -52,11 +52,13 @@ public class GoogleApiClientModule {
                 .requestIdToken(idToken).requestEmail().build();
         return gso;
     }
+
     @ActivityScoped
     @Provides
     GoogleApiClient provideGoogleApiClient(GoogleSignInOptions googleSignInOptions, FragmentActivity fragmentActivity, GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener) {
         GoogleApiClient googleApiClient = new GoogleApiClient.Builder(fragmentActivity)
-                .enableAutoManage(fragmentActivity /* FragmentActivity */, onConnectionFailedListener /* OnConnectionFailedListener */)
+                .enableAutoManage(fragmentActivity /* FragmentActivity */,
+                        onConnectionFailedListener /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions).build();
         return googleApiClient;
     }

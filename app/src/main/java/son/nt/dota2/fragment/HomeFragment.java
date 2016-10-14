@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
-import son.nt.dota2.adapter.AdapterTop;
+import son.nt.dota2.adapter.HomePagerAdapter;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.comments.ChatDialog;
 import son.nt.dota2.utils.TsGaTools;
@@ -27,7 +27,7 @@ public class HomeFragment extends AFragment implements View.OnClickListener {
 
     ViewPager viewPager;
     TabLayout tabLayout;
-    AdapterTop adapterTop;
+    HomePagerAdapter adapterTop;
     FloatingActionButton fabChat;
 
 
@@ -63,7 +63,7 @@ public class HomeFragment extends AFragment implements View.OnClickListener {
     private void initLayout(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.home_tabs);
         viewPager = (ViewPager) view.findViewById(R.id.home_view_pager);
-        adapterTop = new AdapterTop(getFragmentManager());
+        adapterTop = new HomePagerAdapter(getFragmentManager());
         viewPager.setAdapter(adapterTop);
         tabLayout.setupWithViewPager(viewPager);
         if (TsScreen.isLandscape(getActivity())) {

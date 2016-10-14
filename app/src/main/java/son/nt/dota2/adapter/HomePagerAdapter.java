@@ -12,14 +12,14 @@ import son.nt.dota2.fragment.HeroListFragment;
 /**
  * Created by Sonnt on 3/14/2015.
  */
-public class AdapterTop extends BasePagerAdapter {
+public class HomePagerAdapter extends BasePagerAdapter {
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
     }
 
-    public AdapterTop(FragmentManager fm) {
+    public HomePagerAdapter(FragmentManager fm) {
         super(fm);
     }
 

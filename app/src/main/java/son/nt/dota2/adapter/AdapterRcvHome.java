@@ -12,12 +12,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 import son.nt.dota2.R;
-import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
 
@@ -27,14 +26,11 @@ import son.nt.dota2.utils.TsGaTools;
  */
 public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHolder> {
 
-    List<HeroEntry> mValues;
-    Context context;
-    private final WeakReference<Context> contextWeakReference;
+    List<HeroBasicDto> mValues;
+    Context mContext;
 
-    public AdapterRcvHome(Context cx, List<HeroEntry> list) {
-        this.mValues = list;
-        this.context = cx;
-        this.contextWeakReference = new WeakReference<>(cx);
+    public AdapterRcvHome(Context cx) {
+        this.mContext = cx;
     }
 
 
@@ -45,7 +41,7 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
         viewHolder.txtName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HeroEntry dto = mValues.get(viewHolder.getAdapterPosition());
+                HeroBasicDto dto = mValues.get(viewHolder.getAdapterPosition());
                 Toast.makeText(viewHolder.txtName.getContext(), "" + dto.fullName, Toast.LENGTH_SHORT).show();
 
             }
@@ -54,7 +50,7 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HeroEntry dto = mValues.get(viewHolder.getAdapterPosition());
+                HeroBasicDto dto = mValues.get(viewHolder.getAdapterPosition());
                 TsGaTools.trackHero("/hero:" + dto.heroId);
                 OttoBus.post(dto);
             }
@@ -64,23 +60,24 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int i) {
-        final HeroEntry dto = mValues.get(i);
+        final HeroBasicDto dto = mValues.get(i);
 
         viewHolder.txtName.setText(dto.name);
-        if (dto.group.equalsIgnoreCase("Str")) {
-            viewHolder.imageView.setBorderColor(Color.RED);
-        } else if (dto.group.equalsIgnoreCase("Agi")) {
-            viewHolder.imageView.setBorderColor(Color.GREEN);
-        } else {
-            viewHolder.imageView.setBorderColor(Color.BLUE);
+        if (dto.group != null) {
+            if (dto.group.equalsIgnoreCase("Str")) {
+                viewHolder.imageView.setBorderColor(Color.RED);
+            } else if (dto.group.equalsIgnoreCase("Agi")) {
+                viewHolder.imageView.setBorderColor(Color.GREEN);
+            } else {
+                viewHolder.imageView.setBorderColor(Color.BLUE);
+            }
         }
-        if (contextWeakReference.get() != null) {
-            Glide.with(viewHolder.imageView.getContext()).load(dto.avatarThumbnail)
+
+            Glide.with(mContext).load(dto.avatar)
                     .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .bitmapTransform(new CropSquareTransformation(viewHolder.imageView.getContext()))
                     .into(viewHolder.imageView);
-        }
 
 //        viewHolder.view.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -95,7 +92,12 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mValues == null ? 0 : mValues.size();
+    }
+
+    public void setData(List<HeroBasicDto> data) {
+        this.mValues = data;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

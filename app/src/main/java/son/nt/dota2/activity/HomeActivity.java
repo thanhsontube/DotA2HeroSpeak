@@ -1,10 +1,27 @@
 package son.nt.dota2.activity;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.parse.GetCallback;
+import com.parse.LogOutCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.squareup.otto.Subscribe;
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -22,17 +39,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.parse.GetCallback;
-import com.parse.LogOutCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.squareup.otto.Subscribe;
+import java.util.ArrayList;
+import java.util.List;
 
 import son.nt.dota2.BuildConfig;
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
@@ -41,6 +52,8 @@ import son.nt.dota2.base.AActivity;
 import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.firebase.FireBaseUtils;
 import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.RoleListFragment;
@@ -94,6 +107,10 @@ public class HomeActivity extends AActivity implements
         if (!BuildConfig.DEBUG) {
             isAddMob();
         }
+
+
+        //// TODO: 10/11/16
+//        new GetFromParse().execute();
 
     }
 
@@ -468,5 +485,74 @@ public class HomeActivity extends AActivity implements
     @Subscribe
     public void fromAdapterRoles(GoAdapterRoles dto) {
         showFragment(RoleListFragment.newInstance(dto.role), true);
+    }
+
+    class GetFromParse extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference reference = firebaseDatabase.getReference();
+
+            reference.child(HeroBasicDto.class.getSimpleName()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<HeroBasicDto> list = new ArrayList<>();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        HeroBasicDto post = postSnapshot.getValue(HeroBasicDto.class);
+                        list.add(post);
+                    }
+
+                    HeroEntry entry = null;
+                    for (HeroBasicDto hero : list) {
+                        entry = findHero(hero);
+                        if (entry != null) {
+                            Logger.debug(TAG, ">>>" + "Found:" + hero.heroId );
+                            hero.fullName = entry.fullName;
+                            hero.group = entry.group;
+                            hero.bgLink = entry.bgLink;
+                        } else {
+                            Logger.error(TAG, ">>> Error:" + "Cannot find:" + hero.heroId);
+                            if (hero.heroId.equals("Underlord")) {
+                                hero.fullName = "Vrogros, the Underlord";
+                                hero.group = "Str";
+                                hero.bgLink = "https://hydra-media.cursecdn.com/dota2.gamepedia.com/7/73/Underlord_Guide_Header.png?version=8437b238c54fee321e175962f4bbf012";
+                            }
+
+                            if (hero.heroId.equals("Monkey_King")) {
+                                hero.group = "Agi";
+                                hero.fullName = "Sun Wukong, the Monkey King";
+                                hero.bgLink = "https://hydra-media.cursecdn.com/dota2.gamepedia.com/f/f4/Monkey_King.png";
+
+                                Logger.debug(TAG, ">>>" + "***------***** Monkey_King****");
+
+                            }
+
+                        }
+                        //find it in firebase, then update
+                        FireBaseUtils.find(HeroBasicDto.class.getSimpleName(), "heroId", hero.heroId, hero);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            return null;
+        }
+    }
+
+    private HeroEntry findHero(HeroBasicDto dto) {
+        try {
+            String heroId = dto.heroId;
+            if (dto.heroId.equals("Nature%27s_Prophet")) {
+                heroId = "Natures_Prophet";
+            }
+            return HeroManager.getInstance().getHero(heroId);
+
+        } catch (Exception e) {
+            Logger.error(TAG, ">>> Error:" + "findHero:" + e);
+            return null;
+        }
     }
 }

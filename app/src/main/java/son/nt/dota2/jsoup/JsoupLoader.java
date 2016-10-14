@@ -1,6 +1,9 @@
 package son.nt.dota2.jsoup;
 
-import android.os.AsyncTask;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
@@ -11,11 +14,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.utils.Logger;
 
@@ -138,28 +143,51 @@ public class JsoupLoader {
                     no++;
                 }
 
-//                for (HeroBasicDto hero : heroes) {
-//
-//                    final String avatar = getAvatar(hero.heroId);
-//                    if (avatar == null) {
-//                        Logger.error(TAG, ">>> Error:" + "Null avatar:" + avatar);
-//                    } else {
-//                        hero.avatar = avatar;
-//                    }
-//
-//                }
-
-
-                Realm realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
-                realm.delete(HeroBasicDto.class);
-                realm.commitTransaction();
                 for (HeroBasicDto hero : heroes) {
-                    realm.beginTransaction();
-                    realm.copyToRealm(hero);
-                    realm.commitTransaction();
+
+                    final String avatar = getAvatar(hero.heroId);
+                    if (avatar == null) {
+                        Logger.error(TAG, ">>> Error:" + "Null avatar:" + avatar);
+                    } else {
+                        hero.avatar = avatar;
+                    }
+
                 }
-                realm.close();
+
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference reference = firebaseDatabase.getReference();
+
+
+                for (HeroBasicDto heroBasicDto : heroes) {
+                    reference.child(HeroBasicDto.class.getSimpleName()).push().setValue(heroBasicDto)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Logger.debug(TAG, ">>>" + "onSuccess 2");
+
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Logger.error(TAG, ">>> Error:" + "onFailure:" + e);
+
+                                }
+                            })
+                    ;
+                }
+
+
+//                Realm realm = Realm.getDefaultInstance();
+//                realm.beginTransaction();
+//                realm.delete(HeroBasicDto.class);
+//                realm.commitTransaction();
+//                for (HeroBasicDto hero : heroes) {
+//                    realm.beginTransaction();
+//                    realm.copyToRealm(hero);
+//                    realm.commitTransaction();
+//                }
+//                realm.close();
 
 
             } catch (Exception e) {

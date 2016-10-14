@@ -1,16 +1,17 @@
 package son.nt.dota2.test;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -130,13 +131,36 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
 
     private void uploadHeroBasic(List<HeroBasicDto> list) {
         Logger.debug(TAG, ">>>" + "uploadHeroBasic:" + list.size());
-        if (!list.isEmpty()) {
-            String icon = list.get(0).heroIcon;
-            Logger.debug(TAG, ">>>" + "icon 0:" + list.get(0).toString());
-        }
+//        if (!list.isEmpty()) {
+//            String icon = list.get(0).heroIcon;
+//            Logger.debug(TAG, ">>>" + "icon 0:" + list.get(0).toString());
+//        }
+//
+//        HeroBasicDto heroBasicDto = list.get(0);
 
-        HeroBasicDto heroBasicDto = list.get(0);
-        new Upload().execute(heroBasicDto);
+//        new Upload().execute(heroBasicDto);
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+
+        HeroBasicDto heroBasicDto = new HeroBasicDto();
+        heroBasicDto.fullName = "This is FULL name 2";
+        reference.child(HeroBasicDto.class.getSimpleName()).push().setValue(heroBasicDto)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Logger.debug(TAG, ">>>" + "onSuccess 2");
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Logger.error(TAG, ">>> Error:" + "onFailure:" + e);
+
+                    }
+                })
+        ;
 
 
     }
@@ -144,7 +168,7 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
     class Upload extends AsyncTask<HeroBasicDto, Void, Void> {
         @Override
         protected Void doInBackground(HeroBasicDto... params) {
-             pushAHeroBasic(params[0]);
+            pushAHeroBasic(params[0]);
             return null;
         }
     }

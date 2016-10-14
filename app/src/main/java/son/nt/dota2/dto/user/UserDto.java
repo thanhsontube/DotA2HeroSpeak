@@ -15,4 +15,12 @@ public class UserDto {
     public boolean isLogin() {
         return isLogin;
     }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setLogin(boolean login) {
+        isLogin = login;
+    }
 }
