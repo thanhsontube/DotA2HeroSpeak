@@ -37,5 +37,9 @@
     <string name="title_activity_music_pack_details">MusicPackDetailsActivity</string>
     <string name="hero">Phantom Assassin</string>
 
+    <string name="group_str">STRENGTH</string>
+    <string name="group_agi">AGILITY</string>
+    <string name="group_intel">INTEL</string>
+
 
 </resources>

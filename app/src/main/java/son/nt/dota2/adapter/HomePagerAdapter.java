@@ -2,57 +2,47 @@ package son.nt.dota2.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.ViewGroup;
+import android.support.v4.app.FragmentPagerAdapter;
 
-import son.nt.dota2.HeroManager;
-import son.nt.dota2.MsConst;
-import son.nt.dota2.base.BasePagerAdapter;
+import java.util.List;
+
 import son.nt.dota2.fragment.HeroListFragment;
 
 /**
  * Created by Sonnt on 3/14/2015.
  */
-public class HomePagerAdapter extends BasePagerAdapter {
+public class HomePagerAdapter extends FragmentPagerAdapter {
 
-    @Override
-    public void setPrimaryItem(ViewGroup container, int position, Object object) {
-        super.setPrimaryItem(container, position, object);
-    }
+    List<HeroListFragment> mFragments;
 
-    public HomePagerAdapter(FragmentManager fm) {
+//    @Override
+//    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+//        super.setPrimaryItem(container, position, object);
+//    }
+
+    public HomePagerAdapter(FragmentManager fm, List<HeroListFragment> list) {
         super(fm);
+        this.mFragments = list;
     }
-
 
     @Override
     public Fragment getItem(int position) {
-        String group = MsConst.GROUP_STR;
-        switch (position) {
-            case 0:
-                group = MsConst.GROUP_STR;
-                break;
-            case 1:
-                group = MsConst.GROUP_AGI;
-                break;
-            case 2:
-                group = MsConst.GROUP_INTEL;
-                break;
-        }
-        return HeroListFragment.newInstance(group);
+        return mFragments.get(position);
     }
 
-    @Override
-    public boolean isFragmentReusable(Fragment f, int position) {
-        return true;
-    }
+//    @Override
+//    public boolean isFragmentReusable(Fragment f, int position) {
+//        return true;
+//    }
 
     @Override
     public int getCount() {
-        return HeroManager.getInstance().groups.length;
+        return mFragments == null ? 0 : mFragments.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return HeroManager.getInstance().groups[position];
+        return "abc" + position;
+//        return mFragments.get(position).getGroupDisplayName();
     }
 }

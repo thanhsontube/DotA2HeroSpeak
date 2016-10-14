@@ -1,17 +1,20 @@
 package son.nt.dota2;
 
-import android.content.Context;
-import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
-
 import com.facebook.FacebookSdk;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 
+import android.content.Context;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import son.nt.dota2.data.TsSqlite;
+import son.nt.dota2.di.component.app.AppComponent;
+import son.nt.dota2.di.component.app.DaggerAppComponent;
+import son.nt.dota2.di.module.app.AppModule;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsGaTools;
@@ -21,6 +24,9 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * Created by Sonnt on 3/14/2015.
  */
 public class MyApplication extends MultiDexApplication {
+
+
+    private AppComponent mAppComponent;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -50,6 +56,7 @@ public class MyApplication extends MultiDexApplication {
         CommentManager.createInstance(getApplicationContext());
         setupCalligraphy();
         setupRealm();
+        setupDi();
 
         Logger.setDEBUG(BuildConfig.DEBUG);
 
@@ -70,4 +77,20 @@ public class MyApplication extends MultiDexApplication {
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/DroidSans.ttf")
                 .setFontAttrId(R.attr.fontPath).build());
     }
+
+    private void setupDi() {
+        mAppComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .build();
+
+    }
+
+    public static MyApplication get(Context context) {
+        return (MyApplication) context.getApplicationContext();
+    }
+
+    public AppComponent getAppComponent() {
+        return mAppComponent;
+    }
+
 }
