@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.MyApplication;
 import son.nt.dota2.R;
-import son.nt.dota2.adapter.AdapterRcvHome;
+import son.nt.dota2.adapter.HeroListAdapter;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.di.component.app.AppComponent;
 import son.nt.dota2.di.module.herolist.HeroListModule;
@@ -47,7 +47,7 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
     @Inject
     HeroListContract.Presenter mPresenter;
     //    private HeroList heroList;
-    private AdapterRcvHome mAdapterHome;
+    private HeroListAdapter mAdapter;
     private List<HeroBasicDto> listHero = new ArrayList<>();
 
     private String mGroup = "Str";
@@ -105,7 +105,7 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
                 HeroBasicDto post = postSnapshot.getValue(HeroBasicDto.class);
                 list.add(post);
             }
-            mAdapterHome.setData(list);
+            mAdapter.setData(list);
             recyclerView.scrollToPosition(0);
         }
 
@@ -141,13 +141,13 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
 
 
     private void initLayout(View view) {
-        mAdapterHome = new AdapterRcvHome(getContext());
+        mAdapter = new HeroListAdapter(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.home_recycle_view);
         recyclerView.setHasFixedSize(true);
         final int row = TsScreen.isLandscape(getActivity()) ? 4 : 3;
         mLayoutMng = new StaggeredGridLayoutManager(row, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutMng);
-        recyclerView.setAdapter(mAdapterHome);
+        recyclerView.setAdapter(mAdapter);
     }
 
     AdapterView.OnItemClickListener onClickGrid = new AdapterView.OnItemClickListener() {
@@ -171,7 +171,7 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
     @Subscribe
     public void updateAdapter(GalleryDto galleryDto) {
         getList();
-        mAdapterHome.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -198,6 +198,6 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
 
     @Override
     public void showHeroList(List<HeroBasicDto> heroBasicDtoList) {
-        mAdapterHome.setData(heroBasicDtoList);
+        mAdapter.setData(heroBasicDtoList);
     }
 }

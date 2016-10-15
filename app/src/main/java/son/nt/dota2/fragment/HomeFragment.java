@@ -69,7 +69,7 @@ public class HomeFragment extends AFragment implements View.OnClickListener {
 
         list.add(HeroListFragment.newInstance(MsConst.GROUP_STR));
 //        list.add(HeroListFragment.newInstance(MsConst.GROUP_AGI));
-        list.add(HeroListFragment.newInstance(MsConst.GROUP_INTEL));
+//        list.add(HeroListFragment.newInstance(MsConst.GROUP_INTEL));
 
         adapterTop = new HomePagerAdapter(getFragmentManager(), list);
         viewPager.setAdapter(adapterTop);

@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.utils.Logger;
 
@@ -31,6 +32,7 @@ public class JsoupLoader {
     public static final String TAG = JsoupLoader.class.getSimpleName();
     public static final String HERO_ICON = "http://dota2.gamepedia.com/Heroes_by_release";
     public static final String HERO_AVATAR = "http://dota2.gamepedia.com/Heroes";
+    public static final String HERO_x_LORD = "http://dota2.gamepedia.com/%1$s/Lore";
     public static final String HERO_LORD = "http://dota2.gamepedia.com/Anti-Mage/Lore";
     public static final String HERO_LORD2 = "http://dota2.gamepedia.com/Underlord/Lore";
     public static final String HERO_RESPONSE = "http://dota2.gamepedia.com/Queen_of_Pain/Responses";
@@ -46,7 +48,7 @@ public class JsoupLoader {
 
     public void withGetHeroBasic_Lord() {
         Logger.debug(TAG, ">>>" + "withGetHeroBasic_Lord");
-        new GetHeroBasic_Lord().execute();
+        new GetHeroBasic_Lord().execute("Anti-Mage");
     }
 
     public void withGetHeroBasic_Response() {
@@ -197,63 +199,89 @@ public class JsoupLoader {
         }
     }
 
-    class GetHeroBasic_Lord extends AsyncTask<Void, Void, Void> {
+    class GetHeroBasic_Lord extends AsyncTask<String, Void, Void> {
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Void doInBackground(String... params) {
             try {
-                Document document = Jsoup.connect(HERO_LORD).get();
+                String heroId = params[0];
+                String path = "http://dota2.gamepedia.com/" + heroId + "//Lore";
+                Document document = Jsoup.connect(HERO_LORD).get(); //hack antimage
+
                 Elements mains = document.select("div[id=mw-content-text]").get(0).getElementsByTag("ul");
                 Logger.debug(TAG, ">>>" + "mains:" + mains.size());
 
-                for (Element element : mains) {
-                    Logger.debug(TAG, ">>>" + "-----");
-                    Element before = element.previousElementSibling();
-                    if (before.text().contains("Allies meeting")) {
-                        Logger.debug(TAG, ">>>" + "***Allies meeting");
-                        final Elements text = element.getElementsByTag("li");
-                        for (Element d : text) {
-                            Logger.debug(TAG, ">>>" + "d:" + d.ownText());
-                            String mp3 = d.select("a[class=sm2_button]").attr("href");
-                            Logger.debug(TAG, ">>>" + "mp3:" + mp3);
 
-                            String id = d.select("img[alt]").get(0).parent().attr("href");
-                            Logger.debug(TAG, ">>>" + "id:" + id);
-                        }
+                HeroResponsesDto dto;
+                for (Element element : mains) { //A1
+                    try {
+                        dto = new HeroResponsesDto();
 
+                        Logger.debug(TAG, ">>>" + "-----");
+                        Element before = element.previousElementSibling();
+                        if (before.text().contains("Allies meeting")) {
+                            Logger.debug(TAG, ">>>" + "***Allies meeting");
+                            final Elements elementsByTag = element.getElementsByTag("li");
+                            for (Element d : elementsByTag) {
+                                try {
+                                    Logger.debug(TAG, ">>>" + "d:" + d.ownText());
+                                    String mp3 = d.select("a[class=sm2_button]").attr("href");
+                                    Logger.debug(TAG, ">>>" + "mp3:" + mp3);
 
-                    }
-                    if (before.text().contains("Enemies killing")) {
-                        Logger.debug(TAG, ">>>" + "***Enemies killing");
-                        final Elements href = element.getElementsByAttribute("href");
-                        final Elements text = element.getElementsByTag("li");
-                        for (Element d : text) {
-                            Logger.debug(TAG, ">>>" + "d:" + d.ownText());
-                            String mp3 = d.select("a[class=sm2_button]").attr("href");
-                            Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+                                    String id = d.select("img[alt]").get(0).parent().attr("href");
+                                    Logger.debug(TAG, ">>>" + "id:" + id);
+                                } catch (Exception e) {
+                                    Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Allies meeting:" + e);
+                                }
 
-                            String id = d.select("img[alt]").get(0).parent().attr("href");
-                            Logger.debug(TAG, ">>>" + "id:" + id);
+                            }
 
 
                         }
+                        if (before.text().contains("Enemies killing")) {
+                            Logger.debug(TAG, ">>>" + "***Enemies killing");
+                            final Elements href = element.getElementsByAttribute("href");
+                            final Elements elementsByTag = element.getElementsByTag("li");
+                            for (Element d : elementsByTag) { //A2
+                                try {
+                                    Logger.debug(TAG, ">>>" + "d:" + d.ownText());
+                                    String mp3 = d.select("a[class=sm2_button]").attr("href");
+                                    Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+
+                                    String id = d.select("img[alt]").get(0).parent().attr("href");
+                                    Logger.debug(TAG, ">>>" + "id:" + id);
+                                } catch (Exception e) {
+                                    Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Enemies killing:" + e);
+                                }
 
 
-                    }
-                    if (before.text().contains("Others")) {
-                        Logger.debug(TAG, ">>>" + "***Others");
-                        final Elements href = element.getElementsByAttribute("href");
-                        final Elements text = element.getElementsByTag("li");
-                        for (Element d : text) {
-                            Logger.debug(TAG, ">>>" + "d:" + d.ownText());
-                            String mp3 = d.select("a[class=sm2_button]").attr("href");
-                            Logger.debug(TAG, ">>>" + "mp3:" + mp3);
-
-                            String id = d.select("img[alt]").get(0).parent().attr("href");
-                            Logger.debug(TAG, ">>>" + "id:" + id);
+                            }
 
 
                         }
+                        if (before.text().contains("Others")) {
+                            Logger.debug(TAG, ">>>" + "***Others");
+                            final Elements href = element.getElementsByAttribute("href");
+                            final Elements elementsByTag = element.getElementsByTag("li");
+                            for (Element d : elementsByTag) {
+                                try {
+                                    Logger.debug(TAG, ">>>" + "d:" + d.ownText());
+                                    String mp3 = d.select("a[class=sm2_button]").attr("href");
+                                    Logger.debug(TAG, ">>>" + "mp3:" + mp3);
 
+                                    String id = d.select("img[alt]").get(0).parent().attr("href");
+                                    Logger.debug(TAG, ">>>" + "id:" + id);
+                                } catch (Exception e) {
+                                    Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Others:" + e);
+                                }
+
+
+                            }
+
+                        }
+
+
+                    } catch (Exception e) {
+                        Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord A1 :" + e);
                     }
 
 
@@ -391,9 +419,9 @@ public class JsoupLoader {
         try {
             Logger.debug(TAG, ">>>" + "getKillingEnemy:" + nodeA.getChildTagList().size());
             for (TagNode tag : nodeA.getChildTagList()) {
-                String text = tag.getText().toString().replace("Play","").replace("u ","").trim();
+                String text = tag.getText().toString().replace("Play", "").replace("u ", "").trim();
                 Logger.debug(TAG, ">>>" + "tag text:" + text);
-                
+
 //                Logger.debug(TAG, ">>>" + "size:" + tag.getChildTagList().size());
                 TagNode tagMp3 = tag.getChildTagList().get(0);
 
@@ -408,9 +436,7 @@ public class JsoupLoader {
                 }
 
 
-
             }
-
 
 
         } catch (Exception e) {

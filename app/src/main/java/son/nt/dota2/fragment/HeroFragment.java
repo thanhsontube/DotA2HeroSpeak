@@ -78,7 +78,7 @@ public class HeroFragment extends AbsFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             heroEntry = (HeroEntry) getArguments().getSerializable(ARG_PARAM1);
-            heroID = heroEntry.heroId;
+//            heroID = heroEntry.heroId;
         }
         setHasOptionsMenu(true);
     }
@@ -117,27 +117,30 @@ public class HeroFragment extends AbsFragment {
     @Override
     public void initData() {
         Logger.debug(TAG, ">>>" + "initData:" + heroEntry);
-        if (heroEntry != null) {
-            Logger.debug(TAG, ">>>" + "initData with:" + heroEntry.heroId);
-        }
-        titles.clear();
-        listFragments.clear();
-        titles.add("Voice");
-        listFragments.add(VoiceFragment.newInstance(heroEntry.heroId));
-        titles.add("Skills");
-        listFragments.add(AbilityFragment.newInstance(heroEntry.heroId));
-//        titles.add("BIO");
-//        listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
-        titles.add("Comments");
-        listFragments.add(ChatFragment.newInstance(heroEntry.heroId));
-
-        adapter = new AdapterPagerHero(getSafeFragmentManager(), listFragments, titles);
+//        if (heroEntry != null) {
+//            Logger.debug(TAG, ">>>" + "initData with:" + heroEntry.heroId);
+//        }
+//        titles.clear();
+//        listFragments.clear();
+//        titles.add("Voice");
+//        listFragments.add(VoiceFragment.newInstance(heroEntry.heroId));
+//        titles.add("Skills");
+//        listFragments.add(AbilityFragment.newInstance(heroEntry.heroId));
+////        titles.add("BIO");
+////        listFragments.add(IntroFragment.newInstance(heroEntry.heroId));
+//        titles.add("Comments");
+//        listFragments.add(ChatFragment.newInstance(heroEntry.heroId));
+//
+//        adapter = new AdapterPagerHero(getSafeFragmentManager(), listFragments, titles);
 
     }
 
 
     @Override
     public void initLayout(View view) {
+        if (heroEntry == null) {
+            return;
+        }
         //kenburns
         kenBurnsView = (KenBurnsView) view.findViewById(R.id.hero_ken_burns);
         listKenburns.clear();
@@ -159,6 +162,9 @@ public class HeroFragment extends AbsFragment {
 
     @Override
     public void initListener() {
+        if (heroEntry == null) {
+            return;
+        }
         getSafeActionBar().setTitle(heroEntry.name);
         getSafeActionBar().setDisplayShowTitleEnabled(true);
 

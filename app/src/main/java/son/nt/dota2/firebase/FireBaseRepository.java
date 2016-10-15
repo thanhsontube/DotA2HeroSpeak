@@ -3,7 +3,6 @@ package son.nt.dota2.firebase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -57,8 +56,9 @@ public class FireBaseRepository implements IFireBaseRepository {
 
     @Override
     public void getHeroBasic(String group) {
-        Query query = mDatabaseReference.child(HeroBasicDto.class.getSimpleName()).orderByChild("group").equalTo(group);
-        query.addListenerForSingleValueEvent(valueEventListener);
+        mDatabaseReference.child(HeroBasicDto.class.getSimpleName()).addListenerForSingleValueEvent(valueEventListener);
+//        Query query = mDatabaseReference.child(HeroBasicDto.class.getSimpleName()).orderByChild("group").equalTo(group);
+//        query.addListenerForSingleValueEvent(valueEventListener);
     }
 
     private ValueEventListener valueEventListener = new ValueEventListener() {

@@ -1,5 +1,13 @@
 package son.nt.dota2.activity;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.squareup.otto.Subscribe;
+
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,12 +16,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.squareup.otto.Subscribe;
 
 import son.nt.dota2.FacebookManager;
 import son.nt.dota2.MsConst;
@@ -34,6 +36,16 @@ import son.nt.dota2.utils.TsGaTools;
 public class HeroActivity extends AActivity implements HeroFragment.OnFragmentInteractionListener {
     HeroEntry heroEntry;
     FloatingActionButton fabChat;
+
+    private String mHeroId;
+
+
+    public static void startActivity(Context context, String heroID) {
+        Intent intent = new Intent(context, HeroActivity.class);
+        intent.putExtra("data", heroID);
+        context.startActivity(intent);
+    }
+
     @Override
     protected Fragment onCreateMainFragment(Bundle savedInstanceState) {
         return HeroFragment.newInstance(heroEntry);
@@ -47,6 +59,7 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         heroEntry = (HeroEntry) getIntent().getExtras().getSerializable(MsConst.EXTRA_HERO);
+        mHeroId = getIntent().getExtras().getString("data");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hero);
         fabChat = (FloatingActionButton) findViewById(R.id.btn_chat_hero);
@@ -69,6 +82,7 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
         isAddMob();
 
     }
+
     public void isAddMob() {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Admob");
         query.getFirstInBackground(new GetCallback<ParseObject>() {
@@ -145,9 +159,8 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
     }
 
     @Subscribe
-    public void goLogin (GoLoginDto dto) {
-        if (!dto.isLogin)
-        {
+    public void goLogin(GoLoginDto dto) {
+        if (!dto.isLogin) {
 
             startActivity(LoginActivity.getIntent(HeroActivity.this));
         } else {
@@ -163,7 +176,7 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
     }
 
     @Subscribe
-    public void goShare (GoShare dto) {
+    public void goShare(GoShare dto) {
         if (dto.type.equals("facebook")) {
             FacebookManager.getInstance().shareViaDialogFb(HeroActivity.this, dto.speakDto);
         }

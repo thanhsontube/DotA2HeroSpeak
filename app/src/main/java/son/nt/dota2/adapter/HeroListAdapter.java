@@ -1,5 +1,8 @@
 package son.nt.dota2.adapter;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -9,27 +12,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 import son.nt.dota2.R;
+import son.nt.dota2.activity.HeroActivity;
 import son.nt.dota2.dto.home.HeroBasicDto;
-import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
 
 /**
  * Created by Sonnt on 7/7/15.
  * Adapter showed hero item (Basic) on the Home screen.
  */
-public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHolder> {
+public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHolder> {
 
     List<HeroBasicDto> mValues;
     Context mContext;
 
-    public AdapterRcvHome(Context cx) {
+    public HeroListAdapter(Context cx) {
         this.mContext = cx;
     }
 
@@ -52,7 +52,8 @@ public class AdapterRcvHome extends RecyclerView.Adapter<AdapterRcvHome.ViewHold
             public void onClick(View v) {
                 HeroBasicDto dto = mValues.get(viewHolder.getAdapterPosition());
                 TsGaTools.trackHero("/hero:" + dto.heroId);
-                OttoBus.post(dto);
+                HeroActivity.startActivity(mContext, dto.heroId);
+//                OttoBus.post(dto);
             }
         });
         return viewHolder;
