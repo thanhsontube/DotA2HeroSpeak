@@ -18,6 +18,7 @@ import son.nt.dota2.di.module.app.AppModule;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsGaTools;
+import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -27,6 +28,7 @@ public class MyApplication extends MultiDexApplication {
 
 
     private AppComponent mAppComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -59,6 +61,11 @@ public class MyApplication extends MultiDexApplication {
         setupDi();
 
         Logger.setDEBUG(BuildConfig.DEBUG);
+
+        //
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
 
     }
 

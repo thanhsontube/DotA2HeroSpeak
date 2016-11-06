@@ -68,12 +68,12 @@ public class HomeFragment extends AFragment implements View.OnClickListener {
         List<HeroListFragment> list = new ArrayList<>();
 
         list.add(HeroListFragment.newInstance(MsConst.GROUP_STR));
-//        list.add(HeroListFragment.newInstance(MsConst.GROUP_AGI));
-//        list.add(HeroListFragment.newInstance(MsConst.GROUP_INTEL));
+        list.add(HeroListFragment.newInstance(MsConst.GROUP_AGI));
+        list.add(HeroListFragment.newInstance(MsConst.GROUP_INTEL));
 
         adapterTop = new HomePagerAdapter(getFragmentManager(), list);
         viewPager.setAdapter(adapterTop);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(list.size());
         tabLayout.setupWithViewPager(viewPager);
         fabChat = (FloatingActionButton) view.findViewById(R.id.btn_chat_home);
         fabChat.setOnClickListener(this);

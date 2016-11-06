@@ -11,5 +11,5 @@ import son.nt.dota2.fragment.HeroListFragment;
 @FragmentScoped
 @Subcomponent(modules = {HeroListModule.class})
 public interface HeroListComponent {
-    void inject (HeroListFragment fragment);
+    void inject(HeroListFragment fragment);
 }

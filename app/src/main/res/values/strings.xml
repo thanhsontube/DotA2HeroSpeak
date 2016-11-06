@@ -13,21 +13,26 @@
     <string name="not_found_hero">Not found Hero</string>
     <string name="action_clear">Clear Search History</string>
 
-    <string name="long_text">Will become more useful later in the game if they gain a significant gold advantage.</string>
+    <string name="long_text">Will become more useful later in the game if they gain a significant
+        gold advantage.
+    </string>
     <string name="title_activity_hero">HeroActivity</string>
     <string name="title_activity_test">TestActivity</string>
 
     <string name="whats_your_name">What\'s Your Name?</string>
-    <string name="explain_email_address">You will use this email when you log in and if you ever need to reset your password.</string>
+    <string name="explain_email_address">You will use this email when you log in and if you ever
+        need to reset your password.
+    </string>
     <string name="enter_email_address">Enter Your Email Address</string>
     <string name="explain_name">This name will be displayed for you!</string>
-    <string name="explain_password">Hi, %s! \n\rNow, Enter Your Password </string>
+    <string name="explain_password">Hi, %s! \n\rNow, Enter Your Password</string>
     <string name="password">Password</string>
     <string name="error_less_than_6_letters">Your password must have at least 6 letters.</string>
     <string name="password_not_match">Password does not match the confirm password</string>
     <string name="choose_a_password">Choose a Password</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="explain_gender">Providing your gender creates the best App experience for you.</string>
+    <string name="explain_gender">Providing your gender creates the best App experience for you.
+    </string>
     <string name="whats_your_gender">What\'s your Gender</string>
     <string name="female">Female</string>
     <string name="male">Male</string>

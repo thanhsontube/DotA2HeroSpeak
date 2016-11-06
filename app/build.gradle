@@ -126,6 +126,9 @@ dependencies {
     //64K
     compile 'com.android.support:multidex:1.0.1'
 
+    //timber
+    compile 'com.jakewharton.timber:timber:3.1.0'
+
 }
 apply plugin: 'com.google.gms.google-services'
 

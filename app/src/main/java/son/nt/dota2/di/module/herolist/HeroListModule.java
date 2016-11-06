@@ -2,8 +2,8 @@ package son.nt.dota2.di.module.herolist;
 
 import dagger.Module;
 import dagger.Provides;
+import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.di.scoped.FragmentScoped;
-import son.nt.dota2.firebase.IFireBaseRepository;
 import son.nt.dota2.home.herolist.HeroListContract;
 import son.nt.dota2.home.herolist.HeroListPresenter;
 
@@ -21,14 +21,14 @@ public class HeroListModule {
 
     @FragmentScoped
     @Provides
-    HeroListContract.View provideView () {
+    HeroListContract.View provideView() {
         return mView;
     }
 
     @FragmentScoped
     @Provides
-    HeroListContract.Presenter providePresenter (HeroListContract.View view, IFireBaseRepository iFireBaseRepository) {
-        return new HeroListPresenter(view, iFireBaseRepository);
+    HeroListContract.Presenter providePresenter(HeroListContract.View view, IHeroRepository heroRepository) {
+        return new HeroListPresenter(view, heroRepository);
     }
 
 

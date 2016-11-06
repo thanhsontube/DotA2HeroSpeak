@@ -1,12 +1,5 @@
 package son.nt.dota2.fragment;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
 import com.squareup.otto.Subscribe;
 
 import android.net.Uri;
@@ -82,39 +75,6 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
 
     }
 
-    private void getList() {
-//        if (mGroup.equals(MsConst.GROUP_STR)) {
-//            listHero = HeroManager.getInstance().getStrHeroes();
-//        } else if (mGroup.equals(MsConst.GROUP_AGI)) {
-//            listHero = HeroManager.getInstance().getAgiHeroes();
-//        } else if (mGroup.equals(MsConst.GROUP_INTEL)) {
-//            listHero = HeroManager.getInstance().getIntelHeroes();
-//        }
-
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference reference = firebaseDatabase.getReference();
-        Query query = reference.child(HeroBasicDto.class.getSimpleName()).orderByChild("mGroup").equalTo(mGroup);
-        query.addListenerForSingleValueEvent(valueEventListener);
-    }
-
-    ValueEventListener valueEventListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            List<HeroBasicDto> list = new ArrayList<>();
-            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                HeroBasicDto post = postSnapshot.getValue(HeroBasicDto.class);
-                list.add(post);
-            }
-            mAdapter.setData(list);
-            recyclerView.scrollToPosition(0);
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
-        }
-    };
-
     @Override
     public void onDestroy() {
         OttoBus.unRegister(this);
@@ -134,9 +94,6 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
         initListener();
         mPresenter.setGroup(mGroup);
         mPresenter.getHeroList();
-
-//        getList();
-
     }
 
 
@@ -170,7 +127,6 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
 
     @Subscribe
     public void updateAdapter(GalleryDto galleryDto) {
-        getList();
         mAdapter.notifyDataSetChanged();
     }
 

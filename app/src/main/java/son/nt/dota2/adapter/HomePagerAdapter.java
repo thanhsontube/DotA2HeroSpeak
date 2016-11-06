@@ -13,12 +13,7 @@ import son.nt.dota2.fragment.HeroListFragment;
  */
 public class HomePagerAdapter extends FragmentPagerAdapter {
 
-    List<HeroListFragment> mFragments;
-
-//    @Override
-//    public void setPrimaryItem(ViewGroup container, int position, Object object) {
-//        super.setPrimaryItem(container, position, object);
-//    }
+    private List<HeroListFragment> mFragments;
 
     public HomePagerAdapter(FragmentManager fm, List<HeroListFragment> list) {
         super(fm);
@@ -30,10 +25,6 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
         return mFragments.get(position);
     }
 
-//    @Override
-//    public boolean isFragmentReusable(Fragment f, int position) {
-//        return true;
-//    }
 
     @Override
     public int getCount() {
@@ -42,7 +33,14 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "abc" + position;
-//        return mFragments.get(position).getGroupDisplayName();
+        switch (position) {
+            case 0:
+                return "Str";
+            case 1:
+                return "Agi";
+            case 2:
+                return "Intel";
+        }
+        return "";
     }
 }

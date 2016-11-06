@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import son.nt.dota2.di.component.herolist.HeroListComponent;
 import son.nt.dota2.di.module.app.AppModule;
+import son.nt.dota2.di.module.app.HeroRepoModule;
 import son.nt.dota2.di.module.firebase.FireBaseModule;
 import son.nt.dota2.di.module.herolist.HeroListModule;
 
@@ -13,8 +14,8 @@ import son.nt.dota2.di.module.herolist.HeroListModule;
  */
 
 @Singleton
-@Component (modules = {AppModule.class, FireBaseModule.class})
+@Component(modules = {AppModule.class, FireBaseModule.class, HeroRepoModule.class})
 public interface AppComponent {
 
-    HeroListComponent plus (HeroListModule module);
+    HeroListComponent plus(HeroListModule module);
 }

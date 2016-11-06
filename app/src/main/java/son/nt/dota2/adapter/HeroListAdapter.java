@@ -74,11 +74,11 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
             }
         }
 
-            Glide.with(mContext).load(dto.avatar)
-                    .fitCenter()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .bitmapTransform(new CropSquareTransformation(viewHolder.imageView.getContext()))
-                    .into(viewHolder.imageView);
+        Glide.with(mContext).load(dto.avatar)
+                .fitCenter()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .bitmapTransform(new CropSquareTransformation(viewHolder.imageView.getContext()))
+                .into(viewHolder.imageView);
 
 //        viewHolder.view.setOnClickListener(new View.OnClickListener() {
 //            @Override
