@@ -37,7 +37,6 @@ public abstract class ASafeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
         OttoBus.unRegister(this);
     }
 

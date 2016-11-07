@@ -19,13 +19,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Timber.d(">>> onCreate:" + getClass().getSimpleName());
     }
-
-    @Override
-    protected void onDestroy() {
-        ButterKnife.unbind(this);
-        super.onDestroy();
-    }
-
     /**
      * provide the the xml layout
      */

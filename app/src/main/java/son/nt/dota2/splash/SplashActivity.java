@@ -17,6 +17,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.HomeActivity;
+import son.nt.dota2.activity.LoginActivity;
 import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
@@ -72,7 +73,9 @@ public class SplashActivity extends BaseActivity {
                         Timber.d(">>>Done save DB:" + aBoolean);
 
                         //todo check login
-                        startActivity(HomeActivity.getIntent(getApplicationContext()));
+//                        startActivity(HomeActivity.getIntent(getApplicationContext()));
+
+                        startActivity(LoginActivity.getIntent(getApplicationContext()));
                     });
 
         }

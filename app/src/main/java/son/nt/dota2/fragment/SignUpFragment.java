@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.parse.ParseException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.facebook.UserDto;
@@ -39,42 +39,42 @@ public class SignUpFragment extends AFragment {
     private String password;
     private String passwordConfirm;
 
-    @Bind(R.id.sign_up_email_next)
+    @BindView(R.id.sign_up_email_next)
     TextView txtNext;
 
-    @Bind(R.id.sign_up_email)
+    @BindView(R.id.sign_up_email)
     AppCompatEditText txtEmail;
 
-    @Bind(R.id.sign_up_your_name)
+    @BindView(R.id.sign_up_your_name)
     EditText txtYourName;
 
-    @Bind(R.id.sign_up_password)
+    @BindView(R.id.sign_up_password)
     AppCompatEditText txtPassword1St;
 
-    @Bind(R.id.sign_up_password_confirm)
+    @BindView(R.id.sign_up_password_confirm)
     AppCompatEditText txtPasswordConfirm;
 
-    @Bind(R.id.sign_up_email_til)
+    @BindView(R.id.sign_up_email_til)
     TextInputLayout textInputLayout;
 
-    @Bind(R.id.sign_up_password1st_til)
+    @BindView(R.id.sign_up_password1st_til)
     TextInputLayout textPassword1St;
 
 
-    @Bind(R.id.sign_up_password1st_til_confirm)
+    @BindView(R.id.sign_up_password1st_til_confirm)
     TextInputLayout textPasswordConfirm;
 
 
-    @Bind(R.id.sign_up_email_Clp)
+    @BindView(R.id.sign_up_email_Clp)
     ContentLoadingProgressBar contentLoadingProgressBar;
 
-    @Bind(R.id.sign_up_ll_email)
+    @BindView(R.id.sign_up_ll_email)
     View viewEmail;
-    @Bind(R.id.sign_up_ll_name)
+    @BindView(R.id.sign_up_ll_name)
     View viewYourName;
-    @Bind(R.id.sign_up_ll_password)
+    @BindView(R.id.sign_up_ll_password)
     View viewPassword;
-    @Bind(R.id.sign_up_ll_password_confirm)
+    @BindView(R.id.sign_up_ll_password_confirm)
     View viewPasswordConfirm;
 
     AppAPI appAPI;

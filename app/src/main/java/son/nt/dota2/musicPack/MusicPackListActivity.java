@@ -11,7 +11,7 @@ import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import son.nt.dota2.R;
 import son.nt.dota2.base.ASafeActivity;
 import son.nt.dota2.dto.musicPack.MusicPackDto;
@@ -21,7 +21,7 @@ import son.nt.dota2.musicPack.fav.MusicPackFavActivity;
 import son.nt.dota2.utils.FileUtil;
 
 public class MusicPackListActivity extends ASafeActivity {
-    @Bind(R.id.music_pack_home_rcv)
+    @BindView(R.id.music_pack_home_rcv)
     RecyclerView mRecyclerView;
 
     private AdapterMusicPackHome mAdapter;

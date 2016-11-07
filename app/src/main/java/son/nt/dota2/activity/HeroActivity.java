@@ -8,36 +8,55 @@ import com.squareup.otto.Subscribe;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
+import java.util.Collections;
+import java.util.List;
+
+import butterknife.BindView;
 import son.nt.dota2.FacebookManager;
-import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adMob.AdMobUtils;
-import son.nt.dota2.base.AActivity;
-import son.nt.dota2.comments.ChatDialog;
+import son.nt.dota2.adapter.AdapterPagerHero;
+import son.nt.dota2.base.BaseActivity;
+import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.dto.HeroEntry;
-import son.nt.dota2.fragment.HeroFragment;
+import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.gridmenu.CommentDialog;
 import son.nt.dota2.gridmenu.GridMenuDialog;
 import son.nt.dota2.gridmenu.SpeakLongClick;
+import son.nt.dota2.hero.HeroContract;
+import son.nt.dota2.hero.HeroPresenter;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.ottobus_entry.GoShare;
-import son.nt.dota2.utils.OttoBus;
-import son.nt.dota2.utils.TsGaTools;
 
-public class HeroActivity extends AActivity implements HeroFragment.OnFragmentInteractionListener {
+public class HeroActivity extends BaseActivity implements HeroContract.View {
+
+    HeroContract.Presenter mPresenter;
     HeroEntry heroEntry;
     FloatingActionButton fabChat;
 
     private String mHeroId;
+
+    @BindView(R.id.viewpager)
+    ViewPager mViewPager;
+
+    @BindView(R.id.tabs)
+    TabLayout mTabLayout;
+
+    private AdapterPagerHero mAdapter;
+
+    private EditText mSearchText;
+    private View mClearButton;
 
 
     public static void startActivity(Context context, String heroID) {
@@ -47,39 +66,43 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
     }
 
     @Override
-    protected Fragment onCreateMainFragment(Bundle savedInstanceState) {
-        return HeroFragment.newInstance(heroEntry);
-    }
-
-    @Override
-    protected int getFragmentContainerId() {
-        return R.id.hero_main_ll;
+    protected int provideLayoutResID() {
+        return R.layout.activity_hero;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        heroEntry = (HeroEntry) getIntent().getExtras().getSerializable(MsConst.EXTRA_HERO);
-        mHeroId = getIntent().getExtras().getString("data");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hero);
-        fabChat = (FloatingActionButton) findViewById(R.id.btn_chat_hero);
-        fabChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TsGaTools.trackPages(MsConst.TRACK_CHAT);
-                FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
-                Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
-                if (f != null) {
-                    ft.remove(f);
-                }
-                ChatDialog dialog = ChatDialog.newInstance();
-                ft.add(dialog, "chat");
-                ft.commit();
-            }
-        });
-        OttoBus.register(this);
-        adMob();
-        isAddMob();
+        mPresenter = new HeroPresenter(this, new HeroRepository());
+
+        mAdapter = new AdapterPagerHero(getSafeFragmentManager(), Collections.emptyList());
+        mViewPager.setAdapter(mAdapter);
+        mViewPager.setOffscreenPageLimit(4);
+        mTabLayout.setupWithViewPager(mViewPager);
+
+        mPresenter.getData();
+
+
+//        heroEntry = (HeroEntry) getIntent().getExtras().getSerializable(MsConst.EXTRA_HERO);
+//        mHeroId = getIntent().getExtras().getString("data");
+//        fabChat = (FloatingActionButton) findViewById(R.id.btn_chat_hero);
+//        fabChat.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                TsGaTools.trackPages(MsConst.TRACK_CHAT);
+//                FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
+//                Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
+//                if (f != null) {
+//                    ft.remove(f);
+//                }
+//                ChatDialog dialog = ChatDialog.newInstance();
+//                ft.add(dialog, "chat");
+//                ft.commit();
+//            }
+//        });
+//        OttoBus.register(this);
+//        adMob();
+//        isAddMob();
 
     }
 
@@ -110,7 +133,7 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        OttoBus.unRegister(this);
+//        OttoBus.unRegister(this);
     }
 
     @Override
@@ -120,31 +143,6 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        if (id == android.R.id.home) {
-            if (mFragmentTagStack.size() == 0) {
-                finish();
-            }
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 
     @Subscribe
     public void voiceLongItemClick(SpeakLongClick dto) {
@@ -182,7 +180,16 @@ public class HeroActivity extends AActivity implements HeroFragment.OnFragmentIn
         }
     }
 
-//    @Subscribe
+    FragmentManager getSafeFragmentManager() {
+        return getSupportFragmentManager();
+    }
+
+    @Override
+    public void showHeroList(List<HeroBasicDto> list) {
+        mAdapter.updateData(list);
+    }
+
+    //    @Subscribe
 //    public void goChatDialog (CommentDto dto) {
 //        FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
 //        Fragment f = getSafeFragmentManager().findFragmentByTag("chat");

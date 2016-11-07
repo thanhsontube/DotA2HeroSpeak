@@ -64,12 +64,6 @@ public class AFragment extends Fragment {
     }
 
 
-    @Override
-    public void onDestroy() {
-        ButterKnife.unbind(this);
-        super.onDestroy();
-    }
-
 
     protected FragmentManager getSafeFragmentManager() {
         if (fragmentManager == null) {

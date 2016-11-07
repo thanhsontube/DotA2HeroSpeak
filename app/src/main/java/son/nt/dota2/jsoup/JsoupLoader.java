@@ -21,9 +21,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.utils.Logger;
+import timber.log.Timber;
 
 /**
  * Created by sonnt on 9/20/16.
@@ -48,7 +55,9 @@ public class JsoupLoader {
 
     public void withGetHeroBasic_Lord() {
         Logger.debug(TAG, ">>>" + "withGetHeroBasic_Lord");
-        new GetHeroBasic_Lord().execute("Anti-Mage");
+//        new GetHeroBasic_Lord().execute("Anti-Mage");
+
+        getLordVoice("Anti-Mage");
     }
 
     public void withGetHeroBasic_Response() {
@@ -204,8 +213,9 @@ public class JsoupLoader {
         protected Void doInBackground(String... params) {
             try {
                 String heroId = params[0];
-                String path = "http://dota2.gamepedia.com/" + heroId + "//Lore";
-                Document document = Jsoup.connect(HERO_LORD).get(); //hack antimage
+                String path = "http://dota2.gamepedia.com/" + heroId + "/Lore";
+//                Document document = Jsoup.connect(HERO_LORD).get(); //hack antimage
+                Document document = Jsoup.connect(path).get(); //hack antimage
 
                 Elements mains = document.select("div[id=mw-content-text]").get(0).getElementsByTag("ul");
                 Logger.debug(TAG, ">>>" + "mains:" + mains.size());
@@ -495,7 +505,189 @@ public class JsoupLoader {
     }
 
 
-    private void getLordVoice() {
+    //using rx, the old one new GetHeroBasic_Lord().execute("Anti-Mage")
+    private void getLordVoice(final String heroID) {
+        Observable<List<HeroResponsesDto>> responsesDtoObservable = Observable.create(new Observable.OnSubscribe<List<HeroResponsesDto>>() {
+            @Override
+            public void call(Subscriber<? super List<HeroResponsesDto>> subscriber) {
+                Realm realm = Realm.getDefaultInstance();
+                final HeroBasicDto dtoBasic = realm.where(HeroBasicDto.class)
+                        .equalTo("heroId", heroID)
+                        .findFirst();
 
+                final HeroBasicDto heroBasicDto = realm.copyFromRealm(dtoBasic);
+                realm.close();
+                List<HeroResponsesDto> list = new ArrayList<HeroResponsesDto>();
+
+                try {
+                    String heroId = heroBasicDto.heroId;
+                    String path = "http://dota2.gamepedia.com/" + heroId + "/Lore";
+                    Document document = Jsoup.connect(path).get(); //hack antimage
+
+                    Elements mains = document.select("div[id=mw-content-text]").get(0).getElementsByTag("ul");
+                    Logger.debug(TAG, ">>>" + "mains:" + mains.size());
+
+
+                    for (Element element : mains) { //A1
+                        try {
+
+
+                            Logger.debug(TAG, ">>>" + "-----");
+
+                            Element before = element.previousElementSibling();
+                            if (before != null && before.text() != null && before.text().contains("Allies meeting")) {
+
+                                Logger.debug(TAG, ">>>" + "***Allies meeting");
+                                final Elements elementsByTag = element.getElementsByTag("li");
+                                HeroResponsesDto dto = null;
+                                for (Element d : elementsByTag) {
+                                    try {
+                                        dto = new HeroResponsesDto();
+                                        dto.setHeroId(heroId);
+                                        dto.setHeroName(heroBasicDto.name);
+                                        dto.setHeroIcon(heroBasicDto.heroIcon);
+                                        dto.setVoiceGroup("Allies meeting");
+
+                                        Logger.debug(TAG, ">>>" + "d:" + d.ownText());
+                                        String mp3 = d.select("a[class=sm2_button]").attr("href");
+                                        Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+
+                                        String id = d.select("img[alt]").get(0).parent().attr("href");
+                                        Logger.debug(TAG, ">>>" + "id:" + id);
+
+                                        dto.setText(d.ownText());
+                                        dto.setLink(mp3);
+                                        dto.setRivalId(id.replace("/", ""));
+
+                                        list.add(dto);
+
+                                    } catch (Exception e) {
+                                        Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Allies meeting:" + e);
+                                    }
+
+                                }
+
+
+                            }
+                            if (before.text().contains("Enemies killing")) {
+                                Logger.debug(TAG, ">>>" + "***Enemies killing");
+                                final Elements href = element.getElementsByAttribute("href");
+                                final Elements elementsByTag = element.getElementsByTag("li");
+                                HeroResponsesDto dto = null;
+                                for (Element d : elementsByTag) { //A2
+                                    try {
+                                        dto = new HeroResponsesDto();
+                                        dto.setHeroId(heroId);
+                                        dto.setHeroName(heroBasicDto.name);
+                                        dto.setHeroIcon(heroBasicDto.heroIcon);
+                                        dto.setVoiceGroup("Enemies killing");
+
+                                        Logger.debug(TAG, ">>>" + "d:" + d.ownText());
+                                        String mp3 = d.select("a[class=sm2_button]").attr("href");
+                                        Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+
+                                        String id = d.select("img[alt]").get(0).parent().attr("href");
+                                        Logger.debug(TAG, ">>>" + "id:" + id);
+
+                                        dto.setText(d.ownText());
+                                        dto.setLink(mp3);
+                                        dto.setRivalId(id.replace("/", ""));
+
+                                        list.add(dto);
+                                    } catch (Exception e) {
+                                        Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Enemies killing:" + e);
+                                    }
+
+
+                                }
+
+
+                            }
+                            if (before.text().contains("Others")) {
+                                Logger.debug(TAG, ">>>" + "***Others");
+                                final Elements href = element.getElementsByAttribute("href");
+                                final Elements elementsByTag = element.getElementsByTag("li");
+
+                                HeroResponsesDto dto = null;
+                                for (Element d : elementsByTag) {
+                                    try {
+                                        dto = new HeroResponsesDto();
+                                        dto.setHeroId(heroId);
+                                        dto.setHeroName(heroBasicDto.name);
+                                        dto.setHeroIcon(heroBasicDto.heroIcon);
+                                        dto.setVoiceGroup("Others");
+
+                                        Logger.debug(TAG, ">>>" + "d:" + d.ownText());
+                                        String mp3 = d.select("a[class=sm2_button]").attr("href");
+                                        Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+
+                                        String id = d.select("img[alt]").get(0).parent().attr("href");
+                                        Logger.debug(TAG, ">>>" + "id:" + id);
+
+                                        dto.setText(d.ownText());
+                                        dto.setLink(mp3);
+                                        dto.setRivalId(id.replace("/", ""));
+
+                                        list.add(dto);
+                                    } catch (Exception e) {
+                                        Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Others:" + e);
+                                    }
+
+
+                                }
+
+                            }
+
+
+                        } catch (Exception e) {
+                            Logger.debug(TAG, ">>>" + "before crash list:" + list.size());
+                            Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord .. A1 :" + e);
+                        }
+
+
+                    }
+
+                    Logger.debug(TAG, ">>>" + "before next list:" + list.size());
+
+                    subscriber.onNext(list);
+                    subscriber.onCompleted();
+
+                } catch (Exception e) {
+                    Logger.error(TAG, ">>> ROOT Error:" + e);
+                    subscriber.onError(e);
+                    subscriber.onCompleted();
+                }
+
+
+            }
+        });
+
+        Observer<List<HeroResponsesDto>> observer = new Observer<List<HeroResponsesDto>>() {
+            @Override
+            public void onCompleted() {
+                Logger.debug(TAG, ">>>" + "onCompleted");
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Logger.error(TAG, ">>> Error:" + "onError:" + e);
+
+            }
+
+            @Override
+            public void onNext(List<HeroResponsesDto> list) {
+                Timber.d(">>>size>>>>>>>>>>>>>>>:" + list.size());
+                for (HeroResponsesDto d : list) {
+                    Timber.d("id:" + d.getHeroId() + ";group:" + d.getVoiceGroup() + ";othersID:" + d.getRivalId());
+                }
+
+            }
+        };
+
+        responsesDtoObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
+
 }

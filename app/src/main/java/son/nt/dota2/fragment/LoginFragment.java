@@ -55,7 +55,7 @@ import android.widget.Toast;
 
 import java.security.MessageDigest;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.HomeActivity;
@@ -90,21 +90,21 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
     ProfileTracker profileTracker;
 
 
-    @Bind(R.id.login_forgot_password)
+    @BindView(R.id.login_forgot_password)
     TextView txtForgotPassword;
 
-    @Bind(R.id.login_txt_sign_up)
+    @BindView(R.id.login_txt_sign_up)
     TextView txtSignUp;
-    @Bind(R.id.login_by_facebook)
+    @BindView(R.id.login_by_facebook)
     TextView loginWithFacebook;
 
-    @Bind(R.id.login_username)
+    @BindView(R.id.login_username)
     AppCompatEditText txtEmail;
 
-    @Bind(R.id.login_password)
+    @BindView(R.id.login_password)
     AppCompatEditText txtPassword;
 
-    @Bind(R.id.sign_in_button)
+    @BindView(R.id.sign_in_button)
     SignInButton mSignInButton;
 
     AppAPI appAPI;

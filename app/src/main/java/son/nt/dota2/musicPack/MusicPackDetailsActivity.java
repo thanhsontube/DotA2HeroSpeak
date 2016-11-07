@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import son.nt.dota2.R;
@@ -36,25 +36,25 @@ import son.nt.dota2.utils.NetworkUtils;
 public class MusicPackDetailsActivity extends ASafeActivity implements View.OnClickListener {
     private static final String TAG = MusicPackDetailsActivity.class.getSimpleName();
     private static final String DATA = "DATA";
-    @Bind(R.id.music_pack_detail_rcv)
+    @BindView(R.id.music_pack_detail_rcv)
     RecyclerView mRecyclerView;
 
-    @Bind(R.id.kenburn)
+    @BindView(R.id.kenburn)
     KenBurnsView2 kenBurnsView2;
 
-    @Bind(R.id.player_play)
+    @BindView(R.id.player_play)
     ImageView mImgPlay;
 
-    @Bind(R.id.txt_media_name)
+    @BindView(R.id.txt_media_name)
     TextView mTxtName;
 
-    @Bind(R.id.txt_media_group)
+    @BindView(R.id.txt_media_group)
     TextView mTxtGroup;
 
-    @Bind(R.id.btn_fav)
+    @BindView(R.id.btn_fav)
     ImageView mImgFav;
 
-    @Bind(R.id.btn_download)
+    @BindView(R.id.btn_download)
     ImageView mImgDownload;
 
     private AdapterMusicPackDetail mAdapter;

@@ -1,32 +1,45 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/brown_500"
-    tools:context="son.nt.dota2.activity.HeroActivity">
-
-    <LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:focusableInTouchMode="true">
 
-        <FrameLayout
-            android:id="@+id/hero_main_ll"
+    <android.support.design.widget.AppBarLayout
+            app:elevation="2dp"
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content">
 
+        <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?android:actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:elevation="0dp"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+
+        <android.support.design.widget.TabLayout
+                app:tabTextColor="@color/red_500"
+                app:tabMode="scrollable"
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        />
         <include layout="@layout/ad_mob_ll"/>
 
-    </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
 
+    <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btn_chat_hero"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="left|bottom"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_chat_white_24dp" />
-
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>
