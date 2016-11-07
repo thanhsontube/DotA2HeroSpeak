@@ -23,4 +23,6 @@ public interface IHeroRepository {
     Observable<List<HeroBasicDto>> getStrHeroes();
 
     Observable<List<HeroBasicDto>> getIntelHeroes();
+
+    Observable<List<HeroBasicDto>> searchHero(String query);
 }

@@ -506,7 +506,7 @@ public class HomeActivity extends AActivity implements
                     for (HeroBasicDto hero : list) {
                         entry = findHero(hero);
                         if (entry != null) {
-                            Logger.debug(TAG, ">>>" + "Found:" + hero.heroId );
+                            Logger.debug(TAG, ">>>" + "Found:" + hero.heroId);
                             hero.fullName = entry.fullName;
                             hero.group = entry.group;
                             hero.bgLink = entry.bgLink;

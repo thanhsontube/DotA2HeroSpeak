@@ -22,16 +22,9 @@ import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterSearchHero;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.provider.SearchableProvider;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RoleListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RoleListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RoleListFragment extends AFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,7 +37,7 @@ public class RoleListFragment extends AFragment {
 
     RecyclerView recyclerView;
     AdapterSearchHero adapterSearchHero;
-    List<HeroEntry> list = new ArrayList<>();
+    List<HeroBasicDto> list = new ArrayList<>();
 
     CoordinatorLayout coordinatorLayout;
 
@@ -66,7 +59,7 @@ public class RoleListFragment extends AFragment {
         if (getArguments() != null) {
             role = getArguments().getString(ARG_PARAM1);
             list.clear();
-            list.addAll(HeroManager.getInstance().getHeroesByRole(role));
+//            list.addAll();
         }
     }
 

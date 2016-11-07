@@ -57,6 +57,26 @@ public class HeroRepository implements IHeroRepository {
     }
 
     @Override
+    public Observable<List<HeroBasicDto>> searchHero(final String query) {
+        return Observable.create(new Observable.OnSubscribe<List<HeroBasicDto>>() {
+            @Override
+            public void call(Subscriber<? super List<HeroBasicDto>> subscriber) {
+                Realm realm = getRealm();
+                final RealmResults<HeroBasicDto> group1 = realm.where(HeroBasicDto.class)
+                        .beginGroup()
+//                        .contains("fullName", query.toLowerCase())
+//                        .or()
+                        .contains("name", query.toLowerCase())
+                        .endGroup()
+                        .findAll();
+                subscriber.onNext(realm.copyFromRealm(group1));
+                subscriber.onCompleted();
+                realm.close();
+            }
+        });
+    }
+
+    @Override
     public Observable<List<HeroBasicDto>> getAllHeroes() {
         return null;
     }
