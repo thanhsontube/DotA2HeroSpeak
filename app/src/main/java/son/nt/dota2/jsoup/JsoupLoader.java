@@ -27,6 +27,7 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.utils.Logger;
@@ -57,12 +58,17 @@ public class JsoupLoader {
         Logger.debug(TAG, ">>>" + "withGetHeroBasic_Lord");
 //        new GetHeroBasic_Lord().execute("Anti-Mage");
 
-        getLordVoice("Anti-Mage");
+//        getLordVoice("Anti-Mage");
+        getAllLords();
     }
 
     public void withGetHeroBasic_Response() {
         Logger.debug(TAG, ">>>" + "withGetHeroBasic_Response");
         new GetHeroBasic_Responses().execute();
+    }
+
+    public void withGetHeroBasic_PUSHLord() {
+//        pushALL();
     }
 
     /**
@@ -442,7 +448,7 @@ public class JsoupLoader {
                     TagNode tagHero = tag.getChildTagList().get(1);
                     String rivalName = tagHero.getAttributeByName("href");
                     rivalName = rivalName.substring(0, rivalName.lastIndexOf("?version"));
-                    Logger.debug(TAG, ">>>" + "rivalName:" + rivalName);
+                    Logger.debug(TAG, ">>>" + "toHeroName:" + rivalName);
                 }
 
 
@@ -504,159 +510,229 @@ public class JsoupLoader {
         }
     }
 
+    private void getAllLords() {
+        getLordVoice();
+//        Realm realm = Realm.getDefaultInstance();
+//        final List<HeroBasicDto> dtoBasic = realm.where(HeroBasicDto.class)
+//                .findAll();
+//
+//        final List<HeroBasicDto> heroBasicDto = realm.copyFromRealm(dtoBasic);
+//        realm.close();
+//
+//        int i = 0;
+//        for (HeroBasicDto d : heroBasicDto) {
+//
+//            getLordVoice(d.heroId);
+//            i++;
+////            if (i > 10) {
+////                break;
+////            }
+//
+//        }
+    }
+
 
     //using rx, the old one new GetHeroBasic_Lord().execute("Anti-Mage")
-    private void getLordVoice(final String heroID) {
+    private void getLordVoice() {
+        Logger.debug(TAG, ">>>" + "************* getLordVoice *******:");
         Observable<List<HeroResponsesDto>> responsesDtoObservable = Observable.create(new Observable.OnSubscribe<List<HeroResponsesDto>>() {
             @Override
             public void call(Subscriber<? super List<HeroResponsesDto>> subscriber) {
+
                 Realm realm = Realm.getDefaultInstance();
-                final HeroBasicDto dtoBasic = realm.where(HeroBasicDto.class)
-                        .equalTo("heroId", heroID)
-                        .findFirst();
+                final List<HeroBasicDto> dtoBasic = realm.where(HeroBasicDto.class)
+                        .findAll();
 
-                final HeroBasicDto heroBasicDto = realm.copyFromRealm(dtoBasic);
+                final List<HeroBasicDto> heroBasicDtos = realm.copyFromRealm(dtoBasic);
                 realm.close();
+
                 List<HeroResponsesDto> list = new ArrayList<HeroResponsesDto>();
+                for (HeroBasicDto heroBasicDto : heroBasicDtos) {
 
-                try {
-                    String heroId = heroBasicDto.heroId;
-                    String path = "http://dota2.gamepedia.com/" + heroId + "/Lore";
-                    Document document = Jsoup.connect(path).get(); //hack antimage
+                    try {
+                        String heroId = heroBasicDto.heroId;
+                        String path = "http://dota2.gamepedia.com/" + heroId + "/Lore";
+                        Document document = Jsoup.connect(path).get(); //hack antimage
 
-                    Elements mains = document.select("div[id=mw-content-text]").get(0).getElementsByTag("ul");
-                    Logger.debug(TAG, ">>>" + "mains:" + mains.size());
-
-
-                    for (Element element : mains) { //A1
-                        try {
+                        Elements mains = document.select("div[id=mw-content-text]").get(0).getElementsByTag("ul");
+//                    Logger.debug(TAG, ">>>" + "mains:" + mains.size());
+                        Logger.debug(TAG, ">>>" + "Begin:" + path);
 
 
-                            Logger.debug(TAG, ">>>" + "-----");
+                        int no = -1;
+                        for (Element element : mains) { //A1
 
-                            Element before = element.previousElementSibling();
-                            if (before != null && before.text() != null && before.text().contains("Allies meeting")) {
+                            try {
+                                Element before = element.previousElementSibling();
+                                if (before != null && before.text() != null && before.text().contains("Allies meeting")) {
 
-                                Logger.debug(TAG, ">>>" + "***Allies meeting");
-                                final Elements elementsByTag = element.getElementsByTag("li");
-                                HeroResponsesDto dto = null;
-                                for (Element d : elementsByTag) {
-                                    try {
-                                        dto = new HeroResponsesDto();
-                                        dto.setHeroId(heroId);
-                                        dto.setHeroName(heroBasicDto.name);
-                                        dto.setHeroIcon(heroBasicDto.heroIcon);
-                                        dto.setVoiceGroup("Allies meeting");
+                                    Logger.debug(TAG, ">>>" + "***Allies meeting***");
+                                    final Elements elementsByTag = element.getElementsByTag("li");
+                                    HeroResponsesDto dto = null;
+                                    for (Element d : elementsByTag) {
+                                        try {
+                                            no++;
+                                            dto = new HeroResponsesDto(no);
 
-                                        Logger.debug(TAG, ">>>" + "d:" + d.ownText());
-                                        String mp3 = d.select("a[class=sm2_button]").attr("href");
-                                        Logger.debug(TAG, ">>>" + "mp3:" + mp3);
+                                            dto.setHeroId(heroId);
+                                            dto.setHeroName(heroBasicDto.name);
+                                            dto.setHeroIcon(heroBasicDto.heroIcon);
+                                            dto.setVoiceGroup("Allies meeting");
+                                            final String text = d.ownText();
+                                            String mp3 = d.select("a[class=sm2_button]").attr("href");
+                                            String id = d.select("img[alt]").get(0).parent().attr("href");
+                                            Logger.debug(TAG, ">>>" + "id:" + id + ";text:" + text + ";mp3:" + mp3);
 
-                                        String id = d.select("img[alt]").get(0).parent().attr("href");
-                                        Logger.debug(TAG, ">>>" + "id:" + id);
+                                            dto.setText(text);
+                                            dto.setLink(mp3);
+                                            String toHeroId = id.replace("/", "");
+                                            if (toHeroId.equals("Abyssal_Underlord")) {
+                                                toHeroId = "Underlord";
+                                            }
+                                            dto.setToHeroId(toHeroId);
 
-                                        dto.setText(d.ownText());
-                                        dto.setLink(mp3);
-                                        dto.setRivalId(id.replace("/", ""));
+                                            Realm realm2 = Realm.getDefaultInstance();
+                                            final HeroBasicDto toHero = realm2.where(HeroBasicDto.class)
+                                                    .equalTo("heroId", toHeroId)
+                                                    .findFirst();
 
-                                        list.add(dto);
+                                            HeroBasicDto toHero2 = realm2.copyToRealm(toHero);
+                                            realm2.close();
+                                            dto.setToHeroIcon(toHero2.heroIcon);
+                                            dto.setToHeroName(toHero2.name);
 
-                                    } catch (Exception e) {
-                                        Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Allies meeting:" + e);
+                                            dto.setSub("[" + toHero2.name + "]" + " is meeting " + "[" + heroBasicDto.name + "]");
+
+
+                                            list.add(dto);
+
+                                        } catch (Exception e) {
+                                            Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Allies meeting:" + e);
+                                        }
+
+                                    }
+
+
+                                }
+                                if (before.text().contains("Enemies killing")) {
+                                    Logger.debug(TAG, ">>>" + "***Enemies killing***");
+                                    final Elements href = element.getElementsByAttribute("href");
+                                    final Elements elementsByTag = element.getElementsByTag("li");
+                                    HeroResponsesDto dto = null;
+                                    for (Element d : elementsByTag) { //A2
+                                        try {
+                                            no++;
+                                            dto = new HeroResponsesDto(no);
+                                            dto.setHeroId(heroId);
+                                            dto.setHeroName(heroBasicDto.name);
+                                            dto.setHeroIcon(heroBasicDto.heroIcon);
+                                            dto.setVoiceGroup("Enemies killing");
+
+                                            final String text = d.ownText();
+                                            String mp3 = d.select("a[class=sm2_button]").attr("href");
+
+                                            String id = d.select("img[alt]").get(0).parent().attr("href");
+
+                                            Logger.debug(TAG, ">>>" + "id:" + id + ";text:" + text + ";mp3:" + mp3);
+                                            dto.setText(text);
+                                            dto.setLink(mp3);
+                                            String toHeroId = id.replace("/", "");
+                                            if (toHeroId.equals("Abyssal_Underlord")) {
+                                                toHeroId = "Underlord";
+                                            }
+                                            dto.setToHeroId(toHeroId);
+
+                                            Realm realm2 = Realm.getDefaultInstance();
+                                            final HeroBasicDto toHero = realm2.where(HeroBasicDto.class)
+                                                    .equalTo("heroId", toHeroId)
+                                                    .findFirst();
+
+                                            HeroBasicDto toHero2 = realm2.copyToRealm(toHero);
+                                            realm2.close();
+                                            dto.setToHeroIcon(toHero2.heroIcon);
+                                            dto.setToHeroName(toHero2.name);
+
+                                            dto.setSub("[" + toHero2.name + "]" + " is killing " + "[" + heroBasicDto.name + "]");
+
+                                            list.add(dto);
+                                        } catch (Exception e) {
+                                            Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Enemies killing:" + e);
+                                        }
+
+
+                                    }
+
+
+                                }
+                                if (before.text().contains("Others")) {
+                                    Logger.debug(TAG, ">>>" + "***Others***");
+                                    final Elements href = element.getElementsByAttribute("href");
+                                    final Elements elementsByTag = element.getElementsByTag("li");
+
+                                    HeroResponsesDto dto = null;
+                                    for (Element d : elementsByTag) {
+                                        try {
+                                            no++;
+                                            dto = new HeroResponsesDto(no);
+
+                                            dto.setHeroId(heroId);
+                                            dto.setHeroName(heroBasicDto.name);
+                                            dto.setHeroIcon(heroBasicDto.heroIcon);
+                                            dto.setVoiceGroup("Others");
+
+                                            final String text = d.ownText();
+                                            String mp3 = d.select("a[class=sm2_button]").attr("href");
+                                            String id = d.select("img[alt]").get(0).parent().attr("href");
+
+                                            Logger.debug(TAG, ">>>" + "id:" + id + ";text:" + text + ";mp3:" + mp3);
+                                            dto.setText(text);
+                                            dto.setLink(mp3);
+                                            String toHeroId = id.replace("/", "");
+                                            if (toHeroId.equals("Abyssal_Underlord")) {
+                                                toHeroId = "Underlord";
+                                            }
+                                            dto.setToHeroId(toHeroId);
+
+                                            Realm realm2 = Realm.getDefaultInstance();
+                                            final HeroBasicDto toHero = realm2.where(HeroBasicDto.class)
+                                                    .equalTo("heroId", toHeroId)
+                                                    .findFirst();
+
+                                            HeroBasicDto toHero2 = realm2.copyToRealm(toHero);
+                                            realm2.close();
+                                            dto.setToHeroIcon(toHero2.heroIcon);
+                                            dto.setToHeroName(toHero2.name);
+
+                                            list.add(dto);
+                                        } catch (Exception e) {
+                                            Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Others:" + e);
+                                        }
+
+
                                     }
 
                                 }
 
 
-                            }
-                            if (before.text().contains("Enemies killing")) {
-                                Logger.debug(TAG, ">>>" + "***Enemies killing");
-                                final Elements href = element.getElementsByAttribute("href");
-                                final Elements elementsByTag = element.getElementsByTag("li");
-                                HeroResponsesDto dto = null;
-                                for (Element d : elementsByTag) { //A2
-                                    try {
-                                        dto = new HeroResponsesDto();
-                                        dto.setHeroId(heroId);
-                                        dto.setHeroName(heroBasicDto.name);
-                                        dto.setHeroIcon(heroBasicDto.heroIcon);
-                                        dto.setVoiceGroup("Enemies killing");
-
-                                        Logger.debug(TAG, ">>>" + "d:" + d.ownText());
-                                        String mp3 = d.select("a[class=sm2_button]").attr("href");
-                                        Logger.debug(TAG, ">>>" + "mp3:" + mp3);
-
-                                        String id = d.select("img[alt]").get(0).parent().attr("href");
-                                        Logger.debug(TAG, ">>>" + "id:" + id);
-
-                                        dto.setText(d.ownText());
-                                        dto.setLink(mp3);
-                                        dto.setRivalId(id.replace("/", ""));
-
-                                        list.add(dto);
-                                    } catch (Exception e) {
-                                        Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Enemies killing:" + e);
-                                    }
-
-
-                                }
-
-
-                            }
-                            if (before.text().contains("Others")) {
-                                Logger.debug(TAG, ">>>" + "***Others");
-                                final Elements href = element.getElementsByAttribute("href");
-                                final Elements elementsByTag = element.getElementsByTag("li");
-
-                                HeroResponsesDto dto = null;
-                                for (Element d : elementsByTag) {
-                                    try {
-                                        dto = new HeroResponsesDto();
-                                        dto.setHeroId(heroId);
-                                        dto.setHeroName(heroBasicDto.name);
-                                        dto.setHeroIcon(heroBasicDto.heroIcon);
-                                        dto.setVoiceGroup("Others");
-
-                                        Logger.debug(TAG, ">>>" + "d:" + d.ownText());
-                                        String mp3 = d.select("a[class=sm2_button]").attr("href");
-                                        Logger.debug(TAG, ">>>" + "mp3:" + mp3);
-
-                                        String id = d.select("img[alt]").get(0).parent().attr("href");
-                                        Logger.debug(TAG, ">>>" + "id:" + id);
-
-                                        dto.setText(d.ownText());
-                                        dto.setLink(mp3);
-                                        dto.setRivalId(id.replace("/", ""));
-
-                                        list.add(dto);
-                                    } catch (Exception e) {
-                                        Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord elementsByTag Others:" + e);
-                                    }
-
-
-                                }
-
+                            } catch (Exception e) {
+                                Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord .. A1 :" + e);
                             }
 
 
-                        } catch (Exception e) {
-                            Logger.debug(TAG, ">>>" + "before crash list:" + list.size());
-                            Logger.error(TAG, ">>> Error:" + "GetHeroBasic_Lord .. A1 :" + e);
                         }
+                        Logger.debug(TAG, ">>>" + "----END ----  list:" + list.size());
 
 
+                    } catch (Exception e) {
+                        Logger.error(TAG, ">>> ROOT Error:" + e);
+                        subscriber.onError(e);
+                        subscriber.onCompleted();
                     }
-
-                    Logger.debug(TAG, ">>>" + "before next list:" + list.size());
-
-                    subscriber.onNext(list);
-                    subscriber.onCompleted();
-
-                } catch (Exception e) {
-                    Logger.error(TAG, ">>> ROOT Error:" + e);
-                    subscriber.onError(e);
-                    subscriber.onCompleted();
                 }
+
+                Logger.debug(TAG, ">>>" + "&&&&&&&& FINAL:" + list.size());
+                subscriber.onNext(list);
+                subscriber.onCompleted();
 
 
             }
@@ -665,7 +741,7 @@ public class JsoupLoader {
         Observer<List<HeroResponsesDto>> observer = new Observer<List<HeroResponsesDto>>() {
             @Override
             public void onCompleted() {
-                Logger.debug(TAG, ">>>" + "onCompleted");
+                Logger.debug(TAG, ">>>" + "------ RESULT ------ onCompleted");
 
             }
 
@@ -677,10 +753,12 @@ public class JsoupLoader {
 
             @Override
             public void onNext(List<HeroResponsesDto> list) {
-                Timber.d(">>>size>>>>>>>>>>>>>>>:" + list.size());
-                for (HeroResponsesDto d : list) {
-                    Timber.d("id:" + d.getHeroId() + ";group:" + d.getVoiceGroup() + ";othersID:" + d.getRivalId());
-                }
+                Timber.d(">>> RESULT size>>>:" + list.size());
+                saveFirst(list);
+//                for (HeroResponsesDto d : list) {
+//                    Timber.d("id:" + d.getHeroId() + ";group:" + d.getVoiceGroup() + ";othersID:" + d.getToHeroId());
+//                    //save and push
+//                }
 
             }
         };
@@ -688,6 +766,89 @@ public class JsoupLoader {
         responsesDtoObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
+    }
+
+    private void saveFirst(List<HeroResponsesDto> heroes) {
+        Observable.create((Observable.OnSubscribe<List<HeroResponsesDto>>) subscriber -> {
+            Realm realm = Realm.getDefaultInstance();
+            removeAll(realm);
+            try {
+                for (HeroResponsesDto heroBasicDto : heroes) {
+                    realm.beginTransaction();
+                    realm.copyToRealm(heroBasicDto);
+                    realm.commitTransaction();
+                }
+
+            } catch (Exception e) {
+                Logger.error(TAG, ">>> Error:" + "saveFirst");
+
+            } finally {
+                realm.close();
+            }
+        }).subscribeOn(Schedulers.io())
+                .subscribe();
+
+
+    }
+
+    private void pushALL() {
+        count = 0;
+
+        Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                Realm realm = Realm.getDefaultInstance();
+                try {
+                    List<HeroResponsesDto> list = realm.where(HeroResponsesDto.class).findAll();
+                    List<HeroResponsesDto> listData = realm.copyFromRealm(list);
+                    realm.close();
+                    for (HeroResponsesDto d : listData) {
+                        push(d);
+                    }
+
+                } catch (Exception e) {
+                    Logger.error(TAG, ">>> Error pushALL:" + e);
+
+                }
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+
+    }
+
+    int count = 0;
+
+    private void push(HeroResponsesDto heroBasicDto) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+
+        reference.child(MsConst.TABLE_LORD_RESPONSES).push().setValue(heroBasicDto)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Logger.debug(TAG, ">>>" + "onSuccess HeroLordSounds:" + heroBasicDto.getHeroId() + ";count:" + count);
+                        count++;
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Logger.error(TAG, ">>> Error:" + "onFailure:" + e);
+                        count++;
+
+                    }
+                })
+        ;
+
+    }
+
+    private void removeAll(Realm realm) {
+        realm.beginTransaction();
+        realm.delete(HeroResponsesDto.class);
+        realm.commitTransaction();
     }
 
 }

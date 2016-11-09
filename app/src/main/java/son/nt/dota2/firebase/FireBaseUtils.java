@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.utils.Logger;
 
@@ -40,6 +41,16 @@ public class FireBaseUtils {
 
     // this one update data to firebase
     public static void update(DataSnapshot dataSnapshot, HeroBasicDto data) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+        DataSnapshot nodeDataSnapshot = dataSnapshot.getChildren().iterator().next();
+        String key = nodeDataSnapshot.getKey();
+        Logger.debug(TAG, ">>>" + "key:" + key);
+        reference.child("/" + dataSnapshot.getKey() + "/" + key).updateChildren(data.toMap());
+    }
+
+    // this one update data to firebase
+    public static void update(DataSnapshot dataSnapshot, HeroResponsesDto data) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference reference = firebaseDatabase.getReference();
         DataSnapshot nodeDataSnapshot = dataSnapshot.getChildren().iterator().next();

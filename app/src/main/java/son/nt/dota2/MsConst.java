@@ -5,6 +5,9 @@ package son.nt.dota2;
  */
 public class MsConst {
 
+    //firebase table
+    public static final String TABLE_LORD_RESPONSES = "HeroLordSounds";
+
     public static final String TRACK_START = "/start";
     public static final String TRACK_LOGIN = "/fb_login";
     public static final String TRACK_LOGOUT = "/fb_logout";

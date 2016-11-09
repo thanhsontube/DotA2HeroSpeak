@@ -15,12 +15,13 @@ import java.util.List;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.HomeActivity;
-import son.nt.dota2.activity.LoginActivity;
 import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import timber.log.Timber;
 
@@ -28,6 +29,9 @@ public class SplashActivity extends BaseActivity {
 
     IHeroRepository mRepository;
     Subscription subscription;
+
+    boolean mIsLoadBasicHeroDone = false;
+    boolean mIsLoadLordResponsesDone = false;
 
     @Override
     protected int provideLayoutResID() {
@@ -38,7 +42,8 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRepository = new HeroRepository();
-        getList();
+        getBasicHeroList();
+        getLordResponseList();
 
     }
 
@@ -50,12 +55,21 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
-    private void getList() {
+    //get base hero List
+    private void getBasicHeroList() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference reference = firebaseDatabase.getReference();
         Query query = reference.child(HeroBasicDto.class.getSimpleName());
         query.addListenerForSingleValueEvent(valueEventListener);
     }
+
+    private void getLordResponseList() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+        Query query = reference.child(MsConst.TABLE_LORD_RESPONSES);
+        query.addListenerForSingleValueEvent(valueLordEventListener);
+    }
+
 
     ValueEventListener valueEventListener = new ValueEventListener() {
         @Override
@@ -65,17 +79,14 @@ public class SplashActivity extends BaseActivity {
                 HeroBasicDto post = postSnapshot.getValue(HeroBasicDto.class);
                 list.add(post);
             }
-            Timber.d(">>>size:" + list.size());
+            Timber.d(">>>basic size:" + list.size());
             subscription = mRepository.storeAllHeroes(list)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aBoolean -> {
                         Timber.d(">>>Done save DB:" + aBoolean);
-
-                        //todo check login
-//                        startActivity(HomeActivity.getIntent(getApplicationContext()));
-
-                        startActivity(LoginActivity.getIntent(getApplicationContext()));
+                        mIsLoadBasicHeroDone = true;
+                        checkAndComplete();
                     });
 
         }
@@ -86,6 +97,45 @@ public class SplashActivity extends BaseActivity {
 
         }
     };
+
+    ValueEventListener valueLordEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            List<HeroResponsesDto> list = new ArrayList<>();
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                HeroResponsesDto post = postSnapshot.getValue(HeroResponsesDto.class);
+                list.add(post);
+            }
+            Timber.d(">>>Lord size:" + list.size());
+            subscription = mRepository.storeAllLordResponses(list)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aBoolean -> {
+                        Timber.d(">>>Done save Lord responses DB:" + aBoolean);
+                        mIsLoadLordResponsesDone = true;
+                        checkAndComplete();
+                    });
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Timber.e(">>>onCancelled:" + databaseError);
+
+        }
+    };
+
+    private void checkAndComplete() {
+        if (!mIsLoadBasicHeroDone) {
+            return;
+        }
+        if (!mIsLoadLordResponsesDone) {
+            return;
+        }
+        startActivity(HomeActivity.getIntent(getApplicationContext()));
+//        startActivity(LoginActivity.getIntent(getApplicationContext()));
+
+    }
 
 
 }

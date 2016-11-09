@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import rx.Observable;
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 
 /**
@@ -12,7 +13,10 @@ import son.nt.dota2.dto.home.HeroBasicDto;
  */
 
 public interface IHeroRepository {
+
     Observable<Boolean> storeAllHeroes(List<HeroBasicDto> heroes);
+
+    Observable<Boolean> storeAllLordResponses(List<HeroResponsesDto> list);
 
     Observable<List<HeroBasicDto>> getAllHeroes();
 

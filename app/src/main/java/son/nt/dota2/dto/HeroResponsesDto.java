@@ -1,5 +1,10 @@
 package son.nt.dota2.dto;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import io.realm.RealmObject;
 import son.nt.dota2.dto.heroSound.ISound;
 
@@ -8,27 +13,31 @@ import son.nt.dota2.dto.heroSound.ISound;
  */
 public class HeroResponsesDto extends RealmObject implements ISound {
     public int no;
+
     public String heroId;
     public String heroName;
     public String heroIcon;
+
     public String voiceGroup;
-    public String rivalId;
-    public String rivalImage;
-    public String rivalName;
+
+    public String toHeroId;
+    public String toHeroIcon;
+    public String toHeroName;
+
+    //sound info
+    public String text;
+    public String link;
+    public String sub;
 
     public int position;
 
-    String text;
-
     String itemId;
-
     String title;
-    String link;
     String image;
     String group;
 
     long duration;
-    String sub;
+
 
     int totalLike;
     int totalComments;
@@ -36,6 +45,14 @@ public class HeroResponsesDto extends RealmObject implements ISound {
     boolean isPlaying;
     boolean isFavorite;
     boolean isLiked;
+
+    public HeroResponsesDto(int no) {
+        this.no = no;
+    }
+
+    public HeroResponsesDto() {
+
+    }
 
     public int getNo() {
         return no;
@@ -69,28 +86,29 @@ public class HeroResponsesDto extends RealmObject implements ISound {
         this.voiceGroup = voiceGroup;
     }
 
-    public String getRivalId() {
-        return rivalId;
+    public String getToHeroId() {
+        return toHeroId;
     }
 
-    public void setRivalId(String rivalId) {
-        this.rivalId = rivalId;
+    public void setToHeroId(String toHeroId) {
+        this.toHeroId = toHeroId;
     }
 
-    public String getRivalImage() {
-        return rivalImage;
+
+    public String getToHeroIcon() {
+        return toHeroIcon;
     }
 
-    public void setRivalImage(String rivalImage) {
-        this.rivalImage = rivalImage;
+    public void setToHeroIcon(String toHeroIcon) {
+        this.toHeroIcon = toHeroIcon;
     }
 
-    public String getRivalName() {
-        return rivalName;
+    public String getToHeroName() {
+        return toHeroName;
     }
 
-    public void setRivalName(String rivalName) {
-        this.rivalName = rivalName;
+    public void setToHeroName(String toHeroName) {
+        this.toHeroName = toHeroName;
     }
 
     public int getPosition() {
@@ -153,6 +171,14 @@ public class HeroResponsesDto extends RealmObject implements ISound {
         this.text = text;
     }
 
+    public String getSub() {
+        return sub;
+    }
+
+    public String getText() {
+        return text;
+    }
+
     @Override
     public String getTitle() {
         return title;
@@ -171,5 +197,28 @@ public class HeroResponsesDto extends RealmObject implements ISound {
     @Override
     public String getGroup() {
         return group;
+    }
+
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("no", no);
+
+        result.put("heroId", heroId);
+        result.put("heroName", heroName);
+        result.put("heroIcon", heroIcon);
+
+        result.put("voiceGroup", voiceGroup);
+
+        result.put("toHeroId", toHeroId);
+        result.put("toHeroIcon", toHeroIcon);
+        result.put("toHeroName", toHeroName);
+
+        result.put("text", text);
+        result.put("link", link);
+        result.put("sub", sub);
+        return result;
     }
 }

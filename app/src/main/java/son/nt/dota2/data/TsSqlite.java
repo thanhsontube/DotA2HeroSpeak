@@ -40,8 +40,8 @@ public class TsSqlite {
     public String voiceGroup;
     public String link;
     public String text;
-    public String rivalImage;
-    public String rivalName;
+    public String toHeroIcon;
+    public String toHeroName;
      */
     public long insert(SpeakDto dto) {
         if (isInsert(dto.link)) {
@@ -53,8 +53,8 @@ public class TsSqlite {
         values.put("voiceGroup", dto.voiceGroup);
         values.put("link", dto.link);
         values.put("text", dto.text);
-        values.put("rivalImage", dto.rivalImage);
-        values.put("rivalName", dto.rivalName);
+        values.put("toHeroIcon", dto.rivalImage);
+        values.put("toHeroName", dto.rivalName);
         values.put("saveTime", String.valueOf(System.currentTimeMillis()));
         return  database.insert(TABLE, null, values);
     }
@@ -155,8 +155,8 @@ public class TsSqlite {
     public String voiceGroup;
     public String link;
     public String text;
-    public String rivalImage;
-    public String rivalName;
+    public String toHeroIcon;
+    public String toHeroName;
      */
 
     public List<SpeakDto> getPlaylist() {
@@ -171,8 +171,8 @@ public class TsSqlite {
                 String voiceGroup = cursor.getString(cursor.getColumnIndex("voiceGroup"));
                 String link = cursor.getString(cursor.getColumnIndex("link"));
                 String text = cursor.getString(cursor.getColumnIndex("text"));
-                String rivalImage = cursor.getString(cursor.getColumnIndex("rivalImage"));
-                String rivalName = cursor.getString(cursor.getColumnIndex("rivalName"));
+                String rivalImage = cursor.getString(cursor.getColumnIndex("toHeroIcon"));
+                String rivalName = cursor.getString(cursor.getColumnIndex("toHeroName"));
                 dto = new SpeakDto();
                 dto.heroId = heroID;
                 dto.voiceGroup = voiceGroup;

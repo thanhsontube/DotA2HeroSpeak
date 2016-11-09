@@ -8,6 +8,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import rx.Observable;
 import rx.Subscriber;
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 
 /**
@@ -24,10 +25,37 @@ public class HeroRepository implements IHeroRepository {
             public void call(Subscriber<? super Boolean> subscriber) {
                 Realm realm = getRealm();
                 try {
-                    removeAll(realm);
+                    removeAllBasicHero(realm);
                     for (HeroBasicDto heroBasicDto : heroes) {
                         realm.beginTransaction();
                         realm.copyToRealm(heroBasicDto);
+                        realm.commitTransaction();
+                    }
+                    subscriber.onNext(true);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onNext(false);
+                    subscriber.onError(e);
+                } finally {
+                    realm.close();
+                }
+
+
+            }
+        });
+    }
+
+    @Override
+    public Observable<Boolean> storeAllLordResponses(List<HeroResponsesDto> list) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                Realm realm = getRealm();
+                try {
+                    removeAllLordResponses(realm);
+                    for (HeroResponsesDto dto : list) {
+                        realm.beginTransaction();
+                        realm.copyToRealm(dto);
                         realm.commitTransaction();
                     }
                     subscriber.onNext(true);
@@ -100,9 +128,15 @@ public class HeroRepository implements IHeroRepository {
         return Realm.getDefaultInstance();
     }
 
-    private void removeAll(Realm realm) {
+    private void removeAllBasicHero(Realm realm) {
         realm.beginTransaction();
         realm.delete(HeroBasicDto.class);
+        realm.commitTransaction();
+    }
+
+    private void removeAllLordResponses(Realm realm) {
+        realm.beginTransaction();
+        realm.delete(HeroResponsesDto.class);
         realm.commitTransaction();
     }
 }
