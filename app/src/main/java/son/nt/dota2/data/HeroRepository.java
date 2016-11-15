@@ -4,10 +4,11 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import rx.Observable;
-import rx.Subscriber;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 
@@ -20,6 +21,32 @@ public class HeroRepository implements IHeroRepository {
 
     @Override
     public Observable<Boolean> storeAllHeroes(final List<HeroBasicDto> heroes) {
+        return Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+                if (e.isDisposed()) {
+                    return;
+                }
+                Realm realm = getRealm();
+                try {
+                    removeAllBasicHero(realm);
+                    for (HeroBasicDto heroBasicDto : heroes) {
+                        realm.beginTransaction();
+                        realm.copyToRealm(heroBasicDto);
+                        realm.commitTransaction();
+                    }
+                    e.onNext(true);
+                    e.onComplete();
+                } catch (Exception ex) {
+                    e.onNext(false);
+                    e.onError(ex);
+                } finally {
+                    realm.close();
+                }
+
+            }
+        });
+
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {

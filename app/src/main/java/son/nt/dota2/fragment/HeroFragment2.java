@@ -29,16 +29,19 @@ import son.nt.dota2.adapter.AdapterPagerHero;
 import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.customview.KenBurnsView2;
+import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.dto.VoiceSpinnerItem;
+import son.nt.dota2.hero.hero_fragment.HeroResponseContract;
+import son.nt.dota2.hero.hero_fragment.HeroResponsePresenter;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 
 
-public class HeroFragment2 extends BaseFragment {
+public class HeroFragment2 extends BaseFragment implements HeroResponseContract.View {
 
     private static final String TAG = HeroFragment2.class.getSimpleName();
     private static final String EXTRA_HERO_ID = "param1";
@@ -61,6 +64,8 @@ public class HeroFragment2 extends BaseFragment {
     ViewPager pager;
     private AdapterPagerHero adapter;
 
+    private HeroResponseContract.Presenter mPresenter;
+
     @BindView(R.id.hero_rcv)
     RecyclerView mRecyclerView;
 
@@ -69,7 +74,7 @@ public class HeroFragment2 extends BaseFragment {
 
     private ActionBar mSafeActionBar;
 
-    private String heroId;
+    private String mHeroId;
 
     public static HeroFragment2 newInstance(String heroId) {
         HeroFragment2 fragment = new HeroFragment2();
@@ -91,14 +96,26 @@ public class HeroFragment2 extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        heroId = getArguments().getString(EXTRA_HERO_ID);
+        mHeroId = getArguments().getString(EXTRA_HERO_ID);
         setHasOptionsMenu(true);
+        mPresenter = new HeroResponsePresenter(this, new HeroRepository());
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initLayout(view);
+        mPresenter.fetchBasicHeroFromHeroId(mHeroId);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     protected ActionBar getSafeActionBar() {
