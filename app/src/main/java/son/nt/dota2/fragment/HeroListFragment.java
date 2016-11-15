@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,7 @@ import javax.inject.Inject;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.MyApplication;
 import son.nt.dota2.R;
+import son.nt.dota2.activity.HeroActivity;
 import son.nt.dota2.adapter.HeroListAdapter;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.di.component.app.AppComponent;
@@ -30,8 +30,10 @@ import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.home.IHeroListPage;
 import son.nt.dota2.home.herolist.HeroListContract;
+import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsScreen;
+import timber.log.Timber;
 
 public class HeroListFragment extends AFragment implements IHeroListPage, HeroListContract.View {
     private static final String EXTRA_GROUP = "EXTRA_GROUP";
@@ -98,7 +100,7 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
 
 
     private void initLayout(View view) {
-        mAdapter = new HeroListAdapter(getContext());
+        mAdapter = new HeroListAdapter(getContext(), mCallback);
         recyclerView = (RecyclerView) view.findViewById(R.id.home_recycle_view);
         recyclerView.setHasFixedSize(true);
         final int row = TsScreen.isLandscape(getActivity()) ? 4 : 3;
@@ -107,12 +109,10 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
         recyclerView.setAdapter(mAdapter);
     }
 
-    AdapterView.OnItemClickListener onClickGrid = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view,
-                                int position, long id) {
+    HeroListAdapter.Callback mCallback = heroBasicDto -> {
+        Timber.d(">>>" + "HeroListAdapter mCallback:" + heroBasicDto.name + ";id:" + heroBasicDto.heroId);
+        HeroActivity.startActivity(getContext(), heroBasicDto.heroId);
 
-        }
     };
 
     private void initListener() {

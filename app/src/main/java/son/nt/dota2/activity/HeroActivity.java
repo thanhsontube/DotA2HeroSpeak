@@ -23,12 +23,16 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import son.nt.dota2.FacebookManager;
 import son.nt.dota2.R;
 import son.nt.dota2.adMob.AdMobUtils;
 import son.nt.dota2.adapter.AdapterPagerHero;
 import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
+import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.gridmenu.CommentDialog;
@@ -38,6 +42,7 @@ import son.nt.dota2.hero.HeroContract;
 import son.nt.dota2.hero.HeroPresenter;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.ottobus_entry.GoShare;
+import timber.log.Timber;
 
 public class HeroActivity extends BaseActivity implements HeroContract.View {
 
@@ -54,6 +59,8 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
     TabLayout mTabLayout;
 
     private AdapterPagerHero mAdapter;
+
+    IHeroRepository mRepository;
 
     private EditText mSearchText;
     private View mClearButton;

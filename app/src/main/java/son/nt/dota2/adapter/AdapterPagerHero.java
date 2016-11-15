@@ -7,9 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.List;
 
 import son.nt.dota2.dto.home.HeroBasicDto;
-import son.nt.dota2.fragment.IntroFragment;
-import son.nt.dota2.fragment.VoiceFragment;
-import son.nt.dota2.test.TestFragment;
+import son.nt.dota2.fragment.HeroFragment2;
 
 /**
  * Created by Sonnt on 7/30/15.
@@ -32,7 +30,8 @@ public class AdapterPagerHero extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
 //        return IntroFragment.newInstance(listFragments.get(position).heroId);
 //        return new TestFragment();
-        return VoiceFragment.newInstance(listFragments.get(position).heroId);
+//        return VoiceFragment.newInstance(listFragments.get(position).heroId);
+        return HeroFragment2.newInstance(listFragments.get(position).heroId);
     }
 
 

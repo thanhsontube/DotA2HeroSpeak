@@ -16,7 +16,6 @@ import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 import son.nt.dota2.R;
-import son.nt.dota2.activity.HeroActivity;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.utils.TsGaTools;
 
@@ -28,9 +27,15 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
 
     List<HeroBasicDto> mValues;
     Context mContext;
+    Callback mCallback;
 
-    public HeroListAdapter(Context cx) {
+    public interface Callback {
+        void onItemClick(HeroBasicDto heroBasicDto);
+    }
+
+    public HeroListAdapter(Context cx, Callback callback) {
         this.mContext = cx;
+        this.mCallback = callback;
     }
 
 
@@ -38,23 +43,18 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_hero_list, viewGroup, false);
         final ViewHolder viewHolder = new ViewHolder(view);
-        viewHolder.txtName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HeroBasicDto dto = mValues.get(viewHolder.getAdapterPosition());
-                Toast.makeText(viewHolder.txtName.getContext(), "" + dto.fullName, Toast.LENGTH_SHORT).show();
+        viewHolder.txtName.setOnClickListener(v -> {
+            HeroBasicDto dto = mValues.get(viewHolder.getAdapterPosition());
+            Toast.makeText(viewHolder.txtName.getContext(), "" + dto.fullName, Toast.LENGTH_SHORT).show();
 
-            }
         });
 
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HeroBasicDto dto = mValues.get(viewHolder.getAdapterPosition());
-                TsGaTools.trackHero("/hero:" + dto.heroId);
-                HeroActivity.startActivity(mContext, dto.heroId);
+        viewHolder.view.setOnClickListener(v -> {
+            HeroBasicDto dto = mValues.get(viewHolder.getAdapterPosition());
+            TsGaTools.trackHero("/hero:" + dto.heroId);
+            mCallback.onItemClick(dto);
+//            HeroActivity.startActivity(mContext, dto.heroId);
 //                OttoBus.post(dto);
-            }
         });
         return viewHolder;
     }
