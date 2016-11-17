@@ -4,11 +4,10 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import rx.Observable;
+import rx.Subscriber;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 
@@ -21,31 +20,6 @@ public class HeroRepository implements IHeroRepository {
 
     @Override
     public Observable<Boolean> storeAllHeroes(final List<HeroBasicDto> heroes) {
-        return Observable.create(new ObservableOnSubscribe<Boolean>() {
-            @Override
-            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                if (e.isDisposed()) {
-                    return;
-                }
-                Realm realm = getRealm();
-                try {
-                    removeAllBasicHero(realm);
-                    for (HeroBasicDto heroBasicDto : heroes) {
-                        realm.beginTransaction();
-                        realm.copyToRealm(heroBasicDto);
-                        realm.commitTransaction();
-                    }
-                    e.onNext(true);
-                    e.onComplete();
-                } catch (Exception ex) {
-                    e.onNext(false);
-                    e.onError(ex);
-                } finally {
-                    realm.close();
-                }
-
-            }
-        });
 
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
@@ -53,17 +27,14 @@ public class HeroRepository implements IHeroRepository {
                 Realm realm = getRealm();
                 try {
                     removeAllBasicHero(realm);
-                    for (HeroBasicDto heroBasicDto : heroes) {
-                        realm.beginTransaction();
-                        realm.copyToRealm(heroBasicDto);
-                        realm.commitTransaction();
-                    }
+                    realm.beginTransaction();
+                    realm.copyToRealm(heroes);
+                    realm.commitTransaction();
                     subscriber.onNext(true);
-                    subscriber.onCompleted();
                 } catch (Exception e) {
-                    subscriber.onNext(false);
                     subscriber.onError(e);
                 } finally {
+                    subscriber.onCompleted();
                     realm.close();
                 }
 
@@ -80,17 +51,14 @@ public class HeroRepository implements IHeroRepository {
                 Realm realm = getRealm();
                 try {
                     removeAllLordResponses(realm);
-                    for (HeroResponsesDto dto : list) {
-                        realm.beginTransaction();
-                        realm.copyToRealm(dto);
-                        realm.commitTransaction();
-                    }
+                    realm.beginTransaction();
+                    realm.copyToRealm(list);
+                    realm.commitTransaction();
                     subscriber.onNext(true);
-                    subscriber.onCompleted();
                 } catch (Exception e) {
-                    subscriber.onNext(false);
                     subscriber.onError(e);
                 } finally {
+                    subscriber.onCompleted();
                     realm.close();
                 }
 
@@ -103,10 +71,16 @@ public class HeroRepository implements IHeroRepository {
     public Observable<List<HeroBasicDto>> getHeroesFromGroup(@NonNull String group) {
         return Observable.create(subscriber -> {
             Realm realm = getRealm();
-            final RealmResults<HeroBasicDto> group1 = realm.where(HeroBasicDto.class).equalTo("group", group).findAll();
-            subscriber.onNext(realm.copyFromRealm(group1));
-            subscriber.onCompleted();
-            realm.close();
+            try {
+                final RealmResults<HeroBasicDto> group1 = realm.where(HeroBasicDto.class).equalTo("group", group).findAll();
+                subscriber.onNext(realm.copyFromRealm(group1));
+            } catch (Exception e) {
+                e.printStackTrace();
+                subscriber.onError(e);
+            } finally {
+                subscriber.onCompleted();
+                realm.close();
+            }
 
         });
     }
@@ -129,6 +103,11 @@ public class HeroRepository implements IHeroRepository {
                 realm.close();
             }
         });
+    }
+
+    @Override
+    public Observable<HeroBasicDto> getHeroFromId(String heroId) {
+        return null;
     }
 
     @Override

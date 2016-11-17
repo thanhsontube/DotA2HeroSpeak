@@ -121,8 +121,8 @@ dependencies {
     provided 'javax.annotation:jsr250-api:1.0'
 
     //rx
-    compile 'io.reactivex.rxjava2:rxjava:2.0.0'
-    compile 'io.reactivex.rxjava2:rxandroid:2.0.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.2.1'
 
     //64K
     compile 'com.android.support:multidex:1.0.1'

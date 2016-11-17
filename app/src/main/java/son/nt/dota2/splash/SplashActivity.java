@@ -15,6 +15,7 @@ import java.util.List;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.HomeActivity;
@@ -28,8 +29,8 @@ import timber.log.Timber;
 public class SplashActivity extends BaseActivity {
 
     IHeroRepository mRepository;
-    Subscription subscription;
 
+    CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     boolean mIsLoadBasicHeroDone = false;
     boolean mIsLoadLordResponsesDone = false;
 
@@ -50,8 +51,8 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
+        if (mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()) {
+            mCompositeSubscription.unsubscribe();
         }
     }
 
@@ -80,7 +81,7 @@ public class SplashActivity extends BaseActivity {
                 list.add(post);
             }
             Timber.d(">>>basic size:" + list.size());
-            subscription = mRepository.storeAllHeroes(list)
+            Subscription subscription = mRepository.storeAllHeroes(list)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aBoolean -> {
@@ -88,6 +89,7 @@ public class SplashActivity extends BaseActivity {
                         mIsLoadBasicHeroDone = true;
                         checkAndComplete();
                     });
+            mCompositeSubscription.add(subscription);
 
         }
 
@@ -107,7 +109,7 @@ public class SplashActivity extends BaseActivity {
                 list.add(post);
             }
             Timber.d(">>>Lord size:" + list.size());
-            subscription = mRepository.storeAllLordResponses(list)
+            Subscription subscription = mRepository.storeAllLordResponses(list)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aBoolean -> {
@@ -115,6 +117,7 @@ public class SplashActivity extends BaseActivity {
                         mIsLoadLordResponsesDone = true;
                         checkAndComplete();
                     });
+            mCompositeSubscription.add(subscription);
 
         }
 

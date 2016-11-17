@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import io.reactivex.Observable;
+import rx.Observable;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 
@@ -30,4 +30,5 @@ public interface IHeroRepository {
 
     Observable<List<HeroBasicDto>> searchHero(String query);
 
+    Observable<HeroBasicDto> getHeroFromId(String heroId);
 }

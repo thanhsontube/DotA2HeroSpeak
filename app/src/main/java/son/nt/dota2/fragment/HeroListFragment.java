@@ -154,6 +154,7 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
 
     @Override
     public void showHeroList(List<HeroBasicDto> heroBasicDtoList) {
+        Logger.debug(TAG, ">>>" + "showHeroList:" + heroBasicDtoList.size());
         mAdapter.setData(heroBasicDtoList);
     }
 }

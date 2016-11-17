@@ -76,8 +76,9 @@ public class MyApplication extends MultiDexApplication {
     }
 
     private void setupRealm() {
+        Realm.init(this);
         RealmConfiguration config = new RealmConfiguration
-                .Builder(this)
+                .Builder()
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(config);
