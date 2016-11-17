@@ -11,11 +11,13 @@ import son.nt.dota2.dto.home.HeroBasicDto;
 public class HeroContract {
     public interface View  {
 
-        void showHeroList(List<HeroBasicDto> list);
+        void showHeroList(List<HeroBasicDto> list, int pos);
     }
 
     public interface Presenter {
 
         void getData();
+
+        void fetchHero(String heroID);
     }
 }

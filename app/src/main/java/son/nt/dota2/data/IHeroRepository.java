@@ -31,4 +31,6 @@ public interface IHeroRepository {
     Observable<List<HeroBasicDto>> searchHero(String query);
 
     Observable<HeroBasicDto> getHeroFromId(String heroId);
+
+    Observable<List<HeroResponsesDto>> getSounds(String heroID);
 }

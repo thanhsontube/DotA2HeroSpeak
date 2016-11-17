@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,7 +42,6 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
     HeroListContract.Presenter mPresenter;
     //    private HeroList heroList;
     private HeroListAdapter mAdapter;
-    private List<HeroBasicDto> listHero = new ArrayList<>();
 
     private String mGroup = "Str";
     RecyclerView recyclerView;

@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -25,20 +24,20 @@ import java.util.List;
 
 import butterknife.BindView;
 import son.nt.dota2.R;
-import son.nt.dota2.adapter.AdapterPagerHero;
 import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.BaseFragment;
 import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.data.HeroRepository;
-import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.dto.VoiceSpinnerItem;
+import son.nt.dota2.hero.hero_fragment.HeroFragmentPresenter;
 import son.nt.dota2.hero.hero_fragment.HeroResponseContract;
-import son.nt.dota2.hero.hero_fragment.HeroResponsePresenter;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
+import timber.log.Timber;
 
 
 public class HeroFragment2 extends BaseFragment implements HeroResponseContract.View {
@@ -46,7 +45,7 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
     private static final String TAG = HeroFragment2.class.getSimpleName();
     private static final String EXTRA_HERO_ID = "param1";
 
-    private HeroEntry heroEntry;
+//    private HeroEntry heroEntry;
 
 
     private List<android.support.v4.app.Fragment> listFragments = new ArrayList<>();
@@ -61,8 +60,8 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
     AppBarLayout appBarLayout;
     Toolbar toolbar;
     TabLayout tabLayout;
-    ViewPager pager;
-    private AdapterPagerHero adapter;
+//    ViewPager pager;
+//    private AdapterPagerHero adapter;
 
     private HeroResponseContract.Presenter mPresenter;
 
@@ -97,8 +96,8 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHeroId = getArguments().getString(EXTRA_HERO_ID);
-        setHasOptionsMenu(true);
-        mPresenter = new HeroResponsePresenter(this, new HeroRepository());
+//        setHasOptionsMenu(true);
+        mPresenter = new HeroFragmentPresenter(this, new HeroRepository());
     }
 
     @Override
@@ -127,31 +126,29 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
 
 
     public void initLayout(View view) {
-        if (heroEntry == null) {
-            return;
-        }
-        listKenburns.clear();
-        listKenburns.add(heroEntry.bgLink);
-        listKenburns.add(heroEntry.bgLink);
+//        if (heroEntry == null) {
+//            return;
+//        }
+//        listKenburns.clear();
+//        listKenburns.add(heroEntry.bgLink);
+//        listKenburns.add(heroEntry.bgLink);
 
         spinner = (Spinner) view.findViewById(R.id.hero_spinner);
-        updateKenBurns();
+//        updateKenBurns();
         appBarLayout = (AppBarLayout) view.findViewById(R.id.hero_appbarlayout);
         toolbar = (Toolbar) view.findViewById(R.id.hero_toolbar);
         tabLayout = (TabLayout) view.findViewById(R.id.hero_tablayout);
-        pager = (ViewPager) view.findViewById(R.id.hero_pager);
-        pager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(pager);
+//        pager = (ViewPager) view.findViewById(R.id.hero_pager);
+//        adapter = new AdapterPagerHero(getFragmentManager(), new ArrayList<>());
+//        pager.setAdapter(adapter);
+//        tabLayout.setupWithViewPager(pager);
         floatingActionButton = (FloatingActionButton) view.findViewById(R.id.hero_fab);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 //        setupSpinner();
     }
 
     public void initListener() {
-        if (heroEntry == null) {
-            return;
-        }
-        getSafeActionBar().setTitle(heroEntry.name);
+        getSafeActionBar().setTitle(mHeroId);
         getSafeActionBar().setDisplayShowTitleEnabled(true);
 
         getSafeActionBar().setDisplayShowHomeEnabled(true);
@@ -205,7 +202,7 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
 
 //            TextView toolbarTitle = (TextView) spinnerContainer.findViewById(R.id.toolbar_title);
 //            toolbarTitle.setText(heroEntry.fullName);
-            toolbar.setTitle(heroEntry.fullName);
+//            toolbar.setTitle(heroEntry.fullName);
 
 //            AppCompatSpinner spinner = (AppCompatSpinner) spinnerContainer.findViewById(R.id.toolbar_spinner);
             spinner.setAdapter(adapterSpinner);
@@ -303,5 +300,10 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
             TextView txtTitle;
             ImageView imgSelected;
         }
+    }
+
+    @Override
+    public void showResponse(List<HeroResponsesDto> list) {
+        Timber.d(">>>" + "showResponse:" + list.size());
     }
 }

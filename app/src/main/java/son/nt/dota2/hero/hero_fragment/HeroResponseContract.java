@@ -2,6 +2,7 @@ package son.nt.dota2.hero.hero_fragment;
 
 import java.util.List;
 
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 
 /**
@@ -11,6 +12,7 @@ import son.nt.dota2.dto.home.HeroBasicDto;
 public class HeroResponseContract {
     public interface View  {
 
+        void showResponse(List<HeroResponsesDto> list);
     }
 
     public interface Presenter {

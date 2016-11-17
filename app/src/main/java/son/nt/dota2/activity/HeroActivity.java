@@ -23,9 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import son.nt.dota2.FacebookManager;
 import son.nt.dota2.R;
 import son.nt.dota2.adMob.AdMobUtils;
@@ -38,11 +35,10 @@ import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.gridmenu.CommentDialog;
 import son.nt.dota2.gridmenu.GridMenuDialog;
 import son.nt.dota2.gridmenu.SpeakLongClick;
+import son.nt.dota2.hero.HeroActivityPresenter;
 import son.nt.dota2.hero.HeroContract;
-import son.nt.dota2.hero.HeroPresenter;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.ottobus_entry.GoShare;
-import timber.log.Timber;
 
 public class HeroActivity extends BaseActivity implements HeroContract.View {
 
@@ -80,15 +76,15 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new HeroPresenter(this, new HeroRepository());
+        mPresenter = new HeroActivityPresenter(this, new HeroRepository());
 
         mAdapter = new AdapterPagerHero(getSafeFragmentManager(), Collections.emptyList());
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(4);
         mTabLayout.setupWithViewPager(mViewPager);
 
-        mPresenter.getData();
-
+        final String heroID = getIntent().getStringExtra("data");
+        mPresenter.fetchHero(heroID);
 
 //        heroEntry = (HeroEntry) getIntent().getExtras().getSerializable(MsConst.EXTRA_HERO);
 //        mHeroId = getIntent().getExtras().getString("data");
@@ -192,8 +188,10 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
     }
 
     @Override
-    public void showHeroList(List<HeroBasicDto> list) {
+    public void showHeroList(List<HeroBasicDto> list, int pos) {
         mAdapter.updateData(list);
+        mViewPager.setCurrentItem(pos, true);
+
     }
 
     //    @Subscribe
