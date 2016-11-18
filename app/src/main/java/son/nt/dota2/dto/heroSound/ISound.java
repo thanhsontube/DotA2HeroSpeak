@@ -14,4 +14,6 @@ public interface ISound {
 
     public String getGroup();
 
+    public boolean isPlaying();
+
 }

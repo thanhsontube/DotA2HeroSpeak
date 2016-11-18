@@ -13,6 +13,7 @@ public class HeroResponseContract {
     public interface View  {
 
         void showResponse(List<HeroResponsesDto> list);
+
     }
 
     public interface Presenter {

@@ -86,11 +86,12 @@ public class HomeActivity extends AActivity implements
     Toolbar toolbar;
     SearchView searchView;
     MenuItem menuSearch;
-    KenBurnsView2 kenBurnsView;
     ImageView avatar;
     TextView txtFromName;
     TextView txtLogout;
     Handler handler = new Handler();
+
+    KenBurnsView2 kenBurnsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,8 +168,6 @@ public class HomeActivity extends AActivity implements
     private void initLayout() {
 
         kenBurnsView = (KenBurnsView2) findViewById(R.id.home_kenburns);
-
-
         navigationView = (NavigationView) findViewById(R.id.home_navigation);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.home_drawer_ll);

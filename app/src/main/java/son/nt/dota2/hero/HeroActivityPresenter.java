@@ -22,6 +22,8 @@ public class HeroActivityPresenter extends BasePresenter implements HeroContract
     private String mGroup = "Str";
     private String mHeroID;
 
+    private List<HeroBasicDto> mHeroBasicDtos;
+
     public HeroActivityPresenter(HeroContract.View view, IHeroRepository repository) {
         mView = view;
         mRepository = repository;
@@ -47,12 +49,22 @@ public class HeroActivityPresenter extends BasePresenter implements HeroContract
             public void onNext(HeroBasicDto heroBasicDto) {
                 Timber.d(">>>" + "fetchHero next:" + heroBasicDto.bgLink);
                 mGroup = heroBasicDto.group;
+                mView.showKenBurns(heroBasicDto.bgLink);
                 getData();
             }
         };
         final Subscription subscribe = mRepository.getHeroFromId(heroID).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(heroBasicDtoObserver);
         mCompositeSubscription.add(subscribe);
+    }
+
+    @Override
+    public void setSelectedPage(int position) {
+        if (mHeroBasicDtos == null || mHeroBasicDtos.isEmpty()) {
+            return;
+        }
+        mView.showKenBurns(mHeroBasicDtos.get(position).bgLink);
+
     }
 
     @Override
@@ -72,8 +84,9 @@ public class HeroActivityPresenter extends BasePresenter implements HeroContract
 
             @Override
             public void onNext(List<HeroBasicDto> list) {
+                mHeroBasicDtos = list;
                 Timber.d(">>>" + "get Data:" + list.size());
-                for (int i = 0; i < list.size(); i ++) {
+                for (int i = 0; i < list.size(); i++) {
                     if (list.get(i).heroId.equalsIgnoreCase(mHeroID)) {
 
                         mView.showHeroList(list, i);

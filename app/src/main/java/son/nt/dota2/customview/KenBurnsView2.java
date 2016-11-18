@@ -190,6 +190,21 @@ public class KenBurnsView2 extends FrameLayout {
 
     }
 
+    public void setResourceUrl(String imageLink, int blur) {
+
+
+        if (blur > 0) {
+            Glide.with(getContext()).load(imageLink).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).bitmapTransform(new BlurTransformation(getContext(), blur)).into(mImageViews[0]);
+            Glide.with(getContext()).load(imageLink).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).bitmapTransform(new BlurTransformation(getContext(), blur)).into(mImageViews[1]);
+        } else {
+            Glide.with(getContext()).load(imageLink).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).into(mImageViews[0]);
+            Glide.with(getContext()).load(imageLink).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).into(mImageViews[1]);
+        }
+        startLayoutAnimation();
+
+
+    }
+
     public void release() {
         if (mBitmap != null) {
             for (Bitmap b : mBitmap) {

@@ -28,6 +28,7 @@ import son.nt.dota2.R;
 import son.nt.dota2.adMob.AdMobUtils;
 import son.nt.dota2.adapter.AdapterPagerHero;
 import son.nt.dota2.base.BaseActivity;
+import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.HeroEntry;
@@ -53,6 +54,9 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 
     @BindView(R.id.tabs)
     TabLayout mTabLayout;
+
+    @BindView(R.id.home_kenburns)
+    KenBurnsView2 mKenBurnsView;
 
     private AdapterPagerHero mAdapter;
 
@@ -82,6 +86,8 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(4);
         mTabLayout.setupWithViewPager(mViewPager);
+
+        mViewPager.addOnPageChangeListener(mChangeListener);
 
         final String heroID = getIntent().getStringExtra("data");
         mPresenter.fetchHero(heroID);
@@ -193,6 +199,29 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         mViewPager.setCurrentItem(pos, true);
 
     }
+
+    @Override
+    public void showKenBurns(String bgLink) {
+        mKenBurnsView.setResourceUrl(bgLink, 4);
+    }
+
+    ViewPager.OnPageChangeListener mChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            mPresenter.setSelectedPage(position);
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
 
     //    @Subscribe
 //    public void goChatDialog (CommentDto dto) {

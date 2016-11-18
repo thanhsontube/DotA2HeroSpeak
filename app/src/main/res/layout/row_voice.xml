@@ -27,7 +27,7 @@
             android:layout_gravity="center_vertical"
             android:text="99"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/white" />
+            android:textColor="@color/green2" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/row_voice_rival"
@@ -44,7 +44,7 @@
             android:layout_marginLeft="8dp"
             android:text="My List Has 5 names on it"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/white" />
+            android:textColor="@color/green1" />
     </LinearLayout>
 
     <LinearLayout

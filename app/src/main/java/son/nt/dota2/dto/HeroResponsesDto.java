@@ -199,6 +199,22 @@ public class HeroResponsesDto extends RealmObject implements ISound {
         return group;
     }
 
+    @Override
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public boolean isAlliMeetingGroup() {
+        return "Allies Meeting".equalsIgnoreCase(voiceGroup);
+    }
+
+    public boolean isEnemiesKillingGroup() {
+        return "Enemies killing".equalsIgnoreCase(voiceGroup);
+    }
+
+    public String getHeroIcon() {
+        return heroIcon;
+    }
 
     @Exclude
     public Map<String, Object> toMap() {

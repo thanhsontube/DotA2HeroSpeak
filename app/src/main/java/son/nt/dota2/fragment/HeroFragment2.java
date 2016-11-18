@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.dto.VoiceSpinnerItem;
+import son.nt.dota2.hero.hero_fragment.AdapterFragmentSound;
 import son.nt.dota2.hero.hero_fragment.HeroFragmentPresenter;
 import son.nt.dota2.hero.hero_fragment.HeroResponseContract;
 import son.nt.dota2.utils.FileUtil;
@@ -43,13 +45,11 @@ import timber.log.Timber;
 public class HeroFragment2 extends BaseFragment implements HeroResponseContract.View {
 
     private static final String TAG = HeroFragment2.class.getSimpleName();
-    private static final String EXTRA_HERO_ID = "param1";
+    private static final String EXTRA_HERO_ID = "EXTRA_HERO_ID";
 
 //    private HeroEntry heroEntry;
 
 
-    private List<android.support.v4.app.Fragment> listFragments = new ArrayList<>();
-    private ArrayList<String> titles = new ArrayList<>();
     public FloatingActionButton floatingActionButton;
 
 
@@ -68,8 +68,9 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
     @BindView(R.id.hero_rcv)
     RecyclerView mRecyclerView;
 
-    @BindView(R.id.hero_ken_burns)
-    KenBurnsView2 kenBurnsView;
+
+    private AdapterFragmentSound mAdapter;
+
 
     private ActionBar mSafeActionBar;
 
@@ -133,18 +134,27 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
 //        listKenburns.add(heroEntry.bgLink);
 //        listKenburns.add(heroEntry.bgLink);
 
-        spinner = (Spinner) view.findViewById(R.id.hero_spinner);
-//        updateKenBurns();
-        appBarLayout = (AppBarLayout) view.findViewById(R.id.hero_appbarlayout);
-        toolbar = (Toolbar) view.findViewById(R.id.hero_toolbar);
-        tabLayout = (TabLayout) view.findViewById(R.id.hero_tablayout);
-//        pager = (ViewPager) view.findViewById(R.id.hero_pager);
-//        adapter = new AdapterPagerHero(getFragmentManager(), new ArrayList<>());
-//        pager.setAdapter(adapter);
-//        tabLayout.setupWithViewPager(pager);
-        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.hero_fab);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+//        spinner = (Spinner) view.findViewById(R.id.hero_spinner);
+////        updateKenBurns();
+//        appBarLayout = (AppBarLayout) view.findViewById(R.id.hero_appbarlayout);
+//        toolbar = (Toolbar) view.findViewById(R.id.hero_toolbar);
+//        tabLayout = (TabLayout) view.findViewById(R.id.hero_tablayout);
+////        pager = (ViewPager) view.findViewById(R.id.hero_pager);
+////        adapter = new AdapterPagerHero(getFragmentManager(), new ArrayList<>());
+////        pager.setAdapter(adapter);
+////        tabLayout.setupWithViewPager(pager);
+//        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.hero_fab);
+//        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 //        setupSpinner();
+
+//        recyclerView = (RecyclerView) view.findViewById(R.id.voice_recycleview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        mRecyclerView.setHasFixedSize(true);
+
+        mAdapter = new AdapterFragmentSound(getActivity(), new ArrayList<>());
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     public void initListener() {
@@ -161,11 +171,6 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
             return true;
         });
 
-    }
-
-    private void updateKenBurns() {
-        kenBurnsView.setResourceUrl(listKenburns);
-        kenBurnsView.startLayoutAnimation();
     }
 
     VoiceSpinnerAdapter adapterSpinner;
@@ -305,5 +310,7 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
     @Override
     public void showResponse(List<HeroResponsesDto> list) {
         Timber.d(">>>" + "showResponse:" + list.size());
+        mAdapter.setData(list);
     }
+
 }

@@ -12,6 +12,8 @@ public class HeroContract {
     public interface View  {
 
         void showHeroList(List<HeroBasicDto> list, int pos);
+
+        void showKenBurns(String bgLink);
     }
 
     public interface Presenter {
@@ -19,5 +21,7 @@ public class HeroContract {
         void getData();
 
         void fetchHero(String heroID);
+
+        void setSelectedPage(int position);
     }
 }

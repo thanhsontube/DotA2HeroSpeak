@@ -29,7 +29,6 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
         this.mHeroID = heroId;
         final Subscription subscribe = mRepository.getHeroFromId(heroId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(heroBasicDto -> {
-
                             getData();
 
                         }

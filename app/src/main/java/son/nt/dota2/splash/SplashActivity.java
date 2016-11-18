@@ -43,8 +43,9 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRepository = new HeroRepository();
-        getBasicHeroList();
-        getLordResponseList();
+        startActivity(HomeActivity.getIntent(getApplicationContext()));
+//        getBasicHeroList();
+//        getLordResponseList();
 
     }
 
