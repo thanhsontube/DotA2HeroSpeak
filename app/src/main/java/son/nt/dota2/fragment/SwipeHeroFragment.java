@@ -66,6 +66,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 
     @BindView(R.id.hero_rcv)
     RecyclerView mRecyclerView;
+
     private AdapterFragmentSound mAdapter;
 
     private ActionBar mSafeActionBar;
@@ -82,8 +83,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 
     public SwipeHeroFragment() {
         // Required empty public constructor
-//        getActivity().bindService(PlayService2.getIntentService(getActivity()), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
-//        getActivity().bindService(DownloadService.getIntent(getActivity()), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
+//        getActivity().bindService(new Intent(getActivity(), DownloadService.class), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -99,7 +99,11 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 
     @Override
     public void onDestroy() {
-        getActivity().unbindService(serviceConnectionPrefetchAudio);
+        if (downloadService != null) {
+            downloadService.isQuit = true;
+            getActivity().unbindService(serviceConnectionPrefetchAudio);
+            downloadService = null;
+        }
         super.onDestroy();
     }
 

@@ -1,5 +1,12 @@
 package son.nt.dota2.service;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -7,13 +14,6 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.text.TextUtils;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,7 +28,8 @@ import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
 import son.nt.dota2.utils.Logger;
 
 public class DownloadService extends Service {
-    private static final String TAG = "DownloadService";
+
+    private static final String TAG = DownloadService.class.getSimpleName();
 
     LocalBinder binder = new LocalBinder();
 
@@ -200,7 +201,7 @@ public class DownloadService extends Service {
             if (status.getStatusCode() == HttpStatus.SC_OK) {
 
                 InputStream in = response.getEntity().getContent();
-                String path = ResourceManager.getInstance().folderMusicPack + File.separator ;
+                String path = ResourceManager.getInstance().folderMusicPack + File.separator;
                 File f = new File((path));
                 if (!f.exists()) {
                     f.mkdirs();
