@@ -17,11 +17,8 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.Random;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroResponsesDto;
-import son.nt.dota2.ottobus_entry.GoPlayer2;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
 
@@ -32,17 +29,18 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
 
     public static final String TAG = AdapterFragmentSound.class.getSimpleName();
 
-    private List<HeroResponsesDto> list;
-    LayoutInflater inflater;
-    Context context;
-    public static final int TYPE_TITLE = 0;
-    public static final int TYPE_SPEAK = 1;
-    ColorStateList sColorStatePlaying;
+    private List<HeroResponsesDto> mList;
+    private LayoutInflater mInflater;
+    private Context mContext;
+    private static final int TYPE_TITLE = 0;
+    private static final int TYPE_SPEAK = 1;
+
+    private int previousSelectedItem = -1;
 
     public AdapterFragmentSound(Context context, List<HeroResponsesDto> list) {
-        this.list = list;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.context = context;
+        this.mList = list;
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.mContext = context;
 
     }
 
@@ -51,15 +49,29 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
         View view = null;
         switch (viewType) {
             case TYPE_TITLE:
-                view = inflater.inflate(R.layout.row_speak_title, parent, false);
+                view = mInflater.inflate(R.layout.row_speak_title, parent, false);
                 break;
             case TYPE_SPEAK:
-                view = inflater.inflate(R.layout.row_voice_2, parent, false);
+                view = mInflater.inflate(R.layout.row_voice_2, parent, false);
                 Holder holder = new Holder(view);
                 holder.view.setOnClickListener(v -> {
-                    int pos = holder.getAdapterPosition();
-                    HeroResponsesDto selectedDto = list.get(pos);
-                    OttoBus.post(new GoPlayer2(1, selectedDto, pos));
+                    TsGaTools.trackPages("/row_voice_1_click");
+
+                    int position = holder.getAdapterPosition();
+
+                    if (previousSelectedItem != -1) {
+                        mList.get(previousSelectedItem).setPlaying(false);
+                        notifyItemChanged(previousSelectedItem);
+                    }
+                    previousSelectedItem = position;
+                    final HeroResponsesDto selectedItem = mList.get(position);
+                    selectedItem.setPlaying(true);
+                    notifyItemChanged(position);
+
+                    /**
+                     * send to {@link son.nt.dota2.service.PlayService2#onGetAdapterSwipeFragmentClick(HeroResponsesDto)}
+                     */
+                    OttoBus.post(selectedItem);
                 });
                 return holder;
 
@@ -70,7 +82,7 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
 
     @Override
     public void onBindViewHolder(Holder holder, final int position) {
-        final HeroResponsesDto dto = list.get(position);
+        final HeroResponsesDto dto = mList.get(position);
         switch (getItemViewType(position)) {
             case TYPE_SPEAK:
                 String no = String.valueOf(position).trim();
@@ -119,33 +131,33 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
                 }
 
                 holder.related.setText(related);
-                Glide.with(context).load(fromLink)
+                Glide.with(mContext).load(fromLink)
                         .fitCenter()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.imgFrom);
 
-                Glide.with(context).load(toLink)
+                Glide.with(mContext).load(toLink)
                         .fitCenter()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.imgTo);
 
-                holder.view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        TsGaTools.trackPages("/row_voice_1_click");
-                        list.get(position).position = position;
-                        OttoBus.post(list.get(position));
-                    }
-                });
-
-                holder.view.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        TsGaTools.trackPages("/row_voice_long_click");
-//                        OttoBus.post(new SpeakLongClick(list.get(position)));
-                        return true;
-                    }
-                });
+//                holder.view.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        TsGaTools.trackPages("/row_voice_1_click");
+//                        mList.get(position).position = position;
+//                        OttoBus.post(mList.get(position));
+//                    }
+//                });
+//
+//                holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        TsGaTools.trackPages("/row_voice_long_click");
+////                        OttoBus.post(new SpeakLongClick(mList.get(position)));
+//                        return true;
+//                    }
+//                });
                 if (dto.isPlaying()) {
                     holder.view.setBackgroundResource(R.drawable.d_row_speaking);
                     holder.imgPlaying.setVisibility(View.VISIBLE);
@@ -165,22 +177,23 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
     }
 
     public HeroResponsesDto getItem(int position) {
-        return list.get(position);
+        return mList.get(position);
     }
 
     @Override
     public int getItemViewType(int position) {
-//        return list.get(position).isTitle ? TYPE_TITLE : TYPE_SPEAK;
-        return position == 0 ? TYPE_TITLE : TYPE_SPEAK;
+//        return mList.get(position).isTitle ? TYPE_TITLE : TYPE_SPEAK;
+//        return position == 0 ? TYPE_TITLE : TYPE_SPEAK;
+        return TYPE_SPEAK;
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return mList.size();
     }
 
     public void setData(List<HeroResponsesDto> data) {
-        list = data;
+        mList = data;
         notifyDataSetChanged();
     }
 
@@ -188,16 +201,10 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
         TextView txtNo;
         TextView title;
         TextView text;
-
-//        @BindView(R.id.row_voice_related)
         TextView related;
-
-//        @BindView(R.id.row_voice_group)
         TextView voiceGroup;
-
         ImageView imgPlaying;
         ImageView imgFrom;
-//        @BindView(R.id.row_voice_to_icon)
         ImageView imgTo;
         View view;
 
@@ -206,9 +213,6 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
 
         public Holder(View v) {
             super(v);
-//            ButterKnife.bind(this, v);
-
-
             txtNo = (TextView) v.findViewById(R.id.row_voice_no);
             related = (TextView) v.findViewById(R.id.row_voice_related);
             voiceGroup = (TextView) v.findViewById(R.id.row_voice_group);

@@ -40,7 +40,6 @@ import son.nt.dota2.hero.hero_fragment.AdapterFragmentSound;
 import son.nt.dota2.hero.hero_fragment.HeroFragmentPresenter;
 import son.nt.dota2.hero.hero_fragment.HeroResponseContract;
 import son.nt.dota2.service.DownloadService;
-import son.nt.dota2.service.PlayService2;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.NetworkUtils;
@@ -56,31 +55,18 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
     //    private HeroEntry heroEntry;
     DownloadService downloadService;
     boolean isBind = false;
-    boolean isLoaded = false;
-    //MEDIA MUSIC service
-    private PlayService2 mPlayService;
-
     public FloatingActionButton floatingActionButton;
-
-
-    private List<String> listKenburns = new ArrayList<>();
     String heroID;
-
     Spinner spinner;
     AppBarLayout appBarLayout;
     Toolbar toolbar;
     TabLayout tabLayout;
-//    ViewPager pager;
-//    private AdapterPagerHero adapter;
 
     private HeroResponseContract.Presenter mPresenter;
 
     @BindView(R.id.hero_rcv)
     RecyclerView mRecyclerView;
-
-
     private AdapterFragmentSound mAdapter;
-
 
     private ActionBar mSafeActionBar;
 
@@ -103,7 +89,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
     @Override
     public void onPageSelected() {
         Timber.d(">>>" + "onPageSelected");
-        ((HeroActivity)getActivity()).setSoundsList(mPresenter.getSoundsList());
+        ((HeroActivity) getActivity()).setSoundsList(mPresenter.getSoundsList());
     }
 
     @Override
@@ -113,30 +99,14 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 
     @Override
     public void onDestroy() {
-        getActivity().unbindService(serviceConnectionMedia);
         getActivity().unbindService(serviceConnectionPrefetchAudio);
         super.onDestroy();
     }
 
     @Override
     protected int provideLayoutResID() {
-        return R.layout.fragment_hero_2;
+        return R.layout.fragment_swipe_hero;
     }
-    ServiceConnection serviceConnectionMedia = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            PlayService2.LocalBinder binder = (PlayService2.LocalBinder) service;
-            mPlayService = binder.getService();
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mPlayService.releaseMediaPlayer();
-            mPlayService = null;
-        }
-    };
     //prefetch all audio
 
     ServiceConnection serviceConnectionPrefetchAudio = new ServiceConnection() {
@@ -381,19 +351,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
         }
 
 //        downloadService.addLinkDto2(heroResponsesDtos, heroID);
-//        play1(heroResponsesDtos);
     }
 
-    private void play1(List<HeroResponsesDto> heroResponsesDtos) {
-        if (mPlayService != null) {
-            if (mPlayService.getList().isEmpty()) {
-                mPlayService.setCurrentList(heroResponsesDtos);
-                mPlayService.playSong(0, false);
 
-            } else {
-
-                mPlayService.togglePlay();
-            }
-        }
-    }
 }
