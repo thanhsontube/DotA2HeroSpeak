@@ -19,10 +19,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,12 +40,14 @@ import son.nt.dota2.base.HeroTabFragment;
 import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
+import son.nt.dota2.dto.CircleFeatureDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.gridmenu.CommentDialog;
 import son.nt.dota2.gridmenu.GridMenuDialog;
 import son.nt.dota2.gridmenu.SpeakLongClick;
+import son.nt.dota2.hero.AdapterCircleFeature;
 import son.nt.dota2.hero.HeroActivityPresenter;
 import son.nt.dota2.hero.HeroContract;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
@@ -69,6 +74,13 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 
     @BindView(R.id.home_kenburns)
     KenBurnsView2 mKenBurnsView;
+
+    /**
+     * the recyclerView contains : response / hero skill / comments / bio ....
+     */
+    @BindView(R.id.rcv_feature)
+    RecyclerView mRecyclerViewFeature;
+    private AdapterCircleFeature mAdapterCircleFeature;
 
     private AdapterPagerHero mAdapter;
 
@@ -108,6 +120,15 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         return R.layout.activity_hero;
     }
 
+    private List<CircleFeatureDto> createListCircle() {
+        List<CircleFeatureDto> featureDtos = new ArrayList<>();
+        featureDtos.add(new CircleFeatureDto("Sound", R.drawable.ability_icon, true));
+        featureDtos.add(new CircleFeatureDto("Skill", R.drawable.ability_icon, false));
+        featureDtos.add(new CircleFeatureDto("Bio", R.drawable.ability_icon, false));
+        featureDtos.add(new CircleFeatureDto("Comments", R.drawable.ability_icon, false));
+        return featureDtos;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +141,13 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         mTabLayout.setupWithViewPager(mViewPager);
 
         mViewPager.addOnPageChangeListener(mChangeListener);
+
+        //circle
+        mAdapterCircleFeature = new AdapterCircleFeature(this, createListCircle());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerViewFeature.setLayoutManager(linearLayoutManager);
+        mRecyclerViewFeature.setHasFixedSize(true);
+        mRecyclerViewFeature.setAdapter(mAdapterCircleFeature);
 
         final String heroID = getIntent().getStringExtra("data");
         mPresenter.fetchHero(heroID);
@@ -142,7 +170,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 //            }
 //        });
 //        OttoBus.register(this);
-//        adMob();
+        adMob();
 //        isAddMob();
 
     }
@@ -168,7 +196,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 
     private void adMob() {
         AdMobUtils.init(findViewById(R.id.ll_ads), R.id.adView);
-        AdMobUtils.hide();
+        AdMobUtils.show();
     }
 
     @Override

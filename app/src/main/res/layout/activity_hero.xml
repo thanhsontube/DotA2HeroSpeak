@@ -39,8 +39,11 @@
                     app:tabGravity="center"
                     app:tabIndicatorColor="@color/md_red_500"
                     app:tabSelectedTextColor="@color/md_red_500"
-                    app:tabTextColor="@color/white"
-            />
+                    app:tabTextColor="@color/white"/>
+            <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rcv_feature"/>
             <include layout="@layout/ad_mob_ll"/>
 
         </android.support.design.widget.AppBarLayout>
