@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.List;
 
 import son.nt.dota2.dto.home.HeroBasicDto;
-import son.nt.dota2.fragment.HeroFragment2;
+import son.nt.dota2.fragment.SwipeHeroFragment;
 
 /**
  * Created by Sonnt on 7/30/15.
@@ -31,7 +31,7 @@ public class AdapterPagerHero extends FragmentPagerAdapter {
 //        return IntroFragment.newInstance(listFragments.get(position).heroId);
 //        return new TestFragment();
 //        return VoiceFragment.newInstance(listFragments.get(position).heroId);
-        return HeroFragment2.newInstance(listFragments.get(position).heroId);
+        return SwipeHeroFragment.newInstance(listFragments.get(position).heroId);
     }
 
 

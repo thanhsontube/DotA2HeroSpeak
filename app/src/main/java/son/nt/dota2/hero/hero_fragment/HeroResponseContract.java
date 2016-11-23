@@ -12,14 +12,19 @@ import son.nt.dota2.dto.home.HeroBasicDto;
 public class HeroResponseContract {
     public interface View  {
 
-        void showResponse(List<HeroResponsesDto> list);
+        void showHeroSoundsList(List<HeroResponsesDto> list);
 
+        void addDataToDownload(List<HeroResponsesDto> heroResponsesDtos, String heroID);
     }
 
     public interface Presenter {
 
-        void getData();
+        void getHeroSounds();
 
         void fetchBasicHeroFromHeroId(String heroId);
+
+        void setFetchServiceBind(boolean binded);
+
+        List <HeroResponsesDto> getSoundsList ();
     }
 }

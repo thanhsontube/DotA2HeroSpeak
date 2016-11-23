@@ -6,9 +6,13 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.squareup.otto.Subscribe;
 
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -24,14 +28,17 @@ import java.util.List;
 
 import butterknife.BindView;
 import son.nt.dota2.FacebookManager;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adMob.AdMobUtils;
 import son.nt.dota2.adapter.AdapterPagerHero;
 import son.nt.dota2.base.BaseActivity;
+import son.nt.dota2.base.HeroTabFragment;
 import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.gridmenu.CommentDialog;
 import son.nt.dota2.gridmenu.GridMenuDialog;
@@ -40,7 +47,12 @@ import son.nt.dota2.hero.HeroActivityPresenter;
 import son.nt.dota2.hero.HeroContract;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.ottobus_entry.GoShare;
+import son.nt.dota2.service.PlayService2;
 
+/**
+ * * Get HeroBasicDto from heroID -> update kenburns and get heroGroup,
+ * Then get List <HeroBasicDto> based on heroGroup
+ */
 public class HeroActivity extends BaseActivity implements HeroContract.View {
 
     HeroContract.Presenter mPresenter;
@@ -62,8 +74,27 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 
     IHeroRepository mRepository;
 
+
     private EditText mSearchText;
     private View mClearButton;
+
+    PlayService2 mPlayService;
+
+    ServiceConnection serviceConnectionMedia = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            PlayService2.LocalBinder binder = (PlayService2.LocalBinder) service;
+            mPlayService = binder.getService();
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mPlayService.releaseMediaPlayer();
+            mPlayService = null;
+        }
+    };
 
 
     public static void startActivity(Context context, String heroID) {
@@ -81,6 +112,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new HeroActivityPresenter(this, new HeroRepository());
+        bindService(PlayService2.getIntentService(this), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
 
         mAdapter = new AdapterPagerHero(getSafeFragmentManager(), Collections.emptyList());
         mViewPager.setAdapter(mAdapter);
@@ -141,6 +173,10 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 
     @Override
     protected void onDestroy() {
+        if (mPlayService != null) {
+            unbindService(serviceConnectionMedia);
+            mPlayService = null;
+        }
         super.onDestroy();
 //        OttoBus.unRegister(this);
     }
@@ -215,6 +251,15 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         public void onPageSelected(int position) {
             mPresenter.setSelectedPage(position);
 
+            final int selected = mViewPager.getCurrentItem();
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":"
+                    + selected);
+            if (fragment != null) {
+
+                ((HeroTabFragment) fragment).onPageSelected();
+            }
+
+
         }
 
         @Override
@@ -222,6 +267,10 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 
         }
     };
+
+    public void setSoundsList(List<? extends ISound> sounds) {
+        mPlayService.setSoundsSource(MsConst.TYPE_HERO_SOUND, sounds);
+    }
 
     //    @Subscribe
 //    public void goChatDialog (CommentDto dto) {

@@ -18,7 +18,7 @@ public class HeroContract {
 
     public interface Presenter {
 
-        void getData();
+        void getAllHeroBasicOnGroup();
 
         void fetchHero(String heroID);
 

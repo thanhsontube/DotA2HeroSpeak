@@ -16,4 +16,6 @@ public interface ISound {
 
     public boolean isPlaying();
 
+    public int getSoundType ();
+
 }

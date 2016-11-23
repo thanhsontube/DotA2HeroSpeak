@@ -10,6 +10,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.util.SparseArray;
 import android.widget.Toast;
 
 import org.apache.http.client.methods.HttpGet;
@@ -23,6 +24,7 @@ import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.base.MediaItem;
+import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.musicPack.MusicPackDetailsActivity;
 import son.nt.dota2.ottobus_entry.GoPlayer;
@@ -36,6 +38,7 @@ public class PlayService extends Service {
     private static final int NOTIFICATION_ID = 101;
     private MediaPlayer player;
     private LocalBinder mBinder = new LocalBinder();
+
 
     private List<? extends MediaItem> list = new ArrayList<>();
 

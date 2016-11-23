@@ -57,10 +57,10 @@ public class TsParse {
                 @Override
                 public void done(List<ParseObject> list, ParseException e) {
                     if (e != null || list.size() == 0) {
-                        Logger.error(TAG, ">>>" + "Error getData nodata" + e.toString());
+                        Logger.error(TAG, ">>>" + "Error getAllHeroBasicOnGroup nodata" + e.toString());
                         return;
                     }
-                    Logger.debug(TAG, ">>>" + "getData size:" + list.size());
+                    Logger.debug(TAG, ">>>" + "getAllHeroBasicOnGroup size:" + list.size());
                     GalleryDto galleryDto;
                     for (ParseObject p : list) {
 
@@ -119,10 +119,10 @@ public class TsParse {
                 @Override
                 public void done(List<ParseObject> list, ParseException e) {
                     if (e != null || list.size() == 0) {
-                        Logger.error(TAG, ">>>" + "Error getData nodata" + e.toString());
+                        Logger.error(TAG, ">>>" + "Error getAllHeroBasicOnGroup nodata" + e.toString());
                         return;
                     }
-                    Logger.debug(TAG, ">>>" + "getData size:" + list.size());
+                    Logger.debug(TAG, ">>>" + "getAllHeroBasicOnGroup size:" + list.size());
                     for (ParseObject p : list) {
 
                         String linkGif = p.getString("link");

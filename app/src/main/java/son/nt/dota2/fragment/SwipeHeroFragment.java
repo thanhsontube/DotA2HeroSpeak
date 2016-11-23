@@ -1,7 +1,10 @@
 package son.nt.dota2.fragment;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -25,9 +28,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import son.nt.dota2.R;
+import son.nt.dota2.activity.HeroActivity;
 import son.nt.dota2.base.AObject;
-import son.nt.dota2.base.BaseFragment;
-import son.nt.dota2.customview.KenBurnsView2;
+import son.nt.dota2.base.HeroTabFragment;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.HeroSpeakSaved;
@@ -36,19 +39,26 @@ import son.nt.dota2.dto.VoiceSpinnerItem;
 import son.nt.dota2.hero.hero_fragment.AdapterFragmentSound;
 import son.nt.dota2.hero.hero_fragment.HeroFragmentPresenter;
 import son.nt.dota2.hero.hero_fragment.HeroResponseContract;
+import son.nt.dota2.service.DownloadService;
+import son.nt.dota2.service.PlayService2;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.NetworkUtils;
 import son.nt.dota2.utils.OttoBus;
 import timber.log.Timber;
 
 
-public class HeroFragment2 extends BaseFragment implements HeroResponseContract.View {
+public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseContract.View {
 
-    private static final String TAG = HeroFragment2.class.getSimpleName();
+    private static final String TAG = SwipeHeroFragment.class.getSimpleName();
     private static final String EXTRA_HERO_ID = "EXTRA_HERO_ID";
 
-//    private HeroEntry heroEntry;
-
+    //    private HeroEntry heroEntry;
+    DownloadService downloadService;
+    boolean isBind = false;
+    boolean isLoaded = false;
+    //MEDIA MUSIC service
+    private PlayService2 mPlayService;
 
     public FloatingActionButton floatingActionButton;
 
@@ -76,22 +86,73 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
 
     private String mHeroId;
 
-    public static HeroFragment2 newInstance(String heroId) {
-        HeroFragment2 fragment = new HeroFragment2();
+    public static SwipeHeroFragment newInstance(String heroId) {
+        SwipeHeroFragment fragment = new SwipeHeroFragment();
         Bundle args = new Bundle();
         args.putString(EXTRA_HERO_ID, heroId);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public HeroFragment2() {
+    public SwipeHeroFragment() {
         // Required empty public constructor
+//        getActivity().bindService(PlayService2.getIntentService(getActivity()), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
+//        getActivity().bindService(DownloadService.getIntent(getActivity()), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onPageSelected() {
+        Timber.d(">>>" + "onPageSelected");
+        ((HeroActivity)getActivity()).setSoundsList(mPresenter.getSoundsList());
+    }
+
+    @Override
+    public void onPageUnSelected() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        getActivity().unbindService(serviceConnectionMedia);
+        getActivity().unbindService(serviceConnectionPrefetchAudio);
+        super.onDestroy();
     }
 
     @Override
     protected int provideLayoutResID() {
         return R.layout.fragment_hero_2;
     }
+    ServiceConnection serviceConnectionMedia = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            PlayService2.LocalBinder binder = (PlayService2.LocalBinder) service;
+            mPlayService = binder.getService();
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mPlayService.releaseMediaPlayer();
+            mPlayService = null;
+        }
+    };
+    //prefetch all audio
+
+    ServiceConnection serviceConnectionPrefetchAudio = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            DownloadService.LocalBinder binder = (DownloadService.LocalBinder) service;
+            downloadService = binder.getService();
+            mPresenter.setFetchServiceBind(true);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBind = true;
+        }
+    };
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -308,9 +369,31 @@ public class HeroFragment2 extends BaseFragment implements HeroResponseContract.
     }
 
     @Override
-    public void showResponse(List<HeroResponsesDto> list) {
-        Timber.d(">>>" + "showResponse:" + list.size());
+    public void showHeroSoundsList(List<HeroResponsesDto> list) {
+        Timber.d(">>>" + "showHeroSoundsList:" + list.size() + ";ID:" + mHeroId);
         mAdapter.setData(list);
     }
 
+    @Override
+    public void addDataToDownload(List<HeroResponsesDto> heroResponsesDtos, String heroID) {
+        if (!NetworkUtils.isConnected(getActivity())) {
+            return;
+        }
+
+//        downloadService.addLinkDto2(heroResponsesDtos, heroID);
+//        play1(heroResponsesDtos);
+    }
+
+    private void play1(List<HeroResponsesDto> heroResponsesDtos) {
+        if (mPlayService != null) {
+            if (mPlayService.getList().isEmpty()) {
+                mPlayService.setCurrentList(heroResponsesDtos);
+                mPlayService.playSong(0, false);
+
+            } else {
+
+                mPlayService.togglePlay();
+            }
+        }
+    }
 }

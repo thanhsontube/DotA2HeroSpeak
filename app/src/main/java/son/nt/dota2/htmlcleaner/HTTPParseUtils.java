@@ -239,10 +239,10 @@ public class HTTPParseUtils {
                 @Override
                 public void done(List<ParseObject> list, ParseException e) {
                     if (e != null || list.size() == 0) {
-                        Logger.error(TAG, ">>>" + "Error getData:" + e.toString());
+                        Logger.error(TAG, ">>>" + "Error getAllHeroBasicOnGroup:" + e.toString());
                         return;
                     }
-                    Logger.debug(TAG, ">>>" + "getData size:" + list.size());
+                    Logger.debug(TAG, ">>>" + "getAllHeroBasicOnGroup size:" + list.size());
                     HeroManager.getInstance().listHeroes.clear();
                     for (ParseObject p : list) {
                         HeroManager.getInstance().listHeroes.add(TsParse.parse(p));

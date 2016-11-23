@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.realm.RealmObject;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.dto.heroSound.ISound;
 
 /**
@@ -214,6 +215,11 @@ public class HeroResponsesDto extends RealmObject implements ISound {
 
     public String getHeroIcon() {
         return heroIcon;
+    }
+
+    @Override
+    public int getSoundType() {
+        return MsConst.TYPE_HERO_SOUND;
     }
 
     @Exclude

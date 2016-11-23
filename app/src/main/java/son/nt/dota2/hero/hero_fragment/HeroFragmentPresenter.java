@@ -9,15 +9,23 @@ import rx.schedulers.Schedulers;
 import son.nt.dota2.base.BasePresenter;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.HeroResponsesDto;
+import timber.log.Timber;
 
 /**
  * Created by sonnt on 11/7/16.
+ * Input is heroID
+ * Get HeroBasicDto from heroID -> update kenburns and get heroGroup,
+ * Then get List <HeroBasicDto> based on heroGroup
  */
 
 public class HeroFragmentPresenter extends BasePresenter implements HeroResponseContract.Presenter {
     private HeroResponseContract.View mView;
     private IHeroRepository mRepository;
     private String mHeroID;
+
+    private boolean mBindFetchServiceDone = false;
+    private boolean mHeroSoundsLoaded = false;
+    private List<HeroResponsesDto> mHeroResponsesDtos;
 
     public HeroFragmentPresenter(HeroResponseContract.View view, IHeroRepository repository) {
         mView = view;
@@ -29,7 +37,7 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
         this.mHeroID = heroId;
         final Subscription subscribe = mRepository.getHeroFromId(heroId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(heroBasicDto -> {
-                            getData();
+                            getHeroSounds();
 
                         }
                 );
@@ -37,21 +45,43 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
     }
 
     @Override
-    public void getData() {
+    public void setFetchServiceBind(boolean bind) {
+        this.mBindFetchServiceDone = bind;
+        startPrefetch();
+    }
+
+    @Override
+    public List<HeroResponsesDto> getSoundsList() {
+        return mHeroResponsesDtos;
+    }
+
+    private void startPrefetch() {
+        Timber.d(">>>" + ">>>" + "startPrefetch mBindFetchServiceDone" + mBindFetchServiceDone + ";mHeroSoundsLoaded:" + mHeroSoundsLoaded);
+        if (mBindFetchServiceDone && mHeroSoundsLoaded) {
+            mView.addDataToDownload (mHeroResponsesDtos, mHeroID);
+        }
+    }
+
+    @Override
+    public void getHeroSounds() {
         Observer<List<HeroResponsesDto>> observer = new Observer<List<HeroResponsesDto>>() {
             @Override
             public void onCompleted() {
+                // Do nothing
 
             }
 
             @Override
             public void onError(Throwable e) {
+                Timber.e(">>>" + "error getAllHeroBasicOnGroup:" + e);
 
             }
 
             @Override
             public void onNext(List<HeroResponsesDto> list) {
-                mView.showResponse(list);
+                mView.showHeroSoundsList(list);
+                mHeroResponsesDtos = list;
+//                startPrefetch();
 
             }
         };
@@ -61,7 +91,5 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
         mCompositeSubscription.add(subscription);
-
-
     }
 }

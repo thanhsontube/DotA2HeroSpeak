@@ -50,7 +50,7 @@ public class HeroActivityPresenter extends BasePresenter implements HeroContract
                 Timber.d(">>>" + "fetchHero next:" + heroBasicDto.bgLink);
                 mGroup = heroBasicDto.group;
                 mView.showKenBurns(heroBasicDto.bgLink);
-                getData();
+                getAllHeroBasicOnGroup();
             }
         };
         final Subscription subscribe = mRepository.getHeroFromId(heroID).subscribeOn(Schedulers.io())
@@ -68,7 +68,7 @@ public class HeroActivityPresenter extends BasePresenter implements HeroContract
     }
 
     @Override
-    public void getData() {
+    public void getAllHeroBasicOnGroup() {
         Observer<List<HeroBasicDto>> observer = new Observer<List<HeroBasicDto>>() {
             @Override
             public void onCompleted() {

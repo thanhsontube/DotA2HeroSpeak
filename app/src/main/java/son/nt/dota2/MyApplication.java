@@ -16,6 +16,7 @@ import son.nt.dota2.di.component.app.AppComponent;
 import son.nt.dota2.di.component.app.DaggerAppComponent;
 import son.nt.dota2.di.module.app.AppModule;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
+import son.nt.dota2.service.PlayService2;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsGaTools;
 import timber.log.Timber;
@@ -67,6 +68,8 @@ public class MyApplication extends MultiDexApplication {
             Timber.plant(new Timber.DebugTree());
         }
 
+        startWholeAppMusicService();
+
     }
 
     @Override
@@ -104,4 +107,13 @@ public class MyApplication extends MultiDexApplication {
         return mAppComponent;
     }
 
+    private void startWholeAppMusicService () {
+        startService(PlayService2.getIntentService(this));
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        stopService(PlayService2.getIntentService(this));
+    }
 }

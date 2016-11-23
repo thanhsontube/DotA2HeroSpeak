@@ -21,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroResponsesDto;
+import son.nt.dota2.ottobus_entry.GoPlayer2;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
 
@@ -54,7 +55,13 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
                 break;
             case TYPE_SPEAK:
                 view = inflater.inflate(R.layout.row_voice_2, parent, false);
-                break;
+                Holder holder = new Holder(view);
+                holder.view.setOnClickListener(v -> {
+                    int pos = holder.getAdapterPosition();
+                    HeroResponsesDto selectedDto = list.get(pos);
+                    OttoBus.post(new GoPlayer2(1, selectedDto, pos));
+                });
+                return holder;
 
 
         }

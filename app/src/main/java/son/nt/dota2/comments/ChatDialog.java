@@ -101,7 +101,7 @@ public class ChatDialog extends DialogFragment {
             public void onRefresh() {
                 listValues.clear();
                 updateData();
-//                getData();
+//                getAllHeroBasicOnGroup();
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

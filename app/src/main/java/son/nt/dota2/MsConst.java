@@ -5,6 +5,13 @@ package son.nt.dota2;
  */
 public class MsConst {
 
+    //type of Sounds
+    public static final int TYPE_HERO_SOUND = 1;
+    public static final int TYPE_MUSIC_PACK = 2;
+    public static final int TYPE_CREATIVE_SOUND = 3;
+    public static final int TYPE_ITEM_SOUND = 4;
+
+
     //firebase table
     public static final String TABLE_LORD_RESPONSES = "HeroLordSounds";
 
@@ -15,7 +22,6 @@ public class MsConst {
     public static final String TRACK_CHAT = "/chat_dialog";
     public static final String TRACK_SHARE_VOICE = "/TRACK_SHARE_VOICE";
     public static final String TRACK_PUSH_COMMENT = "/TRACK_PUSH_COMMENT";
-
 
 
     public static final String LINK_STORE = "https://play.google.com/store/apps/details?id=son.nt.dota2";
@@ -31,9 +37,8 @@ public class MsConst {
     public static final String ROOT_DOTA2 = "http://www.dota2.com/hero/";
 
 
-
     public static enum RepeatMode {
-        MODE_ON (0),
+        MODE_ON(0),
         MODE_OFF(1),
         MODE_ONE(2);
 

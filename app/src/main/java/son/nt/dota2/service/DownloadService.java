@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import son.nt.dota2.ResourceManager;
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
 import son.nt.dota2.utils.Logger;
@@ -226,6 +227,37 @@ public class DownloadService extends Service {
 
         } catch (Exception e) {
             Logger.error(TAG, ">>>" + "downloadLink err:" + e);
+        }
+    }
+
+    public void addLinkDto2(List<HeroResponsesDto> list, String heroId) {
+        Logger.debug(TAG, ">>>" + "========addLinkDto 2======:" + list.size());
+        this.heroId = heroId;
+        DownloadLoaderResponse loader = new DownloadLoaderResponse();
+        loader.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, list);
+    }
+
+    class DownloadLoaderResponse extends AsyncTask<List<HeroResponsesDto>, Void, Integer> {
+        @Override
+        protected Integer doInBackground(List<HeroResponsesDto>... params) {
+            try {
+                List<HeroResponsesDto> list = params[0];
+
+                int i = 0;
+                for (HeroResponsesDto dto : list) {
+                    //                log.d("log>>>" + "=============download:" + i + "============");
+                    if (isQuit) {
+                        return -1;
+                    }
+                    File fileTo = new File(ResourceManager.getInstance().getPathAudio(dto.link, heroId));
+                    downloadLink(dto.link, fileTo);
+                    i++;
+                }
+                return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0;
+            }
         }
     }
 }
