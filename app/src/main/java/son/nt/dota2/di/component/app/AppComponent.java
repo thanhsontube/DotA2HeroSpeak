@@ -15,7 +15,7 @@ import son.nt.dota2.di.module.herolist.HeroListModule;
 
 @Singleton
 @Component(modules = {AppModule.class, FireBaseModule.class, HeroRepoModule.class})
-public interface AppComponent {
 
+public interface AppComponent {
     HeroListComponent plus(HeroListModule module);
 }

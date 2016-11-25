@@ -7,8 +7,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.test.TestActivity;
 import timber.log.Timber;
 
 public class SplashActivity extends BaseActivity {
@@ -43,7 +46,8 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRepository = new HeroRepository();
-        startActivity(HomeActivity.getIntent(getApplicationContext()));
+        startActivity(new Intent(this, TestActivity.class));
+//        startActivity(HomeActivity.getIntent(getApplicationContext()));
 //        getBasicHeroList();
 //        getLordResponseList();
 

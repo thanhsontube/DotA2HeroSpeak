@@ -15,8 +15,6 @@ import android.view.View;
 
 import java.util.List;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.firebase.FireBaseActivity;
@@ -50,6 +48,7 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
         findViewById(R.id.hero_lord).setOnClickListener(this);
         findViewById(R.id.push_hero_lord).setOnClickListener(this);
         findViewById(R.id.hero_response).setOnClickListener(this);
+        findViewById(R.id.items).setOnClickListener(this);
 
     }
 
@@ -95,21 +94,26 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
                 break;
             }
             case R.id.hero_upload_icons: {
-                Realm realm = Realm.getDefaultInstance();
-                RealmResults<HeroBasicDto> heroBasicDtos = realm.where(HeroBasicDto.class).findAll();
-
-                uploadHeroBasic(heroBasicDtos);
+//                Realm realm = Realm.getDefaultInstance();
+//                RealmResults<HeroBasicDto> heroBasicDtos = realm.where(HeroBasicDto.class).findAll();
+//
+//                uploadHeroBasic(heroBasicDtos);
                 break;
             }
             case R.id.hero_lord: {
                 mJsoupLoader.withGetHeroBasic_Lord();
                 break;
-            } case R.id.push_hero_lord: {
+            }
+            case R.id.push_hero_lord: {
                 mJsoupLoader.withGetHeroBasic_PUSHLord();
                 break;
             }
             case R.id.hero_response: {
                 mJsoupLoader.withGetHeroBasic_Response();
+                break;
+            }
+            case R.id.items: {
+                mJsoupLoader.withGetItems();
                 break;
             }
         }
@@ -129,8 +133,6 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
 
     /**
      * upload heroID< HeroName < heroIcon < hero Avatar1 to Firebase.
-     *
-     * @param list
      */
 
     private void uploadHeroBasic(List<HeroBasicDto> list) {

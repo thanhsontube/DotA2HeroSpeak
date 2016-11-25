@@ -16,6 +16,11 @@
         <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Items"
+                android:id="@+id/items"/>
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Hero RESPONSE"
                 android:id="@+id/hero_response"/>
 
