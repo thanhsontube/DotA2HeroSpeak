@@ -42,6 +42,7 @@ public class JsoupLoader {
 
     private boolean isLordVoiceDone = true;
     private boolean isResponsesHeroDone = false;
+    private boolean isPushALlItems = true;
 
     public static final String TAG = JsoupLoader.class.getSimpleName();
     public static final String HERO_ICON = "http://dota2.gamepedia.com/Heroes_by_release";
@@ -137,6 +138,17 @@ public class JsoupLoader {
 
             }
 
+
+//            for (ItemDto dto : list) {
+//                pushItem(dto);
+//            }
+
+            Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.copyToRealm(list);
+            realm.commitTransaction();
+            realm.close();
+
             subscriber.onNext(list);
             subscriber.onCompleted();
 
@@ -156,7 +168,11 @@ public class JsoupLoader {
             @Override
             public void onNext(List<ItemDto> itemDtos) {
                 Timber.d(">>>" + "onNext:" + itemDtos.size());
+                for (ItemDto d : itemDtos) {
+                    Timber.d(">>>" + "Items:" + d.getItemName());
+                }
 
+//                pushALLItems(itemDtos);
 
 
             }
@@ -220,12 +236,13 @@ public class JsoupLoader {
     private List<ItemDto> getSmallItems(TagNode tagNode) {
         List<ItemDto> list = new ArrayList<ItemDto>();
         ItemDto dto = null;
+        String group = "Unknown";
         for (TagNode tag : tagNode.getChildTagList()) {
             try {
                 if (tag.getName().equals("h3")) {
                     final String itemGroup = tag.getText().toString().replace("Edit", "").trim();
                     Timber.d(">>>" + "Item Group:" + itemGroup);
-                    dto = new ItemDto(itemGroup);
+                    group = itemGroup;
                 } else {
                     String xPath = "//tr[@valign='top']";
                     Object[] data = tag.evaluateXPath(xPath);
@@ -233,6 +250,7 @@ public class JsoupLoader {
                     for (Object o : data) {
                         TagNode tagImages = (TagNode) o;
                         for (TagNode t : tagImages.getChildTagList()) {
+                            dto = new ItemDto(group);
                             final TagNode tagNode1 = t.getChildTagList().get(0);
                             String itemName = tagNode1.getAttributeByName("title");
                             final String href = tagNode1.getAttributeByName("href");
@@ -460,12 +478,28 @@ public class JsoupLoader {
     }
 
 
-    private void processWithTextPOnly(TagNode tagNode) {
+    private List<HeroResponsesDto> processWithTextPOnly(TagNode tagNode, String group, HeroBasicDto fromHero) {
+        List<HeroResponsesDto> list = new ArrayList<>();
         Timber.d(">>>" + "---processWithTextPOnly---");
         try {
+            HeroResponsesDto dto = null;
             for (TagNode tag : tagNode.getChildTagList()) {
+                dto = new HeroResponsesDto(itemCount);
+                dto.setVoiceGroup(group);
+
+
                 String soundContent = tag.getText().toString().replace("Play", "").replace("u ", "").trim();
                 String soundLink = getSoundLink(tag);
+
+                dto.setLink(soundLink);
+                dto.setText(soundContent);
+
+                dto.setHeroId(fromHero.heroId);
+                dto.setHeroIcon(fromHero.heroIcon);
+                dto.setHeroName(fromHero.name);
+
+                list.add(dto);
+                itemCount++;
 
                 Timber.d(">>>" + "soundContent:" + soundContent + ";link:" + soundLink);
             }
@@ -473,6 +507,7 @@ public class JsoupLoader {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return list;
     }
 
     private void workingWithText(TagNode tagNode) {
@@ -496,25 +531,24 @@ public class JsoupLoader {
         }
     }
 
-    //todo working
-    private void workWithImage(TagNode tagNode) {
+    private List<HeroResponsesDto> workWithResponseHasIcon(TagNode tagNode, String group, HeroBasicDto fromHero) {
+        Timber.d(">>>" + "workWithResponseHasIcon");
+        if (!mIsItem) {
+            return new ArrayList<>();
+        }
+        List<HeroResponsesDto> list = new ArrayList<>();
         try {
-
-            Logger.debug(TAG, ">>>" + "*** workWithImage:" + tagNode.getChildTagList().size());
-            int i = 0;
             boolean isKillingSpecificEnemy = false;
-            boolean isKilling = false;
             for (TagNode tag : tagNode.getChildTagList()) {
 
                 Logger.debug(TAG, ">>>" + "tag:" + tag.getName());
                 if (tag.getName().contains("ul")) {
                     if (isKillingSpecificEnemy) {
                         isKillingSpecificEnemy = false;
-                        getKillingEnemy(tag);
+                        getKillingEnemy(tag, group, fromHero);
 
                     } else {
-
-                        processWithTextPOnly(tag);
+                        processWithTextPOnly(tag, group, fromHero);
                     }
 
                 }
@@ -525,33 +559,72 @@ public class JsoupLoader {
                     if (tag.getText().toString().contains("First Blood")) {
                         isKillingSpecificEnemy = false;
                     }
-                    if (tag.getText().toString().contains("Killing a specific enemy")) {
+//                    if (tag.getText().toString().contains("Killing a specific enemy")) {
 //                        isKillingSpecificEnemy = true;
-                    }
+//                    }
 
 //                    if (isKillingSpecificEnemy) {
 //                        isKillingSpecificEnemy = false;
 ////                        getKillingEnemy(tag);
 //                    }
                 }
-
-                i++;
-
             }
-
-//            TagNode tag = tagNode.getChildTagList().get(1);
-//            Logger.debug(TAG, ">>>" + "tag:" + tag. );
-//            Logger.debug(TAG, ">>>" + "ok:" + tagNode.getChildTagList().get(1).getChildTagList().size());
-//            for (TagNode tag : tagNode.getChildTagList()) {
-//                Logger.debug(TAG, ">>>" + "tag:" + tag.getText());
-//            }
-
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return list;
 
     }
+
+    //todo working
+//    private void workWithImage(TagNode tagNode) {
+//        try {
+//
+//            Logger.debug(TAG, ">>>" + "*** workWithImage:" + tagNode.getChildTagList().size());
+//            int i = 0;
+//            boolean isKillingSpecificEnemy = false;
+//            boolean isKilling = false;
+//            for (TagNode tag : tagNode.getChildTagList()) {
+//
+//                Logger.debug(TAG, ">>>" + "tag:" + tag.getName());
+//                if (tag.getName().contains("ul")) {
+//                    if (isKillingSpecificEnemy) {
+//                        isKillingSpecificEnemy = false;
+//                        getKillingEnemy(tag, "Unknown", null);
+//
+//                    } else {
+//
+//                        processWithTextPOnly(tag, ".");
+//                    }
+//
+//                }
+//
+//                if (tag.getName().contains("p")) {
+//                    Logger.debug(TAG, ">>>" + "p > text:" + tag.getText());
+//                    isKillingSpecificEnemy = true;
+//                    if (tag.getText().toString().contains("First Blood")) {
+//                        isKillingSpecificEnemy = false;
+//                    }
+//                    if (tag.getText().toString().contains("Killing a specific enemy")) {
+////                        isKillingSpecificEnemy = true;
+//                    }
+//
+////                    if (isKillingSpecificEnemy) {
+////                        isKillingSpecificEnemy = false;
+//////                        getKillingEnemy(tag);
+////                    }
+//                }
+//
+//                i++;
+//
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     private String getSoundLink(TagNode tag) {
         TagNode tagMp3 = tag.getChildTagList().get(0);
@@ -574,25 +647,28 @@ public class JsoupLoader {
     }
 
     //http://dota2.gamepedia.com/Crystal_Maiden/Responses
-    private void getKillingEnemy(TagNode nodeA) {
+    private List<HeroResponsesDto> getKillingEnemy(TagNode nodeA, String soundGroup, HeroBasicDto fromHero) {
         List<HeroResponsesDto> list = new ArrayList<>();
         HeroResponsesDto dto = null;
-        int no = 0;
 
         try {
-            Logger.debug(TAG, ">>>" + "getKillingEnemy:" + nodeA.getChildTagList().size());
             for (TagNode tag : nodeA.getChildTagList()) {
                 try {
-                    no++;
-                    dto = new HeroResponsesDto(no);
-                    String soundContent = tag.getText().toString().replace("Play", "").replace("u ", "").trim();
-//                    Logger.debug(TAG, ">>>" + "tag soundContent:" + soundContent);
+                    dto = new HeroResponsesDto(itemCount);
 
-//                Logger.debug(TAG, ">>>" + "size:" + tag.getChildTagList().size());
+                    String soundContent = tag.getText().toString().replace("Play", "").replace("u ", "").trim();
                     TagNode tagMp3 = tag.getChildTagList().get(0);
 
                     String soundLink = tagMp3.getAttributeByName("href");
-//                    Logger.debug(TAG, ">>>" + "soundLink:" + soundLink);
+
+                    //add
+                    dto.setVoiceGroup(soundGroup);
+                    dto.setLink(soundLink);
+                    dto.setText(soundContent);
+
+                    dto.setHeroId(fromHero.heroId);
+                    dto.setHeroIcon(fromHero.heroIcon);
+                    dto.setHeroName(fromHero.name);
 
                     //to heroID
                     TagNode tagToHero = tag.getChildTagList().get(1);
@@ -604,35 +680,34 @@ public class JsoupLoader {
                             toHeroId = "Underlord";
                         }
 
+                        dto.setToHeroId(toHeroId);
+
+
                         Timber.d(">>>" + "toHeroId:" + toHeroId + ";soundContent:" + soundContent + ";soundLink:" + soundLink);
 
-//                        Realm realm2 = Realm.getDefaultInstance();
-//                        final HeroBasicDto toHero = realm2.where(HeroBasicDto.class)
-//                                .equalTo("heroId", toHeroId)
-//                                .findFirst();
-//
-//                        HeroBasicDto toHero2 = realm2.copyFromRealm(toHero);
-//                        realm2.close();
-//
-//                        dto.setToHeroIcon(toHero2.heroIcon);
-//                        dto.setToHeroName(toHero2.name);
-//                        dto.setToHeroId(toHeroId);
-//                        dto.setLink(soundLink);
-//                        dto.setText(soundContent);
-//                        dto.setVoiceGroup("Killing a specific enemy");
+                        if (mIsItem) {
+                            Realm realm = Realm.getDefaultInstance();
+                            ItemDto itemDto = realm.where(ItemDto.class)
+                                    .equalTo("itemId", toHeroId)
+                                    .findFirst();
+
+                            if (itemDto != null) {
+                                Timber.d(">>>" + "Items:" + itemDto.getItemName());
+
+                                dto.setToHeroName(itemDto.getItemName());
+                                dto.setToHeroIcon(itemDto.getItemIcon());
+                            } else {
+                                Timber.e(">>>" + "Not found:" + toHeroId);
+                            }
+                        }
+
                     }
+                    list.add(dto);
+                    itemCount++;
 
-
-//                    if (tag.getChildTagList().size() > 1) {
-//                        TagNode tagHero = tag.getChildTagList().get(1);
-//                        String rivalName = tagHero.getAttributeByName("href");
-//                        rivalName = rivalName.substring(0, rivalName.lastIndexOf("?version"));
-//                        Logger.debug(TAG, ">>>" + "toHeroName:" + rivalName);
-//                    }
                 } catch (Exception e) {
-                    e.printStackTrace();
                     Logger.error(TAG, ">>> Error getKillingEnemy lv 1" + "error:" + e.toString());
-                    processWithTextPOnly(tag);
+                    processWithTextPOnly(tag, soundGroup, fromHero);
 
                 }
 
@@ -643,6 +718,7 @@ public class JsoupLoader {
         } catch (Exception e) {
             Logger.error(TAG, ">>> Error:" + "error:" + e.toString());
         }
+        return list;
     }
 
     private void processResponse(String group, TagNode tagNode) {
@@ -698,111 +774,138 @@ public class JsoupLoader {
     //todo working
     //http://dota2.gamepedia.com/Crystal_Maiden/Responses
     //new GetHeroBasic_Responses().execute();
+    //Acquiring an item
+
+    boolean mIsItem = false;
+
     private void getResponsesVoice() {
+        itemCount = 0;
         Timber.d(">>>" + "getResponsesVoice");
         if (isResponsesHeroDone) {
             return;
         }
-        Observable<List<HeroResponsesDto>> responseObservable = Observable.create(new Observable.OnSubscribe<List<HeroResponsesDto>>() {
-            @Override
-            public void call(Subscriber<? super List<HeroResponsesDto>> subscriber) {
-                Realm realm = Realm.getDefaultInstance();
-                final List<HeroBasicDto> dtoBasic = realm.where(HeroBasicDto.class)
-                        .findAll();
+        Observable<List<HeroResponsesDto>> responseObservable = Observable.create(subscriber -> {
+            Realm realm = Realm.getDefaultInstance();
+            final List<HeroBasicDto> dtoBasic = realm.where(HeroBasicDto.class)
+                    .findAll();
 
-                final List<HeroBasicDto> heroBasicDtos = realm.copyFromRealm(dtoBasic);
-                realm.close();
+            final List<HeroBasicDto> heroBasicDtos = realm.copyFromRealm(dtoBasic);
+            realm.close();
 
-                List<HeroResponsesDto> list = new ArrayList<HeroResponsesDto>();
-                int i = 0;
-                for (HeroBasicDto heroBasicDto : heroBasicDtos) {
-                    try {
-                        i++;
-                        //todo hack
-                        if (i == 2) {
-                            break;
-                        }
-                        String heroId = heroBasicDto.heroId;
-                        String path = "http://dota2.gamepedia.com/" + heroId + "/Responses";
-                        path = HERO_RESPONSE_UNDER_LORD;
-                        Timber.d(">>>" + i + ":" + "working with : " + path);
-
-                        //Get Group Killing a specific enemy
-                        TagNode nodeA = getRootNode(path);
-                        if (nodeA == null) {
-                            Timber.i(">>>" + "getResponseWithHtml null Root NODE:" + path);
-                            return;
-                        }
-
-                        List<TagNode> tagNodes = nodeA.getChildTagList();
-                        int j = 0;
-                        boolean isKillingEnemy = false;
-                        boolean isMeetingAnAlly = false;
-                        boolean isItem = false;
-                        boolean isNormalSound = false;
-                        boolean isBegin = false;
-                        for (TagNode tag : tagNodes) {
-
-                            try {
-                                if (tag.getName().contains("h2")) {
-                                    Logger.debug(TAG, ">>>" + j + " h2:" + tag.getText());
-                                    if (tag.getText().toString().contains("Killing an enemy")) {
-                                        isKillingEnemy = true;
-                                    }
-                                    if (tag.getText().toString().contains("Meeting an ally")) {
-                                        Timber.e(">>>" + "Meeting an ally");
-                                        isMeetingAnAlly = true;
-                                    }
-
-                                    if (tag.getText().toString().contains("Acquiring an item")) {
-                                        Timber.e(">>>" + "Acquiring an item\n");
-                                        isItem = true;
-                                    }
-
-
-                                    //normal
-                                    if (!isKillingEnemy && !isMeetingAnAlly && !isItem) {
-                                        String soundGroup = tag.getText().toString();
-//                                        Timber.w(">>>" + "Sound group :" + soundGroup);
-                                        isNormalSound = true;
-                                    }
-
-                                } else {
-                                    if (isKillingEnemy) {
-                                        workWithImage(tag);
-                                        isKillingEnemy = false;
-                                    }
-                                    if (isMeetingAnAlly) {
-                                        workWithImage(tag);
-                                        isMeetingAnAlly = false;
-                                    }
-                                    if (isItem) {
-                                        workWithImage(tag);
-                                        isItem = false;
-                                    }
-                                    if (isNormalSound) {
-//                                        workingWithText(tag);
-                                        isNormalSound = false;
-                                    }
-                                }
-                                j++;
-
-                            } catch (Exception e1) {
-                                Timber.d(">>>" + "Err Killing an enemy : " + e1 + ";path:" + path);
-                            }
-
-                        }
-
-                    } catch (Exception e) {
-                        Timber.e(">>>" + "Err: getResponsesVoice :" + heroBasicDto.heroId + ":" + e);
+            List<HeroResponsesDto> list = new ArrayList<HeroResponsesDto>();
+            int i = 0;
+            for (final HeroBasicDto heroBasicDto : heroBasicDtos) {
+                try {
+                    i++;
+                    //todo hack
+                    if (i == 2) {
+                        break;
                     }
+                    String heroId = heroBasicDto.heroId;
+                    String path = "http://dota2.gamepedia.com/" + heroId + "/Responses";
+                    path = HERO_RESPONSE_UNDER_LORD;
+                    Timber.d(">>>" + i + ":" + "working with : " + path);
+
+                    //Get Group Killing a specific enemy
+                    TagNode nodeA = getRootNode(path);
+                    if (nodeA == null) {
+                        Timber.i(">>>" + "getResponseWithHtml null Root NODE:" + path);
+                        return;
+                    }
+
+                    List<TagNode> tagNodes = nodeA.getChildTagList();
+                    int j = 0;
+                    boolean isKillingEnemy = false;
+                    boolean isMeetingAnAlly = false;
+                    boolean isItem = false;
+                    boolean isNormalSound = false;
+                    boolean isBegin = false;
+                    for (TagNode tag : tagNodes) {
+
+                        try {
+                            if (tag.getName().contains("h2")) {
+//                                    Logger.debug(TAG, ">>>" + j + " h2:" + tag.getText());
+                                if (tag.getText().toString().contains("Killing an enemy")) {
+                                    isKillingEnemy = true;
+                                }
+                                if (tag.getText().toString().contains("Meeting an ally")) {
+                                    Timber.e(">>>" + "Meeting an ally");
+                                    isMeetingAnAlly = true;
+                                }
+
+                                if (tag.getText().toString().contains("Acquiring an item")) {
+                                    Timber.e(">>>" + "Acquiring an item\n");
+                                    isItem = true;
+                                    mIsItem = true;
+                                }
+
+
+                                //normal
+                                if (!isKillingEnemy && !isMeetingAnAlly && !isItem) {
+                                    String soundGroup = tag.getText().toString();
+//                                        Timber.w(">>>" + "Sound group :" + soundGroup);
+                                    isNormalSound = true;
+                                }
+
+                            } else {
+                                if (isKillingEnemy) {
+                                    list.addAll(workWithResponseHasIcon(tag, "Killing an enemy", heroBasicDto));
+                                    isKillingEnemy = false;
+                                }
+                                if (isMeetingAnAlly) {
+//                                        workWithImage(tag);
+                                    list.addAll(workWithResponseHasIcon(tag, "Meeting an ally", heroBasicDto));
+                                    isMeetingAnAlly = false;
+                                }
+                                if (isItem) {
+                                    list.addAll(workWithResponseHasIcon(tag, "Acquiring an item", heroBasicDto));
+//                                        workWithImage(tag);
+                                    isItem = false;
+                                    mIsItem = false;
+                                }
+                                if (isNormalSound) {
+//                                        workingWithText(tag);
+                                    isNormalSound = false;
+                                }
+                            }
+                            j++;
+
+                        } catch (Exception e1) {
+                            Timber.d(">>>" + "Err Killing an enemy : " + e1 + ";path:" + path);
+                        }
+
+                    }
+
+                } catch (Exception e) {
+                    Timber.e(">>>" + "Err: getResponsesVoice :" + heroBasicDto.heroId + ":" + e);
                 }
+            }
+
+            subscriber.onNext(list);
+            subscriber.onCompleted();
+
+        });
+
+        Observer<List<HeroResponsesDto>> finalList = new Observer<List<HeroResponsesDto>>() {
+            @Override
+            public void onCompleted() {
 
             }
-        });
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<HeroResponsesDto> heroResponsesDtos) {
+                Timber.d(">>>" + "onNext:" + heroResponsesDtos.size());
+
+            }
+        };
         responseObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(finalList);
 
     }
 
@@ -1095,6 +1198,33 @@ public class JsoupLoader {
 
     }
 
+    private void pushALLItems(final List<ItemDto> listData) {
+        if (isPushALlItems) {
+            return;
+        }
+        count = 0;
+
+        Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                Realm realm = Realm.getDefaultInstance();
+                try {
+                    for (ItemDto d : listData) {
+                        pushItem(d);
+                    }
+
+                } catch (Exception e) {
+                    Logger.error(TAG, ">>> Error pushALL:" + e);
+
+                }
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+
+    }
+
     int count = 0;
 
     private void push(HeroResponsesDto heroBasicDto) {
@@ -1115,6 +1245,29 @@ public class JsoupLoader {
                     public void onFailure(@NonNull Exception e) {
                         Logger.error(TAG, ">>> Error:" + "onFailure:" + e);
                         count++;
+
+                    }
+                })
+        ;
+
+    }
+
+    private void pushItem(ItemDto itemDto) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+
+        reference.child(MsConst.TABLE_ITEMS).push().setValue(itemDto)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Logger.debug(TAG, ">>>" + "onSuccess pushItem:" + itemDto.getItemName());
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Logger.error(TAG, ">>> Error:" + "onFailure:" + e);
 
                     }
                 })

@@ -10,7 +10,6 @@ import com.google.firebase.database.ValueEventListener;
 import android.content.Intent;
 import android.os.Bundle;
 
-import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +24,7 @@ import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.HeroResponsesDto;
+import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.test.TestActivity;
 import timber.log.Timber;
@@ -36,6 +36,9 @@ public class SplashActivity extends BaseActivity {
     CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     boolean mIsLoadBasicHeroDone = false;
     boolean mIsLoadLordResponsesDone = false;
+    boolean mIsLoadItemsDone = false;
+
+    boolean mIsNeedLoadData = false;
 
     @Override
     protected int provideLayoutResID() {
@@ -46,10 +49,16 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRepository = new HeroRepository();
-        startActivity(new Intent(this, TestActivity.class));
+        if (!mIsNeedLoadData) {
+
+            startActivity(new Intent(this, TestActivity.class));
+        } else {
+            getBasicHeroList();
+            getLordResponseList();
+            getItemsList();
+        }
 //        startActivity(HomeActivity.getIntent(getApplicationContext()));
-//        getBasicHeroList();
-//        getLordResponseList();
+
 
     }
 
@@ -74,6 +83,13 @@ public class SplashActivity extends BaseActivity {
         DatabaseReference reference = firebaseDatabase.getReference();
         Query query = reference.child(MsConst.TABLE_LORD_RESPONSES);
         query.addListenerForSingleValueEvent(valueLordEventListener);
+    }
+
+    private void getItemsList() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+        Query query = reference.child(MsConst.TABLE_ITEMS);
+        query.addListenerForSingleValueEvent(valueItemsEventListener);
     }
 
 
@@ -133,11 +149,43 @@ public class SplashActivity extends BaseActivity {
         }
     };
 
+    ValueEventListener valueItemsEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            List<ItemDto> list = new ArrayList<>();
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                ItemDto post = postSnapshot.getValue(ItemDto.class);
+                list.add(post);
+            }
+            Timber.d(">>>Lord size:" + list.size());
+            Subscription subscription = mRepository.storeAlItemsResponses(list)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aBoolean -> {
+                        Timber.d(">>>Done save Items responses DB:" + aBoolean);
+                        mIsLoadItemsDone = true;
+                        checkAndComplete();
+                    });
+            mCompositeSubscription.add(subscription);
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Timber.e(">>>onCancelled:" + databaseError);
+
+        }
+    };
+
     private void checkAndComplete() {
         if (!mIsLoadBasicHeroDone) {
             return;
         }
         if (!mIsLoadLordResponsesDone) {
+            return;
+        }
+
+        if (!mIsLoadItemsDone) {
             return;
         }
         startActivity(HomeActivity.getIntent(getApplicationContext()));

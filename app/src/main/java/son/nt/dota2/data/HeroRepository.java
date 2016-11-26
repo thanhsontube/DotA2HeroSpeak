@@ -9,6 +9,7 @@ import io.realm.RealmResults;
 import rx.Observable;
 import rx.Subscriber;
 import son.nt.dota2.dto.HeroResponsesDto;
+import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 
 /**
@@ -66,6 +67,31 @@ public class HeroRepository implements IHeroRepository {
             }
         });
     }
+
+    @Override
+    public Observable<Boolean> storeAlItemsResponses(List<ItemDto> list) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                Realm realm = getRealm();
+                try {
+                    removeItems(realm);
+                    realm.beginTransaction();
+                    realm.copyToRealm(list);
+                    realm.commitTransaction();
+                    subscriber.onNext(true);
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                } finally {
+                    subscriber.onCompleted();
+                    realm.close();
+                }
+
+
+            }
+        });
+    }
+
 
     @Override
     public Observable<List<HeroBasicDto>> getHeroesFromGroup(@NonNull String group) {
@@ -179,6 +205,12 @@ public class HeroRepository implements IHeroRepository {
     private void removeAllLordResponses(Realm realm) {
         realm.beginTransaction();
         realm.delete(HeroResponsesDto.class);
+        realm.commitTransaction();
+    }
+
+    private void removeItems(Realm realm) {
+        realm.beginTransaction();
+        realm.delete(ItemDto.class);
         realm.commitTransaction();
     }
 }

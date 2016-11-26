@@ -14,6 +14,7 @@ public class MsConst {
 
     //firebase table
     public static final String TABLE_LORD_RESPONSES = "HeroLordSounds";
+    public static final String TABLE_ITEMS = "ItemsDota2";
 
     public static final String TRACK_START = "/start";
     public static final String TRACK_LOGIN = "/fb_login";
