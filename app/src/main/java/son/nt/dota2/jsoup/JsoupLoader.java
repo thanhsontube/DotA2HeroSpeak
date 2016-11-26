@@ -43,6 +43,7 @@ public class JsoupLoader {
     private boolean isLordVoiceDone = true;
     private boolean isResponsesHeroDone = false;
     private boolean isPushALlItems = true;
+    private boolean isPushALlHEROBUYItems = true;
 
     public static final String TAG = JsoupLoader.class.getSimpleName();
     public static final String HERO_ICON = "http://dota2.gamepedia.com/Heroes_by_release";
@@ -54,6 +55,8 @@ public class JsoupLoader {
     public static final String HERO_RESPONSE2 = "http://dota2.gamepedia.com/Drow_Ranger/Responses";
     public static final String HERO_RESPONSE_Crystal = "http://dota2.gamepedia.com/Crystal_Maiden/Responses";
     public static final String HERO_RESPONSE_UNDER_LORD = "http://dota2.gamepedia.com/Underlord/Responses";
+    public static final String HERO_RESPONSE_PA = "http://dota2.gamepedia.com/Phantom_Assassin/Responses";
+    public static final String HERO_RESPONSE_TE = "http://dota2.gamepedia.com/Terrorblade/Responses";
     public static final String ITEMS = "http://dota2.gamepedia.com/Items";
 
 
@@ -545,10 +548,12 @@ public class JsoupLoader {
                 if (tag.getName().contains("ul")) {
                     if (isKillingSpecificEnemy) {
                         isKillingSpecificEnemy = false;
-                        getKillingEnemy(tag, group, fromHero);
+                        final List<HeroResponsesDto> killingEnemy = getKillingEnemy(tag, group, fromHero);
+                        list.addAll(killingEnemy);
 
                     } else {
-                        processWithTextPOnly(tag, group, fromHero);
+                        final List<HeroResponsesDto> collection = processWithTextPOnly(tag, group, fromHero);
+                        list.addAll(collection);
                     }
 
                 }
@@ -655,9 +660,23 @@ public class JsoupLoader {
             for (TagNode tag : nodeA.getChildTagList()) {
                 try {
                     dto = new HeroResponsesDto(itemCount);
+                    final int size = tag.getChildTagList().size();
+                    Timber.d(">>>" + "TAg size:" + size);
+                    int posSound = 0;
+                    int posItem = 2;
+                    if (size == 5) {
+                        posSound = 2;
+                        posItem = posSound + 1;
+                    }
+                    if (size == 4) {
+                        posSound = 1;
+                        posItem = posSound + 1;
+                    }
 
-                    String soundContent = tag.getText().toString().replace("Play", "").replace("u ", "").trim();
-                    TagNode tagMp3 = tag.getChildTagList().get(0);
+
+
+                    String soundContent = tag.getText().toString().replace("Play", "").replace("u ", "").replace("r ", "").trim();
+                    TagNode tagMp3 = tag.getChildTagList().get(posSound);
 
                     String soundLink = tagMp3.getAttributeByName("href");
 
@@ -671,7 +690,7 @@ public class JsoupLoader {
                     dto.setHeroName(fromHero.name);
 
                     //to heroID
-                    TagNode tagToHero = tag.getChildTagList().get(1);
+                    TagNode tagToHero = tag.getChildTagList().get(posItem);
                     String toHeroId = tagToHero.getAttributeByName("href");
 
                     if (toHeroId != null) {
@@ -803,14 +822,18 @@ public class JsoupLoader {
                     }
                     String heroId = heroBasicDto.heroId;
                     String path = "http://dota2.gamepedia.com/" + heroId + "/Responses";
-                    path = HERO_RESPONSE_UNDER_LORD;
+                    path = HERO_RESPONSE_TE;
                     Timber.d(">>>" + i + ":" + "working with : " + path);
+
+                    if (heroBasicDto.isArcana()) {
+                        continue;
+                    }
 
                     //Get Group Killing a specific enemy
                     TagNode nodeA = getRootNode(path);
                     if (nodeA == null) {
                         Timber.i(">>>" + "getResponseWithHtml null Root NODE:" + path);
-                        return;
+                        continue;
                     }
 
                     List<TagNode> tagNodes = nodeA.getChildTagList();
@@ -900,6 +923,7 @@ public class JsoupLoader {
             @Override
             public void onNext(List<HeroResponsesDto> heroResponsesDtos) {
                 Timber.d(">>>" + "onNext:" + heroResponsesDtos.size());
+                pushALLHeroItems(heroResponsesDtos);
 
             }
         };
@@ -1217,6 +1241,36 @@ public class JsoupLoader {
                     Logger.error(TAG, ">>> Error pushALL:" + e);
 
                 }
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+
+    }
+
+    private void pushALLHeroItems(final List<HeroResponsesDto> listData) {
+        if (isPushALlHEROBUYItems) {
+            return;
+        }
+        count = 0;
+
+        Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
+            Realm realm = Realm.getDefaultInstance();
+            try {
+                for (HeroResponsesDto d : listData) {
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference reference = firebaseDatabase.getReference();
+
+                    reference.child(MsConst.TABLE_HERO_ITEMS).push().setValue(d)
+                            .addOnSuccessListener(aVoid -> Logger.debug(TAG, ">>>" + "onSuccess pushItem:" + d.getToHeroId()))
+                            .addOnFailureListener(e -> Logger.error(TAG, ">>> Error:" + "onFailure:" + e))
+                    ;
+                }
+
+            } catch (Exception e) {
+                Logger.error(TAG, ">>> Error pushALL:" + e);
+
             }
         })
                 .subscribeOn(Schedulers.io())
