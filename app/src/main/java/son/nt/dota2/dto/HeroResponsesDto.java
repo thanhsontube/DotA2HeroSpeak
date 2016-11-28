@@ -1,6 +1,7 @@
 package son.nt.dota2.dto;
 
 import com.google.firebase.database.Exclude;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,7 @@ public class HeroResponsesDto extends RealmObject implements ISound {
     //sound info
     public String text;
     public String link;
+    public String linkArcana;
     public String sub;
 
     public int position;
@@ -130,6 +132,14 @@ public class HeroResponsesDto extends RealmObject implements ISound {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getLinkArcana() {
+        return linkArcana;
+    }
+
+    public void setLinkArcana(String linkArcana) {
+        this.linkArcana = linkArcana;
     }
 
     public void setImage(String image) {
@@ -240,7 +250,14 @@ public class HeroResponsesDto extends RealmObject implements ISound {
 
         result.put("text", text);
         result.put("link", link);
+        result.put("linkArcana", linkArcana);
         result.put("sub", sub);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

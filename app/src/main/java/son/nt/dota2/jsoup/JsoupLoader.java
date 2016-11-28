@@ -44,6 +44,8 @@ public class JsoupLoader {
     private boolean isResponsesHeroDone = false;
     private boolean isPushALlItems = true;
     private boolean isPushALlHEROBUYItems = true;
+    private boolean isPushALlHEROKillingMeeting = true;
+    private boolean isPushALlNormalVoices = true;
 
     public static final String TAG = JsoupLoader.class.getSimpleName();
     public static final String HERO_ICON = "http://dota2.gamepedia.com/Heroes_by_release";
@@ -57,6 +59,7 @@ public class JsoupLoader {
     public static final String HERO_RESPONSE_UNDER_LORD = "http://dota2.gamepedia.com/Underlord/Responses";
     public static final String HERO_RESPONSE_PA = "http://dota2.gamepedia.com/Phantom_Assassin/Responses";
     public static final String HERO_RESPONSE_TE = "http://dota2.gamepedia.com/Terrorblade/Responses";
+    public static final String HERO_RESPONSE_SNIPER = "http://dota2.gamepedia.com/Sniper/Responses";
     public static final String ITEMS = "http://dota2.gamepedia.com/Items";
 
 
@@ -405,34 +408,10 @@ public class JsoupLoader {
 
                 for (HeroBasicDto heroBasicDto : heroes) {
                     reference.child(HeroBasicDto.class.getSimpleName()).push().setValue(heroBasicDto)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Logger.debug(TAG, ">>>" + "onSuccess 2");
-
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Logger.error(TAG, ">>> Error:" + "onFailure:" + e);
-
-                                }
-                            })
+                            .addOnSuccessListener(aVoid -> Logger.debug(TAG, ">>>" + "onSuccess 2"))
+                            .addOnFailureListener(e -> Logger.error(TAG, ">>> Error:" + "onFailure:" + e))
                     ;
                 }
-
-
-//                Realm realm = Realm.getDefaultInstance();
-//                realm.beginTransaction();
-//                realm.delete(HeroBasicDto.class);
-//                realm.commitTransaction();
-//                for (HeroBasicDto hero : heroes) {
-//                    realm.beginTransaction();
-//                    realm.copyToRealm(hero);
-//                    realm.commitTransaction();
-//                }
-//                realm.close();
 
 
             } catch (Exception e) {
@@ -483,7 +462,7 @@ public class JsoupLoader {
 
     private List<HeroResponsesDto> processWithTextPOnly(TagNode tagNode, String group, HeroBasicDto fromHero) {
         List<HeroResponsesDto> list = new ArrayList<>();
-        Timber.d(">>>" + "---processWithTextPOnly---");
+        Timber.d(">>>" + "---processWithTextPOnly group:" + group);
         try {
             HeroResponsesDto dto = null;
             for (TagNode tag : tagNode.getChildTagList()) {
@@ -491,11 +470,24 @@ public class JsoupLoader {
                 dto.setVoiceGroup(group);
 
 
-                String soundContent = tag.getText().toString().replace("Play", "").replace("u ", "").trim();
-                String soundLink = getSoundLink(tag);
+                String soundContent = tag.getText().toString().replace("Play", "").replace("u ", "").replace("r ", "").trim();
 
-                dto.setLink(soundLink);
-                dto.setText(soundContent);
+
+                List<TagNode> listSound = (List<TagNode>) tag.getElementListHavingAttribute("class", true);
+                Timber.d(">>>" + "listSound:" + listSound.size());
+
+                String originalSound = "";
+                String arcanaSound = "";
+                if (listSound != null && !listSound.isEmpty()) {
+                    originalSound = listSound.get(0).getAttributeByName("href");
+                    if (listSound.size() >= 2) {
+                        arcanaSound = listSound.get(listSound.size() - 1).getAttributeByName("href");
+                    }
+                }
+                Timber.d(">>>" + "originalSound:" + originalSound + " ;arcanaSound:" + arcanaSound);
+
+                dto.setLink(originalSound);
+                dto.setText(arcanaSound);
 
                 dto.setHeroId(fromHero.heroId);
                 dto.setHeroIcon(fromHero.heroIcon);
@@ -504,7 +496,7 @@ public class JsoupLoader {
                 list.add(dto);
                 itemCount++;
 
-                Timber.d(">>>" + "soundContent:" + soundContent + ";link:" + soundLink);
+                Timber.d(">>>" + "soundContent:" + soundContent);
             }
 
         } catch (Exception e) {
@@ -513,8 +505,12 @@ public class JsoupLoader {
         return list;
     }
 
-    private void workingWithText(TagNode tagNode) {
+    // todo care about arcana sound.
+    private List<HeroResponsesDto> workingWithText(TagNode tagNode, String group, HeroBasicDto fromHero) {
+        Timber.d(">>>" + "workingWithText id:" + fromHero.heroId + ";group:" + group);
+        List<HeroResponsesDto> list = new ArrayList<>();
         try {
+            HeroResponsesDto dto = null;
             TagNode finalTag;
             final TagNode tagNodeFirst = tagNode.getChildTagList().get(0);
             finalTag = tagNodeFirst;
@@ -523,20 +519,46 @@ public class JsoupLoader {
                 finalTag = tagNodeUL;
             }
             for (TagNode tag : finalTag.getChildTagList()) {
-                String soundContent = tag.getText().toString().replace("Play", "").replace("u ", "").trim();
-                String soundLink = getSoundLink(tag);
-                Timber.d(">>>" + "soundContent:" + soundContent + ";link:" + soundLink);
+                dto = new HeroResponsesDto(itemCount);
+                String soundContent = tag.getText().toString().replace("Play", "").replace("u ", "").replace("r ", "").trim();
+//                String soundLink = getSoundLink(tag);
+
+                List<TagNode> listSound = (List<TagNode>) tag.getElementListHavingAttribute("class", true);
+                String originalSound = "";
+                String arcanaSound = "";
+                if (listSound != null && !listSound.isEmpty()) {
+                    originalSound = listSound.get(0).getAttributeByName("href");
+                    if (listSound.size() >= 2) {
+                        arcanaSound = listSound.get(listSound.size() - 1).getAttributeByName("href");
+                    }
+                }
+                Timber.d(">>>" + "originalSound:" + originalSound + " ;arcanaSound:" + arcanaSound);
+
+                dto.setVoiceGroup(group);
+                dto.setLink(originalSound);
+                dto.setLinkArcana(arcanaSound);
+                dto.setText(soundContent);
+                dto.setHeroId(fromHero.heroId);
+                dto.setHeroIcon(fromHero.heroIcon);
+                dto.setHeroName(fromHero.name);
+                dto.setText(soundContent);
+
+                list.add(dto);
+                itemCount++;
+
+                Timber.d(">>>" + "soundContent:" + soundContent);
 
             }
 
         } catch (Exception e) {
             Timber.e(">>>" + "Err workingWithText:" + e);
         }
+        return list;
     }
 
     private List<HeroResponsesDto> workWithResponseHasIcon(TagNode tagNode, String group, HeroBasicDto fromHero) {
         Timber.d(">>>" + "workWithResponseHasIcon");
-        if (!mIsItem) {
+        if (mIsItem) {
             return new ArrayList<>();
         }
         List<HeroResponsesDto> list = new ArrayList<>();
@@ -582,55 +604,6 @@ public class JsoupLoader {
 
     }
 
-    //todo working
-//    private void workWithImage(TagNode tagNode) {
-//        try {
-//
-//            Logger.debug(TAG, ">>>" + "*** workWithImage:" + tagNode.getChildTagList().size());
-//            int i = 0;
-//            boolean isKillingSpecificEnemy = false;
-//            boolean isKilling = false;
-//            for (TagNode tag : tagNode.getChildTagList()) {
-//
-//                Logger.debug(TAG, ">>>" + "tag:" + tag.getName());
-//                if (tag.getName().contains("ul")) {
-//                    if (isKillingSpecificEnemy) {
-//                        isKillingSpecificEnemy = false;
-//                        getKillingEnemy(tag, "Unknown", null);
-//
-//                    } else {
-//
-//                        processWithTextPOnly(tag, ".");
-//                    }
-//
-//                }
-//
-//                if (tag.getName().contains("p")) {
-//                    Logger.debug(TAG, ">>>" + "p > text:" + tag.getText());
-//                    isKillingSpecificEnemy = true;
-//                    if (tag.getText().toString().contains("First Blood")) {
-//                        isKillingSpecificEnemy = false;
-//                    }
-//                    if (tag.getText().toString().contains("Killing a specific enemy")) {
-////                        isKillingSpecificEnemy = true;
-//                    }
-//
-////                    if (isKillingSpecificEnemy) {
-////                        isKillingSpecificEnemy = false;
-//////                        getKillingEnemy(tag);
-////                    }
-//                }
-//
-//                i++;
-//
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
     private String getSoundLink(TagNode tag) {
         TagNode tagMp3 = tag.getChildTagList().get(0);
 
@@ -660,29 +633,29 @@ public class JsoupLoader {
             for (TagNode tag : nodeA.getChildTagList()) {
                 try {
                     dto = new HeroResponsesDto(itemCount);
-                    final int size = tag.getChildTagList().size();
-                    Timber.d(">>>" + "TAg size:" + size);
-                    int posSound = 0;
-                    int posItem = 2;
-                    if (size == 5) {
-                        posSound = 2;
-                        posItem = posSound + 1;
-                    }
-                    if (size == 4) {
-                        posSound = 1;
-                        posItem = posSound + 1;
-                    }
-
-
-
                     String soundContent = tag.getText().toString().replace("Play", "").replace("u ", "").replace("r ", "").trim();
-                    TagNode tagMp3 = tag.getChildTagList().get(posSound);
 
-                    String soundLink = tagMp3.getAttributeByName("href");
+                    List<TagNode> listSound = (List<TagNode>) tag.getElementListHavingAttribute("class", true);
+                    Timber.d(">>>" + "listSound:" + listSound.size());
+
+                    String originalSound = "";
+                    String arcanaSound = "";
+                    if (listSound != null && !listSound.isEmpty()) {
+                        originalSound = listSound.get(0).getAttributeByName("href");
+                        if (listSound.size() >= 2) {
+                            arcanaSound = listSound.get(listSound.size() - 1).getAttributeByName("href");
+                        }
+                    }
+                    Timber.d(">>>" + "originalSound:" + originalSound + " ;arcanaSound:" + arcanaSound);
+
+
+                    List<TagNode> tagImage = (List<TagNode>) tag.getElementListHavingAttribute("src", true);
+                    Timber.d(">>>" + "tagImage:" + tagImage.size());
 
                     //add
                     dto.setVoiceGroup(soundGroup);
-                    dto.setLink(soundLink);
+                    dto.setLink(originalSound);
+                    dto.setLinkArcana(arcanaSound);
                     dto.setText(soundContent);
 
                     dto.setHeroId(fromHero.heroId);
@@ -690,10 +663,11 @@ public class JsoupLoader {
                     dto.setHeroName(fromHero.name);
 
                     //to heroID
-                    TagNode tagToHero = tag.getChildTagList().get(posItem);
-                    String toHeroId = tagToHero.getAttributeByName("href");
-
-                    if (toHeroId != null) {
+                    String toHeroId = "";
+                    if (tagImage != null && !tagImage.isEmpty()) {
+                        toHeroId = tagImage.get(0).getParent().getAttributeByName("href");
+                    }
+                    if (!TextUtils.isEmpty(toHeroId)) {
                         toHeroId = toHeroId.replace("/", "");
                         if ("Abyssal_Underlord".equals(toHeroId)) {
                             toHeroId = "Underlord";
@@ -702,7 +676,7 @@ public class JsoupLoader {
                         dto.setToHeroId(toHeroId);
 
 
-                        Timber.d(">>>" + "toHeroId:" + toHeroId + ";soundContent:" + soundContent + ";soundLink:" + soundLink);
+                        Timber.d(">>>" + "toHeroId:" + toHeroId + ";soundContent:" + soundContent + ";soundLink:" + originalSound);
 
                         if (mIsItem) {
                             Realm realm = Realm.getDefaultInstance();
@@ -818,16 +792,22 @@ public class JsoupLoader {
                     i++;
                     //todo hack
                     if (i == 2) {
-                        break;
+//                        break;
                     }
                     String heroId = heroBasicDto.heroId;
+
+                    //todo hack
+//                    heroId = "Terrorblade";
+
                     String path = "http://dota2.gamepedia.com/" + heroId + "/Responses";
-                    path = HERO_RESPONSE_TE;
+
                     Timber.d(">>>" + i + ":" + "working with : " + path);
 
-                    if (heroBasicDto.isArcana()) {
-                        continue;
-                    }
+//                    if (!heroBasicDto.isArcana()) {
+//                        Timber.d(">>>" + "Skip:" + heroId);
+//                        continue;
+//                    }
+                    Timber.d(">>>" + "Continue:" + heroId);
 
                     //Get Group Killing a specific enemy
                     TagNode nodeA = getRootNode(path);
@@ -842,30 +822,33 @@ public class JsoupLoader {
                     boolean isMeetingAnAlly = false;
                     boolean isItem = false;
                     boolean isNormalSound = false;
-                    boolean isBegin = false;
+                    String soundGroup = "Unnnown";
                     for (TagNode tag : tagNodes) {
 
                         try {
                             if (tag.getName().contains("h2")) {
 //                                    Logger.debug(TAG, ">>>" + j + " h2:" + tag.getText());
                                 if (tag.getText().toString().contains("Killing an enemy")) {
-                                    isKillingEnemy = true;
+//                                    isKillingEnemy = true;
+                                    isNormalSound = false;
                                 }
                                 if (tag.getText().toString().contains("Meeting an ally")) {
                                     Timber.e(">>>" + "Meeting an ally");
-                                    isMeetingAnAlly = true;
+//                                    isMeetingAnAlly = true;
+                                    isNormalSound = false;
                                 }
 
                                 if (tag.getText().toString().contains("Acquiring an item")) {
                                     Timber.e(">>>" + "Acquiring an item\n");
-                                    isItem = true;
-                                    mIsItem = true;
+                                    isNormalSound = false;
+//                                    isItem = true;
+//                                    mIsItem = true;
                                 }
 
 
                                 //normal
                                 if (!isKillingEnemy && !isMeetingAnAlly && !isItem) {
-                                    String soundGroup = tag.getText().toString();
+                                    soundGroup = tag.getText().toString().trim();
 //                                        Timber.w(">>>" + "Sound group :" + soundGroup);
                                     isNormalSound = true;
                                 }
@@ -876,18 +859,17 @@ public class JsoupLoader {
                                     isKillingEnemy = false;
                                 }
                                 if (isMeetingAnAlly) {
-//                                        workWithImage(tag);
                                     list.addAll(workWithResponseHasIcon(tag, "Meeting an ally", heroBasicDto));
                                     isMeetingAnAlly = false;
                                 }
                                 if (isItem) {
                                     list.addAll(workWithResponseHasIcon(tag, "Acquiring an item", heroBasicDto));
-//                                        workWithImage(tag);
                                     isItem = false;
                                     mIsItem = false;
                                 }
                                 if (isNormalSound) {
-//                                        workingWithText(tag);
+                                    list.addAll(workingWithText(tag, soundGroup, heroBasicDto));
+//                                    processWithTextPOnly(tag, soundGroup, heroBasicDto);
                                     isNormalSound = false;
                                 }
                             }
@@ -923,7 +905,13 @@ public class JsoupLoader {
             @Override
             public void onNext(List<HeroResponsesDto> heroResponsesDtos) {
                 Timber.d(">>>" + "onNext:" + heroResponsesDtos.size());
-                pushALLHeroItems(heroResponsesDtos);
+//                pushALLHeroItems(heroResponsesDtos);
+//                pushALLHeroKillingMeeting(heroResponsesDtos);
+                pushALLHeroNormalVoices(heroResponsesDtos);
+
+//                for (HeroResponsesDto dto : heroResponsesDtos) {
+//                    Timber.d(">>>" + "items:" + dto.toString());
+//                }
 
             }
         };
@@ -1196,7 +1184,7 @@ public class JsoupLoader {
     }
 
     private void pushALL() {
-        count = 0;
+        mPushCounter = 0;
 
         Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
@@ -1226,7 +1214,7 @@ public class JsoupLoader {
         if (isPushALlItems) {
             return;
         }
-        count = 0;
+        mPushCounter = 0;
 
         Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
@@ -1253,10 +1241,9 @@ public class JsoupLoader {
         if (isPushALlHEROBUYItems) {
             return;
         }
-        count = 0;
+        mPushCounter = 0;
 
         Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
-            Realm realm = Realm.getDefaultInstance();
             try {
                 for (HeroResponsesDto d : listData) {
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -1279,7 +1266,65 @@ public class JsoupLoader {
 
     }
 
-    int count = 0;
+    private void pushALLHeroKillingMeeting(final List<HeroResponsesDto> listData) {
+        if (isPushALlHEROKillingMeeting) {
+            return;
+        }
+        mPushCounter = 0;
+
+        Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
+            try {
+                for (HeroResponsesDto d : listData) {
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference reference = firebaseDatabase.getReference();
+
+                    reference.child(MsConst.TABLE_HERO_KILLING_MEETING).push().setValue(d)
+                            .addOnSuccessListener(aVoid -> Logger.debug(TAG, ">>>push " + mPushCounter + ":" + "onSuccess pushItem:" + d.getHeroId()))
+                            .addOnFailureListener(e -> Logger.error(TAG, ">>> Error:" + "onFailure:" + e))
+                    ;
+                }
+
+            } catch (Exception e) {
+                Logger.error(TAG, ">>> Error pushALL:" + e);
+
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+
+    }
+
+    private void pushALLHeroNormalVoices(final List<HeroResponsesDto> listData) {
+        if (isPushALlNormalVoices) {
+            return;
+        }
+        mPushCounter = 0;
+
+        Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
+            try {
+                for (HeroResponsesDto d : listData) {
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference reference = firebaseDatabase.getReference();
+
+                    reference.child(MsConst.TABLE_HERO_NORMAL_VOICE).push().setValue(d)
+                            .addOnSuccessListener(aVoid -> Logger.debug(TAG, ">>>push " + mPushCounter + ":" + "onSuccess pushItem:" + d.toString()))
+                            .addOnFailureListener(e -> Logger.error(TAG, ">>> Error:" + "onFailure:" + e))
+                    ;
+                }
+
+            } catch (Exception e) {
+                Logger.error(TAG, ">>> Error pushALL:" + e);
+
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+
+    }
+
+    int mPushCounter = 0;
 
     private void push(HeroResponsesDto heroBasicDto) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -1289,8 +1334,8 @@ public class JsoupLoader {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Logger.debug(TAG, ">>>" + "onSuccess HeroLordSounds:" + heroBasicDto.getHeroId() + ";count:" + count);
-                        count++;
+                        Logger.debug(TAG, ">>>" + "onSuccess HeroLordSounds:" + heroBasicDto.getHeroId() + ";mPushCounter:" + mPushCounter);
+                        mPushCounter++;
 
                     }
                 })
@@ -1298,7 +1343,7 @@ public class JsoupLoader {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Logger.error(TAG, ">>> Error:" + "onFailure:" + e);
-                        count++;
+                        mPushCounter++;
 
                     }
                 })
