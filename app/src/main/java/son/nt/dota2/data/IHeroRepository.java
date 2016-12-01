@@ -4,7 +4,9 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import rx.Completable;
 import rx.Observable;
+import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
@@ -36,4 +38,6 @@ public interface IHeroRepository {
     Observable<HeroBasicDto> getHeroFromId(String heroId);
 
     Observable<List<HeroResponsesDto>> getSounds(String heroID);
+
+    Observable<List<AbilitySoundDto>> getAbis(String heroID);
 }

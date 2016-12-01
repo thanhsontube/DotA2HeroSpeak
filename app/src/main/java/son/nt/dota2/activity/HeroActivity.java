@@ -53,6 +53,7 @@ import son.nt.dota2.hero.HeroContract;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.ottobus_entry.GoShare;
 import son.nt.dota2.service.PlayService2;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * * Get HeroBasicDto from heroID -> update kenburns and get heroGroup,
@@ -169,7 +170,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 //                ft.commit();
 //            }
 //        });
-//        OttoBus.register(this);
+        OttoBus.register(this);
         adMob();
 //        isAddMob();
 
@@ -206,7 +207,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
             mPlayService = null;
         }
         super.onDestroy();
-//        OttoBus.unRegister(this);
+        OttoBus.unRegister(this);
     }
 
     @Override
@@ -311,6 +312,14 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 //        ft.add(dialog, "chat");
 //        ft.commit();
 //    }
+
+    @Subscribe
+    public void getCircleClick(CircleFeatureDto circleFeatureDto) {
+        tab = circleFeatureDto.getName();
+
+    }
+
+    public String tab= "Sound";
 
 
 }

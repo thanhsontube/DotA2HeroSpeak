@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.List;
 
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.fragment.AbiFragment;
 import son.nt.dota2.fragment.SwipeHeroFragment;
 
 /**
@@ -44,4 +45,6 @@ public class AdapterPagerHero extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return listFragments.get(position).name;
     }
+
+
 }

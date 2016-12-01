@@ -8,6 +8,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import rx.Observable;
 import rx.Subscriber;
+import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
@@ -154,6 +155,22 @@ public class HeroRepository implements IHeroRepository {
                 Realm realm = getRealm();
                 final RealmResults<HeroResponsesDto> group1 = realm.where(HeroResponsesDto.class)
                         .equalTo("heroId", heroID)
+                        .findAll();
+                subscriber.onNext(realm.copyFromRealm(group1));
+                subscriber.onCompleted();
+                realm.close();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<AbilitySoundDto>> getAbis(String abiHeroID) {
+        return Observable.create(new Observable.OnSubscribe<List<AbilitySoundDto>>() {
+            @Override
+            public void call(Subscriber<? super List<AbilitySoundDto>> subscriber) {
+                Realm realm = getRealm();
+                final RealmResults<AbilitySoundDto> group1 = realm.where(AbilitySoundDto.class)
+                        .equalTo("abiHeroID", abiHeroID)
                         .findAll();
                 subscriber.onNext(realm.copyFromRealm(group1));
                 subscriber.onCompleted();

@@ -2,6 +2,7 @@ package son.nt.dota2.hero.hero_fragment;
 
 import java.util.List;
 
+import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 
@@ -17,6 +18,8 @@ public class HeroResponseContract {
         void addDataToDownload(List<HeroResponsesDto> heroResponsesDtos, String heroID);
 
         void updateArcana(boolean arcana);
+
+        void updateAbi(List<AbilitySoundDto> data);
     }
 
     public interface Presenter {
@@ -28,5 +31,7 @@ public class HeroResponseContract {
         void setFetchServiceBind(boolean binded);
 
         List <HeroResponsesDto> getSoundsList ();
+
+        void getAbi ();
     }
 }

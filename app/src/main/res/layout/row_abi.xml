@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/abi_view"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/d_row_speak"
+              android:descendantFocusability="blocksDescendants"
+              android:minHeight="?actionBarSize"
+              android:orientation="vertical"
+              android:paddingBottom="8dp"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:paddingTop="8dp">
+
+    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+               android:id="@+id/abi_img"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:layout_marginTop="16dp"
+              android:id="@+id/abi_name"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:layout_marginTop="16dp"
+              android:textIsSelectable="true"
+              android:id="@+id/abi_des"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:layout_marginTop="16dp"
+              android:textIsSelectable="true"
+              android:id="@+id/abi_notes"/>
+
+
+</LinearLayout>

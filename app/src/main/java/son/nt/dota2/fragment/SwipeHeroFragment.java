@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -34,10 +33,12 @@ import son.nt.dota2.activity.HeroActivity;
 import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.HeroTabFragment;
 import son.nt.dota2.data.HeroRepository;
+import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.dto.VoiceSpinnerItem;
+import son.nt.dota2.hero.hero_fragment.AdapterFragmentSkills;
 import son.nt.dota2.hero.hero_fragment.AdapterFragmentSound;
 import son.nt.dota2.hero.hero_fragment.HeroFragmentPresenter;
 import son.nt.dota2.hero.hero_fragment.HeroResponseContract;
@@ -69,10 +70,14 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
     @BindView(R.id.hero_rcv)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.skill_rcv)
+    RecyclerView mRecyclerViewSkills;
+
     @BindView(R.id.arcana_voice)
     SwitchCompat mSwitchCompatArcanaVoice;
 
     private AdapterFragmentSound mAdapter;
+    private AdapterFragmentSkills mAdapterSkills;
 
     private ActionBar mSafeActionBar;
 
@@ -94,7 +99,15 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
     @Override
     public void onPageSelected() {
         Timber.d(">>>" + "onPageSelected");
-        ((HeroActivity) getActivity()).setSoundsList(mPresenter.getSoundsList());
+        final HeroActivity activity = (HeroActivity) getActivity();
+        activity.setSoundsList(mPresenter.getSoundsList());
+        if (activity.tab.equals("sound")) {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mRecyclerViewSkills.setVisibility(View.GONE);
+        } else {
+            mRecyclerView.setVisibility(View.GONE);
+            mRecyclerViewSkills.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -146,6 +159,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
         super.onViewCreated(view, savedInstanceState);
         initLayout(view);
         mPresenter.fetchBasicHeroFromHeroId(mHeroId);
+        mPresenter.getAbi();
     }
 
     @Override
@@ -188,6 +202,12 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 //        setupSpinner();
 
 //        recyclerView = (RecyclerView) view.findViewById(R.id.voice_recycleview);
+        LinearLayoutManager linearLayoutManagerSkill = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerViewSkills.setLayoutManager(linearLayoutManagerSkill);
+        mRecyclerViewSkills.setHasFixedSize(true);
+        mAdapterSkills = new AdapterFragmentSkills(getActivity(), new ArrayList<>());
+        mRecyclerViewSkills.setAdapter(mAdapterSkills);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
@@ -196,12 +216,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
         mAdapter = new AdapterFragmentSound(getActivity(), new ArrayList<>());
         mRecyclerView.setAdapter(mAdapter);
 
-        mSwitchCompatArcanaVoice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mAdapter.setArcana(isChecked);
-            }
-        });
+        mSwitchCompatArcanaVoice.setOnCheckedChangeListener((buttonView, isChecked) -> mAdapter.setArcana(isChecked));
     }
 
     public void initListener() {
@@ -378,5 +393,10 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
         } else {
             mSwitchCompatArcanaVoice.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void updateAbi(List<AbilitySoundDto> data) {
+        mAdapterSkills.setData(data);
     }
 }
