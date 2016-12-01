@@ -1,6 +1,7 @@
 package son.nt.dota2.service;
 
 import android.support.v4.util.SparseArrayCompat;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -52,8 +53,8 @@ public class MediaServicePresenterImpl implements MediaServiceContract.Presenter
      * @param dto
      */
     @Override
-    public void playSelectedSound(ISound dto) {
-        mController.playOnline(dto.getLink());
+    public void playSelectedSound(ISound dto, boolean arcana) {
+        mController.playOnline(arcana ? (TextUtils.isEmpty(dto.getArcanaLink()) ? dto.getLink() : dto.getArcanaLink()) : dto.getLink());
         mController.showOnNotification (dto);
 
     }

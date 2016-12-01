@@ -38,6 +38,6 @@ public class MediaServiceContract {
 
         void setSoundsSource(int type, List<? extends ISound> list);
 
-        void playSelectedSound(ISound dto);
+        void playSelectedSound(ISound dto, boolean arcana);
     }
 }

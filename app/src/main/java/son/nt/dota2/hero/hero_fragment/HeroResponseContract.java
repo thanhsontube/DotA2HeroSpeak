@@ -15,6 +15,8 @@ public class HeroResponseContract {
         void showHeroSoundsList(List<HeroResponsesDto> list);
 
         void addDataToDownload(List<HeroResponsesDto> heroResponsesDtos, String heroID);
+
+        void updateArcana(boolean arcana);
     }
 
     public interface Presenter {

@@ -9,6 +9,7 @@ import rx.schedulers.Schedulers;
 import son.nt.dota2.base.BasePresenter;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.HeroResponsesDto;
+import son.nt.dota2.dto.home.HeroBasicDto;
 import timber.log.Timber;
 
 /**
@@ -22,6 +23,7 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
     private HeroResponseContract.View mView;
     private IHeroRepository mRepository;
     private String mHeroID;
+    private HeroBasicDto mSelectedHero;
 
     private boolean mBindFetchServiceDone = false;
     private boolean mHeroSoundsLoaded = false;
@@ -37,6 +39,8 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
         this.mHeroID = heroId;
         final Subscription subscribe = mRepository.getHeroFromId(heroId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(heroBasicDto -> {
+                            this.mSelectedHero = heroBasicDto;
+                            mView.updateArcana(mSelectedHero.isArcana());
                             getHeroSounds();
 
                         }
@@ -58,7 +62,7 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
     private void startPrefetch() {
         Timber.d(">>>" + ">>>" + "startPrefetch mBindFetchServiceDone" + mBindFetchServiceDone + ";mHeroSoundsLoaded:" + mHeroSoundsLoaded);
         if (mBindFetchServiceDone && mHeroSoundsLoaded) {
-            mView.addDataToDownload (mHeroResponsesDtos, mHeroID);
+            mView.addDataToDownload(mHeroResponsesDtos, mHeroID);
         }
     }
 

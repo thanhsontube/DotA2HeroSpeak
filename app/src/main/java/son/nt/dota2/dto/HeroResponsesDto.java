@@ -234,6 +234,11 @@ public class HeroResponsesDto extends RealmObject implements ISound {
         return MsConst.TYPE_HERO_SOUND;
     }
 
+    @Override
+    public String getArcanaLink() {
+        return linkArcana;
+    }
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();

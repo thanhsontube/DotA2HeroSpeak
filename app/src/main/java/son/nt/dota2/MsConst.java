@@ -16,6 +16,7 @@ public class MsConst {
     //LORD
     public static final String LORD_KILLING = "Enemies killing";
     public static final String LORD_MEETING = "Allies meeting";
+    public static final String BUYS_ITEMS = "Acquiring an item";
 
     public static final String PREFETCH = "PREFETCH";
 

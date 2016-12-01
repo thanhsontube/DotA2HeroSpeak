@@ -13,12 +13,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -66,6 +68,9 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 
     @BindView(R.id.hero_rcv)
     RecyclerView mRecyclerView;
+
+    @BindView(R.id.arcana_voice)
+    SwitchCompat mSwitchCompatArcanaVoice;
 
     private AdapterFragmentSound mAdapter;
 
@@ -190,6 +195,13 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 
         mAdapter = new AdapterFragmentSound(getActivity(), new ArrayList<>());
         mRecyclerView.setAdapter(mAdapter);
+
+        mSwitchCompatArcanaVoice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mAdapter.setArcana(isChecked);
+            }
+        });
     }
 
     public void initListener() {
@@ -357,5 +369,14 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 //        downloadService.addLinkDto2(heroResponsesDtos, heroID);
     }
 
-
+    @Override
+    public void updateArcana(boolean arcana) {
+        mAdapter.setArcana(arcana);
+        if (arcana) {
+            mSwitchCompatArcanaVoice.setVisibility(View.VISIBLE);
+            mSwitchCompatArcanaVoice.setChecked(true);
+        } else {
+            mSwitchCompatArcanaVoice.setVisibility(View.GONE);
+        }
+    }
 }

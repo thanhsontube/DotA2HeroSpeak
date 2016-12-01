@@ -6,9 +6,12 @@ package son.nt.dota2.dto.heroSound;
 
 public interface ISound {
 
+    //text
     public String getTitle();
 
     public String getLink();
+
+    public String getArcanaLink();
 
     public String getImage();
 
@@ -16,6 +19,12 @@ public interface ISound {
 
     public boolean isPlaying();
 
-    public int getSoundType ();
+    //type of Sounds
+//    public static final int TYPE_HERO_SOUND = 1;
+//    public static final int TYPE_MUSIC_PACK = 2;
+//    public static final int TYPE_CREATIVE_SOUND = 3;
+//    public static final int TYPE_ITEM_SOUND = 4;
+
+    public int getSoundType();
 
 }

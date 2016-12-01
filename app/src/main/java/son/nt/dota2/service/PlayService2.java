@@ -32,6 +32,7 @@ import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.musicPack.MusicPackDetailsActivity;
 import son.nt.dota2.ottobus_entry.GoPlayer;
+import son.nt.dota2.ottobus_entry.GoVoice;
 import son.nt.dota2.service.notification.INotification;
 import son.nt.dota2.service.notification.NotificationImpl;
 import son.nt.dota2.utils.FileUtil;
@@ -381,27 +382,18 @@ public class PlayService2 extends Service implements MediaServiceContract.Contro
         }
     }
 
-    private final BroadcastReceiver notificationReceiver = new BroadcastReceiver()
-    {
+    private final BroadcastReceiver notificationReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(NotificationImpl.ACTION_PLAY))
-            {
+            if (action.equals(NotificationImpl.ACTION_PLAY)) {
                 play();
-            }
-            else if (action.equals(NotificationImpl.ACTION_NEXT))
-            {
+            } else if (action.equals(NotificationImpl.ACTION_NEXT)) {
 
 //                playAtPos(currentPos ++);
-            }
-            else if (action.equals(NotificationImpl.ACTION_PREV))
-            {
+            } else if (action.equals(NotificationImpl.ACTION_PREV)) {
 //                playAtPos(currentPos --);
-            }
-            else if (action.equals(NotificationImpl.ACTION_CLOSE))
-            {
+            } else if (action.equals(NotificationImpl.ACTION_CLOSE)) {
 //                relaxResource(true);
 //                if (mediaPlayer != null && mediaPlayer.isPlaying())
 //                {
@@ -416,10 +408,9 @@ public class PlayService2 extends Service implements MediaServiceContract.Contro
     };
 
     @Subscribe
-    public void onGetAdapterSwipeFragmentClick (HeroResponsesDto dto) {
-        Timber.d(">>>" + "onGetAdapterSwipeFragmentClick:" + dto.getText());
+    public void onGetAdapterSwipeFragmentClick(GoVoice dto) {
 //        play(dto.getLink(), dto.getHeroId());
-        mPresenter.playSelectedSound (dto);
+        mPresenter.playSelectedSound(dto.mHeroResponsesDto, dto.arcana);
     }
 
 

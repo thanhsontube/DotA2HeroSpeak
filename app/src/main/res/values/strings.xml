@@ -45,6 +45,9 @@
     <string name="group_str">STRENGTH</string>
     <string name="group_agi">AGILITY</string>
     <string name="group_intel">INTEL</string>
+    <string name="meets">meets</string>
+    <string name="killed">killed</string>
+    <string name="buy">buys</string>
 
 
 </resources>

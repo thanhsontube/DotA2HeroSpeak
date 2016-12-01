@@ -55,12 +55,12 @@ public class SplashActivity extends BaseActivity {
         Timber.d(">>>" + "onCreate 3");
         super.onCreate(savedInstanceState);
         mRepository = new HeroRepository();
-        mIsNeedLoadData = !PreferenceUtil.getPreference(this, MsConst.PREFETCH, false);
+//        mIsNeedLoadData = !PreferenceUtil.getPreference(this, MsConst.PREFETCH, false);
         if (!mIsNeedLoadData) {
 
 //            removeTABLE_HERO_NORMAL_VOICE();
-//            startActivity(new Intent(this, TestActivity.class));
-            startActivity(HomeActivity.getIntent(getApplicationContext()));
+            startActivity(new Intent(this, TestActivity.class));
+//            startActivity(HomeActivity.getIntent(getApplicationContext()));
         } else {
             Realm realm = Realm.getDefaultInstance();
             realm.beginTransaction();
@@ -68,16 +68,18 @@ public class SplashActivity extends BaseActivity {
             realm.commitTransaction();
             realm.close();
 
-//            isLordLoaded = true;
+            isLordLoaded = true;
 //            isKillingLoaded = true;
-//            isNormalVoiceLoaded = true;
+            isNormalVoiceLoaded = true;
+            isBuyItemsLoaded = true;
+            isItemsLoaded = true;
 
             getBasicHeroList();
-            getLordResponseList();
+//            getLordResponseList();
             getKillingResponseList();
-            getNormalVoicesResponseList();
-            getHeroResponseWithItemsList();
-            getItemsList();
+//            getNormalVoicesResponseList();
+//            getHeroResponseWithItemsList();
+//            getItemsList();
         }
 
     }

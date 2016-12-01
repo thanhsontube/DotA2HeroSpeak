@@ -4,9 +4,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.drawable.AnimationDrawable;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,11 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.Random;
 
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroResponsesDto;
+import son.nt.dota2.ottobus_entry.GoVoice;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
 
@@ -32,6 +29,7 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
     public static final String TAG = AdapterFragmentSound.class.getSimpleName();
 
     private List<HeroResponsesDto> mList;
+    private boolean isArcana;
     private LayoutInflater mInflater;
     private Context mContext;
     private static final int TYPE_TITLE = 0;
@@ -44,6 +42,10 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mContext = context;
 
+    }
+
+    public void setArcana(boolean arcana) {
+        isArcana = arcana;
     }
 
     @Override
@@ -73,7 +75,7 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
                     /**
                      * send to {@link son.nt.dota2.service.PlayService2#onGetAdapterSwipeFragmentClick(HeroResponsesDto)}
                      */
-                    OttoBus.post(selectedItem);
+                    OttoBus.post(new GoVoice(selectedItem, isArcana));
                 });
                 return holder;
 
@@ -102,9 +104,7 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
 
                 if (dto.isPlaying()) {
                     holder.view.setBackgroundResource(R.drawable.d_row_speaking);
-                    holder.imgPlaying.setVisibility(View.VISIBLE);
                 } else {
-                    holder.imgPlaying.setVisibility(View.GONE);
                     holder.view.setBackgroundResource(android.R.color.transparent);
                 }
 
@@ -118,7 +118,7 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
                         .fitCenter()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.imgFrom);
-                String related = " : ";
+                String related = " -> ";
 
                 if (TextUtils.isEmpty(dto.toHeroId)) {
                     holder.imgTo.setVisibility(View.GONE);
@@ -132,15 +132,15 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
 
                     if (dto.isAlliMeetingGroup() || dto.getVoiceGroup().equals(MsConst.LORD_MEETING)) {
 
-                        related = " meets ";
+                        related = " " + mContext.getString(R.string.meets) + " ";
                     }
 
                     if (dto.isEnemiesKillingGroup() || dto.getVoiceGroup().equals(MsConst.LORD_KILLING)) {
-                        related = " killed ";
+                        related = " " + mContext.getString(R.string.killed) + " ";
                     }
 
-                    if (dto.getVoiceGroup().contains("Acquiring an item")) {
-                        related = " buys ";
+                    if (dto.getVoiceGroup().contains(MsConst.BUYS_ITEMS)) {
+                        related = " " + mContext.getString(R.string.buy) + " ";
                     }
 
                     holder.related.setVisibility(View.VISIBLE);
@@ -167,9 +167,7 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
 //                });
                 if (dto.isPlaying()) {
                     holder.view.setBackgroundResource(R.drawable.d_row_speaking);
-                    holder.imgPlaying.setVisibility(View.VISIBLE);
                 } else {
-                    holder.imgPlaying.setVisibility(View.GONE);
                     holder.view.setBackgroundResource(android.R.color.transparent);
                 }
 
@@ -210,7 +208,6 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
         TextView text;
         TextView related;
         TextView voiceGroup;
-        ImageView imgPlaying;
         ImageView imgFrom;
         ImageView imgTo;
         View view;
@@ -224,24 +221,10 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
             related = (TextView) v.findViewById(R.id.row_voice_related);
             voiceGroup = (TextView) v.findViewById(R.id.row_voice_group);
             text = (TextView) v.findViewById(R.id.row_voice_text);
-            imgPlaying = (ImageView) v.findViewById(R.id.row_voice_playing);
             imgTo = (ImageView) v.findViewById(R.id.row_voice_to_icon);
             imgFrom = (ImageView) v.findViewById(R.id.row_voice_rival);
             view = v.findViewById(R.id.row_voice_main);
             title = (TextView) v.findViewById(R.id.row_title);
-            if (imgPlaying != null) {
-                if (Build.VERSION.SDK_INT >= 21) {
-                    AnimationDrawable animation = (AnimationDrawable)
-                            imgPlaying.getContext().getDrawable(R.drawable.ic_playing_drawable);
-                    imgPlaying.setImageDrawable(animation);
-                    int col = new Random().nextInt(colors.length - 1);
-                    ColorStateList sColorStatePlaying = ColorStateList.valueOf(imgPlaying.getContext().getResources().getColor(
-                            colors[col]));
-                    imgPlaying.setImageTintList(sColorStatePlaying);
-                    if (animation != null) animation.start();
-                }
-
-            }
         }
     }
 }
