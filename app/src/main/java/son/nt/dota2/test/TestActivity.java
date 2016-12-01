@@ -49,12 +49,16 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
         findViewById(R.id.push_hero_lord).setOnClickListener(this);
         findViewById(R.id.hero_response).setOnClickListener(this);
         findViewById(R.id.items).setOnClickListener(this);
+        findViewById(R.id.abilities).setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.abilities:
+                mJsoupLoader.getAbilities();
+                break;
             case R.id.test_get_hero:
                 getHeroFromParse();
                 break;

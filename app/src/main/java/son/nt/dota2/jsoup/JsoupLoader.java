@@ -28,7 +28,10 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
+import son.nt.dota2.dto.AbilityDto;
+import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
@@ -64,6 +67,16 @@ public class JsoupLoader {
 
 
     public static final String HERO_RESPONSE3 = "http://dota2.gamepedia.com/index.php?title=Drow_Ranger/Responses&action=edit";
+
+
+    /**
+     * copy ability from old (asset) and push to firebase
+     */
+    public void getAbilities () {
+        Timber.d(">>>" + "getAbilities");
+        doGetAbilities();
+
+    }
 
     //http://dota2.gamepedia.com/Items
     public void withGetItems() {
@@ -1424,6 +1437,30 @@ public class JsoupLoader {
         realm.beginTransaction();
         realm.delete(HeroResponsesDto.class);
         realm.commitTransaction();
+    }
+
+
+    private void doGetAbilities () {
+        try {
+            HeroManager.getInstance().initDataSelf();
+            final List<HeroEntry> listHeroes = HeroManager.getInstance().listHeroes;
+            Timber.d(">>>" + listHeroes.size());
+            itemCount = 0;
+            for (HeroEntry entry : listHeroes) {
+                itemCount ++;
+                int j = 0;
+                Logger.debug(TAG, ">>>" + itemCount + ";id:" + entry.heroId  + " -------------------");
+                for (AbilityDto abi : entry.listAbilities) {
+                    Logger.debug(TAG, ">>>" + j++ + " Abi heroID:" + abi.heroId + ";name:" + abi.name +";sound:" + abi.sound);
+                }
+            }
+
+
+        }catch (Exception e) {
+            Timber.e(">>>" + "doGetAbilities:" + e);
+        }
+
+
     }
 
 }

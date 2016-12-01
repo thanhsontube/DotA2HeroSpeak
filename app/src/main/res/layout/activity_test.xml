@@ -16,6 +16,12 @@
         <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Copy Abilities"
+                android:id="@+id/abilities"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Items"
                 android:id="@+id/items"/>
         <Button

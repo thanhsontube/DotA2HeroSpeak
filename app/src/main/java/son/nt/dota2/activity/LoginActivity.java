@@ -53,7 +53,7 @@ public class LoginActivity extends AActivity implements LoginFragment.OnFragment
         super.onCreate(savedInstanceState);
         TsGaTools.trackPages(MsConst.TRACK_START);
         setContentView(R.layout.activity_login);
-        HeroManager.getInstance().initDataSelf();
+//        HeroManager.getInstance().initDataSelf();
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_get_push", true)) {
             ParsePush.subscribeInBackground(MsConst.CHANNEL_COMMON);
         } else {
