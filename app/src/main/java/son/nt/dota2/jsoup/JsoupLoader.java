@@ -28,13 +28,18 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
+import son.nt.dota2.ResourceManager;
+import son.nt.dota2.data.HeroRepository;
+import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.AbilityDto;
-import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.AbilityNotesDto;
+import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.dto.save.SaveHeroAbility;
+import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
 import timber.log.Timber;
 
@@ -65,14 +70,22 @@ public class JsoupLoader {
     public static final String HERO_RESPONSE_SNIPER = "http://dota2.gamepedia.com/Sniper/Responses";
     public static final String ITEMS = "http://dota2.gamepedia.com/Items";
 
+    public static final String UNDERLORD_ABI = "http://dota2.gamepedia.com/Underlord";
+
 
     public static final String HERO_RESPONSE3 = "http://dota2.gamepedia.com/index.php?title=Drow_Ranger/Responses&action=edit";
 
 
+    public void getNewAbilities() {
+        Timber.d(">>>" + "getNewAbilities");
+        getNewHeroSkillList(UNDERLORD_ABI);
+
+    }
+
     /**
      * copy ability from old (asset) and push to firebase
      */
-    public void getAbilities () {
+    public void getAbilities() {
         Timber.d(">>>" + "getAbilities");
         doGetAbilities();
 
@@ -1372,7 +1385,7 @@ public class JsoupLoader {
                 }
 
             } catch (Exception e) {
-                mPushCounter ++;
+                mPushCounter++;
                 Logger.error(TAG, ">>> Error pushALL:" + e);
 
             }
@@ -1440,27 +1453,211 @@ public class JsoupLoader {
     }
 
 
-    private void doGetAbilities () {
+    private void doGetAbilities() {
         try {
-            HeroManager.getInstance().initDataSelf();
-            final List<HeroEntry> listHeroes = HeroManager.getInstance().listHeroes;
-            Timber.d(">>>" + listHeroes.size());
-            itemCount = 0;
-            for (HeroEntry entry : listHeroes) {
-                itemCount ++;
-                int j = 0;
-                Logger.debug(TAG, ">>>" + itemCount + ";id:" + entry.heroId  + " -------------------");
-                for (AbilityDto abi : entry.listAbilities) {
-                    Logger.debug(TAG, ">>>" + j++ + " Abi heroID:" + abi.heroId + ";name:" + abi.name +";sound:" + abi.sound);
-                }
-            }
+//            HeroManager.getInstance().initDataSelf();
+//            final List<HeroEntry> listHeroes = HeroManager.getInstance().listHeroes;
+//            Timber.d(">>>" + listHeroes.size());
+//            itemCount = 0;
+//            for (HeroEntry entry : listHeroes) {
+//                itemCount ++;
+//                int j = 0;
+//                Logger.debug(TAG, ">>>" + itemCount + ";id:" + entry.heroId  + " -------------------");
+//                for (AbilityDto abi : entry.listAbilities) {
+//                    Logger.debug(TAG, ">>>" + j++ + " Abi heroID:" + abi.heroId + ";name:" + abi.name +";sound:" + abi.sound);
+//                }
+//            }
+
+            IHeroRepository repository = new HeroRepository();
+
+            repository.getAllHeroes()
+                    .observeOn(Schedulers.io())
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(heroLists -> {
+                        List<AbilitySoundDto> list = new ArrayList<AbilitySoundDto>();
+                        int no = 0;
+                        AbilitySoundDto dto;
+                        for (HeroBasicDto p : heroLists) {
+                            SaveHeroAbility saveHeroAbility;
+                            try {
+                                saveHeroAbility = (SaveHeroAbility) FileUtil.getAbilityObject(ResourceManager.getInstance().getContext(), p.heroId);
+                                int j = 0;
+                                no = 0;
+                                for (AbilityDto abi : saveHeroAbility.listAbility) {
+                                    Logger.debug(TAG, ">>>" + j++ + " Abi heroID:" + abi.heroId + ";name:" + abi.name + ";sound:" + abi.sound);
 
 
-        }catch (Exception e) {
+                                    dto = new AbilitySoundDto();
+                                    dto.abiNo = no;
+                                    dto.abiHeroID = abi.heroId;
+                                    dto.abiName = abi.name;
+                                    dto.abiSound = abi.sound;
+                                    dto.abiImage = abi.linkImage;
+                                    dto.abiDescription = abi.description;
+
+                                    if (abi.listNotes != null && !abi.listNotes.isEmpty()) {
+                                        StringBuffer notes = new StringBuffer();
+                                        for (AbilityNotesDto s : abi.listNotes) {
+                                            notes.append(s.notes);
+                                            notes.append("\n\n");
+                                        }
+                                        dto.abiNotes = notes.toString();
+                                    }
+
+                                    list.add(dto);
+                                    no++;
+
+
+
+                                }
+
+
+
+
+
+                            } catch (Exception e) {
+                                Timber.e(">>>" + "err:" + e);
+                            }
+                        }
+
+                        Logger.debug(TAG, ">>>" + "list.size:" + list.size());
+
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+                        realm.copyToRealm(list);
+                        realm.commitTransaction();
+                        realm.close();
+                        for (AbilitySoundDto d : list) {
+                            Logger.debug(TAG, ">>>" + "d:" + d.toString());
+                        }
+
+                    });
+
+
+
+
+        } catch (Exception e) {
             Timber.e(">>>" + "doGetAbilities:" + e);
         }
 
 
+    }
+
+    public void getNewHeroSkillList(final String url) {
+        Timber.d(">>>" + "getNewHeroSkillList:" + url);
+        Observable<List<AbilitySoundDto>> listObservable = Observable.create(subscriber -> {
+            try {
+                CleanerProperties props = new CleanerProperties();
+
+                props.setTranslateSpecialEntities(true);
+                props.setTransResCharsToNCR(true);
+                props.setOmitComments(true);
+
+                TagNode tagNode = new HtmlCleaner(props).clean(new URL(url));
+
+                String xPath0 = "//div[@style ='display: flex; flex-wrap: wrap; align-items: flex-start;']";
+                Object[] obs0 = tagNode.evaluateXPath(xPath0);
+                Logger.debug(TAG, ">>>" + "obs:" + obs0.length);
+                List<AbilitySoundDto> list = new ArrayList<AbilitySoundDto>();
+                int no = 0;
+                AbilitySoundDto dto;
+                for (Object tagNode1 : obs0) {
+                    TagNode tag = (TagNode) tagNode1;
+                    String abiName = "";
+                    String abiSound = "";
+                    String abiImage = "";
+                    String abiDescription = "";
+                    StringBuilder abiNotes = new StringBuilder();
+
+                    String xPath6 = "//div[@style ='flex: 2 3 400px; word-wrap: break-word;']";
+                    Object[] obs6 = tag.evaluateXPath(xPath6);
+//                    Logger.debug(TAG, ">>>" + "obs6:" + obs6.length);
+                    if (obs6 != null && obs6.length > 0) {
+                        TagNode tagName = (TagNode) obs6[0];
+                        List<TagNode> notes = (List<TagNode>) tagName.getElementListByName("ul", true);
+                        if (notes != null && !notes.isEmpty()) {
+                            for (TagNode t : notes) {
+                                abiNotes.append(t.getText().toString().trim());
+                                abiNotes.append("\n\n");
+                            }
+                        }
+                    }
+
+                    String xPath5 = "//div[@style ='vertical-align: top; padding: 3px 5px; border-top: 1px solid black;']";
+                    Object[] obs5 = tag.evaluateXPath(xPath5);
+                    if (obs5 != null && obs5.length > 0) {
+                        TagNode tagName = (TagNode) obs5[0];
+
+
+                        abiDescription = tagName.getText().toString();
+                    }
+
+                    String xPath3 = "//div[@style ='font-weight: bold; font-size: 110%; border-bottom: 1px solid black; background-color: #B44335; color: white; padding: 3px 5px;']";
+                    Object[] obs3 = tag.evaluateXPath(xPath3);
+
+                    if (obs3 != null && obs3.length > 0) {
+                        TagNode tagName = (TagNode) obs3[0];
+                        abiName = tagName.getText().toString();
+                    } else {
+                        String xPath4 = "//div[@style ='font-weight: bold; font-size: 110%; border-bottom: 1px solid black; background-color: #414141; color: white; padding: 3px 5px;']";
+                        Object[] obs4 = tag.evaluateXPath(xPath4);
+                        TagNode tagName = (TagNode) obs4[0];
+                        abiName = tagName.getText().toString();
+                    }
+
+                    abiName = abiName.substring(0, abiName.indexOf("      "));
+
+
+                    String xPath = "//a[@class ='sm2_button']";
+                    Object[] obs = tag.evaluateXPath(xPath);
+
+
+                    if (obs != null && obs.length > 0) {
+                        TagNode tagSound = (TagNode) obs[0];
+                        abiSound = tagSound.getAttributeByName("href");
+                    }
+
+                    String xPath2 = "//img[@width ='128']";
+                    Object[] obs2 = tag.evaluateXPath(xPath2);
+                    if (obs2 != null && obs2.length > 0) {
+                        TagNode tagImage = (TagNode) obs2[0];
+                        abiImage = tagImage.getAttributeByName("src");
+                        abiImage = abiImage.substring(0, abiImage.indexOf("?version"));
+                    }
+                    Timber.d(">>>" + "name:" + abiName + ";abiSound:" + abiSound + " ;abiImage:" + abiImage);
+                    Timber.d(">>>" + "abiDescription:" + abiDescription);
+                    Timber.d(">>>" + "Notes:" + abiNotes);
+
+                    dto = new AbilitySoundDto();
+                    dto.abiNo = no;
+                    dto.abiHeroID = "Underlord";
+                    dto.abiName = abiName;
+                    dto.abiSound = abiSound;
+                    dto.abiImage = abiImage;
+                    dto.abiDescription = abiDescription;
+                    dto.abiNotes = abiNotes.toString();
+
+                    list.add(dto);
+                    no++;
+                }
+
+                subscriber.onNext(list);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                Timber.d(">>>" + "err:" + e);
+            }
+
+        });
+        listObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(abilityDtos -> {
+                    Logger.debug(TAG, ">>>" + "Done2:" + abilityDtos.size());
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.copyToRealm(abilityDtos);
+                    realm.commitTransaction();
+                    realm.close();
+                });
     }
 
 }

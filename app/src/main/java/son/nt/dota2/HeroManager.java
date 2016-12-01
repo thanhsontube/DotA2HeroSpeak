@@ -37,7 +37,7 @@ public class HeroManager extends AObject {
 
     public HeroManager(Context context) {
         this.context = context;
-//        initData();
+        initData();
     }
 
     public static HeroManager getInstance() {

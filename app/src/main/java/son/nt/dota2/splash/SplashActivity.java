@@ -7,7 +7,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
-import son.nt.dota2.test.TestActivity;
 import son.nt.dota2.utils.PreferenceUtil;
 import timber.log.Timber;
 
@@ -59,8 +57,8 @@ public class SplashActivity extends BaseActivity {
         if (!mIsNeedLoadData) {
 
 //            removeTABLE_HERO_NORMAL_VOICE();
-            startActivity(new Intent(this, TestActivity.class));
-//            startActivity(HomeActivity.getIntent(getApplicationContext()));
+//            startActivity(new Intent(this, TestActivity.class));
+            startActivity(HomeActivity.getIntent(getApplicationContext()));
         } else {
             Realm realm = Realm.getDefaultInstance();
             realm.beginTransaction();
