@@ -12,6 +12,14 @@ public class MsConst {
     public static final int TYPE_ITEM_SOUND = 4;
 
 
+    //VoiceGroup
+    //LORD
+    public static final String LORD_KILLING = "Enemies killing";
+    public static final String LORD_MEETING = "Allies meeting";
+
+    public static final String PREFETCH = "PREFETCH";
+
+
     //firebase table
     public static final String TABLE_LORD_RESPONSES = "HeroLordSounds";
     public static final String TABLE_ITEMS = "ItemsDota2";

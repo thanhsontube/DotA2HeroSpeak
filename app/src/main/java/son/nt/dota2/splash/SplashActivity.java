@@ -13,6 +13,7 @@ import android.os.Bundle;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -27,6 +28,7 @@ import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.test.TestActivity;
+import son.nt.dota2.utils.PreferenceUtil;
 import timber.log.Timber;
 
 public class SplashActivity extends BaseActivity {
@@ -34,11 +36,14 @@ public class SplashActivity extends BaseActivity {
     IHeroRepository mRepository;
 
     CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-    boolean mIsLoadBasicHeroDone = false;
-    boolean mIsLoadLordResponsesDone = false;
-    boolean mIsLoadItemsDone = false;
+    boolean isBasicLoaded = false;
+    boolean isLordLoaded = false;
+    boolean isNormalVoiceLoaded = false;
+    boolean isKillingLoaded = false;
+    boolean isItemsLoaded = false;
+    boolean isBuyItemsLoaded = false;
 
-    boolean mIsNeedLoadData = false;
+    boolean mIsNeedLoadData = true;
 
     @Override
     protected int provideLayoutResID() {
@@ -47,18 +52,33 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Timber.d(">>>" + "onCreate 3");
         super.onCreate(savedInstanceState);
         mRepository = new HeroRepository();
+        mIsNeedLoadData = !PreferenceUtil.getPreference(this, MsConst.PREFETCH, false);
         if (!mIsNeedLoadData) {
 
-            startActivity(new Intent(this, TestActivity.class));
+//            removeTABLE_HERO_NORMAL_VOICE();
+//            startActivity(new Intent(this, TestActivity.class));
+            startActivity(HomeActivity.getIntent(getApplicationContext()));
         } else {
+            Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.delete(HeroResponsesDto.class);
+            realm.commitTransaction();
+            realm.close();
+
+//            isLordLoaded = true;
+//            isKillingLoaded = true;
+//            isNormalVoiceLoaded = true;
+
             getBasicHeroList();
             getLordResponseList();
+            getKillingResponseList();
+            getNormalVoicesResponseList();
+            getHeroResponseWithItemsList();
             getItemsList();
         }
-//        startActivity(HomeActivity.getIntent(getApplicationContext()));
-
 
     }
 
@@ -68,6 +88,13 @@ public class SplashActivity extends BaseActivity {
         if (mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()) {
             mCompositeSubscription.unsubscribe();
         }
+    }
+
+    private void removeTABLE_HERO_NORMAL_VOICE() {
+        Timber.d(">>>" + "removeTABLE_HERO_NORMAL_VOICE");
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+        reference.child(MsConst.TABLE_HERO_ITEMS).setValue(null);
     }
 
     //get base hero List
@@ -83,6 +110,27 @@ public class SplashActivity extends BaseActivity {
         DatabaseReference reference = firebaseDatabase.getReference();
         Query query = reference.child(MsConst.TABLE_LORD_RESPONSES);
         query.addListenerForSingleValueEvent(valueLordEventListener);
+    }
+
+    private void getKillingResponseList() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+        Query query = reference.child(MsConst.TABLE_HERO_KILLING_MEETING);
+        query.addListenerForSingleValueEvent(valueKillingEventListener);
+    }
+
+    private void getHeroResponseWithItemsList() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+        Query query = reference.child(MsConst.TABLE_HERO_ITEMS);
+        query.addListenerForSingleValueEvent(valueHeroWithItemsEventListener);
+    }
+
+    private void getNormalVoicesResponseList() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+        Query query = reference.child(MsConst.TABLE_HERO_NORMAL_VOICE);
+        query.addListenerForSingleValueEvent(valueNormalVoicesEventListener);
     }
 
     private void getItemsList() {
@@ -107,7 +155,7 @@ public class SplashActivity extends BaseActivity {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aBoolean -> {
                         Timber.d(">>>Done save DB:" + aBoolean);
-                        mIsLoadBasicHeroDone = true;
+                        isBasicLoaded = true;
                         checkAndComplete();
                     });
             mCompositeSubscription.add(subscription);
@@ -135,7 +183,89 @@ public class SplashActivity extends BaseActivity {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aBoolean -> {
                         Timber.d(">>>Done save Lord responses DB:" + aBoolean);
-                        mIsLoadLordResponsesDone = true;
+                        isLordLoaded = true;
+                        checkAndComplete();
+                    });
+            mCompositeSubscription.add(subscription);
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Timber.e(">>>onCancelled:" + databaseError);
+
+        }
+    };
+    ValueEventListener valueNormalVoicesEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            List<HeroResponsesDto> list = new ArrayList<>();
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                HeroResponsesDto post = postSnapshot.getValue(HeroResponsesDto.class);
+                list.add(post);
+            }
+            Timber.d(">>>valueNormalVoicesEventListener size:" + list.size());
+            Subscription subscription = mRepository.storeAllLordResponses(list)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aBoolean -> {
+                        Timber.d(">>>Done save valueNormalVoicesEventListener responses DB:" + aBoolean);
+                        isNormalVoiceLoaded = true;
+                        checkAndComplete();
+                    });
+            mCompositeSubscription.add(subscription);
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Timber.e(">>>onCancelled:" + databaseError);
+
+        }
+    };
+    ValueEventListener valueKillingEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            List<HeroResponsesDto> list = new ArrayList<>();
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                HeroResponsesDto post = postSnapshot.getValue(HeroResponsesDto.class);
+                list.add(post);
+            }
+            Timber.d(">>>valueKillingEventListener size:" + list.size());
+            Subscription subscription = mRepository.storeAllLordResponses(list)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aBoolean -> {
+                        Timber.d(">>>Done save valueKillingEventListener responses DB:" + aBoolean);
+                        isKillingLoaded = true;
+                        checkAndComplete();
+                    });
+            mCompositeSubscription.add(subscription);
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Timber.e(">>>onCancelled:" + databaseError);
+
+        }
+    };
+
+    ValueEventListener valueHeroWithItemsEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            List<HeroResponsesDto> list = new ArrayList<>();
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                HeroResponsesDto post = postSnapshot.getValue(HeroResponsesDto.class);
+                list.add(post);
+            }
+            Timber.d(">>>valueHeroWithItemsEventListener size:" + list.size());
+            Subscription subscription = mRepository.storeAllLordResponses(list)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aBoolean -> {
+                        Timber.d(">>>Done save valueHeroWithItemsEventListener responses DB:" + aBoolean);
+                        isBuyItemsLoaded = true;
                         checkAndComplete();
                     });
             mCompositeSubscription.add(subscription);
@@ -163,7 +293,7 @@ public class SplashActivity extends BaseActivity {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aBoolean -> {
                         Timber.d(">>>Done save Items responses DB:" + aBoolean);
-                        mIsLoadItemsDone = true;
+                        isItemsLoaded = true;
                         checkAndComplete();
                     });
             mCompositeSubscription.add(subscription);
@@ -178,16 +308,27 @@ public class SplashActivity extends BaseActivity {
     };
 
     private void checkAndComplete() {
-        if (!mIsLoadBasicHeroDone) {
+        if (!isBasicLoaded) {
             return;
         }
-        if (!mIsLoadLordResponsesDone) {
+        if (!isLordLoaded) {
+            return;
+        }
+        if (!isKillingLoaded) {
+            return;
+        }
+        if (!isNormalVoiceLoaded) {
+            return;
+        }
+        if (!isBuyItemsLoaded) {
             return;
         }
 
-        if (!mIsLoadItemsDone) {
+        if (!isItemsLoaded) {
             return;
         }
+
+        PreferenceUtil.setPreference(this, MsConst.PREFETCH, true);
         startActivity(HomeActivity.getIntent(getApplicationContext()));
 //        startActivity(LoginActivity.getIntent(getApplicationContext()));
 

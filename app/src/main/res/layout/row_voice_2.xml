@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal"
-            tools:background="@color/black">
+            tools:background="@mipmap/layer_image">
 
         <TextView
                 android:id="@+id/row_voice_no"
@@ -40,18 +40,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
-                    android:text="My List Has 5 names on it"
+                    tools:text="My List Has 5 names on it"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/green1"/>
+                    android:textColor="@color/white"/>
             <TextView
+
                     android:id="@+id/row_voice_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center_vertical|end"
                     android:layout_marginLeft="8dp"
-                    android:text="My List Has 5 names on it"
+                    tools:text="Enter battle"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/red_500"/>
+                    android:textColor="@color/green_500"/>
             <LinearLayout android:layout_width="match_parent"
                           android:layout_marginLeft="8dp"
                           android:layout_height="wrap_content"
@@ -78,7 +79,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_agi_40"/>
+                        android:src="@drawable/ic_intel_40"/>
 
 
             </LinearLayout>

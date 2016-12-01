@@ -34,20 +34,20 @@ public class HeroResponsesDto extends RealmObject implements ISound {
 
     public int position;
 
-    String itemId;
-    String title;
-    String image;
-    String group;
+    public String itemId;
+    public String title;
+    public String image;
+    public String group;
 
-    long duration;
+    public long duration;
 
 
-    int totalLike;
-    int totalComments;
+    public int totalLike;
+    public int totalComments;
 
-    boolean isPlaying;
-    boolean isFavorite;
-    boolean isLiked;
+    public boolean isPlaying;
+    public boolean isFavorite;
+    public boolean isLiked;
 
     public HeroResponsesDto(int no) {
         this.no = no;
@@ -215,10 +215,12 @@ public class HeroResponsesDto extends RealmObject implements ISound {
         return isPlaying;
     }
 
+    @Exclude
     public boolean isAlliMeetingGroup() {
         return "Allies Meeting".equalsIgnoreCase(voiceGroup);
     }
 
+    @Exclude
     public boolean isEnemiesKillingGroup() {
         return "Enemies killing".equalsIgnoreCase(voiceGroup);
     }

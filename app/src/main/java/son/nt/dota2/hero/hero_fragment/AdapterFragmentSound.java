@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.Random;
 
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.utils.OttoBus;
@@ -96,6 +98,8 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
                     holder.text.setText(dto.getText());
                 }
 
+                holder.voiceGroup.setText(TextUtils.isEmpty(dto.getVoiceGroup()) ? "Unknown" : dto.getVoiceGroup());
+
                 if (dto.isPlaying()) {
                     holder.view.setBackgroundResource(R.drawable.d_row_speaking);
                     holder.imgPlaying.setVisibility(View.VISIBLE);
@@ -104,42 +108,45 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
                     holder.view.setBackgroundResource(android.R.color.transparent);
                 }
 
-                String fromLink = null;
-                String toLink = null;
+                final boolean isSwap = dto.getVoiceGroup().endsWith(MsConst.LORD_KILLING) || dto.getVoiceGroup().endsWith(MsConst.LORD_MEETING);
+                final String fromIcon = isSwap
+                        ? dto.getToHeroIcon() : dto.getHeroIcon();
 
-                String related = "";
-
-                if (dto.isAlliMeetingGroup() || dto.isEnemiesKillingGroup()) {
-                    holder.voiceGroup.setVisibility(View.GONE);
-                    fromLink = dto.getToHeroIcon();
-                    toLink = dto.getHeroIcon();
-                    holder.imgTo.setVisibility(View.VISIBLE);
-                } else {
-                    holder.voiceGroup.setVisibility(View.VISIBLE);
-                    holder.voiceGroup.setText(dto.getVoiceGroup());
-                    fromLink = dto.getHeroIcon();
-                    holder.imgTo.setVisibility(View.GONE);
-                }
-
-                if (dto.isAlliMeetingGroup()) {
-
-                    related = " meets ";
-                }
-
-                if (dto.isEnemiesKillingGroup()) {
-                    related = "killed ";
-                }
-
-                holder.related.setText(related);
-                Glide.with(mContext).load(fromLink)
+                final String toIcon = isSwap
+                        ? dto.getHeroIcon() : dto.getToHeroIcon();
+                Glide.with(mContext).load(fromIcon)
                         .fitCenter()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.imgFrom);
+                String related = " : ";
 
-                Glide.with(mContext).load(toLink)
-                        .fitCenter()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(holder.imgTo);
+                if (TextUtils.isEmpty(dto.toHeroId)) {
+                    holder.imgTo.setVisibility(View.GONE);
+                    holder.related.setVisibility(View.GONE);
+                } else {
+                    holder.imgTo.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).load(toIcon)
+                            .fitCenter()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(holder.imgTo);
+
+                    if (dto.isAlliMeetingGroup() || dto.getVoiceGroup().equals(MsConst.LORD_MEETING)) {
+
+                        related = " meets ";
+                    }
+
+                    if (dto.isEnemiesKillingGroup() || dto.getVoiceGroup().equals(MsConst.LORD_KILLING)) {
+                        related = " killed ";
+                    }
+
+                    if (dto.getVoiceGroup().contains("Acquiring an item")) {
+                        related = " buys ";
+                    }
+
+                    holder.related.setVisibility(View.VISIBLE);
+                    holder.related.setText(related);
+                }
+
 
 //                holder.view.setOnClickListener(new View.OnClickListener() {
 //                    @Override

@@ -60,7 +60,7 @@ public class HeroBasicDto extends RealmObject {
         return gson.toJson(this);
     }
 
-    public boolean isArcana() {
+    public  boolean isArcana() {
         for (String arcana : ARCANA) {
             if (arcana.equalsIgnoreCase(heroId)) {
                 return true;

@@ -196,7 +196,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 
     private void adMob() {
         AdMobUtils.init(findViewById(R.id.ll_ads), R.id.adView);
-        AdMobUtils.show();
+        AdMobUtils.hide();
     }
 
     @Override

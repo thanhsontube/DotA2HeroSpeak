@@ -51,7 +51,7 @@ public class HeroRepository implements IHeroRepository {
             public void call(Subscriber<? super Boolean> subscriber) {
                 Realm realm = getRealm();
                 try {
-                    removeAllLordResponses(realm);
+//                    removeAllLordResponses(realm);
                     realm.beginTransaction();
                     realm.copyToRealm(list);
                     realm.commitTransaction();
