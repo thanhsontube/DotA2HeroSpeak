@@ -14,6 +14,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -23,13 +24,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.ResourceManager;
+import son.nt.dota2.base.AObject;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.AbilityDto;
@@ -51,9 +56,10 @@ public class JsoupLoader {
     private boolean isLordVoiceDone = true;
     private boolean isResponsesHeroDone = false;
     private boolean isPushALlItems = true;
-    private boolean isPushALlHEROBUYItems = false;
+    private boolean isPushALlHEROBUYItems = true;
     private boolean isPushALlHEROKillingMeeting = true;
     private boolean isPushALlNormalVoices = true;
+    private boolean isPushALlAbis = true;
 
     public static final String TAG = JsoupLoader.class.getSimpleName();
     public static final String HERO_ICON = "http://dota2.gamepedia.com/Heroes_by_release";
@@ -1335,6 +1341,8 @@ public class JsoupLoader {
 
     }
 
+
+
     private void pushALLHeroKillingMeeting(final List<HeroResponsesDto> listData) {
         if (isPushALlHEROKillingMeeting) {
             return;
@@ -1349,6 +1357,37 @@ public class JsoupLoader {
 
                     reference.child(MsConst.TABLE_HERO_KILLING_MEETING).push().setValue(d)
                             .addOnSuccessListener(aVoid -> Logger.debug(TAG, ">>>push " + mPushCounter++ + ":" + "onSuccess pushItem:" + d.getHeroId()))
+                            .addOnFailureListener(e -> Logger.error(TAG, ">>> Error:" + "onFailure:" + e))
+
+                    ;
+                }
+
+            } catch (Exception e) {
+                Logger.error(TAG, ">>> Error pushALL:" + e);
+                mPushCounter++;
+
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+
+    }
+
+    private void pushALLAbis(final List<AbilitySoundDto> listData) {
+        if (isPushALlAbis) {
+            return;
+        }
+        mPushCounter = 0;
+
+        Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
+            try {
+                for (AbilitySoundDto d : listData) {
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference reference = firebaseDatabase.getReference();
+
+                    reference.child(MsConst.TABLE_HERO_ABI).push().setValue(d)
+                            .addOnSuccessListener(aVoid -> Logger.debug(TAG, ">>>push " + mPushCounter++ + ":" + "onSuccess pushItem:" + d.abiHeroID))
                             .addOnFailureListener(e -> Logger.error(TAG, ">>> Error:" + "onFailure:" + e))
 
                     ;
@@ -1468,70 +1507,103 @@ public class JsoupLoader {
 //                }
 //            }
 
-            IHeroRepository repository = new HeroRepository();
+            Observable<List<AbilitySoundDto>> listObservable = Observable.create(subscriber -> {
 
-            repository.getAllHeroes()
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(heroLists -> {
-                        List<AbilitySoundDto> list = new ArrayList<AbilitySoundDto>();
-                        int no = 0;
-                        AbilitySoundDto dto;
-                        for (HeroBasicDto p : heroLists) {
-                            SaveHeroAbility saveHeroAbility;
-                            try {
-                                saveHeroAbility = (SaveHeroAbility) FileUtil.getAbilityObject(ResourceManager.getInstance().getContext(), p.heroId);
-                                int j = 0;
-                                no = 0;
-                                for (AbilityDto abi : saveHeroAbility.listAbility) {
-                                    Logger.debug(TAG, ">>>" + j++ + " Abi heroID:" + abi.heroId + ";name:" + abi.name + ";sound:" + abi.sound);
+                HeroManager.getInstance().initDataSelf();
+                Realm realm2 = Realm.getDefaultInstance();
+                final RealmResults<HeroBasicDto> group1 = realm2.where(HeroBasicDto.class)
+                        .findAll();
+                List<HeroBasicDto> heroLists = realm2.copyFromRealm(group1);
+                realm2.close();
 
-
-                                    dto = new AbilitySoundDto();
-                                    dto.abiNo = no;
-                                    dto.abiHeroID = abi.heroId;
-                                    dto.abiName = abi.name;
-                                    dto.abiSound = abi.sound;
-                                    dto.abiImage = abi.linkImage;
-                                    dto.abiDescription = abi.description;
-
-                                    if (abi.listNotes != null && !abi.listNotes.isEmpty()) {
-                                        StringBuffer notes = new StringBuffer();
-                                        for (AbilityNotesDto s : abi.listNotes) {
-                                            notes.append(s.notes);
-                                            notes.append("\n\n");
-                                        }
-                                        dto.abiNotes = notes.toString();
-                                    }
-
-                                    list.add(dto);
-                                    no++;
+                Timber.d(">>>" + "subscribe:" + heroLists.size());
+                List<AbilitySoundDto> list = new ArrayList<AbilitySoundDto>();
+                int no = 0;
+                AbilitySoundDto dto;
+                SaveHeroAbility saveHeroAbility;
+                AObject abiObject;
+                for (HeroBasicDto p : heroLists) {
+                    try {
+                        final Context context = ResourceManager.getInstance().getContext();
+                        abiObject = FileUtil.getAbilityObject(context, p.heroId);
+                        saveHeroAbility = (SaveHeroAbility) abiObject;
+                        int j = 0;
+                        no = 0;
+                        for (AbilityDto abi : saveHeroAbility.listAbility) {
+                            Logger.debug(TAG, ">>>" + j++ + " Abi heroID:" + abi.heroId + ";name:" + abi.name + ";sound:" + abi.sound);
 
 
+                            dto = new AbilitySoundDto();
+                            dto.id = abi.heroId + "_" + no;
+                            dto.abiNo = no;
+                            dto.abiHeroID = abi.heroId;
+                            dto.abiName = abi.name;
+                            dto.abiSound = abi.sound;
+                            dto.abiImage = abi.linkImage;
+                            dto.abiDescription = abi.description;
 
+                            if (abi.listNotes != null && !abi.listNotes.isEmpty()) {
+                                StringBuffer notes = new StringBuffer();
+                                for (AbilityNotesDto s : abi.listNotes) {
+                                    notes.append(s.notes);
+                                    notes.append("\n\n");
                                 }
-
-
-
-
-
-                            } catch (Exception e) {
-                                Timber.e(">>>" + "err:" + e);
+                                dto.abiNotes = notes.toString();
                             }
+
+                            list.add(dto);
+                            no++;
+
+
+
                         }
 
-                        Logger.debug(TAG, ">>>" + "list.size:" + list.size());
 
-                        Realm realm = Realm.getDefaultInstance();
-                        realm.beginTransaction();
-                        realm.copyToRealm(list);
-                        realm.commitTransaction();
-                        realm.close();
-                        for (AbilitySoundDto d : list) {
-                            Logger.debug(TAG, ">>>" + "d:" + d.toString());
-                        }
 
-                    });
+
+
+                    } catch (Exception e) {
+                        Timber.e(">>>" + "err:" + e);
+                    }
+                }
+
+                Logger.debug(TAG, ">>>" + "list.size:" + list.size());
+
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
+                realm.copyToRealm(list);
+                realm.commitTransaction();
+                realm.close();
+                for (AbilitySoundDto d : list) {
+                    Logger.debug(TAG, ">>>" + "d:" + d.toString());
+                }
+
+                pushALLAbis(list);
+
+
+            });
+
+            listObservable.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe();
+
+//            IHeroRepository repository = new HeroRepository();
+//
+//            repository.getAllHeroes()
+//                    .observeOn(Schedulers.io())
+//                    .subscribeOn(AndroidSchedulers.mainThread())
+//                    .concatMap(new Func1<List<HeroBasicDto>, Observable<String>>() {
+//                        @Override
+//                        public Observable<String> call(List<HeroBasicDto> heroLists) {
+//
+//
+//
+//                            return Observable.create(subscriber -> {
+//
+//                            });
+//                        }
+//                    })
+//                    .subscribe();
 
 
 
@@ -1629,6 +1701,7 @@ public class JsoupLoader {
                     Timber.d(">>>" + "Notes:" + abiNotes);
 
                     dto = new AbilitySoundDto();
+                    dto.id = "Underlord_" + no;
                     dto.abiNo = no;
                     dto.abiHeroID = "Underlord";
                     dto.abiName = abiName;
@@ -1657,6 +1730,8 @@ public class JsoupLoader {
                     realm.copyToRealm(abilityDtos);
                     realm.commitTransaction();
                     realm.close();
+
+                    pushALLAbis(abilityDtos);
                 });
     }
 

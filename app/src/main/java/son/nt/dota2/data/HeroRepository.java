@@ -93,6 +93,29 @@ public class HeroRepository implements IHeroRepository {
         });
     }
 
+    @Override
+    public Observable<Boolean> storeAbis(List<AbilitySoundDto> list) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                Realm realm = getRealm();
+                try {
+                    removeAbis(realm);
+                    realm.beginTransaction();
+                    realm.copyToRealm(list);
+                    realm.commitTransaction();
+                    subscriber.onNext(true);
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                } finally {
+                    subscriber.onCompleted();
+                    realm.close();
+                }
+
+
+            }
+        });
+    }
 
     @Override
     public Observable<List<HeroBasicDto>> getHeroesFromGroup(@NonNull String group) {
@@ -195,6 +218,21 @@ public class HeroRepository implements IHeroRepository {
     }
 
     @Override
+    public Observable<List<AbilitySoundDto>> getAllAbility() {
+        return Observable.create(new Observable.OnSubscribe<List<AbilitySoundDto>>() {
+            @Override
+            public void call(Subscriber<? super List<AbilitySoundDto>> subscriber) {
+                Realm realm = getRealm();
+                final RealmResults<AbilitySoundDto> group1 = realm.where(AbilitySoundDto.class)
+                        .findAll();
+                subscriber.onNext(realm.copyFromRealm(group1));
+                subscriber.onCompleted();
+                realm.close();
+            }
+        });
+    }
+
+    @Override
     public Observable<List<HeroBasicDto>> getAgiHeroes() {
         return null;
     }
@@ -228,6 +266,12 @@ public class HeroRepository implements IHeroRepository {
     private void removeItems(Realm realm) {
         realm.beginTransaction();
         realm.delete(ItemDto.class);
+        realm.commitTransaction();
+    }
+
+    private void removeAbis(Realm realm) {
+        realm.beginTransaction();
+        realm.delete(AbilitySoundDto.class);
         realm.commitTransaction();
     }
 }

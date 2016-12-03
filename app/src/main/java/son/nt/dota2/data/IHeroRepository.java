@@ -23,7 +23,11 @@ public interface IHeroRepository {
 
     Observable<Boolean> storeAlItemsResponses(List<ItemDto> list);
 
+    Observable<Boolean> storeAbis(List<AbilitySoundDto> list);
+
     Observable<List<HeroBasicDto>> getAllHeroes();
+
+    Observable<List<AbilitySoundDto>> getAllAbility();
 
     Observable<List<HeroBasicDto>> getHeroesFromGroup(@NonNull String group);
 
@@ -40,4 +44,5 @@ public interface IHeroRepository {
     Observable<List<HeroResponsesDto>> getSounds(String heroID);
 
     Observable<List<AbilitySoundDto>> getAbis(String heroID);
+
 }

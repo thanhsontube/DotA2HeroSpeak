@@ -2,10 +2,8 @@ package son.nt.dota2.dto;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.dto.heroSound.ISound;
 
@@ -14,6 +12,9 @@ import son.nt.dota2.dto.heroSound.ISound;
  */
 
 public class AbilitySoundDto extends RealmObject implements ISound {
+
+    @PrimaryKey
+    public String id;
 
     public int abiNo;
     public String abiHeroID; //Mirana

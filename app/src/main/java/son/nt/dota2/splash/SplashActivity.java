@@ -7,12 +7,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -23,9 +25,11 @@ import son.nt.dota2.activity.HomeActivity;
 import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
+import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.test.TestActivity;
 import son.nt.dota2.utils.PreferenceUtil;
 import timber.log.Timber;
 
@@ -40,6 +44,7 @@ public class SplashActivity extends BaseActivity {
     boolean isKillingLoaded = false;
     boolean isItemsLoaded = false;
     boolean isBuyItemsLoaded = false;
+    boolean isAbilityLoaded = false;
 
     boolean mIsNeedLoadData = false;
 
@@ -56,9 +61,8 @@ public class SplashActivity extends BaseActivity {
 //        mIsNeedLoadData = !PreferenceUtil.getPreference(this, MsConst.PREFETCH, false);
         if (!mIsNeedLoadData) {
 
-//            removeTABLE_HERO_NORMAL_VOICE();
-//            startActivity(new Intent(this, TestActivity.class));
-            startActivity(HomeActivity.getIntent(getApplicationContext()));
+            startActivity(new Intent(this, TestActivity.class));
+//            startActivity(HomeActivity.getIntent(getApplicationContext()));
         } else {
             Realm realm = Realm.getDefaultInstance();
             realm.beginTransaction();
@@ -66,20 +70,34 @@ public class SplashActivity extends BaseActivity {
             realm.commitTransaction();
             realm.close();
 
-            isLordLoaded = true;
-//            isKillingLoaded = true;
-            isNormalVoiceLoaded = true;
-            isBuyItemsLoaded = true;
-            isItemsLoaded = true;
 
             getBasicHeroList();
+
+//            isAbilityLoaded = true;
+            getAbis();
+
+            isLordLoaded = true;
 //            getLordResponseList();
-            getKillingResponseList();
+
+
+            isKillingLoaded = true;
+//            getKillingResponseList();
+
+            isNormalVoiceLoaded = true;
 //            getNormalVoicesResponseList();
+
+            isBuyItemsLoaded = true;
 //            getHeroResponseWithItemsList();
+
+            isItemsLoaded = true;
 //            getItemsList();
         }
 
+    }
+
+    private void loadData() {
+        Observable<List<AbilitySoundDto>> abis = mRepository.getAllAbility();
+        Observable<List<HeroBasicDto>> heroBasics = mRepository.getAllHeroes();
     }
 
     @Override
@@ -94,7 +112,7 @@ public class SplashActivity extends BaseActivity {
         Timber.d(">>>" + "removeTABLE_HERO_NORMAL_VOICE");
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference reference = firebaseDatabase.getReference();
-        reference.child(MsConst.TABLE_HERO_ITEMS).setValue(null);
+        reference.child(MsConst.TABLE_HERO_ABI).setValue(null);
     }
 
     //get base hero List
@@ -103,6 +121,14 @@ public class SplashActivity extends BaseActivity {
         DatabaseReference reference = firebaseDatabase.getReference();
         Query query = reference.child(HeroBasicDto.class.getSimpleName());
         query.addListenerForSingleValueEvent(valueEventListener);
+    }
+
+    //get Abis List
+    private void getAbis() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+        Query query = reference.child(MsConst.TABLE_HERO_ABI);
+        query.addListenerForSingleValueEvent(valueAbis);
     }
 
     private void getLordResponseList() {
@@ -156,6 +182,34 @@ public class SplashActivity extends BaseActivity {
                     .subscribe(aBoolean -> {
                         Timber.d(">>>Done save DB:" + aBoolean);
                         isBasicLoaded = true;
+                        checkAndComplete();
+                    });
+            mCompositeSubscription.add(subscription);
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Timber.e(">>>onCancelled:" + databaseError);
+
+        }
+    };
+
+    ValueEventListener valueAbis = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            List<AbilitySoundDto> list = new ArrayList<>();
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                AbilitySoundDto post = postSnapshot.getValue(AbilitySoundDto.class);
+                list.add(post);
+            }
+            Timber.d(">>>basic size:" + list.size());
+            Subscription subscription = mRepository.storeAbis(list)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aBoolean -> {
+                        Timber.d(">>>valueAbis save DB:" + aBoolean);
+                        isAbilityLoaded = true;
                         checkAndComplete();
                     });
             mCompositeSubscription.add(subscription);
@@ -308,6 +362,11 @@ public class SplashActivity extends BaseActivity {
     };
 
     private void checkAndComplete() {
+
+        Timber.d(">>>" + "checkAndComplete isBasicLoaded:" + isBasicLoaded
+                + "isLordLoaded:" + isLordLoaded + ";isKillingLoaded:" + isKillingLoaded
+                + ";isNormalVoiceLoaded:" + isNormalVoiceLoaded
+                + ";isBuyItemsLoaded:" + isBuyItemsLoaded + ";isItemsLoaded:" + isItemsLoaded);
         if (!isBasicLoaded) {
             return;
         }
@@ -325,6 +384,10 @@ public class SplashActivity extends BaseActivity {
         }
 
         if (!isItemsLoaded) {
+            return;
+        }
+
+        if (!isAbilityLoaded) {
             return;
         }
 
