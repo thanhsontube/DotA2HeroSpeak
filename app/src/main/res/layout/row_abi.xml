@@ -3,29 +3,30 @@
               android:id="@+id/abi_view"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@drawable/d_row_speak"
-              android:descendantFocusability="blocksDescendants"
               android:minHeight="?actionBarSize"
               android:orientation="vertical"
-              android:paddingBottom="8dp"
               android:paddingLeft="16dp"
               android:paddingRight="16dp"
-              android:paddingTop="8dp">
+              android:paddingTop="24dp">
 
-    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+    <ImageView android:layout_width="100dp" android:layout_height="100dp"
                android:id="@+id/abi_img"/>
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:textColor="@color/md_orange_600"
               android:layout_marginTop="16dp"
+              android:textSize="22sp"
               android:id="@+id/abi_name"/>
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:layout_marginTop="16dp"
               android:textIsSelectable="true"
+              android:textColor="@color/md_amber_500"
               android:id="@+id/abi_des"/>
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:layout_marginTop="16dp"
+              android:textColor="@color/md_light_green_A700"
               android:textIsSelectable="true"
               android:id="@+id/abi_notes"/>
 

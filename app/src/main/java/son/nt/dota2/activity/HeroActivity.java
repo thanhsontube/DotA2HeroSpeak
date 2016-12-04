@@ -50,6 +50,7 @@ import son.nt.dota2.gridmenu.SpeakLongClick;
 import son.nt.dota2.hero.AdapterCircleFeature;
 import son.nt.dota2.hero.HeroActivityPresenter;
 import son.nt.dota2.hero.HeroContract;
+import son.nt.dota2.ottobus_entry.GoCircle;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.ottobus_entry.GoShare;
 import son.nt.dota2.service.PlayService2;
@@ -314,9 +315,8 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 //    }
 
     @Subscribe
-    public void getCircleClick(CircleFeatureDto circleFeatureDto) {
-        tab = circleFeatureDto.getName();
-
+    public void getCircleClick(GoCircle mGoCircle) {
+        tab = mGoCircle.mCircleFeatureDto.getName();
     }
 
     public String tab= "Sound";

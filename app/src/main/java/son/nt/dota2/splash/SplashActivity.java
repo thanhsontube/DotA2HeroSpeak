@@ -46,7 +46,7 @@ public class SplashActivity extends BaseActivity {
     boolean isBuyItemsLoaded = false;
     boolean isAbilityLoaded = false;
 
-    boolean mIsNeedLoadData = false;
+    boolean mIsNeedLoadData = true;
 
     @Override
     protected int provideLayoutResID() {
@@ -61,8 +61,8 @@ public class SplashActivity extends BaseActivity {
 //        mIsNeedLoadData = !PreferenceUtil.getPreference(this, MsConst.PREFETCH, false);
         if (!mIsNeedLoadData) {
 
-            startActivity(new Intent(this, TestActivity.class));
-//            startActivity(HomeActivity.getIntent(getApplicationContext()));
+//            startActivity(new Intent(this, TestActivity.class));
+            startActivity(HomeActivity.getIntent(getApplicationContext()));
         } else {
             Realm realm = Realm.getDefaultInstance();
             realm.beginTransaction();
@@ -76,8 +76,8 @@ public class SplashActivity extends BaseActivity {
 //            isAbilityLoaded = true;
             getAbis();
 
-            isLordLoaded = true;
-//            getLordResponseList();
+//            isLordLoaded = true;
+            getLordResponseList();
 
 
             isKillingLoaded = true;

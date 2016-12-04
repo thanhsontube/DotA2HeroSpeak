@@ -16,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.CircleFeatureDto;
+import son.nt.dota2.ottobus_entry.GoCircle;
 import son.nt.dota2.utils.OttoBus;
 
 /**
@@ -59,8 +60,8 @@ public class AdapterCircleFeature extends RecyclerView.Adapter<AdapterCircleFeat
                     previousSelectedItem = position;
                     final CircleFeatureDto selectedItem = mList.get(position);
                     selectedItem.setSelected(true);
+                    OttoBus.post(new GoCircle(selectedItem, position));
                     notifyItemChanged(position);
-                    OttoBus.post(selectedItem);
                 });
                 return holder;
 

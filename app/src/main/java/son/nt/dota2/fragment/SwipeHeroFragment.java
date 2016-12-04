@@ -1,5 +1,7 @@
 package son.nt.dota2.fragment;
 
+import com.squareup.otto.Subscribe;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
@@ -34,6 +36,7 @@ import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.HeroTabFragment;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.dto.AbilitySoundDto;
+import son.nt.dota2.dto.CircleFeatureDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
@@ -42,6 +45,7 @@ import son.nt.dota2.hero.hero_fragment.AdapterFragmentSkills;
 import son.nt.dota2.hero.hero_fragment.AdapterFragmentSound;
 import son.nt.dota2.hero.hero_fragment.HeroFragmentPresenter;
 import son.nt.dota2.hero.hero_fragment.HeroResponseContract;
+import son.nt.dota2.ottobus_entry.GoCircle;
 import son.nt.dota2.service.DownloadService;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
@@ -76,6 +80,12 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
     @BindView(R.id.arcana_voice)
     SwitchCompat mSwitchCompatArcanaVoice;
 
+    @BindView(R.id.sound_area)
+    View viewSound;
+
+    @BindView(R.id.skill_area)
+    View viewSkills;
+
     private AdapterFragmentSound mAdapter;
     private AdapterFragmentSkills mAdapterSkills;
 
@@ -96,27 +106,31 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 //        getActivity().bindService(new Intent(getActivity(), DownloadService.class), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
     }
 
+
     @Override
     public void onPageSelected() {
         Timber.d(">>>" + "onPageSelected");
+//        OttoBus.register(this);
         final HeroActivity activity = (HeroActivity) getActivity();
         activity.setSoundsList(mPresenter.getSoundsList());
-        if (activity.tab.equals("sound")) {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mRecyclerViewSkills.setVisibility(View.GONE);
+        if (activity.tab.equalsIgnoreCase("sound")) {
+            viewSound.setVisibility(View.VISIBLE);
+            viewSkills.setVisibility(View.GONE);
         } else {
-            mRecyclerView.setVisibility(View.GONE);
-            mRecyclerViewSkills.setVisibility(View.VISIBLE);
+            viewSound.setVisibility(View.GONE);
+            viewSkills.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onPageUnSelected() {
-
+//        OttoBus.unRegister(this);
     }
+
 
     @Override
     public void onDestroy() {
+
         if (downloadService != null) {
             downloadService.isQuit = true;
             getActivity().unbindService(serviceConnectionPrefetchAudio);
@@ -165,10 +179,12 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
     @Override
     public void onStart() {
         super.onStart();
+        OttoBus.register(this);
     }
 
     @Override
     public void onStop() {
+        OttoBus.unRegister(this);
         super.onStop();
     }
 
@@ -398,5 +414,19 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
     @Override
     public void updateAbi(List<AbilitySoundDto> data) {
         mAdapterSkills.setData(data);
+    }
+
+    @Subscribe
+    public void getCircleClick(GoCircle goCircle) {
+        String tab = goCircle.mCircleFeatureDto.getName();
+
+        if (tab.equalsIgnoreCase("Sound")) {
+            viewSound.setVisibility(View.VISIBLE);
+            viewSkills.setVisibility(View.GONE);
+        } else {
+            viewSound.setVisibility(View.GONE);
+            viewSkills.setVisibility(View.VISIBLE);
+        }
+
     }
 }
