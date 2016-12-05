@@ -17,6 +17,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.AbilitySoundDto;
+import son.nt.dota2.ottobus_entry.GoVoice;
+import son.nt.dota2.utils.OttoBus;
+import timber.log.Timber;
 
 /**
  * Created by Sonnt on 7/30/15.
@@ -40,8 +43,10 @@ public class AdapterFragmentSkills extends RecyclerView.Adapter<AdapterFragmentS
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.row_abi, parent, false);
         Holder holder = new Holder(view);
-        holder.view.setOnClickListener(v -> {
 
+        holder.abiImage.setOnClickListener(v -> {
+            Timber.d(">>>" + "abiImage click:" + holder.getAdapterPosition());
+            OttoBus.post(new GoVoice(mList.get(holder.getAdapterPosition() +1), false));
         });
         return new Holder(view);
     }

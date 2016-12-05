@@ -5,6 +5,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
@@ -29,19 +34,20 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import son.nt.dota2.CommentManager;
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.base.AObject;
-import son.nt.dota2.data.HeroRepository;
-import son.nt.dota2.data.IHeroRepository;
+import son.nt.dota2.comments.CmtsDto;
+import son.nt.dota2.comments.CommentDto;
 import son.nt.dota2.dto.AbilityDto;
 import son.nt.dota2.dto.AbilityNotesDto;
 import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
+import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.dto.save.SaveHeroAbility;
 import son.nt.dota2.utils.FileUtil;
@@ -81,6 +87,12 @@ public class JsoupLoader {
 
     public static final String HERO_RESPONSE3 = "http://dota2.gamepedia.com/index.php?title=Drow_Ranger/Responses&action=edit";
 
+
+    public void getCmts() {
+        Timber.d(">>>" + "getCmts");
+        getCommentsparse();
+
+    }
 
     public void getNewAbilities() {
         Timber.d(">>>" + "getNewAbilities");
@@ -1342,7 +1354,6 @@ public class JsoupLoader {
     }
 
 
-
     private void pushALLHeroKillingMeeting(final List<HeroResponsesDto> listData) {
         if (isPushALlHEROKillingMeeting) {
             return;
@@ -1555,11 +1566,7 @@ public class JsoupLoader {
                             no++;
 
 
-
                         }
-
-
-
 
 
                     } catch (Exception e) {
@@ -1604,8 +1611,6 @@ public class JsoupLoader {
 //                        }
 //                    })
 //                    .subscribe();
-
-
 
 
         } catch (Exception e) {
@@ -1733,6 +1738,64 @@ public class JsoupLoader {
 
                     pushALLAbis(abilityDtos);
                 });
+    }
+
+    private void getCommentsparse () {
+        Observable<List<CmtsDto>> listObservable = Observable.create(new Observable.OnSubscribe<List<CmtsDto>>() {
+            @Override
+            public void call(Subscriber<? super List<CmtsDto>> subscriber) {
+
+
+                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(CommentDto.class.getSimpleName());
+                query.setLimit(2000);
+                query.orderByDescending("createdAt");
+                query.findInBackground((list, e) -> {
+                    if (e != null) {
+                        return;
+                    }
+                    CommentDto commentDto;
+                    List<CommentDto> list_ = new ArrayList<CommentDto>();
+                    for (ParseObject p : list) {
+
+                        String message = p.getString("message");
+                        String fromID = p.getString("fromID");
+                        String fromName = p.getString("fromName");
+                        long createTime = p.getLong("createTime");
+                        String image = p.getString("fromImage");
+                        String createAt = p.getString("createdAt");
+
+                        String heroText = p.getString("heroText");
+                        String heroLink = p.getString("heroLink");
+                        String heroID = p.getString("heroID");
+                        String heroGroup = p.getString("heroGroup");
+
+                        commentDto = new CommentDto();
+                        commentDto.setMessage(message);
+                        commentDto.setFromID(fromID);
+                        commentDto.setFromName(fromName);
+                        commentDto.setImage(image);
+                        commentDto.setCreateTime(createTime);
+                        commentDto.setCreateAt(createAt);
+
+                        SpeakDto speakDto = new SpeakDto();
+                        speakDto.heroId = heroID;
+                        speakDto.text = heroText;
+                        speakDto.voiceGroup = heroGroup;
+                        speakDto.link = heroLink;
+
+                        commentDto.setSpeakDto(speakDto);
+                        list_.add(commentDto);
+                    }
+
+                    Timber.d(">>>" + "list_:" + list_.size());
+
+                });
+
+            }
+        });
+        listObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 
 }

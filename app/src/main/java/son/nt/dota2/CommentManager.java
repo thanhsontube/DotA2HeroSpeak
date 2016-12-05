@@ -43,7 +43,7 @@ public class CommentManager {
         if (heroID != null) {
             query.whereEqualTo("heroID", heroID);
         }
-        query.setLimit(200);
+        query.setLimit(2000);
         query.orderByDescending("createdAt");
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
