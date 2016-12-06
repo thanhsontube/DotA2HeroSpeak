@@ -187,8 +187,8 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
 
     @Override
     public int getItemViewType(int position) {
-//        return mList.get(position).isTitle ? TYPE_TITLE : TYPE_SPEAK;
-//        return position == 0 ? TYPE_TITLE : TYPE_SPEAK;
+//        return mList.get(position).isTitle ? TYPE_ADD : TYPE_MORE;
+//        return position == 0 ? TYPE_ADD : TYPE_MORE;
         return TYPE_SPEAK;
     }
 

@@ -142,11 +142,7 @@ public class HeroRepository implements IHeroRepository {
             public void call(Subscriber<? super List<HeroBasicDto>> subscriber) {
                 Realm realm = getRealm();
                 final RealmResults<HeroBasicDto> group1 = realm.where(HeroBasicDto.class)
-                        .beginGroup()
-//                        .contains("fullName", query.toLowerCase())
-//                        .or()
                         .contains("name", query.toLowerCase())
-                        .endGroup()
                         .findAll();
                 subscriber.onNext(realm.copyFromRealm(group1));
                 subscriber.onCompleted();

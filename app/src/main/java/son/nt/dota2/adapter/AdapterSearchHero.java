@@ -37,6 +37,11 @@ public class AdapterSearchHero extends RecyclerView.Adapter<AdapterSearchHero.Vi
         return new ViewHolder(view);
     }
 
+    public void setData(List<HeroBasicDto> data) {
+        mValues = data;
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView avatar;
         ImageView group;
@@ -79,6 +84,6 @@ public class AdapterSearchHero extends RecyclerView.Adapter<AdapterSearchHero.Vi
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mValues == null ? 0 : mValues.size();
     }
 }

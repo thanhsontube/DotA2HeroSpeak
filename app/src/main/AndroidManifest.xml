@@ -72,11 +72,14 @@
                 android:name="com.facebook.FacebookActivity"
                 android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
         <activity android:name=".activity.LoginActivity">
-            <!--<intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity
                 android:name=".activity.HomeActivity"
@@ -164,6 +167,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".story.CreateStoryActivity">
+        </activity>
+        <activity android:name=".story.AddSimpleStoryActivity">
+        </activity>
+        <activity android:name=".story.choose_hero.ChooseHeroActivity">
         </activity>
     </application>
 

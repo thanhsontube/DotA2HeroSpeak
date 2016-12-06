@@ -22,6 +22,7 @@ import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.jsoup.JsoupLoader;
 import son.nt.dota2.musicPack.MusicPackListActivity;
 import son.nt.dota2.musicPack.fav.MusicPackFavActivity;
+import son.nt.dota2.story.CreateStoryActivity;
 import son.nt.dota2.utils.Logger;
 
 public class TestActivity extends FireBaseActivity implements View.OnClickListener {
@@ -52,12 +53,16 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
         findViewById(R.id.abilities).setOnClickListener(this);
         findViewById(R.id.underlord_abilities).setOnClickListener(this);
         findViewById(R.id.old_comments).setOnClickListener(this);
+        findViewById(R.id.create_story).setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.create_story:
+                startActivity(new Intent(this, CreateStoryActivity.class));
+                break;
             case R.id.old_comments:
                 mJsoupLoader.getCmts();
                 break;
