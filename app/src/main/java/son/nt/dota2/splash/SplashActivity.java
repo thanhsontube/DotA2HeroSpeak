@@ -44,7 +44,7 @@ public class SplashActivity extends BaseActivity {
     boolean isKillingLoaded = false;
     boolean isItemsLoaded = false;
     boolean isBuyItemsLoaded = false;
-    boolean isAbilityLoaded = false;
+    boolean isAbilityLoaded = true;
 
     boolean mIsNeedLoadData = false;
 

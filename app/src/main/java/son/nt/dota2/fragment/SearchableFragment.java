@@ -119,7 +119,7 @@ public class SearchableFragment extends AFragment {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapterSearchHero = new AdapterSearchHero(getActivity(), list);
+        adapterSearchHero = new AdapterSearchHero(getActivity(), list, null);
         recyclerView.setAdapter(adapterSearchHero);
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.search_coordinator_layout);
         doSearch(query);

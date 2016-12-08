@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import rx.Observable;
@@ -12,6 +13,7 @@ import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.dto.story.StoryPartDto;
 
 /**
  * Created by sonnt on 11/7/16.
@@ -142,8 +144,10 @@ public class HeroRepository implements IHeroRepository {
             public void call(Subscriber<? super List<HeroBasicDto>> subscriber) {
                 Realm realm = getRealm();
                 final RealmResults<HeroBasicDto> group1 = realm.where(HeroBasicDto.class)
-                        .contains("name", query.toLowerCase())
-                        .findAll();
+                        .contains("name", query, Case.INSENSITIVE)
+                        .or()
+                        .contains("fullName", query, Case.INSENSITIVE)
+                        .findAll().distinct("heroId");
                 subscriber.onNext(realm.copyFromRealm(group1));
                 subscriber.onCompleted();
                 realm.close();
@@ -183,6 +187,22 @@ public class HeroRepository implements IHeroRepository {
     }
 
     @Override
+    public Observable<List<HeroResponsesDto>> searchSounds(String keyword) {
+        return Observable.create(new Observable.OnSubscribe<List<HeroResponsesDto>>() {
+            @Override
+            public void call(Subscriber<? super List<HeroResponsesDto>> subscriber) {
+                Realm realm = getRealm();
+                final RealmResults<HeroResponsesDto> group1 = realm.where(HeroResponsesDto.class)
+                        .contains("text", keyword, Case.INSENSITIVE)
+                        .findAll();
+                subscriber.onNext(realm.copyFromRealm(group1));
+                subscriber.onCompleted();
+                realm.close();
+            }
+        });
+    }
+
+    @Override
     public Observable<List<AbilitySoundDto>> getAbis(String abiHeroID) {
         return Observable.create(new Observable.OnSubscribe<List<AbilitySoundDto>>() {
             @Override
@@ -190,6 +210,30 @@ public class HeroRepository implements IHeroRepository {
                 Realm realm = getRealm();
                 final RealmResults<AbilitySoundDto> group1 = realm.where(AbilitySoundDto.class)
                         .equalTo("abiHeroID", abiHeroID)
+                        .findAll();
+                subscriber.onNext(realm.copyFromRealm(group1));
+                subscriber.onCompleted();
+                realm.close();
+            }
+        });
+    }
+
+    @Override
+    public void saveStoryPart(StoryPartDto dto) {
+        Realm realm = getRealm();
+        realm.beginTransaction();
+        realm.copyToRealm(dto);
+        realm.commitTransaction();
+        realm.close();
+    }
+
+    @Override
+    public Observable<List<StoryPartDto>> getCurrentCreateStory() {
+        return Observable.create(new Observable.OnSubscribe<List<StoryPartDto>>() {
+            @Override
+            public void call(Subscriber<? super List<StoryPartDto>> subscriber) {
+                Realm realm = getRealm();
+                final RealmResults<StoryPartDto> group1 = realm.where(StoryPartDto.class)
                         .findAll();
                 subscriber.onNext(realm.copyFromRealm(group1));
                 subscriber.onCompleted();

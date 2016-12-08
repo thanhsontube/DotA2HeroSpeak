@@ -26,9 +26,16 @@ public class AdapterSearchHero extends RecyclerView.Adapter<AdapterSearchHero.Vi
     Context context;
     List<HeroBasicDto> mValues;
 
-    public AdapterSearchHero(Context context, List<HeroBasicDto> mValues) {
+    IAdapterSearchHeroCallback mCallback;
+
+    public interface IAdapterSearchHeroCallback {
+        void onAdapterHeroClick(HeroBasicDto heroBasicDto);
+    }
+
+    public AdapterSearchHero(Context context, List<HeroBasicDto> mValues, IAdapterSearchHeroCallback callback) {
         this.mValues = mValues;
         this.context = context;
+        mCallback = callback;
     }
 
     @Override
@@ -77,6 +84,9 @@ public class AdapterSearchHero extends RecyclerView.Adapter<AdapterSearchHero.Vi
         }
 
         viewHolder.view.setOnClickListener(v -> {
+            if (mCallback != null) {
+                mCallback.onAdapterHeroClick(dto);
+            }
             TsGaTools.trackPages("/search:" + dto.heroId);
             OttoBus.post(dto);
         });

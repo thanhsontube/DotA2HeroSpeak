@@ -212,8 +212,6 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
         ImageView imgTo;
         View view;
 
-        static int[] colors = new int[]{R.color.md_purple_500, R.color.md_orange_500, R.color.md_blue_500, R.color.md_green_500,
-                R.color.md_red_500, R.color.md_cyan_500};
 
         public Holder(View v) {
             super(v);
@@ -226,5 +224,12 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
             view = v.findViewById(R.id.row_voice_main);
             title = (TextView) v.findViewById(R.id.row_title);
         }
+    }
+
+    public HeroResponsesDto getSelected() {
+        if (mList.isEmpty() || previousSelectedItem < 0) {
+            return null;
+        }
+        return mList.get(previousSelectedItem);
     }
 }

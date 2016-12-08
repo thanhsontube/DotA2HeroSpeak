@@ -1,26 +1,37 @@
 package son.nt.dota2.story;
 
+import com.bumptech.glide.Glide;
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
-import son.nt.dota2.dto.story.StoryDto;
+import son.nt.dota2.dto.story.StoryPartDto;
+import son.nt.dota2.ottobus_entry.GoVoice;
+import son.nt.dota2.utils.OttoBus;
 
 public class AdapterCreateStory extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<StoryDto> list;
+    private List<StoryPartDto> list;
     LayoutInflater inflater;
-    Context context;
+    Context mContext;
     public static final int TYPE_ADD = 0;
     public static final int TYPE_MORE = 1;
-    private List<StoryDto> mData;
+    public static final int TYPE_SOUND_LEFT = 2;
+    public static final int TYPE_SOUND_RIGHT = 3;
+    public static final int TYPE_SOUND_MIDDLE = 4;
+    private List<StoryPartDto> mData;
 
     ICreateStoryListener mListener;
 
@@ -32,9 +43,9 @@ public class AdapterCreateStory extends RecyclerView.Adapter<RecyclerView.ViewHo
         void onAddMiddleClick();
     }
 
-    public AdapterCreateStory(List<StoryDto> list, Context context, ICreateStoryListener listener) {
+    public AdapterCreateStory(List<StoryPartDto> list, Context context, ICreateStoryListener listener) {
         this.list = list;
-        this.context = context;
+        this.mContext = context;
         this.mListener = listener;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -62,8 +73,40 @@ public class AdapterCreateStory extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
             case TYPE_MORE: {
-                View view = inflater.inflate(R.layout.row_story_add, parent, false);
-                AddHolder holder = new AddHolder(view);
+                View view = inflater.inflate(R.layout.row_story_more, parent, false);
+                MoreHolder holder = new MoreHolder(view);
+                holder.addMore.setOnClickListener(v -> {
+
+                });
+                return holder;
+            }
+
+            case TYPE_SOUND_LEFT: {
+                View view = inflater.inflate(R.layout.row_story_sound, parent, false);
+                SoundHolder holder = new SoundHolder(view);
+
+                holder.soundText.setOnClickListener(v -> {
+                    OttoBus.post(new GoVoice(mData.get(holder.getAdapterPosition()), false));
+                });
+
+                return holder;
+            }
+            case TYPE_SOUND_RIGHT: {
+                View view = inflater.inflate(R.layout.row_story_sound_right, parent, false);
+                SoundHolder holder = new SoundHolder(view);
+
+                holder.soundText.setOnClickListener(v -> {
+                    OttoBus.post(new GoVoice(mData.get(holder.getAdapterPosition()), false));
+                });
+
+                return holder;
+            }
+            case TYPE_SOUND_MIDDLE: {
+                View view = inflater.inflate(R.layout.row_story_sound_middle, parent, false);
+                SoundHolderMiddle holder = new SoundHolderMiddle(view);
+
+
+
                 return holder;
             }
 
@@ -74,6 +117,40 @@ public class AdapterCreateStory extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch (holder.getItemViewType()) {
+            case TYPE_ADD: {
+                return;
+
+            }
+
+
+            case TYPE_MORE: {
+                return;
+
+            }
+            case TYPE_SOUND_RIGHT:
+            case TYPE_SOUND_LEFT: {
+                StoryPartDto dto = mData.get(position);
+                SoundHolder soundHolder = (SoundHolder) holder;
+
+                Glide.with(mContext).load(dto.getHeroImage())
+                        .into(soundHolder.avatar);
+
+                soundHolder.description.setText(TextUtils.isEmpty(dto.getDescription()) ? "" : dto.getDescription());
+                soundHolder.soundText.setText(dto.getSoundText());
+                return;
+            }
+
+            case TYPE_SOUND_MIDDLE: {
+                StoryPartDto dto = mData.get(position);
+                SoundHolderMiddle soundHolder = (SoundHolderMiddle) holder;
+
+                Glide.with(mContext).load(dto.getHeroImage())
+                        .into(soundHolder.avatar);
+
+                soundHolder.soundText.setText(dto.getDescription());
+            }
+        }
 
     }
 
@@ -85,10 +162,29 @@ public class AdapterCreateStory extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemViewType(int position) {
+        final StoryPartDto storyPartDto = mData.get(position);
+        if (storyPartDto.getViewType().equals(MsConst.TYPE_ADD)) {
+            return TYPE_ADD;
+        }
+
+        if (storyPartDto.getViewType().equals(MsConst.TYPE_MORE)) {
+            return TYPE_MORE;
+        }
+
+        if (storyPartDto.getViewType().equals(MsConst.TYPE_SOUND_LEFT)) {
+            return TYPE_SOUND_LEFT;
+        }
+        if (storyPartDto.getViewType().equals(MsConst.TYPE_SOUND_RIGHT)) {
+            return TYPE_SOUND_RIGHT;
+        }
+        if (storyPartDto.getViewType().equals(MsConst.TYPE_SOUND_MIDDLE)) {
+            return TYPE_SOUND_MIDDLE;
+        }
+
         return TYPE_ADD;
     }
 
-    public void setData(List<StoryDto> data) {
+    public void setData(List<StoryPartDto> data) {
         mData = data;
         notifyDataSetChanged();
     }
@@ -104,6 +200,48 @@ public class AdapterCreateStory extends RecyclerView.Adapter<RecyclerView.ViewHo
         View viewMiddle;
 
         public AddHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+    }
+
+    static class MoreHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.add_more)
+        View addMore;
+
+        public MoreHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+    }
+
+    static class SoundHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.row_avatar)
+        ImageView avatar;
+        @BindView(R.id.description)
+        TextView description;
+        @BindView(R.id.soundtext)
+        TextView soundText;
+
+        public SoundHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+    }
+
+    static class SoundHolderMiddle extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.row_avatar)
+        ImageView avatar;
+        @BindView(R.id.soundtext)
+        TextView soundText;
+
+        public SoundHolderMiddle(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

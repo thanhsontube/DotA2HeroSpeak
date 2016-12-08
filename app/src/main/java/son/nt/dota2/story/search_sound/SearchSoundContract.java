@@ -1,27 +1,27 @@
-package son.nt.dota2.story.choose_hero;
+package son.nt.dota2.story.search_sound;
 
 import java.util.List;
 
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 
 /**
  * Created by sonnt on 11/7/16.
  */
 
-public class ChooseHeroContract {
+public class SearchSoundContract {
     public interface View  {
 
-        void showList(List<HeroBasicDto> list);
+        void showListData(List<HeroResponsesDto> list);
     }
 
     public interface Presenter {
 
-
-        void getAllHeroList();
-
         void setFilter(String s1);
 
         void search();
+
+        void getSomeSounds();
 
     }
 }

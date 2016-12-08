@@ -170,10 +170,11 @@
         </activity>
         <activity android:name=".story.CreateStoryActivity">
         </activity>
-        <activity android:name=".story.AddSimpleStoryActivity">
+        <activity android:name=".story.add_simple_story.AddSimpleStoryActivity">
         </activity>
         <activity android:name=".story.choose_hero.ChooseHeroActivity">
         </activity>
+        <activity android:name=".story.search_sound.SearchSoundActivity"/>
     </application>
 
 </manifest>

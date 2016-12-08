@@ -10,6 +10,7 @@ import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.dto.story.StoryPartDto;
 
 /**
  * Created by sonnt on 11/6/16.
@@ -43,6 +44,11 @@ public interface IHeroRepository {
 
     Observable<List<HeroResponsesDto>> getSounds(String heroID);
 
+    Observable<List<HeroResponsesDto>> searchSounds(String keyword);
+
     Observable<List<AbilitySoundDto>> getAbis(String heroID);
 
+    void saveStoryPart(StoryPartDto dto);
+
+    Observable<List<StoryPartDto>> getCurrentCreateStory();
 }
