@@ -13,6 +13,7 @@ import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.dto.story.StoryDto;
 import son.nt.dota2.dto.story.StoryPartDto;
 
 /**
@@ -235,6 +236,37 @@ public class HeroRepository implements IHeroRepository {
                 Realm realm = getRealm();
                 final RealmResults<StoryPartDto> group1 = realm.where(StoryPartDto.class)
                         .findAll();
+                subscriber.onNext(realm.copyFromRealm(group1));
+                subscriber.onCompleted();
+                realm.close();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<StoryDto>> getStoryList() {
+        return Observable.create(new Observable.OnSubscribe<List<StoryDto>>() {
+            @Override
+            public void call(Subscriber<? super List<StoryDto>> subscriber) {
+                Realm realm = getRealm();
+                final RealmResults<StoryDto> group1 = realm.where(StoryDto.class)
+                        .findAll();
+                subscriber.onNext(realm.copyFromRealm(group1));
+                subscriber.onCompleted();
+                realm.close();
+            }
+        });
+    }
+
+    @Override
+    public Observable<StoryDto> getStoryById(String storyId) {
+        return Observable.create(new Observable.OnSubscribe<StoryDto>() {
+            @Override
+            public void call(Subscriber<? super StoryDto> subscriber) {
+                Realm realm = getRealm();
+                final StoryDto group1 = realm.where(StoryDto.class)
+                        .equalTo("storyId", storyId)
+                        .findFirst();
                 subscriber.onNext(realm.copyFromRealm(group1));
                 subscriber.onCompleted();
                 realm.close();

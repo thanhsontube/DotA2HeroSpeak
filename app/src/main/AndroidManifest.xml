@@ -175,6 +175,10 @@
         <activity android:name=".story.choose_hero.ChooseHeroActivity">
         </activity>
         <activity android:name=".story.search_sound.SearchSoundActivity"/>
+        <activity android:name=".story.story_list.StoryListActivity">
+        </activity>
+        <activity android:name=".story.story_details.StoryDetailActivity">
+        </activity>
     </application>
 
 </manifest>

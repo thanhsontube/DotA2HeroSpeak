@@ -27,11 +27,11 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.ResourceManager;
-import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.musicPack.MusicPackDetailsActivity;
 import son.nt.dota2.ottobus_entry.GoPlayer;
+import son.nt.dota2.ottobus_entry.GoStory;
 import son.nt.dota2.ottobus_entry.GoVoice;
 import son.nt.dota2.service.notification.INotification;
 import son.nt.dota2.service.notification.NotificationImpl;
@@ -304,13 +304,14 @@ public class PlayService2 extends Service implements MediaServiceContract.Contro
     public void playOnline(String link) {
         try {
             createMediaPlayerIfNeeded();
-            pause();
+//            pause();
+            mPlayer.stop();
             mPlayer.reset();
             mPlayer.setDataSource(link);
             mPlayer.prepare();
             mPlayer.start();
         } catch (IOException e) {
-            Timber.e(">>>" + "playOffline:" + e);
+            Timber.e(">>>" + "playOnline:" + e);
         }
 
     }
@@ -409,9 +410,14 @@ public class PlayService2 extends Service implements MediaServiceContract.Contro
 
     @Subscribe
     public void onGetAdapterSwipeFragmentClick(GoVoice dto) {
-//        play(dto.getLink(), dto.getHeroId());
         mPresenter.playSelectedSound(dto.mHeroResponsesDto, dto.arcana);
     }
+
+    @Subscribe
+    public void onGetAdapterStoryItemClick(GoStory dto) {
+        mPresenter.playSelectedStory(dto.mlist, dto.mTitle, dto.mUser);
+    }
+
 
 
 }

@@ -16,5 +16,7 @@ public class StoryContract {
 
     public interface Presenter {
         void createAddList();
+
+        void saveStory(String s);
     }
 }

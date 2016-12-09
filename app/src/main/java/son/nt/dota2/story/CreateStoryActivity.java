@@ -3,11 +3,13 @@ package son.nt.dota2.story;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import io.realm.Realm;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
@@ -20,6 +22,9 @@ public class CreateStoryActivity extends BaseActivity implements StoryContract.V
 
     @BindView(R.id.story_rcv)
     RecyclerView mRecyclerView;
+
+    @BindView(R.id.story_name)
+    EditText mStoryNameEdt;
 
     AdapterCreateStory mAdapter;
 
@@ -49,6 +54,11 @@ public class CreateStoryActivity extends BaseActivity implements StoryContract.V
         mRecyclerView.setAdapter(mAdapter);
 
 
+    }
+
+    @OnClick(R.id.story_save)
+    public void onSaveClick() {
+        mPresenter.saveStory(mStoryNameEdt.getText().toString());
     }
 
     @Override

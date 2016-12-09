@@ -2,7 +2,6 @@ package son.nt.dota2.service;
 
 import java.util.List;
 
-import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.heroSound.ISound;
 
 /**
@@ -39,5 +38,7 @@ public class MediaServiceContract {
         void setSoundsSource(int type, List<? extends ISound> list);
 
         void playSelectedSound(ISound dto, boolean arcana);
+
+        void playSelectedStory(List<? extends ISound> mlist, String title, String user);
     }
 }

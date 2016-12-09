@@ -4,12 +4,12 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import rx.Completable;
 import rx.Observable;
 import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.dto.story.StoryDto;
 import son.nt.dota2.dto.story.StoryPartDto;
 
 /**
@@ -51,4 +51,8 @@ public interface IHeroRepository {
     void saveStoryPart(StoryPartDto dto);
 
     Observable<List<StoryPartDto>> getCurrentCreateStory();
+
+    Observable<List<StoryDto>> getStoryList();
+
+    Observable<StoryDto> getStoryById(String storyId);
 }
