@@ -1,7 +1,14 @@
 package son.nt.dota2.data;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Case;
@@ -9,6 +16,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import rx.Observable;
 import rx.Subscriber;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
@@ -248,12 +256,32 @@ public class HeroRepository implements IHeroRepository {
         return Observable.create(new Observable.OnSubscribe<List<StoryDto>>() {
             @Override
             public void call(Subscriber<? super List<StoryDto>> subscriber) {
-                Realm realm = getRealm();
-                final RealmResults<StoryDto> group1 = realm.where(StoryDto.class)
-                        .findAll();
-                subscriber.onNext(realm.copyFromRealm(group1));
-                subscriber.onCompleted();
-                realm.close();
+
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference reference = firebaseDatabase.getReference();
+                reference.child(MsConst.TABLE_STORY).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        List<StoryDto> dtos = new ArrayList<StoryDto>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            dtos.add((StoryDto) snapshot.getValue());
+                        }
+                        subscriber.onNext(dtos);
+                        subscriber.onCompleted();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                        Realm realm = getRealm();
+                        final RealmResults<StoryDto> group1 = realm.where(StoryDto.class)
+                                .findAll();
+                        subscriber.onNext(realm.copyFromRealm(group1));
+                        subscriber.onCompleted();
+                        realm.close();
+                    }
+                });
             }
         });
     }
