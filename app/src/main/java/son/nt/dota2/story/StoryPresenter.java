@@ -61,18 +61,12 @@ public class StoryPresenter extends BasePresenter implements StoryContract.Prese
                 if (storyPartDtos.isEmpty()) {
                     List<StoryPartDto> dtos = new ArrayList<>();
                     dtos.add(new StoryPartDto());
-                    dtos.add(new StoryPartDto());
-                    dtos.add(new StoryPartDto());
-                    dtos.add(new StoryPartDto());
-                    dtos.add(new StoryPartDto());
+
                     mView.showAddList(dtos);
                     return;
                 }
 
                 storyPartDtos.add(new StoryPartDto());
-                storyPartDtos.add(new StoryPartDto());
-                storyPartDtos.add(new StoryPartDto());
-
                 mView.showAddList(storyPartDtos);
             }
         };

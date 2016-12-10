@@ -3,17 +3,15 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@drawable/layer_bottom"
               android:orientation="vertical"
               android:gravity="center"
               android:padding="16dp"
               tools:background="@color/transparent_primary">
 
-    <ImageView android:layout_width="100dp" android:layout_height="100dp"
-               android:id="@id/row_avatar"/>
-
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:textColor="@color/white"
+              android:textSize="18sp"
               android:id="@+id/soundtext"/>
 
 

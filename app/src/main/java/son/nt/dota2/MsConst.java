@@ -53,7 +53,6 @@ public class MsConst {
     public static final String ROOT_DOTA2 = "http://www.dota2.com/hero/";
 
     public static final String TYPE_ADD = "add";
-    public static final String TYPE_MORE = "more";
     public static final String TYPE_SOUND_LEFT = "sound left";
     public static final String TYPE_SOUND_RIGHT = "sound right";
     public static final String TYPE_SOUND_MIDDLE = "sound middle";

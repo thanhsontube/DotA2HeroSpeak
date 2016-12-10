@@ -11,27 +11,60 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
         tools:context="son.nt.dota2.story.CreateStoryActivity">
-    <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:gravity="center"
-              android:padding="16dp"
-              android:text="PlayALL"
-              android:id="@+id/create_story_play"/>
-    <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
+
+
+    <FrameLayout
+            android:layout_marginTop="16dp"
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_login">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="?selectableItemBackground"
+                android:id="@+id/create_story_play"
+                android:textAllCaps="true"
+                android:gravity="center"
+                android:text="Play (Preview)"/>
+    </FrameLayout>
+
+
+    <EditText android:layout_width="wrap_content"
+              android:layout_marginTop="16dp"
+              android:layout_gravity="center"
+              android:background="@drawable/box_blue"
+              android:textSize="22sp"
+              android:layout_height="wrap_content"
               android:gravity="center"
               android:padding="16dp"
               android:hint="Story Name"
               android:id="@+id/story_name"/>
-    <android.support.v7.widget.RecyclerView android:layout_width="match_parent"
-                                            android:layout_height="0dp"
-                                            android:layout_weight="1"
-                                            android:background="@color/transparent"
-                                            android:id="@+id/story_rcv"/>
+    <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:id="@+id/story_rcv"/>
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:gravity="center"
-    android:padding="16dp"
-    android:text="Save"
-    android:id="@+id/story_save"/>
+    <FrameLayout
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_login">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="?selectableItemBackground"
+                android:id="@+id/story_save"
+                android:textAllCaps="true"
+                android:gravity="center"
+                android:text="Create"/>
+    </FrameLayout>
 
 
 </LinearLayout>

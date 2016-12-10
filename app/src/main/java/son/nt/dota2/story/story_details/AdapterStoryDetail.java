@@ -72,14 +72,7 @@ public class AdapterStoryDetail extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
 
 
-            case TYPE_MORE: {
-                View view = inflater.inflate(R.layout.row_story_more, parent, false);
-                MoreHolder holder = new MoreHolder(view);
-                holder.addMore.setOnClickListener(v -> {
 
-                });
-                return holder;
-            }
 
             case TYPE_SOUND_LEFT: {
                 View view = inflater.inflate(R.layout.row_story_sound, parent, false);
@@ -170,9 +163,7 @@ public class AdapterStoryDetail extends RecyclerView.Adapter<RecyclerView.ViewHo
             return TYPE_ADD;
         }
 
-        if (storyPartDto.getViewType().equals(MsConst.TYPE_MORE)) {
-            return TYPE_MORE;
-        }
+
 
         if (storyPartDto.getViewType().equals(MsConst.TYPE_SOUND_LEFT)) {
             return TYPE_SOUND_LEFT;
@@ -209,17 +200,7 @@ public class AdapterStoryDetail extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
-    static class MoreHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.add_more)
-        View addMore;
-
-        public MoreHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-    }
 
     static class SoundHolder extends RecyclerView.ViewHolder {
 

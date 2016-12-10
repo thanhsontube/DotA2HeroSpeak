@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.base.BasePresenter;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.HeroResponsesDto;
@@ -42,25 +43,33 @@ public class AddSimpleStoryPresenter extends BasePresenter implements AddSimpleS
 
     @Override
     public void wrapSimpleStory(String des) {
+        if (!mSide.equalsIgnoreCase(MsConst.TYPE_SOUND_MIDDLE)) {
+            if (mHeroBasicDto == null || (mHeroResponsesDto == null && TextUtils.isEmpty(des))) {
+                return;
+            }
+            StoryPartDto dto = new StoryPartDto();
 
-        if (mHeroBasicDto == null || (mHeroResponsesDto == null && TextUtils.isEmpty(des))) {
-            return;
+            dto.setDescription(des);
+            dto.setHeroId(mHeroBasicDto.heroId);
+            dto.setHeroImage(mHeroBasicDto.avatar);
+
+            dto.setSoundLink(mHeroResponsesDto == null ? "" : mHeroResponsesDto.getLink());
+            dto.setSoundText(mHeroResponsesDto == null ? "" : mHeroResponsesDto.getText());
+
+            dto.setSide(mSide);
+            dto.setNo(System.currentTimeMillis());
+            dto.setViewType(mSide);
+
+            mRepository.saveStoryPart(dto);
+        } else {
+            StoryPartDto dto = new StoryPartDto();
+            dto.setDescription(des);
+            dto.setSide(mSide);
+            dto.setNo(System.currentTimeMillis());
+            dto.setViewType(mSide);
+
+            mRepository.saveStoryPart(dto);
         }
-
-        StoryPartDto dto = new StoryPartDto();
-
-        dto.setDescription(des);
-        dto.setHeroId(mHeroBasicDto.heroId);
-        dto.setHeroImage(mHeroBasicDto.avatar);
-
-        dto.setSoundLink(mHeroResponsesDto == null ? "" : mHeroResponsesDto.getLink());
-        dto.setSoundText(mHeroResponsesDto == null ? "" : mHeroResponsesDto.getText());
-
-        dto.setSide(mSide);
-        dto.setNo(System.currentTimeMillis());
-        dto.setViewType(mSide);
-
-        mRepository.saveStoryPart(dto);
 
         mView.closeActivity();
     }
@@ -84,6 +93,7 @@ public class AddSimpleStoryPresenter extends BasePresenter implements AddSimpleS
                 .subscribe(new Action1<HeroBasicDto>() {
                     @Override
                     public void call(HeroBasicDto heroBasicDto) {
+                        mHeroBasicDto = heroBasicDto;
                         mView.updateAvatar(heroBasicDto);
                     }
                 });

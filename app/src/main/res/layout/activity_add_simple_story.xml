@@ -1,59 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/activity_add_simple_story"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="son.nt.dota2.story.add_simple_story.AddSimpleStoryActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context="son.nt.dota2.story.add_simple_story.AddSimpleStoryActivity">
+    <LinearLayout
 
-    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-               android:id="@+id/choose_hero"
-               android:text="+"
-               android:src="@drawable/pip_carry"
-               android:gravity="center"
-               android:padding="16dp"
-               android:layout_gravity="center"/>
+            android:id="@+id/activity_add_simple_story"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <EditText android:layout_width="match_parent" android:layout_height="200dp"
-              android:hint="Story"
-              android:id="@+id/des_txt"
-              android:padding="8dp"
-              android:layout_marginTop="16dp"/>
-
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:text="Choose a Sound / Voices"
-              android:id="@+id/choose_sound"
-              android:gravity="center"
-              android:padding="16dp"
-              android:layout_marginTop="16dp"
-              android:layout_gravity="center"/>
-
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal">
-        <son.nt.dota2.customview.SoundStoryView
-                android:layout_width="0dp"
-                android:id="@+id/choose_sound_view"
+        <son.nt.dota2.customview.HeroProfileView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
-            <TextView android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="Edit"
-                      android:padding="8dp"
-                      android:id="@+id/choose_edit"/>
+                android:id="@+id/choose_hero"
+                android:src="@drawable/pip_carry"
+                android:gravity="center"
+                android:padding="16dp"
+                android:layout_gravity="center"/>
 
-        </son.nt.dota2.customview.SoundStoryView>
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Choose a Sound / Voice"
+                  android:drawableLeft="@drawable/ic_add"
+                  android:id="@+id/choose_sound"
+                  android:textColor="@color/md_blue_A200"
+                  android:background="@drawable/box_blue"
+                  android:gravity="center"
+                  android:padding="8dp"
+                  android:layout_marginTop="8dp"
+                  android:layout_gravity="center"/>
+
+        <son.nt.dota2.customview.SoundStoryView
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:id="@+id/choose_sound_view"
+                android:layout_height="wrap_content"/>
+
+
+        <EditText android:layout_width="match_parent"
+                  android:layout_marginTop="16dp"
+                  android:layout_gravity="center"
+                  android:background="@drawable/box_blue"
+                  android:textSize="22sp"
+                  android:layout_height="wrap_content"
+                  android:gravity="center"
+                  android:padding="8dp"
+                  android:hint="Say something ... "
+                  android:id="@+id/des_txt"/>
+
+        <FrameLayout
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_login">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:background="?selectableItemBackground"
+                    android:id="@+id/add_confirm"
+                    android:textAllCaps="true"
+                    android:gravity="center"
+                    android:text="OK"/>
+        </FrameLayout>
+
+
     </LinearLayout>
+</ScrollView>
 
-
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:text="Look Good"
-              android:gravity="center"
-              android:id="@+id/add_confirm"
-              android:layout_marginTop="16dp"
-              android:padding="16dp"
-              android:layout_gravity="end"/>
-
-</LinearLayout>
