@@ -31,6 +31,7 @@ import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.musicPack.MusicPackDetailsActivity;
 import son.nt.dota2.ottobus_entry.GoPlayer;
+import son.nt.dota2.ottobus_entry.GoPlayerStop;
 import son.nt.dota2.ottobus_entry.GoStory;
 import son.nt.dota2.ottobus_entry.GoVoice;
 import son.nt.dota2.service.notification.INotification;
@@ -418,6 +419,12 @@ public class PlayService2 extends Service implements MediaServiceContract.Contro
         mPresenter.playSelectedStory(dto.mlist, dto.mTitle, dto.mUser);
     }
 
+    @Subscribe
+    public void onGeStop(GoPlayerStop stop) {
+        if (mPlayer != null) {
+            mPlayer.stop();
+        }
+    }
 
 
 }

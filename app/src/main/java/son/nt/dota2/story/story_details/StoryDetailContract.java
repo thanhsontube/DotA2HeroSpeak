@@ -22,5 +22,6 @@ public class StoryDetailContract {
 
         void playStory();
 
+        void stopStory();
     }
 }

@@ -1,14 +1,11 @@
 package son.nt.dota2.story.story_details;
 
-import com.bumptech.glide.Glide;
-
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -17,6 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
+import son.nt.dota2.customview.HeroProfileView;
 import son.nt.dota2.dto.story.StoryPartDto;
 import son.nt.dota2.ottobus_entry.GoVoice;
 import son.nt.dota2.utils.OttoBus;
@@ -129,8 +127,7 @@ public class AdapterStoryDetail extends RecyclerView.Adapter<RecyclerView.ViewHo
                 StoryPartDto dto = mData.get(position);
                 SoundHolder soundHolder = (SoundHolder) holder;
 
-                Glide.with(mContext).load(dto.getHeroImage())
-                        .into(soundHolder.avatar);
+                soundHolder.avatar.setAvatar(dto.getHeroImage());
 
                 soundHolder.description.setText(TextUtils.isEmpty(dto.getDescription()) ? "" : dto.getDescription());
                 soundHolder.soundText.setText(dto.getSoundText());
@@ -141,8 +138,7 @@ public class AdapterStoryDetail extends RecyclerView.Adapter<RecyclerView.ViewHo
                 StoryPartDto dto = mData.get(position);
                 SoundHolderMiddle soundHolder = (SoundHolderMiddle) holder;
 
-                Glide.with(mContext).load(dto.getHeroImage())
-                        .into(soundHolder.avatar);
+
 
                 soundHolder.soundText.setText(dto.getDescription());
             }
@@ -205,7 +201,7 @@ public class AdapterStoryDetail extends RecyclerView.Adapter<RecyclerView.ViewHo
     static class SoundHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.row_avatar)
-        ImageView avatar;
+        HeroProfileView avatar;
         @BindView(R.id.description)
         TextView description;
         @BindView(R.id.soundtext)
@@ -220,8 +216,6 @@ public class AdapterStoryDetail extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     static class SoundHolderMiddle extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.row_avatar)
-        ImageView avatar;
         @BindView(R.id.soundtext)
         TextView soundText;
 

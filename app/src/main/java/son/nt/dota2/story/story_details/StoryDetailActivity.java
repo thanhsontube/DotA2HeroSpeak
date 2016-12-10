@@ -19,7 +19,7 @@ import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.dto.story.StoryFireBaseDto;
 import son.nt.dota2.dto.story.StoryPartDto;
 
-public class StoryDetailActivity extends BaseActivity implements StoryDetailContract.View{
+public class StoryDetailActivity extends BaseActivity implements StoryDetailContract.View {
 
     @BindView(R.id.story_list_detail_rcv)
     RecyclerView mRecyclerView;
@@ -27,13 +27,8 @@ public class StoryDetailActivity extends BaseActivity implements StoryDetailCont
 
     StoryDetailContract.Presenter mPresenter;
 
-    public static void start (Activity activity, String storyID) {
-        Intent intent = new Intent(activity, StoryDetailActivity.class);
-        intent.putExtra("data", storyID);
-        activity.startActivity(intent);
-    }
 
-    public static void start (Activity activity, StoryFireBaseDto storyID) {
+    public static void start(Activity activity, StoryFireBaseDto storyID) {
         Intent intent = new Intent(activity, StoryDetailActivity.class);
         intent.putExtra("data", Parcels.wrap(storyID));
         activity.startActivity(intent);
@@ -49,7 +44,7 @@ public class StoryDetailActivity extends BaseActivity implements StoryDetailCont
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new StoryDetailPresenter(this, new HeroRepository());
-        mPresenter.setStoryId (Parcels.unwrap(getIntent().getParcelableExtra("data")));
+        mPresenter.setStoryId(Parcels.unwrap(getIntent().getParcelableExtra("data")));
 
         mAdapter = new AdapterStoryDetail(new ArrayList<>(), this, null);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -61,8 +56,13 @@ public class StoryDetailActivity extends BaseActivity implements StoryDetailCont
     }
 
     @OnClick(R.id.play_a_story)
-    public void onPlayStory () {
-        mPresenter.playStory ();
+    public void onPlayStory() {
+        mPresenter.playStory();
+    }
+
+    @OnClick(R.id.stop_a_story)
+    public void onStopStory() {
+        mPresenter.stopStory();
     }
 
     @Override
