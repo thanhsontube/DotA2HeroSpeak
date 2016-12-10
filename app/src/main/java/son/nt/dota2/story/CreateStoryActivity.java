@@ -61,6 +61,11 @@ public class CreateStoryActivity extends BaseActivity implements StoryContract.V
         mPresenter.saveStory(mStoryNameEdt.getText().toString());
     }
 
+    @OnClick(R.id.create_story_play)
+    public void onPlayClick () {
+        mPresenter.playStory ();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

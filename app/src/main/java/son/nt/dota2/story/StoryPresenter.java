@@ -147,4 +147,9 @@ public class StoryPresenter extends BasePresenter implements StoryContract.Prese
                 });
 
     }
+
+    @Override
+    public void playStory() {
+//        OttoBus.post(new GoStory(mStoryId.getContents(), mStoryId.getTitle(), mStoryId.getUserId()));
+    }
 }

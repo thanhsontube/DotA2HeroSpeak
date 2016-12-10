@@ -64,10 +64,8 @@ public class SearchSoundActivity extends BaseActivity implements SearchSoundCont
             Toast.makeText(this, "Have to choose at least 1 item", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (heroResponsesDto != null) {
-            OttoBus.post(new GoAddASound(heroResponsesDto));
-            finish();
-        }
+        OttoBus.post(new GoAddASound(heroResponsesDto));
+        finish();
     }
 
     @Override

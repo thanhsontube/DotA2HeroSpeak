@@ -18,5 +18,8 @@ public class StoryContract {
         void createAddList();
 
         void saveStory(String s);
+
+        void playStory();
+
     }
 }

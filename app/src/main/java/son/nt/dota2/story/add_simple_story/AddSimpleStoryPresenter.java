@@ -4,7 +4,9 @@ import com.squareup.otto.Subscribe;
 
 import android.text.TextUtils;
 
-import son.nt.dota2.MsConst;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import son.nt.dota2.base.BasePresenter;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.HeroResponsesDto;
@@ -12,6 +14,7 @@ import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.dto.story.StoryPartDto;
 import son.nt.dota2.ottobus_entry.GoAddASound;
 import son.nt.dota2.ottobus_entry.GoAddSimpleStory;
+import son.nt.dota2.utils.Dota2Util;
 
 /**
  * Created by sonnt on 12/6/16.
@@ -74,6 +77,17 @@ public class AddSimpleStoryPresenter extends BasePresenter implements AddSimpleS
 
         this.mHeroResponsesDto = data.mData;
         mView.updateSelectedSound(data.mData);
+        final String fromHero = Dota2Util.getFromHero(mHeroResponsesDto);
+        mRepository.getHeroFromId(fromHero)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<HeroBasicDto>() {
+                    @Override
+                    public void call(HeroBasicDto heroBasicDto) {
+                        mView.updateAvatar(heroBasicDto);
+                    }
+                });
+
     }
 
 
