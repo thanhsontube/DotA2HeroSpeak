@@ -9,7 +9,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import son.nt.dota2.base.BasePresenter;
 import son.nt.dota2.data.IHeroRepository;
-import son.nt.dota2.dto.story.StoryDto;
+import son.nt.dota2.dto.story.StoryFireBaseDto;
 
 /**
  * Created by sonnt on 12/6/16.
@@ -28,7 +28,7 @@ public class StoryListPresenter extends BasePresenter implements StoryListContra
     @Override
     public void getStoryList() {
 
-        Observer<List<StoryDto>> listObserver = new Observer<List<StoryDto>>() {
+        Observer<List<StoryFireBaseDto>> listObserver = new Observer<List<StoryFireBaseDto>>() {
             @Override
             public void onCompleted() {
 
@@ -40,16 +40,16 @@ public class StoryListPresenter extends BasePresenter implements StoryListContra
             }
 
             @Override
-            public void onNext(List<StoryDto> StoryDtos) {
-                if (StoryDtos.isEmpty()) {
+            public void onNext(List<StoryFireBaseDto> list) {
+                if (list.isEmpty()) {
                     return;
                 }
 
-                mView.showAddList(StoryDtos);
+                mView.showAddList(list);
             }
         };
 
-        Observable<List<StoryDto>> listObservable = mRepository.getStoryList()
+        Observable<List<StoryFireBaseDto>> listObservable = mRepository.getStoryList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 

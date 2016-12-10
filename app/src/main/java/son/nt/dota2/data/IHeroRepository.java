@@ -10,6 +10,7 @@ import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.dto.story.StoryDto;
+import son.nt.dota2.dto.story.StoryFireBaseDto;
 import son.nt.dota2.dto.story.StoryPartDto;
 
 /**
@@ -52,7 +53,7 @@ public interface IHeroRepository {
 
     Observable<List<StoryPartDto>> getCurrentCreateStory();
 
-    Observable<List<StoryDto>> getStoryList();
+    Observable<List<StoryFireBaseDto>> getStoryList();
 
     Observable<StoryDto> getStoryById(String storyId);
 }

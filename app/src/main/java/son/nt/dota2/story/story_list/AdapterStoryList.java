@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import son.nt.dota2.R;
-import son.nt.dota2.dto.story.StoryDto;
+import son.nt.dota2.dto.story.StoryFireBaseDto;
 import son.nt.dota2.story.story_details.StoryDetailActivity;
 
 /**
@@ -21,15 +21,15 @@ import son.nt.dota2.story.story_details.StoryDetailActivity;
 public class AdapterStoryList extends RecyclerView.Adapter<AdapterStoryList.ViewHolder> {
 
     Context context;
-    List<StoryDto> mValues;
+    List<StoryFireBaseDto> mValues;
 
     IAdapterStoryListCallback mCallback;
 
     public interface IAdapterStoryListCallback {
-        void onAdapterHeroClick(StoryDto StoryDto);
+        void onAdapterHeroClick(StoryFireBaseDto StoryFireBaseDto);
     }
 
-    public AdapterStoryList(Context context, List<StoryDto> mValues, IAdapterStoryListCallback callback) {
+    public AdapterStoryList(Context context, List<StoryFireBaseDto> mValues, IAdapterStoryListCallback callback) {
         this.mValues = mValues;
         this.context = context;
         mCallback = callback;
@@ -42,13 +42,13 @@ public class AdapterStoryList extends RecyclerView.Adapter<AdapterStoryList.View
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StoryDetailActivity.start(((Activity) context), mValues.get(viewHolder.getAdapterPosition()).getStoryId());
+                StoryDetailActivity.start(((Activity) context), mValues.get(viewHolder.getAdapterPosition()));
             }
         });
         return viewHolder;
     }
 
-    public void setData(List<StoryDto> data) {
+    public void setData(List<StoryFireBaseDto> data) {
         mValues = data;
         notifyDataSetChanged();
     }
@@ -72,7 +72,7 @@ public class AdapterStoryList extends RecyclerView.Adapter<AdapterStoryList.View
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        final StoryDto dto = mValues.get(position);
+        final StoryFireBaseDto dto = mValues.get(position);
         viewHolder.name.setText(dto.getTitle());
         viewHolder.fullname.setText(dto.getStoryId());
     }

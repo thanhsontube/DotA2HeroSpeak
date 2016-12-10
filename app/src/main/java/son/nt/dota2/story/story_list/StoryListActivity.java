@@ -11,9 +11,9 @@ import butterknife.BindView;
 import son.nt.dota2.R;
 import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
-import son.nt.dota2.dto.story.StoryDto;
+import son.nt.dota2.dto.story.StoryFireBaseDto;
 
-public class StoryListActivity extends BaseActivity implements StoryListContract.View{
+public class StoryListActivity extends BaseActivity implements StoryListContract.View {
 
     @BindView(R.id.story_list_rcv)
     RecyclerView mRecyclerView;
@@ -46,13 +46,13 @@ public class StoryListActivity extends BaseActivity implements StoryListContract
 
     AdapterStoryList.IAdapterStoryListCallback mIAdapterStoryListCallback = new AdapterStoryList.IAdapterStoryListCallback() {
         @Override
-        public void onAdapterHeroClick(StoryDto StoryDto) {
+        public void onAdapterHeroClick(StoryFireBaseDto StoryDto) {
 
         }
     };
 
     @Override
-    public void showAddList(List<StoryDto> storyDtos) {
+    public void showAddList(List<StoryFireBaseDto> storyDtos) {
         mAdapter.setData(storyDtos);
     }
 }

@@ -157,7 +157,7 @@ public class PlayService2 extends Service implements MediaServiceContract.Contro
         mPlayer.setOnCompletionListener(mp -> {
 
             //sleep 500ms
-            Observable.timer(500, TimeUnit.MILLISECONDS)
+            Observable.timer(100, TimeUnit.MILLISECONDS)
                     .observeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<Long>() {

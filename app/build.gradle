@@ -130,6 +130,10 @@ dependencies {
     //timber
     compile 'com.jakewharton.timber:timber:3.1.0'
 
+    //parcel
+    compile 'org.parceler:parceler-api:1.1.6'
+    apt 'org.parceler:parceler:1.1.6'
+
 }
 apply plugin: 'com.google.gms.google-services'
 

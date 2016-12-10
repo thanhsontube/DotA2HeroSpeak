@@ -1,6 +1,8 @@
 package son.nt.dota2.story.story_details;
 
-import io.realm.RealmList;
+import java.util.List;
+
+import son.nt.dota2.dto.story.StoryFireBaseDto;
 import son.nt.dota2.dto.story.StoryPartDto;
 
 /**
@@ -10,11 +12,11 @@ import son.nt.dota2.dto.story.StoryPartDto;
 public class StoryDetailContract {
 
     public interface View {
-        void showList(RealmList<StoryPartDto> contents);
+        void showList(List<StoryPartDto> contents);
     }
 
     public interface Presenter {
-        void setStoryId(String data);
+        void setStoryId(StoryFireBaseDto data);
 
         void getStoryById();
 

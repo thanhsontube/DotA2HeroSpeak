@@ -1,13 +1,17 @@
 package son.nt.dota2.dto.story;
 
+import org.parceler.Parcel;
+
 import io.realm.RealmObject;
+import io.realm.annotations.RealmClass;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.dto.heroSound.ISound;
 
 /**
  * Created by sonnt on 12/5/16.
  */
-
+@RealmClass
+@Parcel(value = Parcel.Serialization.BEAN, analyze = {StoryPartDto.class})
 public class StoryPartDto extends RealmObject implements ISound {
     long no;
     String heroId;
@@ -19,10 +23,10 @@ public class StoryPartDto extends RealmObject implements ISound {
     String soundLink;
     String soundText;
 
-    String viewType; //add , more, sound
+    String viewType = MsConst.TYPE_ADD; //add , more, sound
+
 
     public StoryPartDto() {
-        viewType = MsConst.TYPE_ADD;
     }
 
     public long getNo() {

@@ -24,6 +24,7 @@ import son.nt.dota2.base.BasePresenter;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.story.StoryDto;
 import son.nt.dota2.dto.story.StoryPartDto;
+import son.nt.dota2.utils.ConvertClassUtil;
 import son.nt.dota2.utils.Logger;
 import timber.log.Timber;
 
@@ -123,7 +124,7 @@ public class StoryPresenter extends BasePresenter implements StoryContract.Prese
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 DatabaseReference reference = firebaseDatabase.getReference();
 
-                reference.child(MsConst.TABLE_STORY).push().setValue(storyDto)
+                reference.child(MsConst.TABLE_STORY).push().setValue(ConvertClassUtil.createStoryFireBaseDto(storyDto))
                         .addOnSuccessListener(aVoid -> Logger.debug("", ">>>push " + ":" + "onSuccess pushItem:"))
                         .addOnFailureListener(e -> Logger.error("", ">>> Error:" + "onFailure:" + e))
 

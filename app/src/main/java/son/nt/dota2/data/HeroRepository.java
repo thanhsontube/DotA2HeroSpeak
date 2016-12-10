@@ -22,6 +22,7 @@ import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.dto.story.StoryDto;
+import son.nt.dota2.dto.story.StoryFireBaseDto;
 import son.nt.dota2.dto.story.StoryPartDto;
 
 /**
@@ -252,10 +253,10 @@ public class HeroRepository implements IHeroRepository {
     }
 
     @Override
-    public Observable<List<StoryDto>> getStoryList() {
-        return Observable.create(new Observable.OnSubscribe<List<StoryDto>>() {
+    public Observable<List<StoryFireBaseDto>> getStoryList() {
+        return Observable.create(new Observable.OnSubscribe<List<StoryFireBaseDto>>() {
             @Override
-            public void call(Subscriber<? super List<StoryDto>> subscriber) {
+            public void call(Subscriber<? super List<StoryFireBaseDto>> subscriber) {
 
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 DatabaseReference reference = firebaseDatabase.getReference();
@@ -263,9 +264,9 @@ public class HeroRepository implements IHeroRepository {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        List<StoryDto> dtos = new ArrayList<StoryDto>();
+                        List<StoryFireBaseDto> dtos = new ArrayList<StoryFireBaseDto>();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            dtos.add((StoryDto) snapshot.getValue());
+                            dtos.add(snapshot.getValue(StoryFireBaseDto.class));
                         }
                         subscriber.onNext(dtos);
                         subscriber.onCompleted();
@@ -274,12 +275,12 @@ public class HeroRepository implements IHeroRepository {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
-                        Realm realm = getRealm();
-                        final RealmResults<StoryDto> group1 = realm.where(StoryDto.class)
-                                .findAll();
-                        subscriber.onNext(realm.copyFromRealm(group1));
-                        subscriber.onCompleted();
-                        realm.close();
+//                        Realm realm = getRealm();
+//                        final RealmResults<StoryDto> group1 = realm.where(StoryDto.class)
+//                                .findAll();
+//                        subscriber.onNext(realm.copyFromRealm(group1));
+//                        subscriber.onCompleted();
+//                        realm.close();
                     }
                 });
             }

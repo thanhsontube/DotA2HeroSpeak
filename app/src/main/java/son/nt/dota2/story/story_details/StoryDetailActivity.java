@@ -1,5 +1,7 @@
 package son.nt.dota2.story.story_details;
 
+import org.parceler.Parcels;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,13 +9,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.realm.RealmList;
 import son.nt.dota2.R;
 import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
+import son.nt.dota2.dto.story.StoryFireBaseDto;
 import son.nt.dota2.dto.story.StoryPartDto;
 
 public class StoryDetailActivity extends BaseActivity implements StoryDetailContract.View{
@@ -30,6 +33,12 @@ public class StoryDetailActivity extends BaseActivity implements StoryDetailCont
         activity.startActivity(intent);
     }
 
+    public static void start (Activity activity, StoryFireBaseDto storyID) {
+        Intent intent = new Intent(activity, StoryDetailActivity.class);
+        intent.putExtra("data", Parcels.wrap(storyID));
+        activity.startActivity(intent);
+    }
+
 
     @Override
     protected int provideLayoutResID() {
@@ -40,7 +49,7 @@ public class StoryDetailActivity extends BaseActivity implements StoryDetailCont
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new StoryDetailPresenter(this, new HeroRepository());
-        mPresenter.setStoryId (getIntent().getStringExtra("data"));
+        mPresenter.setStoryId (Parcels.unwrap(getIntent().getParcelableExtra("data")));
 
         mAdapter = new AdapterStoryDetail(new ArrayList<>(), this, null);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -57,7 +66,7 @@ public class StoryDetailActivity extends BaseActivity implements StoryDetailCont
     }
 
     @Override
-    public void showList(RealmList<StoryPartDto> contents) {
+    public void showList(List<StoryPartDto> contents) {
         mAdapter.setData(contents);
     }
 }
