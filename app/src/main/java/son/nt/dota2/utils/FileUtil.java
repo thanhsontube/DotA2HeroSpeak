@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -32,6 +33,17 @@ import son.nt.dota2.dto.HeroDto;
 public class FileUtil {
 
     public static void saveObject(Context context, AObject data, String name) throws IOException {
+        File woFile = new File(ResourceManager.getInstance().getFolderObject(), name);
+        if (woFile.exists()) {
+            woFile.delete();
+        }
+        woFile.createNewFile();
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(woFile));
+        oos.writeObject(data);
+        oos.close();
+    }
+
+    public static void saveObject(AObject data, String name) throws IOException {
         File woFile = new File(ResourceManager.getInstance().getFolderObject(), name);
         if (woFile.exists()) {
             woFile.delete();
@@ -286,6 +298,28 @@ public class FileUtil {
                 deleteRecursive(child);
 
         fileOrDirectory.delete();
+    }
+
+    public static void writeToFile(String data,Context context) {
+        try {
+
+            File f = new File(ResourceManager.getInstance().getFolderObject());
+            if (!f.exists()) {
+                f.mkdirs();
+            }
+            File woFile = new File(ResourceManager.getInstance().getFolderObject(), "config.txt");
+            if (!woFile.isFile()) {
+                woFile.createNewFile();
+            }
+//            final FileOutputStream fileOutputStream = context.openFileOutput(woFile.getPath(), Context.MODE_APPEND);
+            final FileOutputStream fileOutputStream = new FileOutputStream(woFile,false);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
     }
 
 

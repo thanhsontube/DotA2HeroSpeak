@@ -1,4 +1,4 @@
-package son.nt.dota2.dto.home;
+package son.nt.dota2.saved_class;
 
 import com.google.firebase.database.Exclude;
 import com.google.gson.Gson;
@@ -6,8 +6,7 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import son.nt.dota2.base.AObject;
 
 /**
  * Created by sonnt on 9/20/16.
@@ -25,11 +24,10 @@ import io.realm.annotations.PrimaryKey;
  *
  * how to get HeroBasicDto from http://dota2.gamepedia.com/Heroes ????
  */
-public class HeroBasicDto extends RealmObject {
+public class HeroBasicDtoSaved extends AObject {
     /**
      * get info from http://www.dota2.com/heroes/
      */
-    @PrimaryKey
     public String heroId; //Dragon_Knight
     public int no;
     public int priority = 999;
@@ -51,25 +49,7 @@ public class HeroBasicDto extends RealmObject {
             , "Phantom_Assassin", "Legion_Commander", "Terrorblade"};
 
 
-    public HeroBasicDto() {
-    }
-
-    public HeroBasicDto(String heroId, int no, int priority, String name, String fullName, String avatar, String heroIcon, String welcomeVoice, String attribute, String roles, String description, String avatar2, String href, String group, String bgLink) {
-        this.heroId = heroId;
-        this.no = no;
-        this.priority = priority;
-        this.name = name;
-        this.fullName = fullName;
-        this.avatar = avatar;
-        this.heroIcon = heroIcon;
-        this.welcomeVoice = welcomeVoice;
-        this.attribute = attribute;
-        this.roles = roles;
-        this.description = description;
-        this.avatar2 = avatar2;
-        this.href = href;
-        this.group = group;
-        this.bgLink = bgLink;
+    public HeroBasicDtoSaved() {
     }
 
     @Override

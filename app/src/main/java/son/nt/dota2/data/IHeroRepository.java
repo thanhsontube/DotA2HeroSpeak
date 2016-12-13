@@ -45,6 +45,8 @@ public interface IHeroRepository {
 
     Observable<List<HeroResponsesDto>> getSounds(String heroID);
 
+    Observable<List<HeroResponsesDto>> getResponseSounds();
+
     Observable<List<HeroResponsesDto>> searchSounds(String keyword);
 
     Observable<List<AbilitySoundDto>> getAbis(String heroID);

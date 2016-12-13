@@ -17,6 +17,7 @@ import io.realm.RealmResults;
 import rx.Observable;
 import rx.Subscriber;
 import son.nt.dota2.MsConst;
+import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
@@ -24,6 +25,11 @@ import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.dto.story.StoryDto;
 import son.nt.dota2.dto.story.StoryFireBaseDto;
 import son.nt.dota2.dto.story.StoryPartDto;
+import son.nt.dota2.saved_class.FileAbilityList;
+import son.nt.dota2.saved_class.FileHeroBasicList;
+import son.nt.dota2.saved_class.FileResponseList;
+import son.nt.dota2.utils.ConvertClassUtil;
+import son.nt.dota2.utils.FileUtil;
 
 /**
  * Created by sonnt on 11/7/16.
@@ -197,6 +203,45 @@ public class HeroRepository implements IHeroRepository {
     }
 
     @Override
+    public Observable<List<HeroResponsesDto>> getResponseSounds() {
+        return Observable.create(new Observable.OnSubscribe<List<HeroResponsesDto>>() {
+            @Override
+            public void call(Subscriber<? super List<HeroResponsesDto>> subscriber) {
+//                Realm realm = getRealm();
+//                final RealmResults<HeroResponsesDto> group1 = realm.where(HeroResponsesDto.class)
+//                        .findAll();
+//                subscriber.onNext(realm.copyFromRealm(group1));
+//                subscriber.onCompleted();
+//                realm.close();
+
+                Realm realm = getRealm();
+                //todo hack
+                removeAllLordResponses(realm);
+                final RealmResults<HeroResponsesDto> group1 = realm.where(HeroResponsesDto.class)
+                        .findAll();
+                List<HeroResponsesDto> list = realm.copyFromRealm(group1);
+
+                if (list.isEmpty()) {
+                    //read from file
+                    try {
+                        FileResponseList fileHeroBasicList = (FileResponseList) FileUtil.getObject(ResourceManager.getInstance().getContext(),
+                                FileResponseList.class.getSimpleName());
+                        list = ConvertClassUtil.createResponse(fileHeroBasicList);
+                        realm.beginTransaction();
+                        realm.copyToRealm(list);
+                        realm.commitTransaction();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                subscriber.onNext(list);
+                subscriber.onCompleted();
+                realm.close();
+            }
+        });
+    }
+
+    @Override
     public Observable<List<HeroResponsesDto>> searchSounds(String keyword) {
         return Observable.create(new Observable.OnSubscribe<List<HeroResponsesDto>>() {
             @Override
@@ -308,10 +353,28 @@ public class HeroRepository implements IHeroRepository {
         return Observable.create(new Observable.OnSubscribe<List<HeroBasicDto>>() {
             @Override
             public void call(Subscriber<? super List<HeroBasicDto>> subscriber) {
+
                 Realm realm = getRealm();
+                //todo hack
+                removeAllBasicHero(realm);
                 final RealmResults<HeroBasicDto> group1 = realm.where(HeroBasicDto.class)
                         .findAll();
-                subscriber.onNext(realm.copyFromRealm(group1));
+                List<HeroBasicDto> list = realm.copyFromRealm(group1);
+
+                if (list.isEmpty()) {
+                    //read from file
+                    try {
+                        FileHeroBasicList fileHeroBasicList = (FileHeroBasicList) FileUtil.getObject(ResourceManager.getInstance().getContext(),
+                                FileHeroBasicList.class.getSimpleName());
+                        list = ConvertClassUtil.createHeroBasicDto(fileHeroBasicList);
+                        realm.beginTransaction();
+                        realm.copyToRealm(list);
+                        realm.commitTransaction();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                subscriber.onNext(list);
                 subscriber.onCompleted();
                 realm.close();
             }
@@ -324,9 +387,25 @@ public class HeroRepository implements IHeroRepository {
             @Override
             public void call(Subscriber<? super List<AbilitySoundDto>> subscriber) {
                 Realm realm = getRealm();
+                removeAbis(realm);
                 final RealmResults<AbilitySoundDto> group1 = realm.where(AbilitySoundDto.class)
                         .findAll();
-                subscriber.onNext(realm.copyFromRealm(group1));
+                List<AbilitySoundDto> list = realm.copyFromRealm(group1);
+
+                if (list.isEmpty()) {
+                    //read from file
+                    try {
+                        FileAbilityList fileHeroBasicList = (FileAbilityList) FileUtil.getObject(ResourceManager.getInstance().getContext(),
+                                FileAbilityList.class.getSimpleName());
+                        list = ConvertClassUtil.createAbi(fileHeroBasicList);
+                        realm.beginTransaction();
+                        realm.copyToRealm(list);
+                        realm.commitTransaction();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                subscriber.onNext(list);
                 subscriber.onCompleted();
                 realm.close();
             }

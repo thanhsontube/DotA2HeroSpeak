@@ -1,19 +1,17 @@
-package son.nt.dota2.dto;
+package son.nt.dota2.saved_class;
 
 import com.google.gson.Gson;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 import son.nt.dota2.MsConst;
+import son.nt.dota2.base.AObject;
 import son.nt.dota2.dto.heroSound.ISound;
 
 /**
  * Created by sonnt on 12/1/16.
  */
 
-public class AbilitySoundDto extends RealmObject implements ISound {
+public class AbilitySoundDtoSaved extends AObject implements ISound {
 
-    @PrimaryKey
     public String id;
 
     public int abiNo;
@@ -24,21 +22,6 @@ public class AbilitySoundDto extends RealmObject implements ISound {
     public String abiDescription; //magical
     public String abiNotes; //magical
     public boolean isUltimate = false;
-
-    public AbilitySoundDto() {
-    }
-
-    public AbilitySoundDto(boolean isUltimate, String id, int abiNo, String abiHeroID, String abiName, String abiImage, String abiSound, String abiDescription, String abiNotes) {
-        this.isUltimate = isUltimate;
-        this.id = id;
-        this.abiNo = abiNo;
-        this.abiHeroID = abiHeroID;
-        this.abiName = abiName;
-        this.abiImage = abiImage;
-        this.abiSound = abiSound;
-        this.abiDescription = abiDescription;
-        this.abiNotes = abiNotes;
-    }
 
     @Override
     public String getTitle() {

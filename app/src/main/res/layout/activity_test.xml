@@ -16,6 +16,18 @@
         <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Read HeroBasic from Files"
+                android:id="@+id/read_hero_basic"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save HeroBasic to Files"
+                android:id="@+id/save_hero_basic"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Story list"
                 android:id="@+id/list_story"/>
         <Button

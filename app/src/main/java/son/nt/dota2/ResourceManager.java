@@ -62,29 +62,31 @@ public class ResourceManager {
         try {
             myPath = new MyPath(context);
             contentManager = new ContentManager(context, 100);
-            if (BuildConfig.DEBUG) {
-                mAppInternalFolder = getContext().getFilesDir().getPath();
-            } else {
-                mAppExternalFolder = Environment.getExternalStorageState() + File.separator + "00_dota_internal_debug";
-            }
-
             saveMusicPack = new SaveMusicPack();
 
+            //saving file :
             if (BuildConfig.DEBUG) {
-                mAppExternalFolder = Environment.getExternalStorageState() + File.separator + "00_dota_external_debug";
+                mAppInternalFolder = Environment.getExternalStorageDirectory() + File.separator + ROOT + File.separator + "00_dota_internal";
+
             } else {
-                mAppExternalFolder = Environment.getExternalStorageDirectory() + ROOT;
+                mAppInternalFolder = getContext().getFilesDir().getPath() + File.separator + ROOT + File.separator + "00_dota_internal";
             }
+            mAppExternalFolder = Environment.getExternalStorageDirectory() + File.separator + ROOT + File.separator + "01_dota_external";
 
             Logger.debug(TAG, ">>>" + "mAppInternalFolder:" + mAppInternalFolder);
 
             Logger.debug(TAG, ">>>" + "mAppExternalFolder:" + mAppExternalFolder);
 
 
-            File fRoot = new File(mAppExternalFolder);
-            if (!fRoot.exists()) {
-                fRoot.mkdirs();
+            File fExternal = new File(mAppExternalFolder);
+            if (!fExternal.exists()) {
+                fExternal.mkdirs();
             }
+            File fInternal = new File(mAppInternalFolder);
+            if (!fInternal.exists()) {
+                fInternal.mkdirs();
+            }
+
 
             fileHeroList = mAppInternalFolder + File.separator + "hero_list.dat";
             folderHero = mAppInternalFolder + File.separator + "hero" + File.separator;

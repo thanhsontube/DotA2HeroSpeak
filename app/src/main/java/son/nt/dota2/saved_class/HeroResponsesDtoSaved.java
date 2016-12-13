@@ -1,4 +1,4 @@
-package son.nt.dota2.dto;
+package son.nt.dota2.saved_class;
 
 import com.google.firebase.database.Exclude;
 import com.google.gson.Gson;
@@ -6,14 +6,14 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.realm.RealmObject;
 import son.nt.dota2.MsConst;
+import son.nt.dota2.base.AObject;
 import son.nt.dota2.dto.heroSound.ISound;
 
 /**
  * class contain dota 2 hero responses.
  */
-public class HeroResponsesDto extends RealmObject implements ISound {
+public class HeroResponsesDtoSaved extends AObject implements ISound {
     public int no;
 
     public String heroId;
@@ -49,38 +49,12 @@ public class HeroResponsesDto extends RealmObject implements ISound {
     public boolean isFavorite;
     public boolean isLiked;
 
-    public HeroResponsesDto(int no) {
+    public HeroResponsesDtoSaved(int no) {
         this.no = no;
     }
 
-    public HeroResponsesDto() {
+    public HeroResponsesDtoSaved() {
 
-    }
-
-    public HeroResponsesDto(int no, String heroId, String heroName, String heroIcon, String voiceGroup, String toHeroId, String toHeroIcon, String toHeroName, String text, String link, String linkArcana, String sub, int position, String itemId, String title, String image, String group, long duration, int totalLike, int totalComments, boolean isPlaying, boolean isFavorite, boolean isLiked) {
-        this.no = no;
-        this.heroId = heroId;
-        this.heroName = heroName;
-        this.heroIcon = heroIcon;
-        this.voiceGroup = voiceGroup;
-        this.toHeroId = toHeroId;
-        this.toHeroIcon = toHeroIcon;
-        this.toHeroName = toHeroName;
-        this.text = text;
-        this.link = link;
-        this.linkArcana = linkArcana;
-        this.sub = sub;
-        this.position = position;
-        this.itemId = itemId;
-        this.title = title;
-        this.image = image;
-        this.group = group;
-        this.duration = duration;
-        this.totalLike = totalLike;
-        this.totalComments = totalComments;
-        this.isPlaying = isPlaying;
-        this.isFavorite = isFavorite;
-        this.isLiked = isLiked;
     }
 
     public int getNo() {

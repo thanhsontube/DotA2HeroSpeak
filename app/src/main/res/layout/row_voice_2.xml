@@ -8,10 +8,9 @@
               android:descendantFocusability="blocksDescendants"
               android:minHeight="?actionBarSize"
               android:orientation="horizontal"
-              android:paddingBottom="8dp"
               android:paddingLeft="16dp"
               android:paddingRight="16dp"
-              android:paddingTop="8dp">
+              android:paddingTop="16dp">
 
     <LinearLayout
             android:layout_width="0dp"
@@ -27,7 +26,7 @@
                 android:layout_gravity="center_vertical"
                 android:text="99"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/green2"/>
+                android:textColor="@color/md_amber_500"/>
 
 
         <LinearLayout android:layout_width="match_parent"
@@ -52,7 +51,7 @@
                     android:layout_marginLeft="8dp"
                     tools:text="Enter battle"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/green_500"/>
+                    android:textColor="@color/md_amber_500"/>
             <LinearLayout android:layout_width="match_parent"
                           android:layout_marginLeft="8dp"
                           android:layout_height="wrap_content"
@@ -71,7 +70,7 @@
                         android:layout_marginLeft="8dp"
                         android:text="Kills"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        android:textColor="@color/green1"/>
+                        android:textColor="@color/md_light_green_A700"/>
 
                 <de.hdodenhof.circleimageview.CircleImageView
                         android:layout_marginLeft="8dp"

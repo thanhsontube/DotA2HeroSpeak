@@ -7,16 +7,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import son.nt.dota2.MsConst;
@@ -35,6 +38,7 @@ import timber.log.Timber;
 
 public class SplashActivity extends BaseActivity {
 
+    private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 100;
     IHeroRepository mRepository;
 
     CompositeSubscription mCompositeSubscription = new CompositeSubscription();
@@ -46,7 +50,7 @@ public class SplashActivity extends BaseActivity {
     boolean isBuyItemsLoaded = false;
     boolean isAbilityLoaded = true;
 
-    boolean mIsNeedLoadData = false;
+    boolean mIsNeedLoadData = true;
 
     @Override
     protected int provideLayoutResID() {
@@ -58,17 +62,29 @@ public class SplashActivity extends BaseActivity {
         Timber.d(">>>" + "onCreate 3");
         super.onCreate(savedInstanceState);
         mRepository = new HeroRepository();
-//        mIsNeedLoadData = !PreferenceUtil.getPreference(this, MsConst.PREFETCH, false);
+        requestPermission();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()) {
+            mCompositeSubscription.unsubscribe();
+        }
+    }
+
+    private void loadData() {
+        //        mIsNeedLoadData = !PreferenceUtil.getPreference(this, MsConst.PREFETCH, false);
         if (!mIsNeedLoadData) {
 
             startActivity(new Intent(this, TestActivity.class));
 //            startActivity(HomeActivity.getIntent(getApplicationContext()));
         } else {
-            Realm realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
-            realm.delete(HeroResponsesDto.class);
-            realm.commitTransaction();
-            realm.close();
+//            Realm realm = Realm.getDefaultInstance();
+//            realm.beginTransaction();
+//            realm.delete(HeroResponsesDto.class);
+//            realm.commitTransaction();
+//            realm.close();
 
 
             getBasicHeroList();
@@ -95,19 +111,6 @@ public class SplashActivity extends BaseActivity {
 
     }
 
-    private void loadData() {
-        Observable<List<AbilitySoundDto>> abis = mRepository.getAllAbility();
-        Observable<List<HeroBasicDto>> heroBasics = mRepository.getAllHeroes();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()) {
-            mCompositeSubscription.unsubscribe();
-        }
-    }
-
     private void removeTABLE_HERO_NORMAL_VOICE() {
         Timber.d(">>>" + "removeTABLE_HERO_NORMAL_VOICE");
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -117,21 +120,62 @@ public class SplashActivity extends BaseActivity {
 
     //get base hero List
     private void getBasicHeroList() {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference reference = firebaseDatabase.getReference();
-        Query query = reference.child(HeroBasicDto.class.getSimpleName());
-        query.addListenerForSingleValueEvent(valueEventListener);
+        mRepository.getAllHeroes()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<HeroBasicDto>>() {
+                    @Override
+                    public void call(List<HeroBasicDto> heroBasicDtos) {
+                        Timber.d(">>>" + "heroBasicDtos:" + heroBasicDtos.size());
+                        isBasicLoaded = true;
+                        checkAndComplete();
+
+                    }
+                });
+
+//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//        DatabaseReference reference = firebaseDatabase.getReference();
+//        Query query = reference.child(HeroBasicDto.class.getSimpleName());
+//        query.addListenerForSingleValueEvent(valueEventListener);
     }
 
     //get Abis List
     private void getAbis() {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference reference = firebaseDatabase.getReference();
-        Query query = reference.child(MsConst.TABLE_HERO_ABI);
-        query.addListenerForSingleValueEvent(valueAbis);
+        mRepository.getAllAbility()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<AbilitySoundDto>>() {
+                    @Override
+                    public void call(List<AbilitySoundDto> heroBasicDtos) {
+                        Timber.d(">>>" + "getAbis:" + heroBasicDtos.size());
+                        isAbilityLoaded = true;
+                        checkAndComplete();
+
+                    }
+                });
+
+
+//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//        DatabaseReference reference = firebaseDatabase.getReference();
+//        Query query = reference.child(MsConst.TABLE_HERO_ABI);
+//        query.addListenerForSingleValueEvent(valueAbis);
     }
 
     private void getLordResponseList() {
+
+        mRepository.getResponseSounds()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<HeroResponsesDto>>() {
+                    @Override
+                    public void call(List<HeroResponsesDto> heroBasicDtos) {
+                        Timber.d(">>>" + "getLordResponseList:" + heroBasicDtos.size());
+                        isLordLoaded = true;
+                        checkAndComplete();
+
+                    }
+                });
+
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference reference = firebaseDatabase.getReference();
         Query query = reference.child(MsConst.TABLE_LORD_RESPONSES);
@@ -397,5 +441,38 @@ public class SplashActivity extends BaseActivity {
 
     }
 
+    private void checkPermission() {
+        final int checkSelfPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (checkSelfPermission != PermissionChecker.PERMISSION_GRANTED) {
+            requestPermission();
 
+        } else {
+            loadData();
+        }
+    }
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                REQUEST_WRITE_EXTERNAL_STORAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_WRITE_EXTERNAL_STORAGE: {
+                if (grantResults.length == 1 && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
+                    loadData();
+                }
+                break;
+            }
+        }
+    }
 }

@@ -1,8 +1,5 @@
 package son.nt.dota2.htmlcleaner;
 
-import android.content.Context;
-import android.text.TextUtils;
-
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -10,6 +7,9 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import org.apache.http.client.methods.HttpGet;
+
+import android.content.Context;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -735,8 +735,6 @@ public class HTTPParseUtils {
                         }
 
                     }
-
-
                     saveObject();
 
                     OttoBus.post(ResourceManager.getInstance().saveMusicPack);

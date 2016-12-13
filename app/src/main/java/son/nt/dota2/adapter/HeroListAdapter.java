@@ -2,6 +2,7 @@ package son.nt.dota2.adapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -14,7 +15,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import jp.wasabeef.glide.transformations.CropSquareTransformation;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.utils.TsGaTools;
@@ -65,19 +66,17 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
 
         viewHolder.txtName.setText(dto.name);
         if (dto.group != null) {
-            if (dto.group.equalsIgnoreCase("Str")) {
+            if (dto.group.equalsIgnoreCase(MsConst.GROUP_STR)) {
                 viewHolder.imageView.setBorderColor(Color.RED);
-            } else if (dto.group.equalsIgnoreCase("Agi")) {
+            } else if (dto.group.equalsIgnoreCase(MsConst.GROUP_AGI)) {
                 viewHolder.imageView.setBorderColor(Color.GREEN);
             } else {
                 viewHolder.imageView.setBorderColor(Color.BLUE);
             }
         }
-
-        Glide.with(mContext).load(dto.avatar)
-                .fitCenter()
+        Glide.with(viewHolder.imageView.getContext()).load(dto.avatar)
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .bitmapTransform(new CropSquareTransformation(viewHolder.imageView.getContext()))
                 .into(viewHolder.imageView);
 
 //        viewHolder.view.setOnClickListener(new View.OnClickListener() {
@@ -102,14 +101,14 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        com.makeramen.roundedimageview.RoundedImageView imageView;
+        RoundedImageView imageView;
         TextView txtName;
         View view;
 
         public ViewHolder(View itemView) {
             super(itemView);
             this.view = itemView.findViewById(R.id.card_view);
-            this.imageView = (com.makeramen.roundedimageview.RoundedImageView) itemView.findViewById(R.id.row_avatar);
+            this.imageView = (RoundedImageView) itemView.findViewById(R.id.row_avatar);
             this.txtName = (TextView) itemView.findViewById(R.id.row_name);
 
         }

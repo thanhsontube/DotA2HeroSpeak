@@ -12,6 +12,11 @@ public class MsConst {
     public static final int TYPE_ITEM_SOUND = 4;
     public static final int TYPE_ABILITY_SOUND = 4;
 
+    //group
+    public static final String GROUP_STR = "Str";
+    public static final String GROUP_AGI = "Agi";
+    public static final String GROUP_INTEL = "Intel";
+
 
     //VoiceGroup
     //LORD
@@ -42,9 +47,9 @@ public class MsConst {
 
     public static final String LINK_STORE = "https://play.google.com/store/apps/details?id=son.nt.dota2";
     public static final boolean IS_HANDSOME = true;
-    public static final String GROUP_STR = "Str";
-    public static final String GROUP_AGI = "Agi";
-    public static final String GROUP_INTEL = "Intel";
+
+
+
     public static final String KEY_REPEAT = "KEY_REPEAT";
     public static final String KEY_ALLOW_PLAY = "KEY_ALLOW_PLAY";
     public static final String KEY_HELP = "KEY_HELP";

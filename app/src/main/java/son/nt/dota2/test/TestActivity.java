@@ -15,9 +15,15 @@ import android.view.View;
 
 import java.util.List;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import son.nt.dota2.R;
+import son.nt.dota2.data.HeroRepository;
+import son.nt.dota2.data.IHeroRepository;
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.firebase.FireBaseActivity;
+import son.nt.dota2.firebase.FireBaseUtils;
 import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.jsoup.JsoupLoader;
 import son.nt.dota2.musicPack.MusicPackListActivity;
@@ -25,6 +31,7 @@ import son.nt.dota2.musicPack.fav.MusicPackFavActivity;
 import son.nt.dota2.story.CreateStoryActivity;
 import son.nt.dota2.story.story_list.StoryListActivity;
 import son.nt.dota2.utils.Logger;
+import timber.log.Timber;
 
 public class TestActivity extends FireBaseActivity implements View.OnClickListener {
     private static final String TAG = TestActivity.class.getSimpleName();
@@ -56,12 +63,41 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
         findViewById(R.id.old_comments).setOnClickListener(this);
         findViewById(R.id.create_story).setOnClickListener(this);
         findViewById(R.id.list_story).setOnClickListener(this);
+        findViewById(R.id.save_hero_basic).setOnClickListener(this);
+        findViewById(R.id.read_hero_basic).setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.read_hero_basic:
+                IHeroRepository iHeroRepository = new HeroRepository();
+                iHeroRepository.getAllHeroes()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(heroBasicDtos -> {
+                            Timber.d(">>>" + "heroBasicDtos:" + heroBasicDtos.size());
+                            for (HeroBasicDto d : heroBasicDtos) {
+                                Timber.d(">>>" + "d:" + d.toString());
+                            }
+                        });
+
+                iHeroRepository.getResponseSounds()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(list -> {
+                            Timber.d(">>>" + "list:" + list.size());
+                            for (HeroResponsesDto d : list) {
+                                Timber.d(">>>" + "d:" + d.toString());
+                            }
+                        });
+                break;
+            case R.id.save_hero_basic:
+                FireBaseUtils.saveHeroBaiscToFile();
+                FireBaseUtils.saveAbilityToFile();
+                FireBaseUtils.saveLordToFile();
+                break;
             case R.id.list_story:
                 startActivity(new Intent(this, StoryListActivity.class));
                 break;

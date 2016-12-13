@@ -9,6 +9,7 @@ import rx.schedulers.Schedulers;
 import son.nt.dota2.base.BasePresenter;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import timber.log.Timber;
 
 /**
  * Created by sonnt on 10/14/16.
@@ -48,6 +49,9 @@ public class HeroListPresenter extends BasePresenter implements HeroListContract
 
             @Override
             public void onNext(List<HeroBasicDto> list) {
+                for (HeroBasicDto d : list) {
+                    Timber.d(">>>" + "d:" + d.toString());
+                }
                 mView.showHeroList(list);
 
             }
