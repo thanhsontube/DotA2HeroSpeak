@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroResponsesDto;
@@ -77,6 +79,12 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
                      */
                     OttoBus.post(new GoVoice(selectedItem, isArcana));
                 });
+
+                holder.moreView.setOnClickListener(v -> {
+
+
+
+                });
                 return holder;
 
 
@@ -122,7 +130,7 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
 
                 if (TextUtils.isEmpty(dto.toHeroId)) {
                     holder.imgTo.setVisibility(View.GONE);
-                    holder.related.setVisibility(View.GONE);
+                    holder.relatedView.setVisibility(View.GONE);
                 } else {
                     holder.imgTo.setVisibility(View.VISIBLE);
                     Glide.with(mContext).load(toIcon)
@@ -143,8 +151,8 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
                         related = " " + mContext.getString(R.string.buy) + " ";
                     }
 
-                    holder.related.setVisibility(View.VISIBLE);
-                    holder.related.setText(related);
+                    holder.relatedView.setVisibility(View.VISIBLE);
+                    holder.relatedView.setText(related);
                 }
 
 
@@ -203,26 +211,29 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
     }
 
     public static class Holder extends RecyclerView.ViewHolder {
+        @BindView(R.id.row_voice_no)
         TextView txtNo;
+        @BindView(R.id.row_title)
         TextView title;
+        @BindView(R.id.row_voice_text)
         TextView text;
-        TextView related;
+        @BindView(R.id.row_voice_related)
+        TextView relatedView;
+        @BindView(R.id.row_voice_group)
         TextView voiceGroup;
+        @BindView(R.id.row_voice_rival)
         ImageView imgFrom;
+        @BindView(R.id.row_voice_to_icon)
         ImageView imgTo;
+        @BindView(R.id.row_voice_main)
         View view;
+        @BindView(R.id.row_voice_more)
+        View moreView;
 
 
         public Holder(View v) {
             super(v);
-            txtNo = (TextView) v.findViewById(R.id.row_voice_no);
-            related = (TextView) v.findViewById(R.id.row_voice_related);
-            voiceGroup = (TextView) v.findViewById(R.id.row_voice_group);
-            text = (TextView) v.findViewById(R.id.row_voice_text);
-            imgTo = (ImageView) v.findViewById(R.id.row_voice_to_icon);
-            imgFrom = (ImageView) v.findViewById(R.id.row_voice_rival);
-            view = v.findViewById(R.id.row_voice_main);
-            title = (TextView) v.findViewById(R.id.row_title);
+            ButterKnife.bind(this,v);
         }
     }
 

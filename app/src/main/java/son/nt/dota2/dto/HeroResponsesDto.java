@@ -3,16 +3,21 @@ package son.nt.dota2.dto;
 import com.google.firebase.database.Exclude;
 import com.google.gson.Gson;
 
+import org.parceler.Parcel;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import io.realm.RealmObject;
+import io.realm.annotations.RealmClass;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.dto.heroSound.ISound;
 
 /**
  * class contain dota 2 hero responses.
  */
+@RealmClass      // required if using JDK 1.6 (unrelated to Parceler issue)
+@Parcel(value = Parcel.Serialization.BEAN, analyze = {HeroResponsesDto.class})
 public class HeroResponsesDto extends RealmObject implements ISound {
     public int no;
 

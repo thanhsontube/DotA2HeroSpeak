@@ -1,19 +1,21 @@
 package son.nt.dota2.story;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
 import son.nt.dota2.MsConst;
@@ -24,6 +26,7 @@ import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.di.component.app.AppComponent;
 import son.nt.dota2.dto.story.StoryPartDto;
 import son.nt.dota2.story.add_simple_story.AddSimpleStoryActivity;
+import timber.log.Timber;
 
 public class CreateStoryActivity extends BaseActivity implements StoryContract.View {
 
@@ -33,11 +36,14 @@ public class CreateStoryActivity extends BaseActivity implements StoryContract.V
     @BindView(R.id.story_name)
     EditText mStoryNameEdt;
 
+    @BindView(R.id.story_save)
+    View saveView;
+
     AdapterCreateStory mAdapter;
 
     StoryContract.Presenter mPresenter;
 
-    @Inject
+    //    @Inject
     FirebaseUser mFirebaseUser;
 
 
@@ -50,12 +56,17 @@ public class CreateStoryActivity extends BaseActivity implements StoryContract.V
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        inject();
+//        inject();
+        setupToolbar();
+
+        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.delete(StoryPartDto.class);
         realm.commitTransaction();
         realm.close();
+
+        saveView.setVisibility(View.GONE);
 
         mPresenter = new StoryPresenter(this, new HeroRepository());
         mAdapter = new AdapterCreateStory(new ArrayList<>(), this, mICreateStoryListener);
@@ -67,9 +78,21 @@ public class CreateStoryActivity extends BaseActivity implements StoryContract.V
 
     }
 
-    private void inject () {
+    private void setupToolbar() {
+        setSupportActionBar(ButterKnife.findById(this, R.id.home_toolbar));
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Create");
+    }
+
+    private void inject() {
         AppComponent appComponent = MyApplication.get(this).getAppComponent();
-        appComponent.inject(this);
+        if (appComponent != null) {
+
+            appComponent.inject(this);
+        } else {
+            Timber.d(">>>" + "How can NULL ????");
+        }
     }
 
     @OnClick(R.id.story_save)
@@ -77,9 +100,14 @@ public class CreateStoryActivity extends BaseActivity implements StoryContract.V
         mPresenter.saveStory(mStoryNameEdt.getText().toString(), mFirebaseUser);
     }
 
+    @OnClick(R.id.create_story_stop)
+    public void onStopClick() {
+        mPresenter.stopStory();
+    }
+
     @OnClick(R.id.create_story_play)
-    public void onPlayClick () {
-        mPresenter.playStory ();
+    public void onPlayClick() {
+        mPresenter.playStory(mStoryNameEdt.getText().toString(), mFirebaseUser);
     }
 
     @Override
@@ -112,6 +140,15 @@ public class CreateStoryActivity extends BaseActivity implements StoryContract.V
 
     @Override
     public void showAddList(List<StoryPartDto> dtos) {
+        if (dtos != null && dtos.size() > 1) {
+            saveView.setVisibility(View.VISIBLE);
+        }
         mAdapter.setData(dtos);
+    }
+
+    @Override
+    public void doFinish() {
+        Toast.makeText(this, "Save successful, your story will be pushed in Story List", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

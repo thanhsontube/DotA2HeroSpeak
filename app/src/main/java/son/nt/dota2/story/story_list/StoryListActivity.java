@@ -7,7 +7,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,15 +48,17 @@ public class StoryListActivity extends BaseActivity implements StoryListContract
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         mPresenter.getStoryList();
-
-
     }
 
     @OnClick(R.id.fab_add)
-    public void addNewStory () {
-        ActivityCompat.startActivity(this,new Intent(this, CreateStoryActivity.class), null);
+    public void addNewStory() {
+        ActivityCompat.startActivity(this, new Intent(this, CreateStoryActivity.class), null);
     }
 
     private void setupToolbar() {
@@ -79,11 +80,4 @@ public class StoryListActivity extends BaseActivity implements StoryListContract
         mAdapter.setData(storyDtos);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

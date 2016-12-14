@@ -50,7 +50,7 @@ public class SplashActivity extends BaseActivity {
     boolean isBuyItemsLoaded = false;
     boolean isAbilityLoaded = true;
 
-    boolean mIsNeedLoadData = false;
+    boolean mIsNeedLoadData = true;
 
     @Override
     protected int provideLayoutResID() {

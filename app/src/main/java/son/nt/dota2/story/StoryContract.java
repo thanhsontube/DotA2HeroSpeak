@@ -14,6 +14,8 @@ public class StoryContract {
 
     public interface View {
         void showAddList(List<StoryPartDto> dtos);
+
+        void doFinish();
     }
 
     public interface Presenter {
@@ -21,7 +23,8 @@ public class StoryContract {
 
         void saveStory(String s, FirebaseUser firebaseUser);
 
-        void playStory();
+        void playStory(String title, FirebaseUser firebaseUser);
 
+        void stopStory();
     }
 }

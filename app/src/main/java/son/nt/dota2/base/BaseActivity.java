@@ -3,6 +3,7 @@ package son.nt.dota2.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import butterknife.ButterKnife;
 import son.nt.dota2.R;
@@ -46,5 +47,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             kenBurnsView.setResourceUrl("http://cdn.dota2.com/apps/dota2/images/comics/comic_monkeyking/en/001.png", false);
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

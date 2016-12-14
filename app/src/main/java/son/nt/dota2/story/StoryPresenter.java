@@ -25,8 +25,11 @@ import son.nt.dota2.base.BasePresenter;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.story.StoryDto;
 import son.nt.dota2.dto.story.StoryPartDto;
+import son.nt.dota2.ottobus_entry.GoPlayerStop;
+import son.nt.dota2.ottobus_entry.GoStory;
 import son.nt.dota2.utils.ConvertClassUtil;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.OttoBus;
 import timber.log.Timber;
 
 /**
@@ -37,6 +40,7 @@ public class StoryPresenter extends BasePresenter implements StoryContract.Prese
     StoryContract.View mView;
     IHeroRepository mRepository;
     String mUserId = "sonnt";
+    List<StoryPartDto> mList;
 
     public StoryPresenter(StoryContract.View view, IHeroRepository repo) {
         mView = view;
@@ -59,6 +63,7 @@ public class StoryPresenter extends BasePresenter implements StoryContract.Prese
 
             @Override
             public void onNext(List<StoryPartDto> storyPartDtos) {
+                mList = storyPartDtos;
                 if (storyPartDtos.isEmpty()) {
                     List<StoryPartDto> dtos = new ArrayList<>();
                     dtos.add(new StoryPartDto());
@@ -136,17 +141,20 @@ public class StoryPresenter extends BasePresenter implements StoryContract.Prese
                     @Override
                     public void call(StoryDto storyDto) {
                         Timber.d(">>>" + "saveStory:" + storyDto.getTitle() + ";id:" + storyDto.getUserId());
-                        for (StoryPartDto d : storyDto.getContents()) {
-                            Timber.d(">>>" + "d:" + d.getSoundText());
-                        }
-
+                        mView.doFinish();
                     }
                 });
 
     }
 
     @Override
-    public void playStory() {
-//        OttoBus.post(new GoStory(mStoryId.getContents(), mStoryId.getTitle(), mStoryId.getUserId()));
+    public void playStory(String title, FirebaseUser firebaseUser) {
+        OttoBus.post(new GoStory(mList, title, firebaseUser.getDisplayName()));
+
+    }
+
+    @Override
+    public void stopStory() {
+        OttoBus.post(new GoPlayerStop());
     }
 }

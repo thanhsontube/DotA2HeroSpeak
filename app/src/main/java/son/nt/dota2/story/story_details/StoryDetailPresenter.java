@@ -14,7 +14,6 @@ import son.nt.dota2.utils.OttoBus;
 public class StoryDetailPresenter extends BasePresenter implements StoryDetailContract.Presenter {
     StoryDetailContract.View mView;
     IHeroRepository mRepository;
-    String mUserId = "sonnt";
 
     StoryFireBaseDto mStoryId;
 
@@ -34,30 +33,6 @@ public class StoryDetailPresenter extends BasePresenter implements StoryDetailCo
     public void getStoryById() {
         mView.showList(mStoryId.getContents());
 
-//        Observer<StoryDto> listObserver = new Observer<StoryDto>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(StoryDto dto) {
-//                mStoryDto = dto;
-//                mView.showList(dto.getContents());
-//            }
-//        };
-//
-//        Observable<StoryDto> listObservable = mRepository.getStoryById(mStoryId)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
-//
-//        Subscription subscription = listObservable.subscribe(listObserver);
-//        mCompositeSubscription.add(subscription);
 
 
     }
