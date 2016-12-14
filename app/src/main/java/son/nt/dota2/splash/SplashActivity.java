@@ -25,6 +25,7 @@ import rx.subscriptions.CompositeSubscription;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.HomeActivity;
+import son.nt.dota2.activity.LoginActivity;
 import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
@@ -32,7 +33,6 @@ import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
-import son.nt.dota2.test.TestActivity;
 import son.nt.dota2.utils.PreferenceUtil;
 import timber.log.Timber;
 
@@ -50,7 +50,7 @@ public class SplashActivity extends BaseActivity {
     boolean isBuyItemsLoaded = false;
     boolean isAbilityLoaded = true;
 
-    boolean mIsNeedLoadData = true;
+    boolean mIsNeedLoadData = false;
 
     @Override
     protected int provideLayoutResID() {
@@ -62,7 +62,7 @@ public class SplashActivity extends BaseActivity {
         Timber.d(">>>" + "onCreate 3");
         super.onCreate(savedInstanceState);
         mRepository = new HeroRepository();
-        requestPermission();
+        checkPermission();
     }
 
     @Override
@@ -77,8 +77,9 @@ public class SplashActivity extends BaseActivity {
         //        mIsNeedLoadData = !PreferenceUtil.getPreference(this, MsConst.PREFETCH, false);
         if (!mIsNeedLoadData) {
 
-            startActivity(new Intent(this, TestActivity.class));
-//            startActivity(HomeActivity.getIntent(getApplicationContext()));
+//            startActivity(new Intent(this, TestActivity.class));
+//            ActivityCompat.startActivity(this, LoginActivity.getIntent(this), null);
+            startActivity(HomeActivity.getIntent(getApplicationContext()));
         } else {
 //            Realm realm = Realm.getDefaultInstance();
 //            realm.beginTransaction();
@@ -436,7 +437,10 @@ public class SplashActivity extends BaseActivity {
         }
 
         PreferenceUtil.setPreference(this, MsConst.PREFETCH, true);
-        startActivity(HomeActivity.getIntent(getApplicationContext()));
+//        startActivity(HomeActivity.getIntent(getApplicationContext()));
+
+        ActivityCompat.startActivity(this, LoginActivity.getIntent(this), null);
+
 //        startActivity(LoginActivity.getIntent(getApplicationContext()));
 
     }

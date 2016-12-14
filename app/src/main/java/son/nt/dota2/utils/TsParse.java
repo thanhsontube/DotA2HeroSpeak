@@ -19,12 +19,14 @@ import son.nt.dota2.dto.GalleryDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.HeroRoleDto;
 import son.nt.dota2.dto.HeroSavedDto;
+import son.nt.dota2.dto.kenburns.BgImageDto;
+import timber.log.Timber;
 
 /**
  * Created by Sonnt on 8/18/15.
  */
 public class TsParse {
-    public static final String TAG ="TsParse";
+    public static final String TAG = "TsParse";
 
     public static HeroEntry parse(ParseObject p) {
         HeroEntry dto = new HeroEntry();
@@ -47,11 +49,10 @@ public class TsParse {
         return dto;
     }
 
-    public static void getGif () {
-        try
-        {
+    public static void getGif() {
+        try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Dota2BgDto");
-            query.whereEqualTo("group","gif");
+            query.whereEqualTo("group", "gif");
             query.setLimit(200);
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
@@ -109,10 +110,10 @@ public class TsParse {
             }
         });
     }
-    public static void getkensBurns () {
+
+    public static void getkensBurns() {
         final List<String> listKens = new ArrayList<>();
-        try
-        {
+        try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Dota2BgDto");
             query.whereNotEqualTo("group", "gif");
             query.findInBackground(new FindCallback<ParseObject>() {
@@ -123,11 +124,24 @@ public class TsParse {
                         return;
                     }
                     Logger.debug(TAG, ">>>" + "getAllHeroBasicOnGroup size:" + list.size());
+                    List<BgImageDto> bgImageDtos = new ArrayList<BgImageDto>();
+                    int i = 50;
                     for (ParseObject p : list) {
 
                         String linkGif = p.getString("link");
+                        String notes = p.getString("heroID");
+                        bgImageDtos.add(new BgImageDto(i, linkGif, notes));
+                        i++;
+
+
                         listKens.add(linkGif);
+
                     }
+
+                    for (BgImageDto d : bgImageDtos) {
+                        Timber.d(">>>" + "d:" + d.toString());
+                    }
+
                     ResourceManager.getInstance().listKenburns.clear();
                     ResourceManager.getInstance().listKenburns.addAll(listKens);
 
@@ -154,7 +168,7 @@ public class TsParse {
         p.sendInBackground();
     }
 
-    public static  void getHeroesRoles () {
+    public static void getHeroesRoles() {
         Logger.debug(TAG, ">>>" + "=====getHeroesRoles");
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(HeroRoleDto.class.getSimpleName());
         query.setLimit(400);

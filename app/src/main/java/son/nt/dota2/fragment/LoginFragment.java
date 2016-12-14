@@ -7,10 +7,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -66,9 +63,7 @@ import son.nt.dota2.firebase.GoogleApiClientModule;
 import son.nt.dota2.login.LoginContract;
 import son.nt.dota2.login.LoginPresenter;
 import son.nt.dota2.login.LoginRepo;
-import son.nt.dota2.parse.AppAPI;
 import son.nt.dota2.parse.IUserParse;
-import son.nt.dota2.parse.UpdateUserInfoDto;
 import son.nt.dota2.rx.SchedulerProvider;
 import son.nt.dota2.test.TestActivity;
 import son.nt.dota2.utils.KeyBoardUtils;
@@ -107,7 +102,6 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
     @BindView(R.id.sign_in_button)
     SignInButton mSignInButton;
 
-    AppAPI appAPI;
 
     LoginContract.Presenter mPresenter;
 
@@ -136,7 +130,6 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         mPresenter = new LoginPresenter(this, new LoginRepo(), SchedulerProvider.getInstance());
-        appAPI = new AppAPI(getContext());
 
 //        setupDI();
 
@@ -406,8 +399,6 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
         Uri image = profile.getProfilePictureUri(480, 480);
         Logger.debug(TAG, ">>>" + "image:" + image.toString() + " ;name:" + name + ";fbId:" + profile.getId() + ";info:" + profile.describeContents());
 
-        appAPI.updateUserInfo(new UpdateUserInfoDto(name, fbId, image.toString(), profile.getLinkUri().toString()));
-
 
         getContext().startActivity(new Intent(getContext(), HomeActivity.class));
         getActivity().finish();
@@ -486,22 +477,13 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
 
         mFirebaseAuth.signInWithCredential(credential)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        Logger.debug(TAG, ">>>" + "onSuccess");
-                        showLogin(authResult.getUser().getDisplayName());
+                .addOnSuccessListener(authResult -> {
+                    Logger.debug(TAG, ">>>" + "onSuccess");
+                    showLogin(authResult.getUser().getDisplayName());
 
-                    }
                 })
 
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Logger.debug(TAG, ">>>" + "onFailure:" + e);
-
-                    }
-                });
+                .addOnFailureListener(e -> Logger.debug(TAG, ">>>" + "onFailure:" + e));
 
 
     }

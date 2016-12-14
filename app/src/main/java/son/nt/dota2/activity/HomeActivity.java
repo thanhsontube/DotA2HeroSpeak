@@ -1,5 +1,10 @@
 package son.nt.dota2.activity;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -9,11 +14,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.parse.GetCallback;
-import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 import com.squareup.otto.Subscribe;
 
 import android.app.SearchManager;
@@ -64,6 +67,7 @@ import son.nt.dota2.gridmenu.GridMenuDialog;
 import son.nt.dota2.musicPack.MusicPackListActivity;
 import son.nt.dota2.ottobus_entry.GoAdapterRoles;
 import son.nt.dota2.setting.SettingActivity;
+import son.nt.dota2.story.story_list.StoryListActivity;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsFeedback;
@@ -93,11 +97,21 @@ public class HomeActivity extends AActivity implements
 
     KenBurnsView2 kenBurnsView;
 
+    //    @Inject
+    FirebaseAuth mFirebaseAuth;
+    //    @Inject
+    FirebaseUser mFirebaseUser;
+
+    //    @Inject
+    GoogleApiClient mGoogleApiClient;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         OttoBus.register(this);
+        initGoogleAccount();
         initActionBar();
         initLayout();
         initListener();
@@ -113,6 +127,22 @@ public class HomeActivity extends AActivity implements
         //// TODO: 10/11/16
 //        new GetFromParse().execute();
 
+    }
+
+    private void initGoogleAccount() {
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */,
+                        null /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
     }
 
     public void isAddMob() {
@@ -180,9 +210,7 @@ public class HomeActivity extends AActivity implements
         txtFromName = (TextView) headerView.findViewById(R.id.nav_fromName);
         txtLogout = (TextView) headerView.findViewById(R.id.nav_logout);
 
-
-        ParseUser parseUser = ParseUser.getCurrentUser();
-        if (parseUser == null) {
+        if (mFirebaseUser == null) {
             txtFromName.setText("Login");
             txtLogout.setVisibility(View.GONE);
             txtFromName.setOnClickListener(new View.OnClickListener() {
@@ -194,59 +222,21 @@ public class HomeActivity extends AActivity implements
             });
         } else {
             txtLogout.setVisibility(View.VISIBLE);
-            txtFromName.setText(parseUser.getString("name"));
-            Glide.with(this).load(parseUser.getString("avatar"))
+            txtFromName.setText(mFirebaseUser.getDisplayName());
+            Glide.with(this).load(mFirebaseUser.getPhotoUrl())
                     .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
-            txtLogout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ParseUser.getCurrentUser().logOutInBackground(new LogOutCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            startActivity(LoginActivity.getIntent(HomeActivity.this));
-                            finish();
-                        }
-                    });
-                }
+            txtLogout.setOnClickListener(view -> {
+                mFirebaseAuth.signOut();
+                startActivity(LoginActivity.getIntent(HomeActivity.this));
+                finish();
             });
         }
-//        if (FacebookManager.getInstance().isLogin()) {
-//            try {
-//                String link = FacebookManager.getInstance().getLinkAvatar();
-//                Glide.with(this).load(link)
-//                        .fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(avatar);
-//                txtFromName.setText(FacebookManager.getInstance().getProfile().getName());
-//                txtLogout.setVisibility(View.VISIBLE);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//
-//            }
-//
-//        } else {
-//            txtFromName.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    TsGaTools.trackPages(MsConst.TRACK_LOGOUT);
-//                    startActivity(LoginActivity.getIntent(HomeActivity.this));
-//                }
-//            });
-//            txtLogout.setVisibility(View.GONE);
-//        }
+
 
     }
 
 
     private void initListener() {
-
-//        txtLogout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                FacebookManager.getInstance().logout();
-//                startActivity(LoginActivity.getIntent(HomeActivity.this));
-//                finish();
-//            }
-//        });
-
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -270,6 +260,12 @@ public class HomeActivity extends AActivity implements
                             getSafeFragmentManager().popBackStackImmediate();
                         }
                         break;
+                    case R.id.nav_story: {
+                        TsGaTools.trackNav("/nav_story");
+                        startActivity(new Intent(getApplicationContext(), StoryListActivity.class));
+                        break;
+                    }
+
                     case R.id.nav_music_packs: {
                         TsGaTools.trackNav("/nav_music_packs");
                         startActivity(new Intent(getApplicationContext(), MusicPackListActivity.class));

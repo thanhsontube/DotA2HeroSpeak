@@ -48,6 +48,7 @@ public class ResourceManager {
     public ResourceManager(Context context) {
         this.context = context;
         initialize();
+        copyAssets();
     }
 
     public static ResourceManager getInstance() {
@@ -251,8 +252,16 @@ public class ResourceManager {
         return folderObject;
     }
 
+    public String getFolderMusicPack() {
+        return folderMusicPack;
+    }
+
     public String getAppInternalFolder() {
 //        mAppInternalFolder = getContext().getFilesDir().getPath();
         return mAppInternalFolder;
+    }
+
+    private void copyAssets () {
+        FileUtil.copyAssets(getContext(), "music", getFolderMusicPack());
     }
 }

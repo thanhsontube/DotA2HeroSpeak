@@ -65,6 +65,17 @@ public class FileUtil {
         return wo;
     }
 
+    public static AObject getObjectByPath(Context context, String path) throws IOException, ClassNotFoundException {
+        File woFile = new File(path);
+        if (!woFile.exists()) {
+            return null;
+        }
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(woFile));
+        AObject wo = ((AObject) ois.readObject());
+        ois.close();
+        return wo;
+    }
+
     public static void saveAbilityObject(Context context, AObject data, String name) throws Exception {
         saveObject(context, data, "abi_" + name);
     }
@@ -74,7 +85,7 @@ public class FileUtil {
     }
 
     public static AObject getMusicPackObject(Context context) throws IOException, ClassNotFoundException {
-        return getObject(context, "musicPackData.json");
+        return  getObjectByPath(context, ResourceManager.getInstance().getFolderMusicPack() + File.separator + "musicPackData.json");
     }
 
     public static void saveHeroList(Context context, HeroData data) throws IOException {
@@ -204,6 +215,54 @@ public class FileUtil {
             Toast.makeText(context, "RingtoneFile is not Available", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public static void copyAssets (Context context, String assetsFolder, String outPath) {
+        try {
+            AssetManager assetManager = context.getAssets();
+            String[] files = null;
+            try {
+                files = assetManager.list(assetsFolder);
+            } catch (IOException e) {
+                Log.e("tag", "Failed to get asset file list.", e);
+            }
+
+            for (String filename : files) {
+                try {
+                    InputStream in = null;
+                    OutputStream out = null;
+                    try {
+                        in = assetManager.open(filename);
+                        File outFile = new File(outPath, filename);
+                        out = new FileOutputStream(outFile);
+                        copyFile(in, out);
+                    } catch (IOException e) {
+                        Log.e("tag", "Failed to copy asset file: " + filename, e);
+                    } finally {
+                        if (in != null) {
+                            try {
+                                in.close();
+                            } catch (IOException e) {
+                                // NOOP
+                            }
+                        }
+                        if (out != null) {
+                            try {
+                                out.close();
+                            } catch (IOException e) {
+                                // NOOP
+                            }
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }catch ( Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

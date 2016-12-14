@@ -8,6 +8,11 @@
             android:title="Hero Voices" />
 
         <item
+                android:id="@+id/nav_story"
+                android:icon="@drawable/ic_start_on_48"
+                android:title="Story Voice" />
+
+        <item
             android:id="@+id/nav_music_packs"
             android:icon="@drawable/ic_music_pack"
             android:title="DoTa2 Music Background" />
