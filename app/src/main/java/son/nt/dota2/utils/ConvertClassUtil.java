@@ -23,7 +23,8 @@ import son.nt.dota2.saved_class.HeroResponsesDtoSaved;
 public class ConvertClassUtil {
 
     public static StoryFireBaseDto createStoryFireBaseDto(StoryDto s) {
-        StoryFireBaseDto dto = new StoryFireBaseDto(s.getStoryId(), s.getUserId(), s.getTitle(), s.getCreatedTime());
+        StoryFireBaseDto dto = new StoryFireBaseDto(s.getStoryId(), s.getUserId(), s.getUsername(), s.getUserPicture()
+                , s.getTitle(), s.getCreatedTime(), s.getContents());
         List<StoryPartDto> list = new ArrayList<>();
         for (StoryPartDto d : s.getContents()) {
             list.add(d);

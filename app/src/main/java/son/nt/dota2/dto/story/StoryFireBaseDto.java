@@ -12,16 +12,20 @@ import java.util.List;
 public class StoryFireBaseDto {
     String storyId;
     String userId;
+    String username;
+    String userPicture;
     String title;
     long createdTime;
-
     List<StoryPartDto> contents;
 
-    public StoryFireBaseDto(String storyId, String userId, String title, long createdTime) {
+    public StoryFireBaseDto(String storyId, String userId, String username, String userPicture, String title, long createdTime, List<StoryPartDto> contents) {
         this.storyId = storyId;
         this.userId = userId;
+        this.username = username;
+        this.userPicture = userPicture;
         this.title = title;
         this.createdTime = createdTime;
+        this.contents = contents;
     }
 
     public StoryFireBaseDto() {
@@ -65,5 +69,21 @@ public class StoryFireBaseDto {
 
     public void setContents(List<StoryPartDto> contents) {
         this.contents = contents;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUserPicture() {
+        return userPicture;
+    }
+
+    public void setUserPicture(String userPicture) {
+        this.userPicture = userPicture;
     }
 }

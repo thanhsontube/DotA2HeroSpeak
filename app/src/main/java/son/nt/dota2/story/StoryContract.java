@@ -1,5 +1,7 @@
 package son.nt.dota2.story;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.List;
 
 import son.nt.dota2.dto.story.StoryPartDto;
@@ -17,7 +19,7 @@ public class StoryContract {
     public interface Presenter {
         void createAddList();
 
-        void saveStory(String s);
+        void saveStory(String s, FirebaseUser firebaseUser);
 
         void playStory();
 

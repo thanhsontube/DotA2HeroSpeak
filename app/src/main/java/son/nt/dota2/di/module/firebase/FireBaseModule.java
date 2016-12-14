@@ -1,5 +1,7 @@
 package son.nt.dota2.di.module.firebase;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -34,5 +36,17 @@ public class FireBaseModule {
     @Provides
     IFireBaseRepository provideFireBaseRepo(DatabaseReference reference) {
         return new FireBaseRepository(reference);
+    }
+
+    @Singleton
+    @Provides
+    FirebaseAuth provideFirebaseAuth () {
+        return FirebaseAuth.getInstance();
+    }
+
+    @Singleton
+    @Provides
+    FirebaseUser provideFirebaseUser (FirebaseAuth firebaseAuth) {
+        return firebaseAuth.getCurrentUser();
     }
 }

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:orientation="horizontal">
+
+
+    <LinearLayout
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/box_blue_with_corner_transparent"
+            android:id="@+id/card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:orientation="vertical">
+
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                    android:adjustViewBounds="true"
+                    android:id="@+id/row_profile"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY"
+                    android:layout_marginTop="@dimen/spacing_minor"
+                    android:contentDescription="Hero Avatar"
+                    android:src="@drawable/bg_ken_6"
+                    app:riv_border_color="@android:color/white"
+                    app:riv_border_width="1dp"
+                    app:riv_corner_radius="34dp"
+                    app:riv_oval="true"/>
+
+
+            <TextView
+                    android:maxWidth="120dp"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:gravity="center_horizontal"
+                    android:textSize="18sp"
+                    tools:text="@string/hero"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/story_name"
+                    android:layout_margin="8dp"
+                    android:textSize="22sp"
+                    android:textColor="@color/orange_500"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phantom"/>
+
+            <TextView
+                    android:id="@+id/create_date"
+                    android:layout_gravity="end"
+                    android:layout_margin="8dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phantom"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,5 +1,6 @@
 package son.nt.dota2.story;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -82,7 +83,7 @@ public class StoryPresenter extends BasePresenter implements StoryContract.Prese
     }
 
     @Override
-    public void saveStory(String s) {
+    public void saveStory(String s, FirebaseUser firebaseUser) {
         Observable.create(new Observable.OnSubscribe<RealmList<StoryPartDto>>() {
             @Override
             public void call(Subscriber<? super RealmList<StoryPartDto>> subscriber) {
@@ -108,6 +109,8 @@ public class StoryPresenter extends BasePresenter implements StoryContract.Prese
                 storyDto.setTitle(s);
                 storyDto.setCreatedTime(System.currentTimeMillis());
                 storyDto.setContents(storyPartDtos);
+                storyDto.setUsername(firebaseUser.getDisplayName());
+                storyDto.setUserPicture(firebaseUser.getPhotoUrl().toString());
 
                 Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();

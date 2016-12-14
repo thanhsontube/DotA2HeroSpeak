@@ -8,8 +8,11 @@ import io.realm.RealmObject;
  */
 
 public class StoryDto extends RealmObject {
+
     String storyId;
     String userId;
+    String username;
+    String userPicture;
     String title;
     long createdTime;
 
@@ -56,5 +59,21 @@ public class StoryDto extends RealmObject {
 
     public void setContents(RealmList<StoryPartDto> contents) {
         this.contents = contents;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUserPicture() {
+        return userPicture;
+    }
+
+    public void setUserPicture(String userPicture) {
+        this.userPicture = userPicture;
     }
 }
