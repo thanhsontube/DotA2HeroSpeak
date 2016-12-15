@@ -111,4 +111,10 @@ public class MsConst {
     public static final String CHANNEL_COMMON = "dota2_common_channel";
     public static final String FB_PAGE_ID = "1637205283182530";
 
+    //save root
+
+    public static final String SAVE_FOLDER_ABILITY = "ability";
+    public static final String SAVE_FOLDER_HERO_SOUND = "heroSound";
+    public static final String SAVE_FOLDER_MUSIC_PACK = "musicPack";
+
 }

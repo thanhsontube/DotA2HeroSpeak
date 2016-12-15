@@ -56,4 +56,14 @@ public class CmtsDto extends RealmObject implements ISound {
     public int getSoundType() {
         return 0;
     }
+
+    @Override
+    public String savedRootFolder() {
+        return null;
+    }
+
+    @Override
+    public String savedBranchFolder() {
+        return null;
+    }
 }

@@ -127,4 +127,14 @@ public class StoryPartDto extends RealmObject implements ISound {
     public int getSoundType() {
         return MsConst.TYPE_CREATIVE_SOUND;
     }
+
+    @Override
+    public String savedRootFolder() {
+        return MsConst.SAVE_FOLDER_HERO_SOUND;
+    }
+
+    @Override
+    public String savedBranchFolder() {
+        return heroId;
+    }
 }

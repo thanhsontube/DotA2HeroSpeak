@@ -80,4 +80,14 @@ public class AbilitySoundDto extends RealmObject implements ISound {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
+
+    @Override
+    public String savedRootFolder() {
+        return MsConst.SAVE_FOLDER_ABILITY;
+    }
+
+    @Override
+    public String savedBranchFolder() {
+        return abiHeroID;
+    }
 }

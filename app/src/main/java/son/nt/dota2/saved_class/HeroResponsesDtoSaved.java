@@ -267,4 +267,14 @@ public class HeroResponsesDtoSaved extends AObject implements ISound {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
+
+    @Override
+    public String savedRootFolder() {
+        return MsConst.SAVE_FOLDER_HERO_SOUND;
+    }
+
+    @Override
+    public String savedBranchFolder() {
+        return heroId;
+    }
 }
