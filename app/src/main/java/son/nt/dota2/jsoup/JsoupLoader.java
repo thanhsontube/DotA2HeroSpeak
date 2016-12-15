@@ -5,8 +5,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
@@ -35,7 +33,6 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import son.nt.dota2.CommentManager;
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.ResourceManager;
@@ -60,7 +57,7 @@ import timber.log.Timber;
 public class JsoupLoader {
 
     private boolean isLordVoiceDone = true;
-    private boolean isResponsesHeroDone = false;
+    private boolean isResponsesHeroDone = true;
     private boolean isPushALlItems = true;
     private boolean isPushALlHEROBUYItems = true;
     private boolean isPushALlHEROKillingMeeting = true;
@@ -80,9 +77,11 @@ public class JsoupLoader {
     public static final String HERO_RESPONSE_PA = "http://dota2.gamepedia.com/Phantom_Assassin/Responses";
     public static final String HERO_RESPONSE_TE = "http://dota2.gamepedia.com/Terrorblade/Responses";
     public static final String HERO_RESPONSE_SNIPER = "http://dota2.gamepedia.com/Sniper/Responses";
+    public static final String HERO_RESPONSE_MONKEY_KING = "http://dota2.gamepedia.com/Monkey_King/Responses";
     public static final String ITEMS = "http://dota2.gamepedia.com/Items";
 
     public static final String UNDERLORD_ABI = "http://dota2.gamepedia.com/Underlord";
+    public static final String MONKEY_KING_ABI = "http://dota2.gamepedia.com/Monkey_King";
 
 
     public static final String HERO_RESPONSE3 = "http://dota2.gamepedia.com/index.php?title=Drow_Ranger/Responses&action=edit";
@@ -96,7 +95,7 @@ public class JsoupLoader {
 
     public void getNewAbilities() {
         Timber.d(">>>" + "getNewAbilities");
-        getNewHeroSkillList(UNDERLORD_ABI);
+        getNewHeroSkillList(MONKEY_KING_ABI);
 
     }
 
@@ -136,7 +135,8 @@ public class JsoupLoader {
 
     public void withGetHeroBasic_Response() {
         Logger.debug(TAG, ">>>" + "withGetHeroBasic_Response");
-        getResponsesVoice();
+//        getResponsesVoice();
+        getSpecialResponsesVoice("Monkey_King");
 
     }
 
@@ -609,9 +609,9 @@ public class JsoupLoader {
 
     private List<HeroResponsesDto> workWithResponseHasIcon(TagNode tagNode, String group, HeroBasicDto fromHero) {
         Timber.d(">>>" + "--workWithResponseHasIcon id:" + fromHero.heroId + ";group:" + group);
-        if (!mIsItem) {
-            return new ArrayList<>();
-        }
+//        if (!mIsItem) {
+//            return new ArrayList<>();
+//        }
         List<HeroResponsesDto> list = new ArrayList<>();
         boolean isKillingSpecificEnemy = false;
         boolean isFirstBlood = false;
@@ -860,6 +860,141 @@ public class JsoupLoader {
 
     boolean mIsItem = false;
 
+    private void getSpecialResponsesVoice(final String heroId) {
+        itemCount = 0;
+        Timber.d(">>>" + "getSpecialResponsesVoice:" + heroId);
+        if (isResponsesHeroDone) {
+            return;
+        }
+        Observable<List<HeroResponsesDto>> responseObservable = Observable.create(subscriber -> {
+
+            List<HeroResponsesDto> list = new ArrayList<HeroResponsesDto>();
+            try {
+
+
+                String path = "http://dota2.gamepedia.com/" + heroId + "/Responses";
+
+                Timber.d(">>>" + ":" + "working with : " + path);
+
+//                    if (!heroBasicDto.isArcana()) {
+//                        Timber.d(">>>" + "Skip:" + heroId);
+//                        continue;
+//                    }
+                Timber.d(">>>" + "Continue:" + heroId);
+
+                //Get Group Killing a specific enemy
+                TagNode nodeA = getRootNode(path);
+                if (nodeA == null) {
+                    Timber.i(">>>" + "getResponseWithHtml null Root NODE:" + path);
+                    return;
+                }
+
+                List<TagNode> tagNodes = nodeA.getChildTagList();
+                int j = 0;
+                boolean isKillingEnemy = false;
+                boolean isMeetingAnAlly = false;
+                boolean isItem = false;
+                boolean isNormalSound = false;
+                String soundGroup = "Unknown";
+                for (TagNode tag : tagNodes) {
+
+                    try {
+                        if (tag.getName().contains("h2")) {
+//                                    Logger.debug(TAG, ">>>" + j + " h2:" + tag.getText());
+                            if (tag.getText().toString().contains("Killing an enemy")) {
+                                isKillingEnemy = true;
+                                isNormalSound = false;
+                            }
+                            if (tag.getText().toString().contains("Meeting an ally")) {
+                                Timber.e(">>>" + "Meeting an ally");
+                                isMeetingAnAlly = true;
+                                isNormalSound = false;
+                            }
+
+                            if (tag.getText().toString().contains("Acquiring an item")) {
+                                Timber.e(">>>" + "Acquiring an item\n");
+                                isNormalSound = false;
+
+                                //hack for killing only
+                                isItem = false;
+                                mIsItem = false;
+                            }
+
+
+                            //normal
+                            if (!isKillingEnemy && !isMeetingAnAlly && !isItem) {
+                                soundGroup = tag.getText().toString().trim();
+
+                                isNormalSound = true;
+                            }
+
+                        } else {
+//                                if (isKillingEnemy) {
+//                                    list.addAll(workWithResponseHasIcon(tag, "Killing an enemy", createMonkeyKing()));
+//                                    isKillingEnemy = false;
+//                                }
+//                                if (isMeetingAnAlly) {
+//                                    list.addAll(workWithResponseHasIcon(tag, "Meeting an ally", createMonkeyKing()));
+//                                    isMeetingAnAlly = false;
+//                                }
+                            if (isItem) {
+                                list.addAll(workWithResponseHasIcon(tag, "Acquiring an item", createMonkeyKing()));
+                                isItem = false;
+                                mIsItem = false;
+                            }
+                            if (isNormalSound) {
+                                list.addAll(workingWithText(tag, soundGroup, createMonkeyKing()));
+                                isNormalSound = false;
+                            }
+                        }
+                        j++;
+
+                    } catch (Exception e1) {
+                        Timber.d(">>>" + "Err Killing an enemy : " + e1 + ";path:" + path);
+                    }
+
+                }
+
+            } catch (Exception e) {
+                Timber.e(">>>" + "Err: getResponsesVoice :" + e);
+            }
+
+
+            subscriber.onNext(list);
+            subscriber.onCompleted();
+
+        });
+
+        Observer<List<HeroResponsesDto>> finalList = new Observer<List<HeroResponsesDto>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<HeroResponsesDto> heroResponsesDtos) {
+                Timber.d(">>>" + "onNext:" + heroResponsesDtos.size());
+//                pushALLHeroItems(heroResponsesDtos);
+//                pushALLHeroKillingMeeting(heroResponsesDtos);
+                pushALLHeroNormalVoices(heroResponsesDtos);
+
+//                for (HeroResponsesDto dto : heroResponsesDtos) {
+//                    Timber.d(">>>" + "items:" + dto.toString());
+//                }
+
+            }
+        };
+        responseObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(finalList);
+
+    }
+
     private void getResponsesVoice() {
         itemCount = 0;
         Timber.d(">>>" + "getResponsesVoice");
@@ -881,12 +1016,12 @@ public class JsoupLoader {
                     i++;
                     //todo hack
                     if (i == 2) {
-//                        break;
+                        break;
                     }
                     String heroId = heroBasicDto.heroId;
 
                     //todo hack
-//                    heroId = "Terrorblade";
+                    heroId = "Monkey_King";
 
                     String path = "http://dota2.gamepedia.com/" + heroId + "/Responses";
 
@@ -992,13 +1127,13 @@ public class JsoupLoader {
             @Override
             public void onNext(List<HeroResponsesDto> heroResponsesDtos) {
                 Timber.d(">>>" + "onNext:" + heroResponsesDtos.size());
-                pushALLHeroItems(heroResponsesDtos);
+//                pushALLHeroItems(heroResponsesDtos);
 //                pushALLHeroKillingMeeting(heroResponsesDtos);
 //                pushALLHeroNormalVoices(heroResponsesDtos);
 
-//                for (HeroResponsesDto dto : heroResponsesDtos) {
-//                    Timber.d(">>>" + "items:" + dto.toString());
-//                }
+                for (HeroResponsesDto dto : heroResponsesDtos) {
+                    Timber.d(">>>" + "items:" + dto.toString());
+                }
 
             }
         };
@@ -1336,7 +1471,7 @@ public class JsoupLoader {
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference reference = firebaseDatabase.getReference();
 
-                    reference.child(MsConst.TABLE_HERO_ITEMS).push().setValue(d)
+                    reference.child(MsConst.TABLE_MONKEY_KING).push().setValue(d)
                             .addOnSuccessListener(aVoid -> Logger.debug(TAG, ">>>" + "onSuccess pushItem:" + d.getToHeroId()))
                             .addOnFailureListener(e -> Logger.error(TAG, ">>> Error:" + "onFailure:" + e))
                     ;
@@ -1366,7 +1501,7 @@ public class JsoupLoader {
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference reference = firebaseDatabase.getReference();
 
-                    reference.child(MsConst.TABLE_HERO_KILLING_MEETING).push().setValue(d)
+                    reference.child(MsConst.TABLE_MONKEY_KING_KILLING).push().setValue(d)
                             .addOnSuccessListener(aVoid -> Logger.debug(TAG, ">>>push " + mPushCounter++ + ":" + "onSuccess pushItem:" + d.getHeroId()))
                             .addOnFailureListener(e -> Logger.error(TAG, ">>> Error:" + "onFailure:" + e))
 
@@ -1428,7 +1563,7 @@ public class JsoupLoader {
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference reference = firebaseDatabase.getReference();
 
-                    reference.child(MsConst.TABLE_HERO_NORMAL_VOICE).push().setValue(d)
+                    reference.child(MsConst.TABLE_MONKEY_KING_NORMAL).push().setValue(d)
                             .addOnSuccessListener(aVoid -> Logger.debug(TAG, ">>>push " + mPushCounter++ + ":" + "onSuccess pushItem:" + d.toString()))
                             .addOnFailureListener(e -> Logger.error(TAG, ">>> Error:" + "onFailure:" + e))
                     ;
@@ -1706,9 +1841,12 @@ public class JsoupLoader {
                     Timber.d(">>>" + "Notes:" + abiNotes);
 
                     dto = new AbilitySoundDto();
-                    dto.id = "Underlord_" + no;
+//                    dto.id = "Underlord_" + no;
+//                    dto.abiNo = no;
+//                    dto.abiHeroID = "Underlord";
+                    dto.id = "Monkey_King" + "_" + no;
                     dto.abiNo = no;
-                    dto.abiHeroID = "Underlord";
+                    dto.abiHeroID = "Monkey_King";
                     dto.abiName = abiName;
                     dto.abiSound = abiSound;
                     dto.abiImage = abiImage;
@@ -1729,18 +1867,18 @@ public class JsoupLoader {
         listObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(abilityDtos -> {
-                    Logger.debug(TAG, ">>>" + "Done2:" + abilityDtos.size());
-                    Realm realm = Realm.getDefaultInstance();
-                    realm.beginTransaction();
-                    realm.copyToRealm(abilityDtos);
-                    realm.commitTransaction();
-                    realm.close();
+                    Logger.debug(TAG, ">>>" + "Done212:" + abilityDtos.size());
+//                    Realm realm = Realm.getDefaultInstance();
+//                    realm.beginTransaction();
+//                    realm.copyToRealm(abilityDtos);
+//                    realm.commitTransaction();
+//                    realm.close();
 
                     pushALLAbis(abilityDtos);
                 });
     }
 
-    private void getCommentsparse () {
+    private void getCommentsparse() {
         Observable<List<CmtsDto>> listObservable = Observable.create(new Observable.OnSubscribe<List<CmtsDto>>() {
             @Override
             public void call(Subscriber<? super List<CmtsDto>> subscriber) {
@@ -1796,6 +1934,15 @@ public class JsoupLoader {
         listObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
+    }
+
+    private HeroBasicDto createMonkeyKing() {
+        HeroBasicDto heroBasicDto = new HeroBasicDto();
+        heroBasicDto.heroId = "Monkey_King";
+        heroBasicDto.name = "Monkey King";
+        heroBasicDto.heroIcon = "https://hydra-media.cursecdn.com/dota2.gamepedia.com/thumb/7/7b/Monkey_King_icon.png/20px-Monkey_King_icon.png";
+
+        return heroBasicDto;
     }
 
 }

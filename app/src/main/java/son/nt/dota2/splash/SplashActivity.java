@@ -24,7 +24,6 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
-import son.nt.dota2.activity.HomeActivity;
 import son.nt.dota2.activity.LoginActivity;
 import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
@@ -33,6 +32,7 @@ import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.test.TestActivity;
 import son.nt.dota2.utils.PreferenceUtil;
 import timber.log.Timber;
 
@@ -76,10 +76,11 @@ public class SplashActivity extends BaseActivity {
     private void loadData() {
         //        mIsNeedLoadData = !PreferenceUtil.getPreference(this, MsConst.PREFETCH, false);
         if (!mIsNeedLoadData) {
+            getBasicHeroList2();
 
 //            startActivity(new Intent(this, TestActivity.class));
 //            ActivityCompat.startActivity(this, LoginActivity.getIntent(this), null);
-            startActivity(HomeActivity.getIntent(getApplicationContext()));
+//            startActivity(HomeActivity.getIntent(getApplicationContext()));
         } else {
 //            Realm realm = Realm.getDefaultInstance();
 //            realm.beginTransaction();
@@ -138,6 +139,15 @@ public class SplashActivity extends BaseActivity {
 //        DatabaseReference reference = firebaseDatabase.getReference();
 //        Query query = reference.child(HeroBasicDto.class.getSimpleName());
 //        query.addListenerForSingleValueEvent(valueEventListener);
+    }
+
+    private void getBasicHeroList2() {
+
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+        Query query = reference.child(HeroBasicDto.class.getSimpleName());
+        query.addListenerForSingleValueEvent(valueEventListener);
     }
 
     //get Abis List
@@ -226,7 +236,9 @@ public class SplashActivity extends BaseActivity {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aBoolean -> {
                         Timber.d(">>>Done save DB:" + aBoolean);
+                        startActivity(new Intent(getApplicationContext(), TestActivity.class));
                         isBasicLoaded = true;
+
                         checkAndComplete();
                     });
             mCompositeSubscription.add(subscription);
@@ -437,11 +449,8 @@ public class SplashActivity extends BaseActivity {
         }
 
         PreferenceUtil.setPreference(this, MsConst.PREFETCH, true);
-//        startActivity(HomeActivity.getIntent(getApplicationContext()));
 
         ActivityCompat.startActivity(this, LoginActivity.getIntent(this), null);
-
-//        startActivity(LoginActivity.getIntent(getApplicationContext()));
 
     }
 

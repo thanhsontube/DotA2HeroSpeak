@@ -13,6 +13,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func7;
 import rx.schedulers.Schedulers;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.dto.HeroResponsesDto;
@@ -266,35 +267,157 @@ public class FireBaseUtils {
             });
 
         });
+        Observable<List<HeroResponsesDtoSaved>> TABLE_MONKEY_KING = Observable.create(subscriber -> {
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference reference = firebaseDatabase.getReference();
+            Query query = reference.child(MsConst.TABLE_MONKEY_KING);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<HeroResponsesDtoSaved> list = new ArrayList<>();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        HeroResponsesDtoSaved post = postSnapshot.getValue(HeroResponsesDtoSaved.class);
+                        list.add(post);
+                    }
 
-        Observable<List<HeroResponsesDto>> total = Observable.zip(lords, killing, items, normals, (heroResponsesDtoSaveds, heroResponsesDtoSaveds2, heroResponsesDtoSaveds3, heroResponsesDtoSaveds4) -> {
+                    subscriber.onNext(list);
+                    subscriber.onCompleted();
 
-            List<HeroResponsesDto> list = new ArrayList<HeroResponsesDto>();
-            HeroResponsesDto dto;
-            List<HeroResponsesDtoSaved> group = new ArrayList<HeroResponsesDtoSaved>();
-            group.addAll(heroResponsesDtoSaveds);
-            group.addAll(heroResponsesDtoSaveds2);
-            group.addAll(heroResponsesDtoSaveds3);
-            group.addAll(heroResponsesDtoSaveds4);
-            for (HeroResponsesDtoSaved d : group) {
-                dto = new HeroResponsesDto(d.no, d.heroId, d.heroName, d.heroIcon, d.voiceGroup,
-                        d.toHeroId, d.toHeroIcon, d.toHeroName, d.text, d.link,
-                        d.linkArcana, d.sub, d.position, d.itemId, d.title, d.image, d.group,
-                        d.duration, d.totalLike, d.totalComments, d.isPlaying, d.isFavorite,
-                        d.isLiked);
-                list.add(dto);
-            }
 
-            FileResponseList file = new FileResponseList(group);
-            try {
-                FileUtil.saveObject(file, FileResponseList.class.getSimpleName());
-            } catch (IOException e) {
+                    Timber.d(">>>" + "TABLE_HERO_NORMAL_VOICE:" + list.size());
+                }
 
-                e.printStackTrace();
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            return list;
-        }).subscribeOn(Schedulers.io())
+                }
+            });
+
+        });
+        Observable<List<HeroResponsesDtoSaved>> TABLE_MONKEY_KING_KILLING = Observable.create(subscriber -> {
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference reference = firebaseDatabase.getReference();
+            Query query = reference.child(MsConst.TABLE_MONKEY_KING_KILLING);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<HeroResponsesDtoSaved> list = new ArrayList<>();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        HeroResponsesDtoSaved post = postSnapshot.getValue(HeroResponsesDtoSaved.class);
+                        list.add(post);
+                    }
+
+                    subscriber.onNext(list);
+                    subscriber.onCompleted();
+
+
+                    Timber.d(">>>" + "TABLE_HERO_NORMAL_VOICE:" + list.size());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        });
+        Observable<List<HeroResponsesDtoSaved>> TABLE_MONKEY_KING_NORMAL = Observable.create(subscriber -> {
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference reference = firebaseDatabase.getReference();
+            Query query = reference.child(MsConst.TABLE_MONKEY_KING_NORMAL);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<HeroResponsesDtoSaved> list = new ArrayList<>();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        HeroResponsesDtoSaved post = postSnapshot.getValue(HeroResponsesDtoSaved.class);
+                        list.add(post);
+                    }
+
+                    subscriber.onNext(list);
+                    subscriber.onCompleted();
+
+
+                    Timber.d(">>>" + "TABLE_HERO_NORMAL_VOICE:" + list.size());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        });
+
+//        Observable<List<HeroResponsesDto>> total = Observable.zip(lords, killing, items, normals, TABLE_MONKEY_KING_NORMAL, TABLE_MONKEY_KING_KILLING, TABLE_MONKEY_KING,
+//                new Func7<List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDto>>() {
+//                    @Override
+//                    public List<HeroResponsesDto> call(List<HeroResponsesDtoSaved> heroResponsesDtoSaveds, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds2, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds3, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds4, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds5, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds6, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds7) {
+//                        List<HeroResponsesDto> list = new ArrayList<HeroResponsesDto>();
+//                        HeroResponsesDto dto;
+//                        List<HeroResponsesDtoSaved> group = new ArrayList<HeroResponsesDtoSaved>();
+//                        group.addAll(heroResponsesDtoSaveds);
+//                        group.addAll(heroResponsesDtoSaveds2);
+//                        group.addAll(heroResponsesDtoSaveds3);
+//                        group.addAll(heroResponsesDtoSaveds4);
+//                        group.addAll(heroResponsesDtoSaveds5);
+//                        group.addAll(heroResponsesDtoSaveds6);
+//                        group.addAll(heroResponsesDtoSaveds7);
+//                        for (HeroResponsesDtoSaved d : group) {
+//                            dto = new HeroResponsesDto(d.no, d.heroId, d.heroName, d.heroIcon, d.voiceGroup,
+//                                    d.toHeroId, d.toHeroIcon, d.toHeroName, d.text, d.link,
+//                                    d.linkArcana, d.sub, d.position, d.itemId, d.title, d.image, d.group,
+//                                    d.duration, d.totalLike, d.totalComments, d.isPlaying, d.isFavorite,
+//                                    d.isLiked);
+//                            list.add(dto);
+//                        }
+//
+//                        FileResponseList file = new FileResponseList(group);
+//                        try {
+//                            FileUtil.saveObject(file, FileResponseList.class.getSimpleName());
+//                        } catch (IOException e) {
+//
+//                            e.printStackTrace();
+//                        }
+//
+//                        return list;
+//                    }
+//                }
+
+        Observable<List<HeroResponsesDto>> total = Observable.zip(lords, killing, items, normals, TABLE_MONKEY_KING_NORMAL, TABLE_MONKEY_KING_KILLING, TABLE_MONKEY_KING,
+                new Func7<List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDtoSaved>, List<HeroResponsesDto>>() {
+                    @Override
+                    public List<HeroResponsesDto> call(List<HeroResponsesDtoSaved> heroResponsesDtoSaveds, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds2, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds3, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds4, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds5, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds6, List<HeroResponsesDtoSaved> heroResponsesDtoSaveds7) {
+                        List<HeroResponsesDto> list = new ArrayList<HeroResponsesDto>();
+                        HeroResponsesDto dto;
+                        List<HeroResponsesDtoSaved> group = new ArrayList<HeroResponsesDtoSaved>();
+                        group.addAll(heroResponsesDtoSaveds);
+                        group.addAll(heroResponsesDtoSaveds2);
+                        group.addAll(heroResponsesDtoSaveds3);
+                        group.addAll(heroResponsesDtoSaveds4);
+                        group.addAll(heroResponsesDtoSaveds5);
+                        group.addAll(heroResponsesDtoSaveds6);
+                        group.addAll(heroResponsesDtoSaveds7);
+                        for (HeroResponsesDtoSaved d : group) {
+                            dto = new HeroResponsesDto(d.no, d.heroId, d.heroName, d.heroIcon, d.voiceGroup,
+                                    d.toHeroId, d.toHeroIcon, d.toHeroName, d.text, d.link,
+                                    d.linkArcana, d.sub, d.position, d.itemId, d.title, d.image, d.group,
+                                    d.duration, d.totalLike, d.totalComments, d.isPlaying, d.isFavorite,
+                                    d.isLiked);
+                            list.add(dto);
+                        }
+
+                        FileResponseList file = new FileResponseList(group);
+                        try {
+                            FileUtil.saveObject(file, FileResponseList.class.getSimpleName());
+                        } catch (IOException e) {
+
+                            e.printStackTrace();
+                        }
+
+                        return list;
+                    }
+                }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         total.subscribe(heroResponsesDtos -> {
             Timber.d(">>>" + "total heroResponsesDtos:" + heroResponsesDtos.size());
@@ -303,7 +426,7 @@ public class FireBaseUtils {
 
     }
 
-    public static void pushBg () {
+    public static void pushBg() {
 
     }
 }

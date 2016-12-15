@@ -45,7 +45,7 @@
         <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Underlord Abilities"
+                android:text="Underlord/MonKey King Abilities"
                 android:id="@+id/underlord_abilities"/>
 
         <Button

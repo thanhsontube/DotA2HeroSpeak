@@ -35,6 +35,9 @@ public class MsConst {
     public static final String TABLE_HERO_NORMAL_VOICE = "dota2_hero_normal_voice";
     public static final String TABLE_HERO_ABI = "dota2_hero_ability";
     public static final String TABLE_STORY = "dota2_story";
+    public static final String TABLE_MONKEY_KING = "hero_monkey_king_sounds";
+    public static final String TABLE_MONKEY_KING_KILLING = "hero_monkey_king_killing";
+    public static final String TABLE_MONKEY_KING_NORMAL = "hero_monkey_king_normal";
 
     public static final String TRACK_START = "/start";
     public static final String TRACK_LOGIN = "/fb_login";
