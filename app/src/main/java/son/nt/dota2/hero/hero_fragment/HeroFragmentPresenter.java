@@ -63,7 +63,7 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
     public void getAbi() {
         final Subscription subscribe = mRepository.getAbis(mHeroID).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(data -> {
-                    mView.updateAbi (data);
+                            mView.updateAbi(data);
 
                         }
                 );
@@ -71,9 +71,11 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
     }
 
     private void startPrefetch() {
-        Timber.d(">>>" + ">>>" + "startPrefetch mBindFetchServiceDone" + mBindFetchServiceDone + ";mHeroSoundsLoaded:" + mHeroSoundsLoaded);
+        Timber.d(">>>" + ">>>" + "startPrefetch mBindFetchServiceDone:" + mBindFetchServiceDone + ";mHeroSoundsLoaded:" + mHeroSoundsLoaded);
         if (mBindFetchServiceDone && mHeroSoundsLoaded) {
             mView.addDataToDownload(mHeroResponsesDtos, mHeroID);
+            mBindFetchServiceDone = false;
+            mHeroSoundsLoaded = false;
         }
     }
 
@@ -94,6 +96,7 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
 
             @Override
             public void onNext(List<HeroResponsesDto> list) {
+                mHeroSoundsLoaded = true;
                 mView.showHeroSoundsList(list);
                 mHeroResponsesDtos = list;
                 startPrefetch();

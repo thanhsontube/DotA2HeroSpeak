@@ -263,7 +263,6 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
     public void showHeroList(List<HeroBasicDto> list, int pos) {
         mAdapter.updateData(list);
         mViewPager.setCurrentItem(pos, true);
-
     }
 
     @Override
@@ -319,7 +318,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         tab = mGoCircle.mCircleFeatureDto.getName();
     }
 
-    public String tab= "Sound";
+    public String tab = "Sound";
 
 
 }

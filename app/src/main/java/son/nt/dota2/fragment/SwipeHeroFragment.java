@@ -30,8 +30,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action1;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.HeroActivity;
 import son.nt.dota2.base.AObject;
@@ -123,7 +127,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 
     @Override
     public void onPageSelected() {
-        Timber.d(">>>" + "onPageSelected");
+        Timber.d(">>>" + "onPageSelected 1");
 //        OttoBus.register(this);
         final HeroActivity activity = (HeroActivity) getActivity();
         activity.setSoundsList(mPresenter.getSoundsList());
@@ -134,22 +138,24 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
             viewSound.setVisibility(View.GONE);
             viewSkills.setVisibility(View.VISIBLE);
         }
+        getActivity().bindService(new Intent(getActivity(), DownloadService.class), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
     }
 
     @Override
     public void onPageUnSelected() {
 //        OttoBus.unRegister(this);
+        if (downloadService != null) {
+            downloadService.isQuit = true;
+            getActivity().unbindService(serviceConnectionPrefetchAudio);
+            downloadService = null;
+        }
     }
 
 
     @Override
     public void onDestroy() {
 
-        if (downloadService != null) {
-            downloadService.isQuit = true;
-            getActivity().unbindService(serviceConnectionPrefetchAudio);
-            downloadService = null;
-        }
+
         super.onDestroy();
     }
 
@@ -166,7 +172,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
         mHeroId = getArguments().getString(EXTRA_HERO_ID);
 //        setHasOptionsMenu(true);
         mPresenter = new HeroFragmentPresenter(this, new HeroRepository());
-        getActivity().bindService(new Intent(getActivity(), DownloadService.class), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
+//        getActivity().bindService(new Intent(getActivity(), DownloadService.class), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -388,9 +394,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 
     @Override
     public void showHeroSoundsList(List<HeroResponsesDto> list) {
-        Timber.d(">>>" + "showHeroSoundsList:" + list.size() + ";ID:" + mHeroId);
         mAdapter.setData(list);
-        downloadService.addList(list);
     }
 
     @Override
@@ -398,6 +402,24 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
         if (!NetworkUtils.isConnected(getActivity())) {
             return;
         }
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                subscriber.onNext("");
+                subscriber.onCompleted();
+
+            }
+        })
+                .
+                        delay(5, TimeUnit.SECONDS)
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        if (downloadService != null) {
+                            downloadService.addList(heroResponsesDtos);
+                        }
+                    }
+                });
     }
 
     @Override
