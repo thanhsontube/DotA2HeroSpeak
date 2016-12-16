@@ -1,16 +1,35 @@
 package son.nt.dota2.hero.hero_fragment;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import android.text.TextUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import son.nt.dota2.ResourceManager;
 import son.nt.dota2.base.BasePresenter;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.HeroResponsesDto;
+import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.utils.Logger;
 import timber.log.Timber;
+
+import static son.nt.dota2.hero.hero_fragment.AdapterFragmentSound.TAG;
 
 /**
  * Created by sonnt on 11/7/16.
@@ -70,10 +89,16 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
         mCompositeSubscription.add(subscribe);
     }
 
+    @Override
+    public void downloadFetch() {
+//        download(mHeroResponsesDtos);
+    }
+
     private void startPrefetch() {
         Timber.d(">>>" + ">>>" + "startPrefetch mBindFetchServiceDone:" + mBindFetchServiceDone + ";mHeroSoundsLoaded:" + mHeroSoundsLoaded);
         if (mBindFetchServiceDone && mHeroSoundsLoaded) {
             mView.addDataToDownload(mHeroResponsesDtos, mHeroID);
+            download(mHeroResponsesDtos);
             mBindFetchServiceDone = false;
             mHeroSoundsLoaded = false;
         }
@@ -99,7 +124,9 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
                 mHeroSoundsLoaded = true;
                 mView.showHeroSoundsList(list);
                 mHeroResponsesDtos = list;
-                startPrefetch();
+//                download(list);
+
+//                startPrefetch();
 
             }
         };
@@ -110,4 +137,83 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
                 .subscribe(observer);
         mCompositeSubscription.add(subscription);
     }
+
+//    private void download2(final List<HeroResponsesDto> list) {
+//        for (ISound d : list) {
+//            download(d);
+//        }
+//    }
+
+    private void download(final List<HeroResponsesDto> list) {
+        Timber.d(">>>" + "download:" + list);
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+        Observable.create((Observable.OnSubscribe<String>) subscriber -> {
+
+            for (ISound iSound : list) {
+                File fileTo = new File(ResourceManager.getInstance().getPathSound(iSound.getLink(), iSound.getSavedRootFolder(), iSound.getSavedBranchFolder()));
+                downloadSound(iSound.getLink(), fileTo);
+
+                if (!TextUtils.isEmpty(iSound.getArcanaLink())) {
+                    File fileToArcana = new File(ResourceManager.getInstance().getPathSound(iSound.getArcanaLink(), iSound.getSavedRootFolder(), iSound.getSavedBranchFolder()));
+                    downloadSound(iSound.getArcanaLink(), fileToArcana);
+                }
+            }
+
+
+
+            subscriber.onNext("");
+            subscriber.onCompleted();
+
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    Timber.d(">>>" + "Download Done");
+//                    Timber.d(">>>" + "download done:" + iSound.getSavedRootFolder() + "/" + iSound.getSavedBranchFolder());
+
+                });
+    }
+
+    public void downloadSound(String linkSpeak, File fileTo) {
+        Timber.d(">>>" + "downloadSound:" + linkSpeak + " ;to:" + fileTo.toString());
+        if (TextUtils.isEmpty(linkSpeak)) {
+            return;
+        }
+
+        if (fileTo.exists()) {
+            return;
+        }
+
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse response = httpClient.execute(new HttpGet(linkSpeak));
+            StatusLine status = response.getStatusLine();
+            if (status.getStatusCode() == HttpStatus.SC_OK) {
+
+                InputStream in = response.getEntity().getContent();
+
+                OutputStream out = new FileOutputStream(fileTo, false);
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
+                out.flush();
+                out.close();
+                in.close();
+
+                Logger.debug(TAG, ">>>" + "downloadLink SUCCESS");
+
+            } else {
+                Logger.error(TAG, ">>>" + "Download FAIL:" + status.getStatusCode());
+            }
+
+        } catch (Exception e) {
+            Logger.error(TAG, ">>>" + "downloadSound err:" + e);
+        }
+    }
+
+
 }

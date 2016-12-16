@@ -131,6 +131,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 //        OttoBus.register(this);
         final HeroActivity activity = (HeroActivity) getActivity();
         activity.setSoundsList(mPresenter.getSoundsList());
+        mPresenter.downloadFetch ();
         if (activity.tab.equalsIgnoreCase("sound")) {
             viewSound.setVisibility(View.VISIBLE);
             viewSkills.setVisibility(View.GONE);
@@ -416,7 +417,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
                     @Override
                     public void call(String s) {
                         if (downloadService != null) {
-                            downloadService.addList(heroResponsesDtos);
+//                            downloadService.addList(heroResponsesDtos);
                         }
                     }
                 });

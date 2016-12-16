@@ -4,7 +4,6 @@ import java.util.List;
 
 import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
-import son.nt.dota2.dto.home.HeroBasicDto;
 
 /**
  * Created by sonnt on 11/7/16.
@@ -33,5 +32,7 @@ public class HeroResponseContract {
         List <HeroResponsesDto> getSoundsList ();
 
         void getAbi ();
+
+        void downloadFetch();
     }
 }
