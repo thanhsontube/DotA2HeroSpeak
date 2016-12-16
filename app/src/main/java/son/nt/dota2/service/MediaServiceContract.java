@@ -19,7 +19,7 @@ public class MediaServiceContract {
 
         void playOffline (String dataSource);
         void playOnline (String link);
-        void downloadSound (String link, String des);
+        void downloadSoundService (ISound iSound);
 
         void setCurrentIndex (int currentIndex);
         void setSoundsSource (int type, List<? extends ISound> list);

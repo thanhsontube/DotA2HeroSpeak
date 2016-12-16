@@ -150,6 +150,15 @@ public class ResourceManager {
         return contentManager;
     }
 
+    public String getPathSound(String link, String root, String branch) {
+        String path = ResourceManager.getInstance().getAppInternalFolder() + File.separator + root + File.separator + branch;
+        File f = new File((path));
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        return path + File.separator + FileUtil.createPathFromUrl(link).replace(".mp3", ".dat");
+    }
+
     public String getPathAudio(String link, String heroID) {
         String path = ResourceManager.getInstance().folderAudio + File.separator + heroID + File.separator;
         File f = new File((path));

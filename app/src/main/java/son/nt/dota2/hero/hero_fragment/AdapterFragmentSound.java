@@ -68,7 +68,7 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
             notifyItemChanged(position);
 
             /**
-             * send to {@link son.nt.dota2.service.PlayService2#onGetAdapterSwipeFragmentClick(HeroResponsesDto)}
+             * send to {@link son.nt.dota2.service.PlayService2#onGetAdapterSwipeFragmentClick(GoVoice)}
              */
             OttoBus.post(new GoVoice(selectedItem, isArcana));
         });
@@ -142,25 +142,6 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
             holder.relatedView.setVisibility(View.VISIBLE);
             holder.relatedView.setText(related);
         }
-
-
-//                holder.view.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        TsGaTools.trackPages("/row_voice_1_click");
-//                        mList.get(position).position = position;
-//                        OttoBus.post(mList.get(position));
-//                    }
-//                });
-//
-//                holder.view.setOnLongClickListener(new View.OnLongClickListener() {
-//                    @Override
-//                    public boolean onLongClick(View v) {
-//                        TsGaTools.trackPages("/row_voice_long_click");
-////                        OttoBus.post(new SpeakLongClick(mList.get(position)));
-//                        return true;
-//                    }
-//                });
         if (dto.isPlaying()) {
             holder.view.setBackgroundResource(R.drawable.d_row_speaking);
         } else {

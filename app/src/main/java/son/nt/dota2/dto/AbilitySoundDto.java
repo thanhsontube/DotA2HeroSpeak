@@ -82,12 +82,12 @@ public class AbilitySoundDto extends RealmObject implements ISound {
     }
 
     @Override
-    public String savedRootFolder() {
+    public String getSavedRootFolder() {
         return MsConst.SAVE_FOLDER_ABILITY;
     }
 
     @Override
-    public String savedBranchFolder() {
+    public String getSavedBranchFolder() {
         return abiHeroID;
     }
 }

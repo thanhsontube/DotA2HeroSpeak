@@ -3,9 +3,11 @@ package son.nt.dota2.service;
 import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.heroSound.ISound;
 
 /**
@@ -60,8 +62,24 @@ public class MediaServicePresenterImpl implements MediaServiceContract.Presenter
     @Override
     public void playSelectedSound(ISound dto, boolean arcana) {
         mStoryList.clear();
-        mController.playOnline(arcana ? (TextUtils.isEmpty(dto.getArcanaLink()) ? dto.getLink() : dto.getArcanaLink()) : dto.getLink());
-        mController.showOnNotification(dto);
+
+
+        final String link = arcana ? (TextUtils.isEmpty(dto.getArcanaLink()) ? dto.getLink() : dto.getArcanaLink()) : dto.getLink();
+        try {
+            File file = new File(ResourceManager.getInstance().getPathSound(link, dto.getSavedRootFolder(), dto.getSavedBranchFolder()));
+            String dataSourcePath = link;
+            if (file.exists()) {
+                dataSourcePath = file.getPath();
+            } else {
+                mController.downloadSoundService(dto);
+            }
+
+            mController.playOnline(dataSourcePath);
+            mController.showOnNotification(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 

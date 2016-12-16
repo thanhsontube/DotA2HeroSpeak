@@ -76,9 +76,9 @@ public class SplashActivity extends BaseActivity {
     private void loadData() {
         //        mIsNeedLoadData = !PreferenceUtil.getPreference(this, MsConst.PREFETCH, false);
         if (!mIsNeedLoadData) {
-            getBasicHeroList2();
+//            getBasicHeroList2();
 
-//            startActivity(new Intent(this, TestActivity.class));
+            startActivity(new Intent(this, TestActivity.class));
 //            ActivityCompat.startActivity(this, LoginActivity.getIntent(this), null);
 //            startActivity(HomeActivity.getIntent(getApplicationContext()));
         } else {
@@ -135,10 +135,6 @@ public class SplashActivity extends BaseActivity {
                     }
                 });
 
-//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-//        DatabaseReference reference = firebaseDatabase.getReference();
-//        Query query = reference.child(HeroBasicDto.class.getSimpleName());
-//        query.addListenerForSingleValueEvent(valueEventListener);
     }
 
     private void getBasicHeroList2() {

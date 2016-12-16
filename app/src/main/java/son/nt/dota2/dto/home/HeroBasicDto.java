@@ -48,7 +48,7 @@ public class HeroBasicDto extends RealmObject {
     public String bgLink;
 
     public static final String[] ARCANA = new String[]{"Shadow_Fiend", "Undying", "Zeus", "Dragon_Knight", "Lone_Druid"
-            , "Phantom_Assassin", "Legion_Commander", "Terrorblade"};
+            , "Phantom_Assassin", "Legion_Commander", "Terrorblade", "Monkey_King"};
 
 
     public HeroBasicDto() {

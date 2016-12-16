@@ -2,7 +2,12 @@ package son.nt.dota2.service;
 
 import com.squareup.otto.Subscribe;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -12,11 +17,15 @@ import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +46,7 @@ import son.nt.dota2.ottobus_entry.GoVoice;
 import son.nt.dota2.service.notification.INotification;
 import son.nt.dota2.service.notification.NotificationImpl;
 import son.nt.dota2.utils.FileUtil;
+import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.PreferenceUtil;
 import timber.log.Timber;
@@ -305,7 +315,6 @@ public class PlayService2 extends Service implements MediaServiceContract.Contro
     public void playOnline(String link) {
         try {
             createMediaPlayerIfNeeded();
-//            pause();
             mPlayer.stop();
             mPlayer.reset();
             mPlayer.setDataSource(link);
@@ -318,8 +327,66 @@ public class PlayService2 extends Service implements MediaServiceContract.Contro
     }
 
     @Override
-    public void downloadSound(String link, String des) {
+    public void downloadSoundService(ISound iSound) {
+        Observable.create((Observable.OnSubscribe<String>) subscriber -> {
+            File fileTo = new File(ResourceManager.getInstance().getPathSound(iSound.getLink(), iSound.getSavedRootFolder(), iSound.getSavedBranchFolder()));
+            downloadSound(iSound.getLink(), fileTo);
 
+            if (!TextUtils.isEmpty(iSound.getArcanaLink())) {
+                File fileToArcana = new File(ResourceManager.getInstance().getPathSound(iSound.getArcanaLink(), iSound.getSavedRootFolder(), iSound.getSavedBranchFolder()));
+                downloadSound(iSound.getArcanaLink(), fileToArcana);
+            }
+
+            subscriber.onNext("");
+            subscriber.onCompleted();
+
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    Timber.d(">>>" + "download done:" + iSound.getSavedRootFolder() + "/" + iSound.getSavedBranchFolder());
+
+                });
+
+    }
+
+    public void downloadSound(String linkSpeak, File fileTo) {
+        Timber.d(">>>" + "downloadSound:" + linkSpeak + " ;to:" + fileTo.toString());
+        if (TextUtils.isEmpty(linkSpeak)) {
+            return;
+        }
+
+        if (fileTo.exists()) {
+            return;
+        }
+
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse response = httpClient.execute(new HttpGet(linkSpeak));
+            StatusLine status = response.getStatusLine();
+            if (status.getStatusCode() == HttpStatus.SC_OK) {
+
+                InputStream in = response.getEntity().getContent();
+
+                OutputStream out = new FileOutputStream(fileTo, false);
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
+                out.flush();
+                out.close();
+                in.close();
+
+                Logger.debug(TAG, ">>>" + "downloadLink SUCCESS");
+
+            } else {
+                Logger.error(TAG, ">>>" + "Download FAIL:" + status.getStatusCode());
+            }
+
+        } catch (Exception e) {
+            Logger.error(TAG, ">>>" + "downloadSound err:" + e);
+        }
     }
 
     public List<? extends ISound> getList() {

@@ -129,12 +129,12 @@ public class StoryPartDto extends RealmObject implements ISound {
     }
 
     @Override
-    public String savedRootFolder() {
+    public String getSavedRootFolder() {
         return MsConst.SAVE_FOLDER_HERO_SOUND;
     }
 
     @Override
-    public String savedBranchFolder() {
+    public String getSavedBranchFolder() {
         return heroId;
     }
 }

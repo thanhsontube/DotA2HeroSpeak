@@ -20,7 +20,6 @@ public interface ISound {
     public boolean isPlaying();
 
 
-
     //type of Sounds
 //    public static final int TYPE_HERO_SOUND = 1;
 //    public static final int TYPE_MUSIC_PACK = 2;
@@ -29,8 +28,8 @@ public interface ISound {
 
     public int getSoundType();
 
-    public String savedRootFolder();
+    public String getSavedRootFolder();
 
-    public String savedBranchFolder();
+    public String getSavedBranchFolder();
 
 }

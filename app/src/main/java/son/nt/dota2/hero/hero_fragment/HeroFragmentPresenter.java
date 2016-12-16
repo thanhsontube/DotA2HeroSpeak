@@ -96,7 +96,7 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
             public void onNext(List<HeroResponsesDto> list) {
                 mView.showHeroSoundsList(list);
                 mHeroResponsesDtos = list;
-//                startPrefetch();
+                startPrefetch();
 
             }
         };

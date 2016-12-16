@@ -2,8 +2,10 @@ package son.nt.dota2.fragment;
 
 import com.squareup.otto.Subscribe;
 
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -36,7 +38,6 @@ import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.HeroTabFragment;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.dto.AbilitySoundDto;
-import son.nt.dota2.dto.CircleFeatureDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
@@ -103,8 +104,21 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 
     public SwipeHeroFragment() {
         // Required empty public constructor
-//        getActivity().bindService(new Intent(getActivity(), DownloadService.class), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
     }
+
+    ServiceConnection serviceConnectionPrefetchAudio = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            DownloadService.LocalBinder binder = (DownloadService.LocalBinder) service;
+            downloadService = binder.getService();
+            mPresenter.setFetchServiceBind(true);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBind = true;
+        }
+    };
 
 
     @Override
@@ -145,20 +159,6 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
     }
     //prefetch all audio
 
-    ServiceConnection serviceConnectionPrefetchAudio = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            DownloadService.LocalBinder binder = (DownloadService.LocalBinder) service;
-            downloadService = binder.getService();
-            mPresenter.setFetchServiceBind(true);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            isBind = true;
-        }
-    };
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -166,6 +166,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
         mHeroId = getArguments().getString(EXTRA_HERO_ID);
 //        setHasOptionsMenu(true);
         mPresenter = new HeroFragmentPresenter(this, new HeroRepository());
+        getActivity().bindService(new Intent(getActivity(), DownloadService.class), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -389,6 +390,7 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
     public void showHeroSoundsList(List<HeroResponsesDto> list) {
         Timber.d(">>>" + "showHeroSoundsList:" + list.size() + ";ID:" + mHeroId);
         mAdapter.setData(list);
+        downloadService.addList(list);
     }
 
     @Override
@@ -396,8 +398,6 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
         if (!NetworkUtils.isConnected(getActivity())) {
             return;
         }
-
-//        downloadService.addLinkDto2(heroResponsesDtos, heroID);
     }
 
     @Override

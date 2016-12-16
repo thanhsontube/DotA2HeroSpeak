@@ -135,10 +135,16 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-//
+
         if (mFirebaseUser != null) {
-            mFirebaseAuth.signOut();
+            startActivity(HomeActivity.getIntent(getActivity()));
+            getActivity().finish();
+            return;
         }
+//
+//        if (mFirebaseUser != null) {
+//            mFirebaseAuth.signOut();
+//        }
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

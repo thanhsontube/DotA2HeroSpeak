@@ -21,11 +21,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
 import son.nt.dota2.utils.Logger;
+import timber.log.Timber;
 
 public class DownloadService extends Service {
 
@@ -64,6 +69,34 @@ public class DownloadService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    public void addList(List<? extends ISound> list) {
+        for (ISound d : list) {
+            download(d);
+        }
+    }
+
+    private void download(ISound iSound) {
+        Observable.create((Observable.OnSubscribe<String>) subscriber -> {
+            File fileTo = new File(ResourceManager.getInstance().getPathSound(iSound.getLink(), iSound.getSavedRootFolder(), iSound.getSavedBranchFolder()));
+            downloadSound(iSound.getLink(), fileTo);
+
+            if (!TextUtils.isEmpty(iSound.getArcanaLink())) {
+                File fileToArcana = new File(ResourceManager.getInstance().getPathSound(iSound.getArcanaLink(), iSound.getSavedRootFolder(), iSound.getSavedBranchFolder()));
+                downloadSound(iSound.getArcanaLink(), fileToArcana);
+            }
+
+            subscriber.onNext("");
+            subscriber.onCompleted();
+
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    Timber.d(">>>" + "download done:" + iSound.getSavedRootFolder() + "/" + iSound.getSavedBranchFolder());
+
+                });
     }
 
     public void addLinkMusicPack(List<MusicPackSoundDto> list) {
@@ -182,6 +215,45 @@ public class DownloadService extends Service {
 
         } catch (Exception e) {
             Logger.error(TAG, ">>>" + "downloadLink err:" + e);
+        }
+    }
+
+    public void downloadSound(String linkSpeak, File fileTo) {
+        Timber.d(">>>" + "downloadSound:" + linkSpeak + " ;to:" + fileTo.toString());
+        if (TextUtils.isEmpty(linkSpeak)) {
+            return;
+        }
+
+        if (fileTo.exists()) {
+            return;
+        }
+
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse response = httpClient.execute(new HttpGet(linkSpeak));
+            StatusLine status = response.getStatusLine();
+            if (status.getStatusCode() == HttpStatus.SC_OK) {
+
+                InputStream in = response.getEntity().getContent();
+
+                OutputStream out = new FileOutputStream(fileTo, false);
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
+                out.flush();
+                out.close();
+                in.close();
+
+                Logger.debug(TAG, ">>>" + "downloadLink SUCCESS");
+
+            } else {
+                Logger.error(TAG, ">>>" + "Download FAIL:" + status.getStatusCode());
+            }
+
+        } catch (Exception e) {
+            Logger.error(TAG, ">>>" + "downloadSound err:" + e);
         }
     }
 
