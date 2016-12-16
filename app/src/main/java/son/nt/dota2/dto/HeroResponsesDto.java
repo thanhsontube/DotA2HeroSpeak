@@ -223,7 +223,7 @@ public class HeroResponsesDto extends RealmObject implements ISound {
 
     @Override
     public String getTitle() {
-        return title;
+        return text;
     }
 
     @Override

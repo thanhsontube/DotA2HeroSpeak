@@ -30,7 +30,6 @@ import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
@@ -63,7 +62,6 @@ import son.nt.dota2.fragment.RoleListFragment;
 import son.nt.dota2.fragment.RolesFragment;
 import son.nt.dota2.fragment.SavedFragment;
 import son.nt.dota2.fragment.SearchableFragment;
-import son.nt.dota2.gridmenu.GridMenuDialog;
 import son.nt.dota2.musicPack.MusicPackListActivity;
 import son.nt.dota2.ottobus_entry.GoAdapterRoles;
 import son.nt.dota2.setting.SettingActivity;
@@ -452,14 +450,14 @@ public class HomeActivity extends AActivity implements
     @Override
     public void onSavedItemLongClick(SpeakDto dto) {
 
-        FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
-        Fragment f = getSafeFragmentManager().findFragmentByTag("long-click");
-        if (f != null) {
-            ft.remove(f);
-        }
-        GridMenuDialog dialog = GridMenuDialog.newInstance(dto);
-        ft.add(dialog, "long-click");
-        ft.commit();
+//        FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
+//        Fragment f = getSafeFragmentManager().findFragmentByTag("long-click");
+//        if (f != null) {
+//            ft.remove(f);
+//        }
+//        GridMenuDialog dialog = GridMenuDialog.newInstance(dto);
+//        ft.add(dialog, "long-click");
+//        ft.commit();
     }
 
     private void updateKensburn() {

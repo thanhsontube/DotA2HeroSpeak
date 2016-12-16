@@ -6,24 +6,32 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.squareup.otto.Subscribe;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.PermissionChecker;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,16 +53,16 @@ import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.gridmenu.CommentDialog;
-import son.nt.dota2.gridmenu.GridMenuDialog;
-import son.nt.dota2.gridmenu.SpeakLongClick;
 import son.nt.dota2.hero.AdapterCircleFeature;
 import son.nt.dota2.hero.HeroActivityPresenter;
 import son.nt.dota2.hero.HeroContract;
+import son.nt.dota2.ottobus_entry.GoCheckPermission;
 import son.nt.dota2.ottobus_entry.GoCircle;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.ottobus_entry.GoShare;
 import son.nt.dota2.service.PlayService2;
 import son.nt.dota2.utils.OttoBus;
+import timber.log.Timber;
 
 /**
  * * Get HeroBasicDto from heroID -> update kenburns and get heroGroup,
@@ -62,6 +70,7 @@ import son.nt.dota2.utils.OttoBus;
  */
 public class HeroActivity extends BaseActivity implements HeroContract.View {
 
+    private static final int REQUEST_WRITE_SETTING = 131;
     HeroContract.Presenter mPresenter;
     HeroEntry heroEntry;
     FloatingActionButton fabChat;
@@ -154,26 +163,11 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         final String heroID = getIntent().getStringExtra("data");
         mPresenter.fetchHero(heroID);
 
-//        heroEntry = (HeroEntry) getIntent().getExtras().getSerializable(MsConst.EXTRA_HERO);
-//        mHeroId = getIntent().getExtras().getString("data");
-//        fabChat = (FloatingActionButton) findViewById(R.id.btn_chat_hero);
-//        fabChat.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                TsGaTools.trackPages(MsConst.TRACK_CHAT);
-//                FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
-//                Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
-//                if (f != null) {
-//                    ft.remove(f);
-//                }
-//                ChatDialog dialog = ChatDialog.newInstance();
-//                ft.add(dialog, "chat");
-//                ft.commit();
-//            }
-//        });
         OttoBus.register(this);
         adMob();
 //        isAddMob();
+
+        checkPermission();
 
     }
 
@@ -218,18 +212,6 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         return true;
     }
 
-
-    @Subscribe
-    public void voiceLongItemClick(SpeakLongClick dto) {
-        FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
-        Fragment f = getSafeFragmentManager().findFragmentByTag("long-click");
-        if (f != null) {
-            ft.remove(f);
-        }
-        GridMenuDialog dialog = GridMenuDialog.newInstance(dto.speakDto);
-        ft.add(dialog, "long-click");
-        ft.commit();
-    }
 
     @Subscribe
     public void goLogin(GoLoginDto dto) {
@@ -318,7 +300,64 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         tab = mGoCircle.mCircleFeatureDto.getName();
     }
 
+    @Subscribe
+    public void checkPermission(GoCheckPermission goCheckPermission) {
+
+        checkPermission();
+
+    }
+
+    private void checkPermission() {
+        Timber.d(">>>" + "checkPermission 3");
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (Settings.System.canWrite(this)) {
+                Timber.d(">>>" + "can write");
+
+            } else {
+                Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        } else {
+            final int checkSelfPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_SETTINGS);
+            if (checkSelfPermission != PermissionChecker.PERMISSION_GRANTED) {
+                requestPermission();
+
+            } else {
+                loadData();
+            }
+        }
+
+
+    }
+
+    private void loadData() {
+//        SoundUtils.setRingTone(getContext(), speakDto);
+        Toast.makeText(this, "Thanks, now you can set Ringtone/Notification", Toast.LENGTH_SHORT).show();
+    }
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_SETTINGS}, REQUEST_WRITE_SETTING);
+
+    }
+
     public String tab = "Sound";
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_WRITE_SETTING: {
+                if (grantResults.length == 1 && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
+                    loadData();
+                }
+                break;
+            }
+        }
+    }
 
 
 }

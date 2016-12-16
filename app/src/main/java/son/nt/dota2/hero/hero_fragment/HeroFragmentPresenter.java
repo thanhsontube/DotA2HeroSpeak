@@ -177,7 +177,6 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
     }
 
     public void downloadSound(String linkSpeak, File fileTo) {
-        Timber.d(">>>" + "downloadSound:" + linkSpeak + " ;to:" + fileTo.toString());
         if (TextUtils.isEmpty(linkSpeak)) {
             return;
         }

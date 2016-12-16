@@ -1,6 +1,13 @@
 package son.nt.dota2.adapter;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.parse.ParseUser;
+
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -10,23 +17,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.parse.ParseUser;
-
 import java.util.List;
 
-import son.nt.dota2.FacebookManager;
 import son.nt.dota2.R;
 import son.nt.dota2.data.TsSqlite;
-import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.gridmenu.GridMenuItem;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.ottobus_entry.GoSaved;
-import son.nt.dota2.ottobus_entry.GoShare;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.SoundUtils;
 import son.nt.dota2.utils.TsGaTools;
+import timber.log.Timber;
 
 /**
  * Created by 4210047 on 3/30/2015.
@@ -43,12 +46,21 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
     public static final int CASE_PLAYLIST = 5;
     public static final int CASE_SHARE_FACEBOOK = 6;
     public static final int CASE_SHARE_OTHERS = 7;
-    SpeakDto speakDto = null;
+    ISound speakDto = null;
+    AdapterGridMenuCallback mCallback;
 
-    public AdapterGridMenu(Context context, List<GridMenuItem> list, SpeakDto dto) {
+    public interface AdapterGridMenuCallback {
+        void onCheckWriteSettingPermission(ISound speakDto);
+    }
+
+    public AdapterGridMenu(Context context, List<GridMenuItem> list, ISound dto) {
         this.list = list;
         this.context = context;
         this.speakDto = dto;
+    }
+
+    public void setCallback(AdapterGridMenuCallback callback) {
+        mCallback = callback;
     }
 
     @Override
@@ -71,7 +83,7 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
         }
         holder.img.setImageResource(dto.iconID);
         if (dto.title.equals("Add to Playlist")) {
-            if (TsSqlite.getInstance().isInsert(speakDto.link)) {
+            if (TsSqlite.getInstance().isInsert(speakDto.getLink())) {
                 holder.img.setImageResource(dto.tempIcon);
                 holder.txtName.setText(dto.tempTitle);
             } else {
@@ -84,16 +96,33 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
             public void onClick(View v) {
                 switch (position) {
                     case CASE_RINGTONE:
+                        Timber.d(">>>" + "CASE_RINGTONE:" + speakDto.getTitle());
                         TsGaTools.trackPages("/set_ringtone");
                         new MaterialDialog.Builder(context)
-                                .title("Confirm Set Ringtone")
+                                .title("Confirm Set Ringtone (Need the Write Setting Permission)")
                                 .positiveText("Yes")
                                 .negativeText("Cancel")
                                 .callback(new MaterialDialog.ButtonCallback() {
                                     @Override
                                     public void onPositive(MaterialDialog dialog) {
                                         super.onPositive(dialog);
-                                        SoundUtils.setRingTone(context, speakDto);
+
+                                        if (Build.VERSION.SDK_INT >= 23) {
+                                            if (Settings.System.canWrite(context)) {
+                                                Timber.d(">>>" + "can write");
+                                                SoundUtils.setRingTone(context, speakDto);
+                                            } else {
+                                                Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                                                intent.setData(Uri.parse("package:" + context.getPackageName()));
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                context.startActivity(intent);
+                                            }
+                                        } else {
+                                            if (mCallback != null) {
+                                                mCallback.onCheckWriteSettingPermission(speakDto);
+                                            }
+                                        }
+
                                     }
 
                                     @Override
@@ -114,7 +143,21 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                                     @Override
                                     public void onPositive(MaterialDialog dialog) {
                                         super.onPositive(dialog);
-                                        SoundUtils.setNotificationSound(context, speakDto);
+                                        if (Build.VERSION.SDK_INT >= 23) {
+                                            if (Settings.System.canWrite(context)) {
+                                                Timber.d(">>>" + "can write");
+                                                SoundUtils.setNotificationSound(context, speakDto);
+                                            } else {
+                                                Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                                                intent.setData(Uri.parse("package:" + context.getPackageName()));
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                context.startActivity(intent);
+                                            }
+                                        } else {
+                                            if (mCallback != null) {
+                                                mCallback.onCheckWriteSettingPermission(speakDto);
+                                            }
+                                        }
                                     }
 
                                     @Override
@@ -136,7 +179,21 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                                     @Override
                                     public void onPositive(MaterialDialog dialog) {
                                         super.onPositive(dialog);
-                                        SoundUtils.setAlarmSound(context, speakDto);
+                                        if (Build.VERSION.SDK_INT >= 23) {
+                                            if (Settings.System.canWrite(context)) {
+                                                Timber.d(">>>" + "can write");
+                                                SoundUtils.setAlarmSound(context, speakDto);
+                                            } else {
+                                                Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                                                intent.setData(Uri.parse("package:" + context.getPackageName()));
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                context.startActivity(intent);
+                                            }
+                                        } else {
+                                            if (mCallback != null) {
+                                                mCallback.onCheckWriteSettingPermission(speakDto);
+                                            }
+                                        }
                                     }
 
                                     @Override
@@ -151,8 +208,8 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                     case CASE_COMMENTS:
                         TsGaTools.trackPages("/set_comment");
                         if (ParseUser.getCurrentUser() != null) {
-                            GoLoginDto dto = new GoLoginDto(true);
-                            dto.speakDto = speakDto;
+//                            GoLoginDto dto = new GoLoginDto(true);
+//                            dto.speakDto = speakDto;
                             OttoBus.post(dto);
 
                         } else {
@@ -178,13 +235,13 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
 
                     case CASE_COPY:
                         TsGaTools.trackPages("/set_copy");
-                        FileUtil.copy(context, speakDto.text, speakDto.text);
-                        Toast.makeText(context, "copied:" + speakDto.text, Toast.LENGTH_SHORT).show();
+                        FileUtil.copy(context, speakDto.getTitle(), speakDto.getTitle());
+                        Toast.makeText(context, "copied:" + speakDto.getTitle(), Toast.LENGTH_SHORT).show();
                         break;
 
                     case CASE_PLAYLIST:
                         TsGaTools.trackPages("/set_playlist");
-                        if (TsSqlite.getInstance().isInsert(speakDto.link)) {
+                        if (TsSqlite.getInstance().isInsert(speakDto.getLink())) {
                             new MaterialDialog.Builder(context)
                                     .title("Confirm Remove")
                                     .positiveText("Yes")
@@ -193,7 +250,7 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                                         @Override
                                         public void onPositive(MaterialDialog dialog) {
                                             super.onPositive(dialog);
-                                            TsSqlite.getInstance().remove(speakDto.link);
+                                            TsSqlite.getInstance().remove(speakDto.getLink());
                                             notifyDataSetChanged();
                                             OttoBus.post(new GoSaved());
                                         }
@@ -205,16 +262,16 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                                     })
                                     .show();
                         } else {
-                            long insert  = TsSqlite.getInstance().insert(speakDto);
-                            if (insert == -2) {
-                                Toast.makeText(context, "This voice was added to Playlist before", Toast.LENGTH_SHORT).show();
-                            } else if (insert > 0){
-                                Toast.makeText(context, "Add to PlayList successful:" + speakDto.text, Toast.LENGTH_SHORT).show();
-                                OttoBus.post(new GoSaved());
-                            }
-                            if (listenerAdapter != null) {
-                                listenerAdapter.onClick(position, list.get(position));
-                            }
+//                            long insert  = TsSqlite.getInstance().insert(speakDto);
+//                            if (insert == -2) {
+//                                Toast.makeText(context, "This voice was added to Playlist before", Toast.LENGTH_SHORT).show();
+//                            } else if (insert > 0){
+//                                Toast.makeText(context, "Add to PlayList successful:" + speakDto.text, Toast.LENGTH_SHORT).show();
+//                                OttoBus.post(new GoSaved());
+//                            }
+//                            if (listenerAdapter != null) {
+//                                listenerAdapter.onClick(position, list.get(position));
+//                            }
                         }
 
 
@@ -222,11 +279,11 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                     case CASE_SHARE_FACEBOOK:
                         TsGaTools.trackPages("/set_share_fb");
                         //HeroActivity.goShare
-                        OttoBus.post(new GoShare("facebook", speakDto));
+//                        OttoBus.post(new GoShare("facebook", speakDto));
                         break;
                     case CASE_SHARE_OTHERS:
                         TsGaTools.trackPages("/set_share_others");
-                        FacebookManager.getInstance().shareViaTwitter(context, speakDto);
+//                        FacebookManager.getInstance().shareViaTwitter(context, speakDto);
 
                         break;
 

@@ -174,49 +174,49 @@ public class ResourceManager {
     }
 
     public String getPathRingtone(String link, String heroID) {
-        String path = ResourceManager.getInstance().folderRingtone + File.separator + heroID + File.separator;
-        File f = new File((path));
-        if (!f.exists()) {
-            f.mkdirs();
-        }
-
-        File fRingtone = new File(mAppExternalFolder, "/ringtone/");
-        if (!fRingtone.exists()) {
-            fRingtone.mkdirs();
-        }
-        folderRingtone = fRingtone.getPath();
-        return folderRingtone + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
+//        String path = ResourceManager.getInstance().folderRingtone + File.separator + heroID + File.separator;
+//        File f = new File((path));
+//        if (!f.exists()) {
+//            f.mkdirs();
+//        }
+//
+//        File fRingtone = new File(mAppExternalFolder, "/ringtone/");
+//        if (!fRingtone.exists()) {
+//            fRingtone.mkdirs();
+//        }
+//        folderRingtone = fRingtone.getPath();
+        return folderRingtone + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 
     public String getPathNotification(String link, String heroID) {
-        String path = ResourceManager.getInstance().folderNotification + File.separator + heroID + File.separator;
-        File f = new File((path));
-        if (!f.exists()) {
-            f.mkdirs();
-        }
-
-
-        File fNoti = new File(mAppExternalFolder, "/notification/");
-        if (!fNoti.exists()) {
-            fNoti.mkdirs();
-        }
-        folderNotification = fNoti.getPath();
-        return folderNotification + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
+//        String path = ResourceManager.getInstance().folderNotification + File.separator + heroID + File.separator;
+//        File f = new File((path));
+//        if (!f.exists()) {
+//            f.mkdirs();
+//        }
+//
+//
+//        File fNoti = new File(mAppExternalFolder, "/notification/");
+//        if (!fNoti.exists()) {
+//            fNoti.mkdirs();
+//        }
+//        folderNotification = fNoti.getPath();
+        return folderNotification + File.separator  + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 
     public String getPathAlarm(String link, String heroID) {
-        String path = ResourceManager.getInstance().folderAlarm + File.separator + heroID + File.separator;
-        File f = new File((path));
-        if (!f.exists()) {
-            f.mkdirs();
-        }
-
-        File fAlarm = new File(mAppExternalFolder, "/alarm/");
-        if (!fAlarm.exists()) {
-            fAlarm.mkdirs();
-        }
-        folderAlarm = fAlarm.getPath();
-        return folderAlarm + File.separator + heroID + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
+//        String path = ResourceManager.getInstance().folderAlarm + File.separator + heroID + File.separator;
+//        File f = new File((path));
+//        if (!f.exists()) {
+//            f.mkdirs();
+//        }
+//
+//        File fAlarm = new File(mAppExternalFolder, "/alarm/");
+//        if (!fAlarm.exists()) {
+//            fAlarm.mkdirs();
+//        }
+//        folderAlarm = fAlarm.getPath();
+        return folderAlarm + File.separator  + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 
     public String getPathDownloadMusicPack(String link) {

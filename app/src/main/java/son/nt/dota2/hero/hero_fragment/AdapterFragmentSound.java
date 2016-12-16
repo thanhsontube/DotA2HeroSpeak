@@ -4,6 +4,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import android.content.Context;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import butterknife.ButterKnife;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroResponsesDto;
+import son.nt.dota2.gridmenu.GridMenuDialog;
 import son.nt.dota2.ottobus_entry.GoVoice;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
@@ -56,6 +59,7 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
         holder.view.setOnClickListener(v -> {
             TsGaTools.trackPages("/row_voice_1_click");
 
+
             int position = holder.getAdapterPosition();
 
             if (previousSelectedItem != -1) {
@@ -64,6 +68,7 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
             }
             previousSelectedItem = position;
             final HeroResponsesDto selectedItem = mList.get(position);
+
             selectedItem.setPlaying(true);
             notifyItemChanged(position);
 
@@ -73,9 +78,14 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
             OttoBus.post(new GoVoice(selectedItem, isArcana));
         });
 
-        holder.moreView.setOnClickListener(v -> {
-
-
+        holder.moreView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+                final HeroResponsesDto selectedItem = mList.get(position);
+                DialogFragment d = GridMenuDialog.newInstance(selectedItem);
+                d.show(((AppCompatActivity)mContext).getSupportFragmentManager(), "dialog");
+            }
         });
         return holder;
 
