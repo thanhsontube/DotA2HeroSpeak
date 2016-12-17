@@ -21,12 +21,13 @@ import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.data.TsSqlite;
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.gridmenu.GridMenuItem;
 import son.nt.dota2.ottobus_entry.GoLoginDto;
-import son.nt.dota2.ottobus_entry.GoSaved;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.OttoBus;
+import son.nt.dota2.utils.RealmUtils;
 import son.nt.dota2.utils.SoundUtils;
 import son.nt.dota2.utils.TsGaTools;
 import timber.log.Timber;
@@ -241,37 +242,10 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
 
                     case CASE_PLAYLIST:
                         TsGaTools.trackPages("/set_playlist");
-                        if (TsSqlite.getInstance().isInsert(speakDto.getLink())) {
-                            new MaterialDialog.Builder(context)
-                                    .title("Confirm Remove")
-                                    .positiveText("Yes")
-                                    .negativeText("Cancel")
-                                    .callback(new MaterialDialog.ButtonCallback() {
-                                        @Override
-                                        public void onPositive(MaterialDialog dialog) {
-                                            super.onPositive(dialog);
-                                            TsSqlite.getInstance().remove(speakDto.getLink());
-                                            notifyDataSetChanged();
-                                            OttoBus.post(new GoSaved());
-                                        }
 
-                                        @Override
-                                        public void onNegative(MaterialDialog dialog) {
-                                            super.onNegative(dialog);
-                                        }
-                                    })
-                                    .show();
-                        } else {
-//                            long insert  = TsSqlite.getInstance().insert(speakDto);
-//                            if (insert == -2) {
-//                                Toast.makeText(context, "This voice was added to Playlist before", Toast.LENGTH_SHORT).show();
-//                            } else if (insert > 0){
-//                                Toast.makeText(context, "Add to PlayList successful:" + speakDto.text, Toast.LENGTH_SHORT).show();
-//                                OttoBus.post(new GoSaved());
-//                            }
-//                            if (listenerAdapter != null) {
-//                                listenerAdapter.onClick(position, list.get(position));
-//                            }
+                        if (speakDto instanceof HeroResponsesDto) {
+                            ((HeroResponsesDto) speakDto).setFavorite(true);
+                            RealmUtils.setVavofite((HeroResponsesDto) speakDto);
                         }
 
 

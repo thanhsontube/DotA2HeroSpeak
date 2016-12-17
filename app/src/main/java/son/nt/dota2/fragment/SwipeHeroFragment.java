@@ -128,7 +128,6 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
     @Override
     public void onPageSelected() {
         Timber.d(">>>" + "onPageSelected 1");
-//        OttoBus.register(this);
         final HeroActivity activity = (HeroActivity) getActivity();
         activity.setSoundsList(mPresenter.getSoundsList());
         mPresenter.downloadFetch ();
@@ -144,7 +143,6 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
 
     @Override
     public void onPageUnSelected() {
-//        OttoBus.unRegister(this);
         if (downloadService != null) {
             downloadService.isQuit = true;
             getActivity().unbindService(serviceConnectionPrefetchAudio);

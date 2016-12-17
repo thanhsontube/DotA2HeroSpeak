@@ -1,7 +1,8 @@
 package son.nt.dota2.fragment;
 
+import com.squareup.otto.Subscribe;
+
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -16,59 +17,40 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.squareup.otto.Subscribe;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
-import son.nt.dota2.adapter.AdapterSaved;
 import son.nt.dota2.base.AFragment;
-import son.nt.dota2.data.TsSqlite;
+import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.hero.hero_fragment.AdapterFragmentSound;
 import son.nt.dota2.ottobus_entry.GoSaved;
 import son.nt.dota2.service.ServiceMedia;
 import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsLog;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SavedFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SavedFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class SavedFragment extends AFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "SavedFragment";
 
-    // TODO: Rename and change types of parameters
+
     private String mParam1;
     private String mParam2;
 
     private RecyclerView recyclerView;
-    private AdapterSaved adapter;
+    private AdapterFragmentSound adapter;
 
-    private List<SpeakDto> listSave = new ArrayList<>();
+    private List<HeroResponsesDto> listSave = new ArrayList<>();
 
     TsLog log = new TsLog(TAG);
 
     private OnFragmentInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SavedFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static SavedFragment newInstance(String param1, String param2) {
         SavedFragment fragment = new SavedFragment();
         Bundle args = new Bundle();
@@ -107,7 +89,6 @@ public class SavedFragment extends AFragment {
         OttoBus.register(this);
         initData();
         initLayout(view);
-        initListener();
         updateLayout();
     }
 
@@ -115,7 +96,6 @@ public class SavedFragment extends AFragment {
     public void onResume() {
         super.onResume();
         listSave.clear();
-        listSave.addAll(TsSqlite.getInstance().getPlaylist());
         adapter.notifyDataSetChanged();
 
     }
@@ -125,32 +105,8 @@ public class SavedFragment extends AFragment {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new AdapterSaved(context, listSave);
+        adapter = new AdapterFragmentSound(context, listSave);
         recyclerView.setAdapter(adapter);
-
-    }
-
-    private void initListener() {
-        adapter.setOnCallback(new AdapterSaved.IAdapterCallback() {
-            @Override
-            public void onClick(int position, SpeakDto dto) {
-                if (mediaService != null) {
-                    mediaService.play(dto.link, dto.heroId);
-                }
-            }
-
-            @Override
-            public void onLongClick(int position, SpeakDto dto) {
-                if (mListener != null) {
-                    mListener.onSavedItemLongClick(dto);
-                }
-            }
-
-            @Override
-            public void onMenuClick(MsConst.MenuSelect action, int position) {
-
-            }
-        });
 
     }
 
@@ -180,16 +136,6 @@ public class SavedFragment extends AFragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
          void onFragmentInteraction(Uri uri);
          void onSavedItemLongClick (SpeakDto dto);
@@ -227,7 +173,6 @@ public class SavedFragment extends AFragment {
     @Subscribe
     public void onUpdate (GoSaved dto) {
         listSave.clear();
-        listSave.addAll(TsSqlite.getInstance().getPlaylist());
         adapter.notifyDataSetChanged();
     }
 }

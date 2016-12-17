@@ -1,7 +1,8 @@
 package son.nt.dota2.fragment;
 
+import org.apache.http.client.methods.HttpGet;
+
 import android.app.Activity;
-import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +10,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import org.apache.http.client.methods.HttpGet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +23,7 @@ import son.nt.dota2.dto.PlayListDto;
 import son.nt.dota2.loader.PlayListLoader;
 import son.nt.dota2.utils.TsLog;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PlayListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PlayListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class PlayListFragment extends AFragment {
 
     private static final String TAG = "PlayListFragment";
