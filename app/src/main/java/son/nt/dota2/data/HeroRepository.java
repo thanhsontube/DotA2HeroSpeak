@@ -4,6 +4,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import android.support.annotation.NonNull;
@@ -438,6 +439,37 @@ public class HeroRepository implements IHeroRepository {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             dtos.add(snapshot.getValue(CmtsDto.class));
                         }
+                        subscriber.onNext(dtos);
+                        subscriber.onCompleted();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<CmtsDto>> getStoryComments(String storyId) {
+        return Observable.create(new Observable.OnSubscribe<List<CmtsDto>>() {
+            @Override
+            public void call(Subscriber<? super List<CmtsDto>> subscriber) {
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference reference = firebaseDatabase.getReference();
+                Query query = reference.child(MsConst.TABLE_COMMENTS).orderByChild("toId").equalTo(storyId);
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        List<CmtsDto> dtos = new ArrayList<CmtsDto>();
+
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            dtos.add(snapshot.getValue(CmtsDto.class));
+                        }
+
                         subscriber.onNext(dtos);
                         subscriber.onCompleted();
                     }

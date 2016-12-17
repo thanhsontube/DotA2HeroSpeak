@@ -49,6 +49,9 @@
     <string name="killed">killed</string>
     <string name="buy">buys</string>
     <string name="your_comments_here">Your comments here</string>
+    <string name="comments">Comments</string>
+    <string name="write_a_commend">Write a commend…</string>
+    <string name="avatar">Avatar</string>
 
 
 </resources>

@@ -18,6 +18,7 @@ import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.dto.story.StoryFireBaseDto;
 import son.nt.dota2.dto.story.StoryPartDto;
+import son.nt.dota2.story.cmts.StoryCmtsDialog;
 
 public class StoryDetailActivity extends BaseActivity implements StoryDetailContract.View {
 
@@ -44,7 +45,7 @@ public class StoryDetailActivity extends BaseActivity implements StoryDetailCont
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new StoryDetailPresenter(this, new HeroRepository());
-        mPresenter.setStoryId(Parcels.unwrap(getIntent().getParcelableExtra("data")));
+        mPresenter.setStoryFireBaseDto(Parcels.unwrap(getIntent().getParcelableExtra("data")));
 
         mAdapter = new AdapterStoryDetail(new ArrayList<>(), this, null);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -63,6 +64,13 @@ public class StoryDetailActivity extends BaseActivity implements StoryDetailCont
     @OnClick(R.id.stop_a_story)
     public void onStopStory() {
         mPresenter.stopStory();
+    }
+
+    @OnClick(R.id.story_detail_cmts)
+    public void onCommendsClick () {
+        StoryCmtsDialog storyCmtsDialog = StoryCmtsDialog.newInstance(mPresenter.getStoryId());
+        storyCmtsDialog.show(getSupportFragmentManager(), StoryCmtsDialog.class.getSimpleName());
+
     }
 
     @Override

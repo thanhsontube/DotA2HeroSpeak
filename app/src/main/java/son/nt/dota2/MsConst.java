@@ -68,6 +68,7 @@ public class MsConst {
     public static final String TYPE_SOUND_RIGHT = "sound right";
     public static final String TYPE_SOUND_MIDDLE = "sound middle";
     public static final String COMMENT_TYPE_SIMPLE_SOUND = "COMMENT_TYPE_SIMPLE_SOUND";
+    public static final String COMMENT_TYPE_SIMPLE_STORY = "COMMENT_TYPE_SIMPLE_STORY";
 
 
     public static enum RepeatMode {

@@ -16,12 +16,14 @@ public class StoryDetailContract {
     }
 
     public interface Presenter {
-        void setStoryId(StoryFireBaseDto data);
+        void setStoryFireBaseDto(StoryFireBaseDto data);
 
         void getStoryById();
 
         void playStory();
 
         void stopStory();
+
+        String getStoryId();
     }
 }

@@ -62,6 +62,7 @@ public interface IHeroRepository {
 
     Observable<StoryDto> getStoryById(String storyId);
 
-
     Observable<List<CmtsDto>> getAllComments();
+
+    Observable<List<CmtsDto>> getStoryComments(String storyId);
 }
