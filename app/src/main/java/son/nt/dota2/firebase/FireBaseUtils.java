@@ -1,5 +1,6 @@
 package son.nt.dota2.firebase;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -16,6 +17,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func7;
 import rx.schedulers.Schedulers;
 import son.nt.dota2.MsConst;
+import son.nt.dota2.comments.CmtsDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.saved_class.AbilitySoundDtoSaved;
@@ -428,5 +430,33 @@ public class FireBaseUtils {
 
     public static void pushBg() {
 
+    }
+
+    public static void sendComments(String text, FirebaseUser user, String type, String toId) {
+        Observable.create(subscriber -> {
+
+                    CmtsDto cmtsDto = new CmtsDto();
+                    final long createTime = System.currentTimeMillis();
+                    cmtsDto.setCreateTime(createTime);
+                    cmtsDto.setFromID(user.getUid());
+                    cmtsDto.setFromImage(user.getPhotoUrl().toString());
+                    final String displayName = user.getDisplayName();
+                    cmtsDto.setFromName(displayName);
+
+                    cmtsDto.setId("cmt_" + displayName + "_" + createTime);
+
+                    cmtsDto.setMessage(text);
+                    cmtsDto.setType(type);
+                    cmtsDto.setToId(toId);
+
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference reference = firebaseDatabase.getReference();
+                    reference.child(MsConst.TABLE_COMMENTS).push().setValue(cmtsDto);
+                }
+
+        )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 }

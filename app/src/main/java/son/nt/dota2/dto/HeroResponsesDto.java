@@ -308,4 +308,9 @@ public class HeroResponsesDto extends RealmObject implements ISound {
     public String getSavedBranchFolder() {
         return heroId;
     }
+
+    @Override
+    public String getId() {
+        return link;
+    }
 }

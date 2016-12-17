@@ -1,5 +1,9 @@
 package son.nt.dota2.gridmenu;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.share.widget.LikeView;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
@@ -9,6 +13,7 @@ import org.parceler.Parcels;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -17,17 +22,25 @@ import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
+import son.nt.dota2.activity.LoginActivity;
 import son.nt.dota2.adapter.AdapterGridMenu;
 import son.nt.dota2.dto.heroSound.ISound;
+import son.nt.dota2.firebase.FireBaseUtils;
 import son.nt.dota2.utils.SoundUtils;
 
 /**
@@ -36,10 +49,14 @@ import son.nt.dota2.utils.SoundUtils;
 public class GridMenuDialog extends DialogFragment {
     public static final String TAG = "GridMenuDialog";
     private static final int REQUEST_WRITE_SETTING = 121;
-    ISound speakDto;
+    ISound mSound;
     RecyclerView recyclerView;
     AdapterGridMenu adapter;
     List<GridMenuItem> list = new ArrayList<>();
+    @BindView(R.id.grid_menu_cmt_send)
+    View sendView;
+    @BindView(R.id.grid_menu_cmt_edt)
+    EditText messageView;
 
     public static GridMenuDialog newInstance(ISound dto) {
         GridMenuDialog dialog = new GridMenuDialog();
@@ -47,6 +64,45 @@ public class GridMenuDialog extends DialogFragment {
         bundle.putParcelable("data", Parcels.wrap(dto));
         dialog.setArguments(bundle);
         return dialog;
+    }
+
+    @OnClick(R.id.grid_menu_cmt_send)
+    public void sendMessage() {
+        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            final String text = messageView.getText().toString().trim();
+            if (TextUtils.isEmpty(text)) {
+
+                Toast.makeText(getContext(), "Error : You have not said anything ... why bro why ?", Toast.LENGTH_SHORT).show();
+
+            } else {
+                FireBaseUtils.sendComments(text, currentUser, MsConst.COMMENT_TYPE_SIMPLE_SOUND, mSound.getId());
+                Toast.makeText(getActivity(), "Thanks for your comments", Toast.LENGTH_SHORT).show();
+                messageView.setText("");
+            }
+
+
+        } else {
+            new MaterialDialog.Builder(getContext())
+                    .title("Please Login First")
+                    .positiveText("Login")
+                    .negativeText("Cancel")
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            super.onPositive(dialog);
+                            Intent intent = new Intent(getContext(), LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            getActivity().startActivity(intent);
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            super.onNegative(dialog);
+                        }
+                    })
+                    .show();
+        }
     }
 
     @Override
@@ -58,13 +114,14 @@ public class GridMenuDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        speakDto = Parcels.unwrap(getArguments().getParcelable("data"));
+        mSound = Parcels.unwrap(getArguments().getParcelable("data"));
 
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.grid_menu, null);
+        ButterKnife.bind(this, view);
 
         TextView txtContent = (TextView) view.findViewById(R.id.grid_menu_text);
-        txtContent.setText(speakDto.getTitle());
+        txtContent.setText(mSound.getTitle());
 
         LikeView likeView = (LikeView) view.findViewById(R.id.grid_menu_like);
         likeView.setLikeViewStyle(LikeView.Style.BOX_COUNT);
@@ -84,10 +141,10 @@ public class GridMenuDialog extends DialogFragment {
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        list.add(new GridMenuItem("Make a Ringtone", R.drawable.ic_music_48));
-        list.add(new GridMenuItem("Set Notification Sound", R.drawable.ic_alert_48));
-        list.add(new GridMenuItem("Set Alarm ", R.drawable.ic_alarm_48));
-        list.add(new GridMenuItem("Comments", R.drawable.ic_comment_48));
+        list.add(new GridMenuItem("Set\nRingtone", R.drawable.ic_music_48));
+        list.add(new GridMenuItem("Set\nNotification", R.drawable.ic_alert_48));
+        list.add(new GridMenuItem("Set\nAlarm ", R.drawable.ic_alarm_48));
+//        list.add(new GridMenuItem("Comments", R.drawable.ic_comment_48));
         list.add(new GridMenuItem("Copy Text", R.drawable.ic_copy_48));
         GridMenuItem playList = new GridMenuItem("Add to Playlist", R.drawable.ic_start_off_48);
         playList.tempIcon = R.drawable.ic_start_on_48;
@@ -101,7 +158,7 @@ public class GridMenuDialog extends DialogFragment {
             likeView.setVisibility(View.INVISIBLE);
         }
 
-        adapter = new AdapterGridMenu(getActivity(), list, speakDto);
+        adapter = new AdapterGridMenu(getActivity(), list, mSound);
         adapter.setCallback(new AdapterGridMenu.AdapterGridMenuCallback() {
             @Override
             public void onCheckWriteSettingPermission(ISound speakDto) {
@@ -136,7 +193,7 @@ public class GridMenuDialog extends DialogFragment {
     }
 
     private void loadData() {
-        SoundUtils.setRingTone(getContext(), speakDto);
+        SoundUtils.setRingTone(getContext(), mSound);
     }
 
     private void requestPermission() {

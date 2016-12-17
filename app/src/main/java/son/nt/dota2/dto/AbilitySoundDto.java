@@ -90,4 +90,9 @@ public class AbilitySoundDto extends RealmObject implements ISound {
     public String getSavedBranchFolder() {
         return abiHeroID;
     }
+
+    @Override
+    public String getId() {
+        return id;
+    }
 }

@@ -1,7 +1,6 @@
 package son.nt.dota2.adapter;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.parse.ParseUser;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,9 +23,7 @@ import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.gridmenu.GridMenuItem;
-import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.utils.FileUtil;
-import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.RealmUtils;
 import son.nt.dota2.utils.SoundUtils;
 import son.nt.dota2.utils.TsGaTools;
@@ -43,10 +40,10 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
     public static final int CASE_NOTIFICATION = 1;
     public static final int CASE_ALARM = 2;
     public static final int CASE_COMMENTS = 3;
-    public static final int CASE_COPY = 4;
-    public static final int CASE_PLAYLIST = 5;
-    public static final int CASE_SHARE_FACEBOOK = 6;
-    public static final int CASE_SHARE_OTHERS = 7;
+    public static final int CASE_COPY = 3;
+    public static final int CASE_PLAYLIST = 4;
+    public static final int CASE_SHARE_FACEBOOK = 5;
+    public static final int CASE_SHARE_OTHERS = 6;
     ISound speakDto = null;
     AdapterGridMenuCallback mCallback;
 
@@ -206,33 +203,35 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
 
                         break;
 
-                    case CASE_COMMENTS:
-                        TsGaTools.trackPages("/set_comment");
-                        if (ParseUser.getCurrentUser() != null) {
-//                            GoLoginDto dto = new GoLoginDto(true);
-//                            dto.speakDto = speakDto;
-                            OttoBus.post(dto);
-
-                        } else {
-                            new MaterialDialog.Builder(context)
-                                    .title("Please Login First")
-                                    .positiveText("Login")
-                                    .negativeText("Cancel")
-                                    .callback(new MaterialDialog.ButtonCallback() {
-                                        @Override
-                                        public void onPositive(MaterialDialog dialog) {
-                                            super.onPositive(dialog);
-                                            OttoBus.post(new GoLoginDto(false));
-                                        }
-
-                                        @Override
-                                        public void onNegative(MaterialDialog dialog) {
-                                            super.onNegative(dialog);
-                                        }
-                                    })
-                                    .show();
-                        }
-                        break;
+//                    case CASE_COMMENTS:
+//                        TsGaTools.trackPages("/set_comment");
+//                        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+////                            GoLoginDto dto = new GoLoginDto(true);
+////                            dto.speakDto = speakDto;
+//                            OttoBus.post(dto);
+//
+//                        } else {
+//                            new MaterialDialog.Builder(context)
+//                                    .title("Please Login First")
+//                                    .positiveText("Login")
+//                                    .negativeText("Cancel")
+//                                    .callback(new MaterialDialog.ButtonCallback() {
+//                                        @Override
+//                                        public void onPositive(MaterialDialog dialog) {
+//                                            super.onPositive(dialog);
+//                                            Intent intent = new Intent(context, LoginActivity.class);
+//                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                            context.startActivity(intent);
+//                                        }
+//
+//                                        @Override
+//                                        public void onNegative(MaterialDialog dialog) {
+//                                            super.onNegative(dialog);
+//                                        }
+//                                    })
+//                                    .show();
+//                        }
+//                        break;
 
                     case CASE_COPY:
                         TsGaTools.trackPages("/set_copy");
@@ -245,7 +244,8 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
 
                         if (speakDto instanceof HeroResponsesDto) {
                             ((HeroResponsesDto) speakDto).setFavorite(true);
-                            RealmUtils.setVavofite((HeroResponsesDto) speakDto);
+                            RealmUtils.setFavorite((HeroResponsesDto) speakDto);
+                            Toast.makeText(context, "favorited: " + speakDto.getTitle(), Toast.LENGTH_SHORT).show();
                         }
 
 

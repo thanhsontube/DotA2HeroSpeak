@@ -39,6 +39,9 @@ public class MsConst {
     public static final String TABLE_MONKEY_KING_KILLING = "hero_monkey_king_killing";
     public static final String TABLE_MONKEY_KING_NORMAL = "hero_monkey_king_normal";
 
+
+    public static final String TABLE_COMMENTS = "10_comments_table";
+
     public static final String TRACK_START = "/start";
     public static final String TRACK_LOGIN = "/fb_login";
     public static final String TRACK_LOGOUT = "/fb_logout";
@@ -64,6 +67,7 @@ public class MsConst {
     public static final String TYPE_SOUND_LEFT = "sound left";
     public static final String TYPE_SOUND_RIGHT = "sound right";
     public static final String TYPE_SOUND_MIDDLE = "sound middle";
+    public static final String COMMENT_TYPE_SIMPLE_SOUND = "COMMENT_TYPE_SIMPLE_SOUND";
 
 
     public static enum RepeatMode {

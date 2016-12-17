@@ -32,4 +32,6 @@ public interface ISound {
 
     public String getSavedBranchFolder();
 
+    public String getId ();
+
 }

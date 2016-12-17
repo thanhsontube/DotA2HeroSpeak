@@ -18,11 +18,10 @@ public class RealmUtils {
         return hero;
     }
 
-    public static void setVavofite(HeroResponsesDto dto) {
+    public static void setFavorite(HeroResponsesDto dto) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        final HeroResponsesDto hero = realm.where(HeroResponsesDto.class).equalTo("heroId", dto.getHeroId())
-                .findFirst();
+        final HeroResponsesDto hero = realm.where(HeroResponsesDto.class).equalTo("link", dto.getLink()).findFirst();
         hero.setFavorite(true);
         realm.commitTransaction();
         realm.close();

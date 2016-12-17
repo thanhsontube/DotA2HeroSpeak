@@ -1,5 +1,8 @@
 package son.nt.dota2.story.add_simple_story;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import com.squareup.otto.Subscribe;
 
 import android.text.TextUtils;
@@ -43,6 +46,7 @@ public class AddSimpleStoryPresenter extends BasePresenter implements AddSimpleS
 
     @Override
     public void wrapSimpleStory(String des) {
+        final long createdTime = System.currentTimeMillis();
         if (!mSide.equalsIgnoreCase(MsConst.TYPE_SOUND_MIDDLE)) {
             if (mHeroBasicDto == null || (mHeroResponsesDto == null && TextUtils.isEmpty(des))) {
                 return;
@@ -57,16 +61,30 @@ public class AddSimpleStoryPresenter extends BasePresenter implements AddSimpleS
             dto.setSoundText(mHeroResponsesDto == null ? "" : mHeroResponsesDto.getText());
 
             dto.setSide(mSide);
-            dto.setNo(System.currentTimeMillis());
+            dto.setCreatedTime(createdTime);
             dto.setViewType(mSide);
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                dto.setHeroId("story_" + user.getDisplayName() + "_" + des + createdTime);
+            } else {
+                dto.setHeroId(String.valueOf(createdTime));
+            }
 
             mRepository.saveStoryPart(dto);
         } else {
             StoryPartDto dto = new StoryPartDto();
             dto.setDescription(des);
             dto.setSide(mSide);
-            dto.setNo(System.currentTimeMillis());
+            dto.setCreatedTime(createdTime);
             dto.setViewType(mSide);
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                dto.setHeroId("story_" + user.getDisplayName() + "_" + des + createdTime);
+            } else {
+                dto.setHeroId(String.valueOf(createdTime));
+            }
 
             mRepository.saveStoryPart(dto);
         }

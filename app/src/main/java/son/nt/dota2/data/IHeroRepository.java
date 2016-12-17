@@ -49,6 +49,8 @@ public interface IHeroRepository {
 
     Observable<List<HeroResponsesDto>> searchSounds(String keyword);
 
+    Observable<List<HeroResponsesDto>> getFavoriteSimpleSound();
+
     Observable<List<AbilitySoundDto>> getAbis(String heroID);
 
     void saveStoryPart(StoryPartDto dto);
@@ -58,4 +60,6 @@ public interface IHeroRepository {
     Observable<List<StoryFireBaseDto>> getStoryList();
 
     Observable<StoryDto> getStoryById(String storyId);
+
+
 }

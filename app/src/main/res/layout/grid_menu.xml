@@ -1,61 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/transparent_primary"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/transparent_primary"
+              android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
         <ImageView
-            android:layout_margin="8dp"
-            android:layout_gravity="right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/com_facebook_close"
-            android:id="@+id/grid_menu_close"/>
+                android:layout_margin="8dp"
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/com_facebook_close"
+                android:id="@+id/grid_menu_close"/>
 
 
         <TextView
-            android:id="@+id/grid_menu_text"
-            style="@style/txt_green_18"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="@string/long_text"
-            android:textColor="@color/md_yellow_200" />
+                android:id="@+id/grid_menu_text"
+                style="@style/txt_green_18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/long_text"
+                android:textColor="@color/md_yellow_200"/>
+
+        <!--cmts view-->
+        <LinearLayout
+                android:id="@+id/grid_menu_cmt_view"
+                android:background="@drawable/box_blue_with_corner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            <EditText
+                    android:textColorHint="@color/grey_600"
+                    android:textColor="@color/amber_500"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/grid_menu_cmt_edt"
+                    android:hint="@string/your_comments_here"/>
+            <ImageView
+                    android:padding="4dp"
+                    android:background="?selectableItemBackground"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/grid_menu_cmt_send"
+                    android:src="@drawable/ic_content_send"/>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/grid_menu_recycle_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/grid_menu_recycle_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
 
             <com.facebook.share.widget.LikeView
-                android:id="@+id/grid_menu_like"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"/>
+                    android:id="@+id/grid_menu_like"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"/>
 
 
         </LinearLayout>

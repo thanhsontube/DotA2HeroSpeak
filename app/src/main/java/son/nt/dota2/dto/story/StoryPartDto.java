@@ -13,7 +13,10 @@ import son.nt.dota2.dto.heroSound.ISound;
 @RealmClass
 @Parcel(value = Parcel.Serialization.BEAN, analyze = {StoryPartDto.class})
 public class StoryPartDto extends RealmObject implements ISound {
-    long no;
+
+    //story_username_title_[time]
+    String id;
+    long createdTime;
     String heroId;
     String heroImage;
 
@@ -29,12 +32,17 @@ public class StoryPartDto extends RealmObject implements ISound {
     public StoryPartDto() {
     }
 
-    public long getNo() {
-        return no;
+    @Override
+    public String getId() {
+        return id;
     }
 
-    public void setNo(long no) {
-        this.no = no;
+    public long getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(long createdTime) {
+        this.createdTime = createdTime;
     }
 
     public String getHeroId() {

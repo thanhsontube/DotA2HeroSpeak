@@ -1,69 +1,92 @@
 package son.nt.dota2.comments;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-import son.nt.dota2.dto.heroSound.ISound;
-
 /**
  * Created by sonnt on 12/5/16.
  */
 
-public class CmtsDto extends RealmObject implements ISound {
+public class CmtsDto {
 
-    @PrimaryKey
-    int id;
+    String id;
+
     String message;
-    String image;
+
     long createTime;
+
+    //user
     String fromID;
     String fromName;
-    String createAt;
+    String fromImage;
+
+    //hero; response; item; story;general
+
+    String type;
+
+    String toId;
 
     public CmtsDto() {
     }
 
-    @Override
-    public String getTitle() {
-        return null;
+    public String getId() {
+        return id;
     }
 
-    @Override
-    public String getLink() {
-        return null;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    @Override
-    public String getArcanaLink() {
-        return null;
+    public String getMessage() {
+        return message;
     }
 
-    @Override
-    public String getImage() {
-        return null;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    @Override
-    public String getGroup() {
-        return null;
+    public long getCreateTime() {
+        return createTime;
     }
 
-    @Override
-    public boolean isPlaying() {
-        return false;
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
     }
 
-    @Override
-    public int getSoundType() {
-        return 0;
+    public String getFromID() {
+        return fromID;
     }
 
-    @Override
-    public String getSavedRootFolder() {
-        return null;
+    public void setFromID(String fromID) {
+        this.fromID = fromID;
     }
 
-    @Override
-    public String getSavedBranchFolder() {
-        return null;
+    public String getFromName() {
+        return fromName;
+    }
+
+    public void setFromName(String fromName) {
+        this.fromName = fromName;
+    }
+
+    public String getFromImage() {
+        return fromImage;
+    }
+
+    public void setFromImage(String fromImage) {
+        this.fromImage = fromImage;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getToId() {
+        return toId;
+    }
+
+    public void setToId(String toId) {
+        this.toId = toId;
     }
 }

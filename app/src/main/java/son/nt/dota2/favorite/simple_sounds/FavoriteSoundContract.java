@@ -19,5 +19,6 @@ public class FavoriteSoundContract {
     public interface Presenter {
 
 
+        void fetchData();
     }
 }

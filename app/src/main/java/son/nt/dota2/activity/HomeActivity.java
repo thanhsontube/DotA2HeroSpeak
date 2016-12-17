@@ -55,12 +55,12 @@ import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.favorite.simple_sounds.FavoriteSoundFragment;
 import son.nt.dota2.firebase.FireBaseUtils;
 import son.nt.dota2.fragment.HomeFragment;
 import son.nt.dota2.fragment.MainFragment;
 import son.nt.dota2.fragment.RoleListFragment;
 import son.nt.dota2.fragment.RolesFragment;
-import son.nt.dota2.fragment.SavedFragment;
 import son.nt.dota2.fragment.SearchableFragment;
 import son.nt.dota2.musicPack.MusicPackListActivity;
 import son.nt.dota2.ottobus_entry.GoAdapterRoles;
@@ -79,7 +79,7 @@ public class HomeActivity extends AActivity implements
         HomeFragment.OnFragmentInteractionListener,
         MainFragment.OnFragmentInteractionListener,
         SearchableFragment.OnFragmentInteractionListener,
-        SavedFragment.OnFragmentInteractionListener {
+        FavoriteSoundFragment.OnFragmentInteractionListener {
 
     public static final String TAG = HomeActivity.class.getSimpleName();
     DrawerLayout drawerLayout;
@@ -293,15 +293,15 @@ public class HomeActivity extends AActivity implements
                         if (mFragmentTagStack.size() > 0) {
                             //check if current position is same as new position, do not reload fragment
                             Fragment fTop = fm.findFragmentByTag(mFragmentTagStack.peek());
-                            if (!(fTop instanceof SavedFragment)) {
+                            if (!(fTop instanceof FavoriteSoundFragment)) {
                                 while (mFragmentTagStack.size() > 0) {
                                     getSupportFragmentManager().popBackStackImmediate();
                                 }
-                                f = SavedFragment.newInstance("", "");
+                                f = FavoriteSoundFragment.newInstance();
                                 showFragment(f, true);
                             }
                         } else {
-                            f = SavedFragment.newInstance("", "");
+                            f = FavoriteSoundFragment.newInstance();
                             showFragment(f, true);
                         }
                         break;
@@ -332,7 +332,7 @@ public class HomeActivity extends AActivity implements
                 if (mFragmentTagStack.size() > 0) {
                     Fragment fTop = getSafeFragmentManager().findFragmentByTag(mFragmentTagStack.peek());
                     //need to list all Fragment Called from menu to enable menu icon
-                    if (fTop instanceof RolesFragment || fTop instanceof SavedFragment) {
+                    if (fTop instanceof RolesFragment || fTop instanceof FavoriteSoundFragment) {
 
                         drawerLayout.openDrawer(Gravity.LEFT);
                     } else {
@@ -360,7 +360,7 @@ public class HomeActivity extends AActivity implements
 
             Fragment fTop = getSafeFragmentManager().findFragmentByTag(mFragmentTagStack.peek());
             //need to list all Fragment Called from menu to enable menu icon
-            if (fTop instanceof RolesFragment || fTop instanceof SavedFragment) {
+            if (fTop instanceof RolesFragment || fTop instanceof FavoriteSoundFragment) {
                 actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             } else {
