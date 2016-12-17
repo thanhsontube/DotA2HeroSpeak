@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import rx.Observable;
+import son.nt.dota2.comments.CmtsDto;
 import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
@@ -62,4 +63,5 @@ public interface IHeroRepository {
     Observable<StoryDto> getStoryById(String storyId);
 
 
+    Observable<List<CmtsDto>> getAllComments();
 }

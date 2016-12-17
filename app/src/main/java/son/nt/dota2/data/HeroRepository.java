@@ -18,6 +18,7 @@ import rx.Observable;
 import rx.Subscriber;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.ResourceManager;
+import son.nt.dota2.comments.CmtsDto;
 import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
@@ -336,12 +337,6 @@ public class HeroRepository implements IHeroRepository {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
-//                        Realm realm = getRealm();
-//                        final RealmResults<StoryDto> group1 = realm.where(StoryDto.class)
-//                                .findAll();
-//                        subscriber.onNext(realm.copyFromRealm(group1));
-//                        subscriber.onCompleted();
-//                        realm.close();
                     }
                 });
             }
@@ -424,6 +419,34 @@ public class HeroRepository implements IHeroRepository {
                 subscriber.onNext(list);
                 subscriber.onCompleted();
                 realm.close();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<CmtsDto>> getAllComments() {
+        return Observable.create(new Observable.OnSubscribe<List<CmtsDto>>() {
+            @Override
+            public void call(Subscriber<? super List<CmtsDto>> subscriber) {
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference reference = firebaseDatabase.getReference();
+                reference.child(MsConst.TABLE_COMMENTS).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        List<CmtsDto> dtos = new ArrayList<CmtsDto>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            dtos.add(snapshot.getValue(CmtsDto.class));
+                        }
+                        subscriber.onNext(dtos);
+                        subscriber.onCompleted();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
     }

@@ -179,6 +179,8 @@
         </activity>
         <activity android:name=".story.story_details.StoryDetailActivity">
         </activity>
+        <activity android:name=".comments.CmtsHistoryActivity">
+        </activity>
     </application>
 
 </manifest>

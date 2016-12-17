@@ -1,5 +1,7 @@
 package son.nt.dota2.comments;
 
+import com.squareup.otto.Subscribe;
+
 import android.app.Dialog;
 import android.app.Service;
 import android.content.ComponentName;
@@ -16,8 +18,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-
-import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;

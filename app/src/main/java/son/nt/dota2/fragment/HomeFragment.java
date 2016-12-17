@@ -1,12 +1,12 @@
 package son.nt.dota2.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,7 @@ import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.HomePagerAdapter;
 import son.nt.dota2.base.AFragment;
-import son.nt.dota2.comments.ChatDialog;
+import son.nt.dota2.comments.CmtsHistoryActivity;
 import son.nt.dota2.utils.TsGaTools;
 
 public class HomeFragment extends AFragment implements View.OnClickListener {
@@ -84,14 +84,16 @@ public class HomeFragment extends AFragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btn_chat_home: {
                 TsGaTools.trackPages(MsConst.TRACK_CHAT);
-                FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
-                Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
-                if (f != null) {
-                    ft.remove(f);
-                }
-                ChatDialog dialog = ChatDialog.newInstance();
-                ft.add(dialog, "chat");
-                ft.commit();
+//                FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
+//                Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
+//                if (f != null) {
+//                    ft.remove(f);
+//                }
+//                ChatDialog dialog = ChatDialog.newInstance();
+//                ft.add(dialog, "chat");
+//                ft.commit();
+
+                ActivityCompat.startActivity(getActivity(), new Intent(getActivity(), CmtsHistoryActivity.class), null);
                 break;
             }
         }
