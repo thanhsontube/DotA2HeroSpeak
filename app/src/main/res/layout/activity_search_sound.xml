@@ -1,40 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/activity_choose_hero"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/activity_story_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="son.nt.dota2.story.choose_hero.ChooseHeroActivity">
-
-    <EditText
-            android:padding="8dp"
-            android:background="@drawable/box_blue"
-            android:layout_margin="8dp" android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="hero search"
-            android:id="@+id/search_keyword"/>
-
-    <android.support.v7.widget.RecyclerView
+        android:fitsSystemWindows="true"
+        tools:context="son.nt.dota2.story.story_list.StoryListActivity">
+    <include layout="@layout/include_ken_burn"
+             android:fitsSystemWindows="true"/>
+    <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="0dp"
-            android:id="@+id/choose_rcv"/>
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
 
-    <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_login">
-        <TextView
+        <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:background="?selectableItemBackground"
-                android:id="@+id/search_sound_select"
-                android:gravity="center"
-                android:text="Select"/>
-    </FrameLayout>
+                android:background="@color/transparent"
+                android:theme="@style/AppTheme.AppBarOverlay"
+                app:elevation="0dp">
 
 
-</LinearLayout>
+            <android.support.v7.widget.Toolbar
+                    android:id="@+id/home_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/transparent"
+                    app:popupTheme="@style/AppTheme.AppBarOverlay">
+                <EditText
+                        android:maxLines="1"
+                        android:inputType="textCapSentences"
+                        android:padding="8dp"
+                        android:layout_margin="8dp" android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Search for sound/response"
+                        android:id="@+id/search_keyword"/>
+            </android.support.v7.widget.Toolbar>
+            <EditText android:layout_width="match_parent"
+                      android:layout_marginTop="8dp"
+                      android:layout_gravity="center"
+                      android:background="@drawable/box_blue"
+                      android:textSize="20sp"
+                      android:layout_height="wrap_content"
+                      android:hint="Write a description..."
+                      android:id="@+id/des_txt"/>
+
+
+        </android.support.design.widget.AppBarLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparent"
+                android:layout_marginBottom="24dp"
+                android:id="@+id/choose_rcv"/>
+
+        <FrameLayout
+                android:layout_gravity="end|right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_login">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:background="?selectableItemBackground"
+                    android:id="@+id/search_sound_select"
+                    android:gravity="center"
+                    android:text="Select"/>
+        </FrameLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
+</FrameLayout>
