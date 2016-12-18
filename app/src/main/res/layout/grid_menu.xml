@@ -3,6 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/transparent_primary"
+              android:padding="8dp"
               android:orientation="vertical">
 
     <LinearLayout
@@ -64,25 +65,9 @@
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/grid_menu_recycle_view"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
-                android:layout_weight="1"/>
-
-        <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:orientation="horizontal">
-
-            <com.facebook.share.widget.LikeView
-                    android:id="@+id/grid_menu_like"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"/>
-
-
-        </LinearLayout>
+                android:layout_marginTop="8dp"
+        />
 
 
     </LinearLayout>

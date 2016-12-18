@@ -4,7 +4,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.share.widget.LikeView;
 
 import org.parceler.Parcels;
 
@@ -121,11 +120,6 @@ public class GridMenuDialog extends DialogFragment {
         TextView txtContent = (TextView) view.findViewById(R.id.grid_menu_text);
         txtContent.setText(mSound.getTitle());
 
-        LikeView likeView = (LikeView) view.findViewById(R.id.grid_menu_like);
-        likeView.setLikeViewStyle(LikeView.Style.BOX_COUNT);
-        likeView.setObjectIdAndType(MsConst.FB_ID_POST_TO, LikeView.ObjectType.PAGE);
-        likeView.setFragment(this);
-
         View viewClose = view.findViewById(R.id.grid_menu_close);
         viewClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,8 +142,7 @@ public class GridMenuDialog extends DialogFragment {
         playList.tempIcon = R.drawable.ic_start_on_48;
         playList.tempTitle = "Remove out Playlist";
         list.add(playList);
-        list.add(new GridMenuItem("Facebook Share", R.drawable.ic_facebook_48));
-        list.add(new GridMenuItem("Other Share", R.drawable.ic_share_48));
+        list.add(new GridMenuItem("Share", R.drawable.ic_share_48));
 
 
         adapter = new AdapterGridMenu(getActivity(), list, mSound);

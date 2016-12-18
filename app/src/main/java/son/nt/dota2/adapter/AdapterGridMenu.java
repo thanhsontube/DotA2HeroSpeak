@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import son.nt.dota2.FacebookManager;
 import son.nt.dota2.R;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.heroSound.ISound;
@@ -38,11 +39,10 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
     public static final int CASE_RINGTONE = 0;
     public static final int CASE_NOTIFICATION = 1;
     public static final int CASE_ALARM = 2;
-    public static final int CASE_COMMENTS = 3;
     public static final int CASE_COPY = 3;
     public static final int CASE_PLAYLIST = 4;
-    public static final int CASE_SHARE_FACEBOOK = 5;
-    public static final int CASE_SHARE_OTHERS = 6;
+    public static final int CASE_SHARE_OTHERS = 5;
+//    public static final int CASE_SHARE_FACEBOOK = 5;
     ISound speakDto = null;
     AdapterGridMenuCallback mCallback;
 
@@ -244,14 +244,9 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
 
 
                         break;
-                    case CASE_SHARE_FACEBOOK:
-                        TsGaTools.trackPages("/set_share_fb");
-                        //HeroActivity.goShare
-//                        OttoBus.post(new GoShare("facebook", speakDto));
-                        break;
                     case CASE_SHARE_OTHERS:
                         TsGaTools.trackPages("/set_share_others");
-//                        FacebookManager.getInstance().shareViaTwitter(context, speakDto);
+                        FacebookManager.getInstance().shareViaTwitter(context, speakDto);
 
                         break;
 

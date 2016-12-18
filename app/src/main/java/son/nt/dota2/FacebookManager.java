@@ -1,12 +1,5 @@
 package son.nt.dota2;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -19,9 +12,17 @@ import com.facebook.login.LoginResult;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+
 import java.util.Arrays;
 
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsGaTools;
 
@@ -128,14 +129,14 @@ public class FacebookManager {
 
     }
 
-    public void shareViaTwitter (Context c, SpeakDto dto) {
-        String title = dto.heroId + ">>>" + dto.text;
-        String text = dto.heroId + ">>> " + dto.text + ">>>Download App:" + MsConst.LINK_STORE;
+    public void shareViaTwitter (Context c, ISound dto) {
+        String title = dto.getTitle() ;
+        String text = dto.getTitle() + ">>>Download App:" + MsConst.LINK_STORE;
         Intent tweet = new Intent(Intent.ACTION_SEND);
         tweet.setType("text/plain");
         tweet.putExtra(Intent.EXTRA_SUBJECT, title);
         tweet.putExtra(Intent.EXTRA_TEXT, text);
-        c.startActivity(Intent.createChooser(tweet, String.format("Share %s via", dto.text)));
+        c.startActivity(Intent.createChooser(tweet, String.format("Share %s via", dto.getTitle())));
     }
 
     public void logout () {
