@@ -40,7 +40,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import son.nt.dota2.BuildConfig;
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
@@ -113,14 +112,9 @@ public class HomeActivity extends AActivity implements
         navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         handleSearch(getIntent());
         adMob();
-        if (!BuildConfig.DEBUG) {
-            isAddMob();
-        }
-
-
-        //// TODO: 10/11/16
-//        new GetFromParse().execute();
-
+//        if (!BuildConfig.DEBUG) {
+//            isAddMob();
+//        }
     }
 
     private void initGoogleAccount() {
@@ -145,7 +139,6 @@ public class HomeActivity extends AActivity implements
 
     private void adMob() {
         AdMobUtils.init(findViewById(R.id.ll_ads), R.id.adView);
-        AdMobUtils.hide();
     }
 
     @Override

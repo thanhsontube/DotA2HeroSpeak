@@ -29,7 +29,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
-import son.nt.dota2.adMob.AdMobUtils;
 import son.nt.dota2.adapter.AdapterPagerHero;
 import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.base.HeroTabFragment;
@@ -127,15 +126,13 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         mRecyclerViewFeature.setHasFixedSize(true);
         mRecyclerViewFeature.setAdapter(mAdapterCircleFeature);
 
-        mSearchView.addTextChangedListener(mTextWatcher );
+        mSearchView.addTextChangedListener(mTextWatcher);
 
         final String selectedHero = getIntent().getStringExtra("data");
         mPresenter.setSelectedHeroId(selectedHero);
         mPresenter.getDataToUpdateView();
 
         OttoBus.register(this);
-        adMob();
-//        isAddMob();
     }
 
     private void setupToolbar() {
@@ -163,15 +160,14 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         }
     };
 
-    private void searchSound (String keyword) {
+    private void searchSound(String keyword) {
         final int selected = mViewPager.getCurrentItem();
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":" + selected);
         if (fragment != null) {
 
-            ((HeroTabFragment) fragment).searchSound (keyword);
+            ((HeroTabFragment) fragment).searchSound(keyword);
         }
     }
-
 
 
     private List<CircleFeatureDto> createListCircle() {
@@ -181,16 +177,6 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 //        featureDtos.add(new CircleFeatureDto("Bio", R.drawable.ability_icon, false));
 //        featureDtos.add(new CircleFeatureDto("Comments", R.drawable.ability_icon, false));
         return featureDtos;
-    }
-
-
-    public void isAddMob() {
-        AdMobUtils.show();
-    }
-
-    private void adMob() {
-        AdMobUtils.init(findViewById(R.id.ll_ads), R.id.adView);
-        AdMobUtils.hide();
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import son.nt.dota2.R;
 import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.ottobus_entry.GoVoice;
 import son.nt.dota2.utils.OttoBus;
-import timber.log.Timber;
 
 /**
  * Created by Sonnt on 7/30/15.
@@ -44,10 +44,10 @@ public class AdapterFragmentSkills extends RecyclerView.Adapter<AdapterFragmentS
         View view = mInflater.inflate(R.layout.row_abi, parent, false);
         Holder holder = new Holder(view);
 
-        holder.abiImage.setOnClickListener(v -> {
-            Timber.d(">>>" + "abiImage click:" + holder.getAdapterPosition());
-            OttoBus.post(new GoVoice(mList.get(holder.getAdapterPosition() +1), false));
-        });
+//        holder.view.setOnClickListener(v -> {
+//            Timber.d(">>>" + "abiImage click:" + holder.getAdapterPosition());
+//            OttoBus.post(new GoVoice(mList.get(holder.getAdapterPosition() + 1), false));
+//        });
         return new Holder(view);
     }
 
@@ -63,6 +63,18 @@ public class AdapterFragmentSkills extends RecyclerView.Adapter<AdapterFragmentS
         holder.abiName.setText(dto.getTitle());
         holder.abiDes.setText(dto.abiDescription);
         holder.abiNote.setText(dto.abiNotes);
+        if (TextUtils.isEmpty(dto.getLink())) {
+            holder.soundView.setVisibility(View.GONE);
+        } else {
+            holder.soundView.setVisibility(View.VISIBLE);
+            holder.soundView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    OttoBus.post(new GoVoice(dto, false));
+                }
+            });
+        }
+
 
     }
 
@@ -89,6 +101,9 @@ public class AdapterFragmentSkills extends RecyclerView.Adapter<AdapterFragmentS
         TextView abiNote;
         @BindView(R.id.abi_img)
         ImageView abiImage;
+
+        @BindView(R.id.sound_view)
+        View soundView;
 
         @BindView(R.id.abi_view)
         View view;

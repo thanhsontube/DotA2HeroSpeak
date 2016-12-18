@@ -31,7 +31,7 @@ public class MyApplication extends Application {
         super.onCreate();
         ResourceManager.createInstance(getApplicationContext());
 
-        HeroManager.createInstance(getApplicationContext());
+//        HeroManager.createInstance(getApplicationContext());
 
         //FACEBOOK SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -94,7 +94,7 @@ public class MyApplication extends Application {
         return mAppComponent;
     }
 
-    private void startWholeAppMusicService () {
+    private void startWholeAppMusicService() {
         startService(PlayService2.getIntentService(this));
     }
 

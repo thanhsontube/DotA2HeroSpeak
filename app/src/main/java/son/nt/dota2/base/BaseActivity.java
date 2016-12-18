@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import butterknife.ButterKnife;
 import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
+import son.nt.dota2.adMob.AdMobUtils;
 import son.nt.dota2.customview.KenBurnsView2;
 import timber.log.Timber;
 
@@ -27,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         kenBurnsView = (KenBurnsView2) findViewById(R.id.home_kenburns);
         Timber.d(">>> onCreate:" + getClass().getSimpleName());
         updateKensburn();
+        adMob();
 
     }
 
@@ -55,5 +57,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void adMob() {
+        AdMobUtils.init(findViewById(R.id.ll_ads), R.id.adView);
     }
 }
