@@ -35,27 +35,43 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="right">
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:id="@+id/play_a_story"
-                            android:gravity="center" android:padding="16dp"
-                            android:text="Play"/>
+                    <LinearLayout android:layout_width="0dp"
+                                  android:layout_height="wrap_content"
+                                  android:layout_weight="1"
+                                  android:orientation="horizontal">
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:id="@+id/play_a_story"
+                                android:background="?selectableItemBackground"
+                                android:gravity="center" android:padding="16dp"
+                                android:text="Play"/>
 
-                    <TextView
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="?selectableItemBackground"
+                                android:layout_gravity="center"
+                                android:id="@+id/stop_a_story"
+                                android:gravity="center" android:padding="16dp"
+                                android:text="Stop"/>
+                    </LinearLayout>
+
+                    <ImageView
+                            android:visibility="gone"
+                            android:id="@+id/story_detail_close"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:id="@+id/stop_a_story"
-                            android:gravity="center" android:padding="16dp"
-                            android:text="Stop"/>
+                            android:src="@drawable/ic_clear"/>
+
                 </LinearLayout>
             </android.support.v7.widget.Toolbar>
 
-            <com.facebook.login.widget.ProfilePictureView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+
+            <son.nt.dota2.customview.UserAddStoryView android:layout_width="match_parent"
+                                                      android:layout_height="wrap_content"
+                                                      android:id="@+id/user_add_story_view"/>
 
 
         </android.support.design.widget.AppBarLayout>

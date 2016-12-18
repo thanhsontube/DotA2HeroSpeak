@@ -15,28 +15,29 @@ public class StoryDetailPresenter extends BasePresenter implements StoryDetailCo
     StoryDetailContract.View mView;
     IHeroRepository mRepository;
 
-    StoryFireBaseDto mStoryFireBaseDto;
+    StoryFireBaseDto mStory;
 
     public StoryDetailPresenter(StoryDetailContract.View view, IHeroRepository repo) {
         mView = view;
         this.mRepository = repo;
     }
 
-    public void setStoryFireBaseDto(StoryFireBaseDto data) {
-        this.mStoryFireBaseDto = data;
+    public void setStory(StoryFireBaseDto data) {
+        this.mStory = data;
 
     }
 
 
     @Override
-    public void getStoryById() {
-        mView.showList(mStoryFireBaseDto.getContents());
+    public void filterData() {
+        mView.showList(mStory.getContents());
+        mView.updateUserView (mStory.getTitle(), mStory.getCreatedTime());
 
     }
 
     @Override
     public void playStory() {
-        OttoBus.post(new GoStory(mStoryFireBaseDto.getContents(), mStoryFireBaseDto.getTitle(), mStoryFireBaseDto.getUserId()));
+        OttoBus.post(new GoStory(mStory.getContents(), mStory.getTitle(), mStory.getUserId()));
 
     }
 
@@ -47,6 +48,6 @@ public class StoryDetailPresenter extends BasePresenter implements StoryDetailCo
 
     @Override
     public String getStoryId() {
-        return mStoryFireBaseDto.getStoryId();
+        return mStory.getStoryId();
     }
 }

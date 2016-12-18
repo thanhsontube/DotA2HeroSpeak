@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/card_view"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              tools:background="@color/amber_500"
+              android:paddingLeft="8dp"
+              android:paddingRight="8dp"
+              android:paddingBottom="8dp"
+              android:orientation="vertical">
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+        <com.makeramen.roundedimageview.RoundedImageView
+                android:adjustViewBounds="true"
+                android:id="@+id/image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitXY"
+                android:layout_marginTop="@dimen/spacing_minor"
+                android:contentDescription="@string/avatar"
+                android:src="@mipmap/ic_launcher"
+                app:riv_border_color="@color/amber_500"
+                app:riv_border_width="2dp"
+                app:riv_corner_radius="34dp"
+                app:riv_oval="true"/>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:padding="8dp"
+                      android:orientation="vertical">
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal">
+                <TextView
+                        android:textStyle="bold"
+                        android:id="@+id/name"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_name"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" added a new story"/>
+            </LinearLayout>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:id="@+id/created_time"
+                      android:layout_marginTop="4dp"
+                      android:text="Yesterday 10:10 Pm"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="4dp"
+                  android:orientation="vertical">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textSize="20sp"
+                  android:textColor="@color/green_A700"
+                  android:id="@+id/message"
+                  android:text="@string/long_text"
+        />
+    </LinearLayout>
+
+
+</LinearLayout>

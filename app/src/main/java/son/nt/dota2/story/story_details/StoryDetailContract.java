@@ -13,12 +13,14 @@ public class StoryDetailContract {
 
     public interface View {
         void showList(List<StoryPartDto> contents);
+
+        void updateUserView(String title, long createdTime);
     }
 
     public interface Presenter {
-        void setStoryFireBaseDto(StoryFireBaseDto data);
+        void setStory(StoryFireBaseDto data);
 
-        void getStoryById();
+        void filterData();
 
         void playStory();
 
