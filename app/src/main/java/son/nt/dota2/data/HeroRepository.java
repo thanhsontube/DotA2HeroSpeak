@@ -345,15 +345,22 @@ public class HeroRepository implements IHeroRepository {
 
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 DatabaseReference reference = firebaseDatabase.getReference();
-                reference.child(MsConst.TABLE_STORY).addValueEventListener(new ValueEventListener() {
+                Query query = reference.child(MsConst.TABLE_STORY);
+                query.orderByChild("createdTime").limitToFirst(100);
+                query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         List<StoryFireBaseDto> dtos = new ArrayList<StoryFireBaseDto>();
+                        List<StoryFireBaseDto> dtos2 = new ArrayList<StoryFireBaseDto>();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             dtos.add(snapshot.getValue(StoryFireBaseDto.class));
                         }
-                        subscriber.onNext(dtos);
+
+                        for (int i = dtos.size() - 1; i >= 0; i--) {
+                            dtos2.add(dtos.get(i));
+                        }
+                        subscriber.onNext(dtos2);
                         subscriber.onCompleted();
                     }
 
