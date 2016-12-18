@@ -7,7 +7,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -46,11 +45,7 @@ public class HeroRepository implements IHeroRepository {
     IAssetMng mAssetMng;
 
     public HeroRepository() {
-//        mAssetMng = new AssetMng(ResourceManager.getInstance().getContext());
-    }
-
-    public HeroRepository(Context context) {
-        mAssetMng = new AssetMng(context);
+        mAssetMng = new AssetMng(ResourceManager.getInstance().getContext());
     }
 
     @Override
@@ -569,7 +564,7 @@ public class HeroRepository implements IHeroRepository {
 
                         List<String> kens = new ArrayList<String>();
 
-                        for (KenBurnsImageDto d : dtos){
+                        for (KenBurnsImageDto d : dtos) {
                             kens.add(d.link);
                         }
 

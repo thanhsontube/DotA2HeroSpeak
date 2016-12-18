@@ -67,6 +67,9 @@ public class AdapterFragmentSound extends RecyclerView.Adapter<AdapterFragmentSo
                 notifyItemChanged(previousSelectedItem);
             }
             previousSelectedItem = position;
+            if (position == -1) {
+                position = 0;
+            }
             final HeroResponsesDto selectedItem = mList.get(position);
 
             selectedItem.setPlaying(true);

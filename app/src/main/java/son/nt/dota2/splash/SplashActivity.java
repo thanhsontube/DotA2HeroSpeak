@@ -66,7 +66,7 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
     protected void onCreate(Bundle savedInstanceState) {
         Timber.d(">>>" + "onCreate 3");
         super.onCreate(savedInstanceState);
-        mPresenter = new SplashPresenter(this, new HeroRepository(this));
+        mPresenter = new SplashPresenter(this, new HeroRepository());
         mRepository = new HeroRepository();
         checkPermission();
     }
@@ -87,7 +87,7 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
 
     private void loadData() {
 //        startActivity(new Intent(this, TestActivity.class));
-        ResourceManager.createInstance(getApplicationContext());
+        ResourceManager.getInstance().initialize();
         try {
             FileUtil.copyAssets(this, "music", ResourceManager.getInstance().getFolderMusicPack());
         } catch (Exception e) {

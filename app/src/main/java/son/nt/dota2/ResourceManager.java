@@ -58,7 +58,7 @@ public class ResourceManager {
         INSTANCE = new ResourceManager(context);
     }
 
-    private void initialize() {
+    public void initialize() {
         try {
             myPath = new MyPath(context);
             contentManager = new ContentManager(context, 100);
