@@ -48,6 +48,9 @@ android {
 
         }
     }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
     lintOptions {
         checkReleaseBuilds false
         abortOnError true
