@@ -19,8 +19,8 @@ android {
     defaultConfig {
         applicationId "son.nt.dota2"
         minSdkVersion 21
-        versionCode 7
-        versionName "6.1.0"
+        versionCode 700
+        versionName "7.0.0"
 
         multiDexEnabled true
     }
