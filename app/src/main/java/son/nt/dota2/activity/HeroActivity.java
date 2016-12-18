@@ -6,8 +6,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.squareup.otto.Subscribe;
 
-import org.parceler.Parcels;
-
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -104,9 +102,9 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         }
     };
 
-    public static void startActivity(Context context, HeroBasicDto selectedHero) {
+    public static void startActivity(Context context, String selectedHero) {
         Intent intent = new Intent(context, HeroActivity.class);
-        intent.putExtra("data", Parcels.wrap(selectedHero));
+        intent.putExtra("data", selectedHero);
         context.startActivity(intent);
     }
     @Override
@@ -129,8 +127,9 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         mRecyclerViewFeature.setHasFixedSize(true);
         mRecyclerViewFeature.setAdapter(mAdapterCircleFeature);
 
-        final HeroBasicDto selectedHero = Parcels.unwrap(getIntent().getParcelableExtra("data"));
-        mPresenter.setSelectedHero(selectedHero);
+//        final String selectedHero = Parcels.unwrap(getIntent().getParcelableExtra("data"));
+        final String selectedHero = getIntent().getStringExtra("data");
+        mPresenter.setSelectedHeroId(selectedHero);
         mPresenter.getDataToUpdateView();
 
         OttoBus.register(this);

@@ -187,8 +187,7 @@ public class HeroRepository implements IHeroRepository {
             @Override
             public void call(Subscriber<? super HeroBasicDto> subscriber) {
                 Realm realm = getRealm();
-                final HeroBasicDto group1 = realm.where(HeroBasicDto.class).equalTo("heroId", heroId)
-                        .findFirst();
+                final HeroBasicDto group1 = realm.where(HeroBasicDto.class).equalTo("heroId", heroId).findFirst();
                 subscriber.onNext(realm.copyFromRealm(group1));
                 subscriber.onCompleted();
                 realm.close();

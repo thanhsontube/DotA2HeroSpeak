@@ -49,7 +49,7 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
         viewHolder.view.setOnClickListener(v -> {
             HeroBasicDto dto = mValues.get(viewHolder.getAdapterPosition());
             TsGaTools.trackHero("/hero:" + dto.heroId);
-            HeroActivity.startActivity(mContext, dto);
+            HeroActivity.startActivity(mContext, dto.heroId);
         });
         return viewHolder;
     }

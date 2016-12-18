@@ -18,7 +18,7 @@ public class HeroContract {
 
     public interface Presenter {
 
-        void setSelectedHero(HeroBasicDto selectedHero);
+        void setSelectedHeroId(String selectedHeroId);
 
         void getDataToUpdateView();
 

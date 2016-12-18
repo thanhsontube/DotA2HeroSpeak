@@ -2,12 +2,14 @@ package son.nt.dota2.hero;
 
 import java.util.List;
 
+import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import son.nt.dota2.base.BasePresenter;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import timber.log.Timber;
 
 /**
  * Created by sonnt on 11/7/16.
@@ -18,13 +20,46 @@ public class HeroActivityPresenter extends BasePresenter implements HeroContract
     private IHeroRepository mRepository;
 
     private String mGroup = "Str";
-    private HeroBasicDto mSelectedHero;
+    private String mHeroID;
 
     private List<HeroBasicDto> mHeroBasicDtos;
 
     public HeroActivityPresenter(HeroContract.View view, IHeroRepository repository) {
         mView = view;
         mRepository = repository;
+    }
+
+    @Override
+    public void setSelectedHeroId(String selectedHeroId) {
+        this.mHeroID = selectedHeroId;
+    }
+
+
+    @Override
+    public void getDataToUpdateView() {
+        Observer<HeroBasicDto> heroBasicDtoObserver = new Observer<HeroBasicDto>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.d(">>>" + "error:" + e);
+
+            }
+
+            @Override
+            public void onNext(HeroBasicDto heroBasicDto) {
+                Timber.d(">>>" + "fetchHero next:" + heroBasicDto.bgLink);
+                mGroup = heroBasicDto.group;
+                mView.showKenBurns(heroBasicDto.bgLink);
+                getData();
+            }
+        };
+        final Subscription subscribe = mRepository.getHeroFromId(mHeroID).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(heroBasicDtoObserver);
+        mCompositeSubscription.add(subscribe);
     }
 
     @Override
@@ -36,31 +71,38 @@ public class HeroActivityPresenter extends BasePresenter implements HeroContract
 
     }
 
-    public void setSelectedHero(HeroBasicDto selectedHero) {
-        this.mSelectedHero = selectedHero;
-    }
+    public void getData() {
+        Observer<List<HeroBasicDto>> observer = new Observer<List<HeroBasicDto>>() {
+            @Override
+            public void onCompleted() {
+                Timber.d(">>>" + "get data onCompleted");
 
-    @Override
-    public void getDataToUpdateView() {
-        mView.showKenBurns(mSelectedHero.bgLink);
+            }
 
-        //get All hero InGroup
-        mRepository.getHeroesFromGroup(mSelectedHero.group)
+            @Override
+            public void onError(Throwable e) {
+                Timber.d(">>>" + "onError:" + e);
+
+            }
+
+            @Override
+            public void onNext(List<HeroBasicDto> list) {
+                mHeroBasicDtos = list;
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).heroId.equalsIgnoreCase(mHeroID)) {
+
+                        mView.showHeroList(list, i);
+                    }
+                }
+            }
+        };
+
+        Subscription subscription = mRepository.getHeroesFromGroup(mGroup)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<HeroBasicDto>>() {
-                    @Override
-                    public void call(List<HeroBasicDto> list) {
-                        mHeroBasicDtos = list;
-                        for (int i = 0; i < list.size(); i++) {
-                            if (list.get(i).heroId.equalsIgnoreCase(mSelectedHero.heroId)) {
+                .subscribe(observer);
+        mCompositeSubscription.add(subscription);
 
-                                mView.showHeroList(list, i);
-                                break;
-                            }
-                        }
-                    }
-                });
+
     }
-
 }
