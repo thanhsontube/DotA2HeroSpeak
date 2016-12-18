@@ -5,8 +5,8 @@ import com.squareup.otto.Subscribe;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,6 @@ import javax.inject.Inject;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.MyApplication;
 import son.nt.dota2.R;
-import son.nt.dota2.activity.HeroActivity;
 import son.nt.dota2.adapter.HeroListAdapter;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.di.component.app.AppComponent;
@@ -31,8 +30,6 @@ import son.nt.dota2.home.IHeroListPage;
 import son.nt.dota2.home.herolist.HeroListContract;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
-import son.nt.dota2.utils.TsScreen;
-import timber.log.Timber;
 
 public class HeroListFragment extends AFragment implements IHeroListPage, HeroListContract.View {
     private static final String EXTRA_GROUP = "EXTRA_GROUP";
@@ -45,7 +42,6 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
 
     private String mGroup = "Str";
     RecyclerView recyclerView;
-    StaggeredGridLayoutManager mLayoutMng;
 
     private OnFragmentInteractionListener mListener;
 
@@ -98,20 +94,14 @@ public class HeroListFragment extends AFragment implements IHeroListPage, HeroLi
 
 
     private void initLayout(View view) {
-        mAdapter = new HeroListAdapter(getContext(), mCallback);
+
+        mAdapter = new HeroListAdapter(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.home_recycle_view);
         recyclerView.setHasFixedSize(true);
-        final int row = TsScreen.isLandscape(getActivity()) ? 4 : 3;
-        mLayoutMng = new StaggeredGridLayoutManager(row, StaggeredGridLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(mLayoutMng);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
+        recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(mAdapter);
     }
-
-    HeroListAdapter.Callback mCallback = heroBasicDto -> {
-        Timber.d(">>>" + "HeroListAdapter mCallback:" + heroBasicDto.name + ";id:" + heroBasicDto.heroId);
-        HeroActivity.startActivity(getContext(), heroBasicDto.heroId);
-
-    };
 
     private void initListener() {
 

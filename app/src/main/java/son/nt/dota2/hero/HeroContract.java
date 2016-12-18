@@ -18,9 +18,9 @@ public class HeroContract {
 
     public interface Presenter {
 
-        void getAllHeroBasicOnGroup();
+        void setSelectedHero(HeroBasicDto selectedHero);
 
-        void fetchHero(String heroID);
+        void getDataToUpdateView();
 
         void setSelectedPage(int position);
     }

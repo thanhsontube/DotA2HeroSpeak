@@ -3,9 +3,12 @@ package son.nt.dota2.dto.home;
 import com.google.firebase.database.Exclude;
 import com.google.gson.Gson;
 
+import org.parceler.Parcel;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import io.realm.HeroBasicDtoRealmProxy;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -25,6 +28,9 @@ import io.realm.annotations.PrimaryKey;
  *
  * how to get HeroBasicDto from http://dota2.gamepedia.com/Heroes ????
  */
+@Parcel(implementations = {HeroBasicDtoRealmProxy.class},
+        value = Parcel.Serialization.BEAN,
+        analyze = {HeroBasicDto.class})
 public class HeroBasicDto extends RealmObject {
     /**
      * get info from http://www.dota2.com/heroes/
@@ -78,7 +84,7 @@ public class HeroBasicDto extends RealmObject {
         return gson.toJson(this);
     }
 
-    public  boolean isArcana() {
+    public boolean isArcana() {
         for (String arcana : ARCANA) {
             if (arcana.equalsIgnoreCase(heroId)) {
                 return true;

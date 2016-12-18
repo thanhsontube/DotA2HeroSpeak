@@ -16,7 +16,7 @@ import son.nt.dota2.dto.heroSound.ISound;
 /**
  * class contain dota 2 hero responses.
  */
-@RealmClass      // required if using JDK 1.6 (unrelated to Parceler issue)
+@RealmClass
 @Parcel(value = Parcel.Serialization.BEAN, analyze = {HeroResponsesDto.class})
 public class HeroResponsesDto extends RealmObject implements ISound {
     public int no;

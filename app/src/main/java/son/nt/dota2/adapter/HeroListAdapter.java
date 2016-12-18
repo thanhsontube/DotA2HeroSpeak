@@ -17,6 +17,7 @@ import java.util.List;
 
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
+import son.nt.dota2.activity.HeroActivity;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.utils.TsGaTools;
 
@@ -28,15 +29,10 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
 
     List<HeroBasicDto> mValues;
     Context mContext;
-    Callback mCallback;
 
-    public interface Callback {
-        void onItemClick(HeroBasicDto heroBasicDto);
-    }
 
-    public HeroListAdapter(Context cx, Callback callback) {
+    public HeroListAdapter(Context cx) {
         this.mContext = cx;
-        this.mCallback = callback;
     }
 
 
@@ -53,9 +49,7 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
         viewHolder.view.setOnClickListener(v -> {
             HeroBasicDto dto = mValues.get(viewHolder.getAdapterPosition());
             TsGaTools.trackHero("/hero:" + dto.heroId);
-            mCallback.onItemClick(dto);
-//            HeroActivity.startActivity(mContext, dto.heroId);
-//                OttoBus.post(dto);
+            HeroActivity.startActivity(mContext, dto);
         });
         return viewHolder;
     }
