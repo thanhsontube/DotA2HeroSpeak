@@ -23,6 +23,9 @@ public class SplashPresenter extends BasePresenter implements SplashContract.Pre
 
     @Override
     public void copyData() {
+        mRepository.getkenBurnsList()
+                .subscribeOn(Schedulers.io())
+                .subscribe();
 
         mRepository.getHeroFromId("Sniper")
                 .subscribeOn(Schedulers.io())

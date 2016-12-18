@@ -58,7 +58,6 @@ public class HomeFragment extends AFragment implements View.OnClickListener {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initLayout(view);
-
     }
 
 

@@ -25,6 +25,7 @@ import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.dto.kenburns.KenBurnsImageDto;
 import son.nt.dota2.dto.story.StoryDto;
 import son.nt.dota2.dto.story.StoryFireBaseDto;
 import son.nt.dota2.dto.story.StoryPartDto;
@@ -543,6 +544,43 @@ public class HeroRepository implements IHeroRepository {
                         return Observable.just(heroResponsesDtos == null || heroResponsesDtos.isEmpty());
                     }
                 });
+    }
+
+    @Override
+    public Observable<List<KenBurnsImageDto>> getkenBurnsList() {
+        return Observable.create(new Observable.OnSubscribe<List<KenBurnsImageDto>>() {
+            @Override
+            public void call(Subscriber<? super List<KenBurnsImageDto>> subscriber) {
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference reference = firebaseDatabase.getReference();
+                reference.child(MsConst.TABLE_KENBURNS).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        List<KenBurnsImageDto> dtos = new ArrayList<KenBurnsImageDto>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            dtos.add(snapshot.getValue(KenBurnsImageDto.class));
+                        }
+
+                        List<String> kens = new ArrayList<String>();
+
+                        for (KenBurnsImageDto d : dtos){
+                            kens.add(d.link);
+                        }
+
+                        ResourceManager.getInstance().listKenburns = kens;
+                        subscriber.onNext(dtos);
+                        subscriber.onCompleted();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
     }
 
     @Override

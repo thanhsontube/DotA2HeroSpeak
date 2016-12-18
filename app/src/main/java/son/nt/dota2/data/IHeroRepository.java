@@ -10,6 +10,7 @@ import son.nt.dota2.dto.AbilitySoundDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.dto.kenburns.KenBurnsImageDto;
 import son.nt.dota2.dto.story.StoryDto;
 import son.nt.dota2.dto.story.StoryFireBaseDto;
 import son.nt.dota2.dto.story.StoryPartDto;
@@ -70,4 +71,5 @@ public interface IHeroRepository {
 
     Observable<Boolean> copyData();
 
+    Observable<List<KenBurnsImageDto>> getkenBurnsList();
 }
