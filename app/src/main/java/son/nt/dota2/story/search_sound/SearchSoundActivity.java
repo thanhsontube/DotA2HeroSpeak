@@ -1,6 +1,7 @@
 package son.nt.dota2.story.search_sound;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -45,6 +47,7 @@ public class SearchSoundActivity extends BaseActivity implements SearchSoundCont
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupToolbar();
         mPresenter = new SearchSoundPresenter(this, new HeroRepository());
         mAdapter = new AdapterFragmentSound(this, new ArrayList<>(0));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -55,6 +58,13 @@ public class SearchSoundActivity extends BaseActivity implements SearchSoundCont
         mSearch.addTextChangedListener(mTextWatcher);
 
         mPresenter.getSomeSounds();
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(ButterKnife.findById(this, R.id.home_toolbar));
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("");
     }
 
     @OnClick(R.id.search_sound_select)

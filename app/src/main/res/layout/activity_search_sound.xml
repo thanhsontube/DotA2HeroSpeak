@@ -39,9 +39,10 @@
                         android:id="@+id/search_keyword"/>
             </android.support.v7.widget.Toolbar>
             <EditText android:layout_width="match_parent"
-                      android:layout_marginTop="8dp"
+                      android:layout_margin="8dp"
+                      android:padding="8dp"
                       android:layout_gravity="center"
-                      android:background="@drawable/box_blue"
+                      android:background="@drawable/box_white"
                       android:textSize="20sp"
                       android:layout_height="wrap_content"
                       android:hint="Write a description..."
@@ -60,7 +61,7 @@
                 android:id="@+id/choose_rcv"/>
 
         <FrameLayout
-                android:layout_gravity="end|right"
+                android:layout_gravity="bottom|end"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_login">
