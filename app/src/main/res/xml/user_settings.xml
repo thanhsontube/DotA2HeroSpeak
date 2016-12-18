@@ -2,20 +2,21 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="Settings">
         <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="pref_get_push"
-            android:summary="Get User comment Notification"
-            android:title="Comments Notification" />
+                android:defaultValue="true"
+                android:key="pref_get_push"
+                android:summary="Get User comment Notification"
+                android:title="Comments Notification"/>
 
         <PreferenceScreen
-            android:key="pref_volume"
-            android:summary="Voice Volumn"
-            android:title="Voice Volume"/>
+                android:key="pref_volume"
+                android:summary="Voice Volumn"
+                android:title="Voice Volume"/>
 
         <PreferenceScreen
-            android:key="pref_prefetch"
-            android:summary="Download Hero Sounds for offline"
-            android:title="Download Hero Sounds for offline"/>
+                android:shouldDisableView="false"
+                android:key="pref_prefetch"
+                android:summary="Download Hero Sounds for offline"
+                android:title="Download Hero Sounds for offline"/>
 
 
     </PreferenceCategory>

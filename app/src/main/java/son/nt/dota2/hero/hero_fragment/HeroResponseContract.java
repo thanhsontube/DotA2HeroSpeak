@@ -34,5 +34,7 @@ public class HeroResponseContract {
         void getAbi ();
 
         void downloadFetch();
+
+        void searchSound(String keyword);
     }
 }

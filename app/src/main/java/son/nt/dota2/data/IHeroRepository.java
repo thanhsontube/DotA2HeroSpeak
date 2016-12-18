@@ -50,6 +50,8 @@ public interface IHeroRepository {
 
     Observable<List<HeroResponsesDto>> searchSounds(String keyword);
 
+    Observable<List<HeroResponsesDto>> getSearchSounds(String heroID, String keyword);
+
     Observable<List<HeroResponsesDto>> getFavoriteSimpleSound();
 
     Observable<List<AbilitySoundDto>> getAbis(String heroID);
@@ -67,4 +69,5 @@ public interface IHeroRepository {
     Observable<List<CmtsDto>> getStoryComments(String storyId);
 
     Observable<Boolean> copyData();
+
 }

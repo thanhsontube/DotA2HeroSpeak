@@ -150,6 +150,10 @@ public class SwipeHeroFragment extends HeroTabFragment implements HeroResponseCo
         }
     }
 
+    @Override
+    public void searchSound(String keyword) {
+        mPresenter.searchSound (keyword);
+    }
 
     @Override
     public void onDestroy() {

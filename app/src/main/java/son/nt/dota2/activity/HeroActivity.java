@@ -13,10 +13,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
-import android.view.View;
 import android.widget.EditText;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
-import son.nt.dota2.FacebookManager;
+import butterknife.ButterKnife;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.adMob.AdMobUtils;
@@ -40,7 +42,6 @@ import son.nt.dota2.hero.AdapterCircleFeature;
 import son.nt.dota2.hero.HeroActivityPresenter;
 import son.nt.dota2.hero.HeroContract;
 import son.nt.dota2.ottobus_entry.GoCircle;
-import son.nt.dota2.ottobus_entry.GoShare;
 import son.nt.dota2.service.PlayService2;
 import son.nt.dota2.utils.OttoBus;
 
@@ -61,6 +62,9 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
     @BindView(R.id.home_kenburns)
     KenBurnsView2 mKenBurnsView;
 
+    @BindView(R.id.search_view)
+    EditText mSearchView;
+
     /**
      * the recyclerView contains : response / hero skill / comments / bio ....
      */
@@ -72,10 +76,6 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
     private AdapterPagerHero mAdapter;
 
     public String tab = "Sound";
-
-
-    private EditText mSearchText;
-    private View mClearButton;
 
     PlayService2 mPlayService;
 
@@ -100,9 +100,16 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         intent.putExtra("data", selectedHero);
         context.startActivity(intent);
     }
+
+    @Override
+    protected int provideLayoutResID() {
+        return R.layout.activity_hero;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupToolbar();
         mPresenter = new HeroActivityPresenter(this, new HeroRepository());
         bindService(PlayService2.getIntentService(this), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
 
@@ -120,6 +127,8 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         mRecyclerViewFeature.setHasFixedSize(true);
         mRecyclerViewFeature.setAdapter(mAdapterCircleFeature);
 
+        mSearchView.addTextChangedListener(mTextWatcher );
+
         final String selectedHero = getIntent().getStringExtra("data");
         mPresenter.setSelectedHeroId(selectedHero);
         mPresenter.getDataToUpdateView();
@@ -129,10 +138,41 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 //        isAddMob();
     }
 
-    @Override
-    protected int provideLayoutResID() {
-        return R.layout.activity_hero;
+    private void setupToolbar() {
+        setSupportActionBar(ButterKnife.findById(this, R.id.home_toolbar));
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("");
     }
+
+    TextWatcher mTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            searchSound(s.toString());
+
+        }
+    };
+
+    private void searchSound (String keyword) {
+        final int selected = mViewPager.getCurrentItem();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":" + selected);
+        if (fragment != null) {
+
+            ((HeroTabFragment) fragment).searchSound (keyword);
+        }
+    }
+
+
 
     private List<CircleFeatureDto> createListCircle() {
         List<CircleFeatureDto> featureDtos = new ArrayList<>();
@@ -142,7 +182,6 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 //        featureDtos.add(new CircleFeatureDto("Comments", R.drawable.ability_icon, false));
         return featureDtos;
     }
-
 
 
     public void isAddMob() {
@@ -171,15 +210,6 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         return true;
     }
 
-
-
-
-    @Subscribe
-    public void goShare(GoShare dto) {
-        if (dto.type.equals("facebook")) {
-            FacebookManager.getInstance().shareViaDialogFb(HeroActivity.this, dto.speakDto);
-        }
-    }
 
     FragmentManager getSafeFragmentManager() {
         return getSupportFragmentManager();
@@ -229,49 +259,4 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
     public void getCircleClick(GoCircle mGoCircle) {
         tab = mGoCircle.mCircleFeatureDto.getName();
     }
-
-//    @Subscribe
-//    public void checkPermission(GoCheckPermission goCheckPermission) {
-//
-////        checkPermission();
-//
-//    }
-
-//    private void checkPermission() {
-//        Timber.d(">>>" + "checkPermission 3");
-//
-//        if (Build.VERSION.SDK_INT >= 23) {
-//            if (Settings.System.canWrite(this)) {
-//                Timber.d(">>>" + "can write");
-//
-//            } else {
-//                Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
-//                intent.setData(Uri.parse("package:" + getPackageName()));
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent);
-//            }
-//        } else {
-//            final int checkSelfPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_SETTINGS);
-//            if (checkSelfPermission != PermissionChecker.PERMISSION_GRANTED) {
-//                requestPermission();
-//
-//            } else {
-//                loadData();
-//            }
-//        }
-//
-//
-//    }
-
-//    private void loadData() {
-////        SoundUtils.setRingTone(getContext(), speakDto);
-//        Toast.makeText(this, "Thanks, now you can set Ringtone/Notification", Toast.LENGTH_SHORT).show();
-//    }
-//
-//    private void requestPermission() {
-//
-//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_SETTINGS}, REQUEST_WRITE_SETTING);
-//
-//    }
-
 }

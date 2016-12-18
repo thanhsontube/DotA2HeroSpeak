@@ -9,4 +9,6 @@ public abstract class HeroTabFragment extends BaseFragment{
     public abstract void onPageSelected();
 
     public abstract void onPageUnSelected();
+
+    public abstract void searchSound(String keyword) ;
 }

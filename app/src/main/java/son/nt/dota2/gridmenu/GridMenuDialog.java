@@ -44,7 +44,7 @@ import son.nt.dota2.utils.SoundUtils;
  * Created by Sonnt on 8/7/15.
  */
 public class GridMenuDialog extends DialogFragment {
-    public static final String TAG = "GridMenuDialog";
+    public static final String TAG = GridMenuDialog.class.getSimpleName();
     private static final int REQUEST_WRITE_SETTING = 121;
     ISound mSound;
     RecyclerView recyclerView;

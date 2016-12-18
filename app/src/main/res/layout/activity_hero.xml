@@ -21,14 +21,24 @@
                 android:layout_height="wrap_content">
 
             <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
+                    android:id="@+id/home_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?android:actionBarSize"
                     android:background="@color/transparent"
                     app:elevation="0dp"
                     app:layout_scrollFlags="scroll|enterAlways|snap"
                     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                <EditText android:layout_width="match_parent"
+                          android:layout_margin="8dp"
+                          android:padding="8dp"
+                          android:layout_gravity="center"
+                          android:background="@drawable/box_white"
+                          android:textSize="20sp"
+                          android:layout_height="wrap_content"
+                          android:hint="Search for sounds"
+                          android:id="@+id/search_view"/>
+            </android.support.v7.widget.Toolbar>
 
 
             <android.support.design.widget.TabLayout

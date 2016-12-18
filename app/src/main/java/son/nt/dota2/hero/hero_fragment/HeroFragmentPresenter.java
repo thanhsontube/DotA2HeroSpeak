@@ -19,6 +19,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.base.BasePresenter;
@@ -92,6 +93,20 @@ public class HeroFragmentPresenter extends BasePresenter implements HeroResponse
     @Override
     public void downloadFetch() {
 //        download(mHeroResponsesDtos);
+    }
+
+    @Override
+    public void searchSound(String keyword) {
+
+        mRepository.getSearchSounds(mHeroID, keyword)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<HeroResponsesDto>>() {
+                    @Override
+                    public void call(List<HeroResponsesDto> heroResponsesDtos) {
+                        mView.showHeroSoundsList(heroResponsesDtos);
+                    }
+                });
     }
 
     private void startPrefetch() {

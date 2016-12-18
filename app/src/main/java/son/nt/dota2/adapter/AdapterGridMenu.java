@@ -128,7 +128,7 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                     case CASE_NOTIFICATION:
                         TsGaTools.trackPages("/set_notification");
                         new MaterialDialog.Builder(context)
-                                .title("Confirm Set Notification")
+                                .title("Confirm Set Notification (Need the Write Setting Permission)")
                                 .positiveText("Yes")
                                 .negativeText("Cancel")
                                 .callback(new MaterialDialog.ButtonCallback() {
@@ -164,7 +164,7 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                     case CASE_ALARM:
                         TsGaTools.trackPages("/set_alarm");
                         new MaterialDialog.Builder(context)
-                                .title("Confirm Set Alarm")
+                                .title("Confirm Set Alarm (Need the Write Setting Permission)")
                                 .positiveText("Yes")
                                 .negativeText("Cancel")
                                 .callback(new MaterialDialog.ButtonCallback() {
@@ -196,36 +196,6 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
                                 .show();
 
                         break;
-
-//                    case CASE_COMMENTS:
-//                        TsGaTools.trackPages("/set_comment");
-//                        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-////                            GoLoginDto dto = new GoLoginDto(true);
-////                            dto.speakDto = speakDto;
-//                            OttoBus.post(dto);
-//
-//                        } else {
-//                            new MaterialDialog.Builder(context)
-//                                    .title("Please Login First")
-//                                    .positiveText("Login")
-//                                    .negativeText("Cancel")
-//                                    .callback(new MaterialDialog.ButtonCallback() {
-//                                        @Override
-//                                        public void onPositive(MaterialDialog dialog) {
-//                                            super.onPositive(dialog);
-//                                            Intent intent = new Intent(context, LoginActivity.class);
-//                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                            context.startActivity(intent);
-//                                        }
-//
-//                                        @Override
-//                                        public void onNegative(MaterialDialog dialog) {
-//                                            super.onNegative(dialog);
-//                                        }
-//                                    })
-//                                    .show();
-//                        }
-//                        break;
 
                     case CASE_COPY:
                         TsGaTools.trackPages("/set_copy");
