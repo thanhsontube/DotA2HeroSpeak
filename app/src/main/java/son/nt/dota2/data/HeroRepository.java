@@ -17,6 +17,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Func1;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.comments.CmtsDto;
@@ -27,6 +28,8 @@ import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.dto.story.StoryDto;
 import son.nt.dota2.dto.story.StoryFireBaseDto;
 import son.nt.dota2.dto.story.StoryPartDto;
+import son.nt.dota2.manager.AssetMng;
+import son.nt.dota2.manager.IAssetMng;
 import son.nt.dota2.saved_class.FileAbilityList;
 import son.nt.dota2.saved_class.FileHeroBasicList;
 import son.nt.dota2.saved_class.FileResponseList;
@@ -37,7 +40,11 @@ import son.nt.dota2.utils.FileUtil;
  * Created by sonnt on 11/7/16.
  */
 public class HeroRepository implements IHeroRepository {
+
+    IAssetMng mAssetMng;
+
     public HeroRepository() {
+        mAssetMng = new AssetMng(ResourceManager.getInstance().getContext());
     }
 
     @Override
@@ -143,7 +150,8 @@ public class HeroRepository implements IHeroRepository {
             Realm realm = getRealm();
             try {
                 final RealmResults<HeroBasicDto> group1 = realm.where(HeroBasicDto.class).equalTo("group", group).findAll();
-                subscriber.onNext(realm.copyFromRealm(group1));
+                final List<HeroBasicDto> list = realm.copyFromRealm(group1);
+                subscriber.onNext(list);
             } catch (Exception e) {
                 e.printStackTrace();
                 subscriber.onError(e);
@@ -209,13 +217,6 @@ public class HeroRepository implements IHeroRepository {
         return Observable.create(new Observable.OnSubscribe<List<HeroResponsesDto>>() {
             @Override
             public void call(Subscriber<? super List<HeroResponsesDto>> subscriber) {
-//                Realm realm = getRealm();
-//                final RealmResults<HeroResponsesDto> group1 = realm.where(HeroResponsesDto.class)
-//                        .findAll();
-//                subscriber.onNext(realm.copyFromRealm(group1));
-//                subscriber.onCompleted();
-//                realm.close();
-
                 Realm realm = getRealm();
                 //todo hack
                 removeAllLordResponses(realm);
@@ -481,6 +482,26 @@ public class HeroRepository implements IHeroRepository {
                 });
             }
         });
+    }
+
+    /**
+     * copy data and then save to Realm
+     */
+    @Override
+    public Observable<Boolean> copyData() {
+        return mAssetMng.copyDataFromAsset("hero_basic", ResourceManager.getInstance().getFolderObject())
+                .flatMap(new Func1<String, Observable<List<HeroBasicDto>>>() {
+                    @Override
+                    public Observable<List<HeroBasicDto>> call(String s) {
+                        return getAllHeroes();
+                    }
+                }).flatMap(new Func1<List<HeroBasicDto>, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(List<HeroBasicDto> heroBasicDtos) {
+                        return Observable.just(heroBasicDtos == null || heroBasicDtos.isEmpty());
+
+                    }
+                });
     }
 
     @Override

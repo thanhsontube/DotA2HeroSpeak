@@ -17,8 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -49,7 +47,6 @@ import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
 import son.nt.dota2.dto.CircleFeatureDto;
-import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.gridmenu.CommentDialog;
@@ -66,16 +63,12 @@ import timber.log.Timber;
 
 /**
  * * Get HeroBasicDto from heroID -> update kenburns and get heroGroup,
- * Then get List <HeroBasicDto> based on heroGroup
+ * Then get List <HeroBasicDto> based on heroGroup (for what?)
  */
 public class HeroActivity extends BaseActivity implements HeroContract.View {
 
     private static final int REQUEST_WRITE_SETTING = 131;
     HeroContract.Presenter mPresenter;
-    HeroEntry heroEntry;
-    FloatingActionButton fabChat;
-
-    private String mHeroId;
 
     @BindView(R.id.viewpager)
     ViewPager mViewPager;
@@ -91,6 +84,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
      */
     @BindView(R.id.rcv_feature)
     RecyclerView mRecyclerViewFeature;
+
     private AdapterCircleFeature mAdapterCircleFeature;
 
     private AdapterPagerHero mAdapter;
@@ -133,10 +127,10 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 
     private List<CircleFeatureDto> createListCircle() {
         List<CircleFeatureDto> featureDtos = new ArrayList<>();
-        featureDtos.add(new CircleFeatureDto("Sound", R.drawable.ability_icon, true));
-        featureDtos.add(new CircleFeatureDto("Skill", R.drawable.ability_icon, false));
-        featureDtos.add(new CircleFeatureDto("Bio", R.drawable.ability_icon, false));
-        featureDtos.add(new CircleFeatureDto("Comments", R.drawable.ability_icon, false));
+        featureDtos.add(new CircleFeatureDto("Sound", R.drawable.ic_sound, true));
+        featureDtos.add(new CircleFeatureDto("Skill", R.drawable.ic_abi, false));
+//        featureDtos.add(new CircleFeatureDto("Bio", R.drawable.ability_icon, false));
+//        featureDtos.add(new CircleFeatureDto("Comments", R.drawable.ability_icon, false));
         return featureDtos;
     }
 
@@ -167,7 +161,6 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         adMob();
 //        isAddMob();
 
-        checkPermission();
 
     }
 
@@ -283,18 +276,6 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         mPlayService.setSoundsSource(MsConst.TYPE_HERO_SOUND, sounds);
     }
 
-    //    @Subscribe
-//    public void goChatDialog (CommentDto dto) {
-//        FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
-//        Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
-//        if (f != null) {
-//            ft.remove(f);
-//        }
-//        ChatDialog dialog = ChatDialog.newInstance();
-//        ft.add(dialog, "chat");
-//        ft.commit();
-//    }
-
     @Subscribe
     public void getCircleClick(GoCircle mGoCircle) {
         tab = mGoCircle.mCircleFeatureDto.getName();
@@ -303,7 +284,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
     @Subscribe
     public void checkPermission(GoCheckPermission goCheckPermission) {
 
-        checkPermission();
+//        checkPermission();
 
     }
 
@@ -346,18 +327,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 
     public String tab = "Sound";
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_WRITE_SETTING: {
-                if (grantResults.length == 1 && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
-                    loadData();
-                }
-                break;
-            }
-        }
-    }
+
 
 
 }

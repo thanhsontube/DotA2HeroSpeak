@@ -84,15 +84,6 @@ public class HomeFragment extends AFragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btn_chat_home: {
                 TsGaTools.trackPages(MsConst.TRACK_CHAT);
-//                FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
-//                Fragment f = getSafeFragmentManager().findFragmentByTag("chat");
-//                if (f != null) {
-//                    ft.remove(f);
-//                }
-//                ChatDialog dialog = ChatDialog.newInstance();
-//                ft.add(dialog, "chat");
-//                ft.commit();
-
                 ActivityCompat.startActivity(getActivity(), new Intent(getActivity(), CmtsHistoryActivity.class), null);
                 break;
             }

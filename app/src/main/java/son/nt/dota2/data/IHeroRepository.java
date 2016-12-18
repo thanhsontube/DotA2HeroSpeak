@@ -65,4 +65,6 @@ public interface IHeroRepository {
     Observable<List<CmtsDto>> getAllComments();
 
     Observable<List<CmtsDto>> getStoryComments(String storyId);
+
+    Observable<Boolean> copyData();
 }

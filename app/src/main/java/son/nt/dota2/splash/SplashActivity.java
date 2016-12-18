@@ -36,9 +36,11 @@ import son.nt.dota2.test.TestActivity;
 import son.nt.dota2.utils.PreferenceUtil;
 import timber.log.Timber;
 
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends BaseActivity implements SplashContract.View {
 
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 100;
+
+    SplashContract.Presenter mPresenter;
     IHeroRepository mRepository;
 
     CompositeSubscription mCompositeSubscription = new CompositeSubscription();
@@ -50,7 +52,7 @@ public class SplashActivity extends BaseActivity {
     boolean isBuyItemsLoaded = false;
     boolean isAbilityLoaded = true;
 
-    boolean mIsNeedLoadData = true;
+    boolean mIsNeedLoadData = false;
 
     @Override
     protected int provideLayoutResID() {
@@ -61,6 +63,7 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Timber.d(">>>" + "onCreate 3");
         super.onCreate(savedInstanceState);
+        mPresenter = new SplashPresenter(this, new HeroRepository());
         mRepository = new HeroRepository();
         checkPermission();
     }
@@ -73,45 +76,52 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
-    private void loadData() {
-        //        mIsNeedLoadData = !PreferenceUtil.getPreference(this, MsConst.PREFETCH, false);
-        if (!mIsNeedLoadData) {
-//            getBasicHeroList2();
-
-            startActivity(new Intent(this, TestActivity.class));
-//            ActivityCompat.startActivity(this, LoginActivity.getIntent(this), null);
-//            startActivity(HomeActivity.getIntent(getApplicationContext()));
-        } else {
-//            Realm realm = Realm.getDefaultInstance();
-//            realm.beginTransaction();
-//            realm.delete(HeroResponsesDto.class);
-//            realm.commitTransaction();
-//            realm.close();
-
-
-            getBasicHeroList();
-
-//            isAbilityLoaded = true;
-            getAbis();
-
-//            isLordLoaded = true;
-            getLordResponseList();
-
-
-            isKillingLoaded = true;
-//            getKillingResponseList();
-
-            isNormalVoiceLoaded = true;
-//            getNormalVoicesResponseList();
-
-            isBuyItemsLoaded = true;
-//            getHeroResponseWithItemsList();
-
-            isItemsLoaded = true;
-//            getItemsList();
-        }
-
+    @Override
+    public void startLogin() {
+        ActivityCompat.startActivity(this, LoginActivity.getIntent(this), null);
     }
+
+    private void loadData() {
+        mPresenter.copyData();
+
+
+//        if (!mIsNeedLoadData) {
+////            getBasicHeroList2();
+//
+//            startActivity(new Intent(this, TestActivity.class));
+////            ActivityCompat.startActivity(this, LoginActivity.getIntent(this), null);
+////            startActivity(HomeActivity.getIntent(getApplicationContext()));
+//        } else {
+////            Realm realm = Realm.getDefaultInstance();
+////            realm.beginTransaction();
+////            realm.delete(HeroResponsesDto.class);
+////            realm.commitTransaction();
+////            realm.close();
+//
+//
+//            getBasicHeroList();
+//
+////            isAbilityLoaded = true;
+//            getAbis();
+//
+////            isLordLoaded = true;
+//            getLordResponseList();
+//
+//
+//            isKillingLoaded = true;
+////            getKillingResponseList();
+//
+//            isNormalVoiceLoaded = true;
+////            getNormalVoicesResponseList();
+//
+//            isBuyItemsLoaded = true;
+////            getHeroResponseWithItemsList();
+//
+//            isItemsLoaded = true;
+////            getItemsList();
+//    }
+
+}
 
     private void removeTABLE_HERO_NORMAL_VOICE() {
         Timber.d(">>>" + "removeTABLE_HERO_NORMAL_VOICE");
