@@ -5,8 +5,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.share.widget.LikeView;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
@@ -153,10 +151,6 @@ public class GridMenuDialog extends DialogFragment {
         list.add(new GridMenuItem("Facebook Share", R.drawable.ic_facebook_48));
         list.add(new GridMenuItem("Other Share", R.drawable.ic_share_48));
 
-        ParseUser parseUser = ParseUser.getCurrentUser();
-        if (parseUser != null && !ParseFacebookUtils.isLinked(parseUser)) {
-            likeView.setVisibility(View.INVISIBLE);
-        }
 
         adapter = new AdapterGridMenu(getActivity(), list, mSound);
         adapter.setCallback(new AdapterGridMenu.AdapterGridMenuCallback() {

@@ -13,7 +13,6 @@ import son.nt.dota2.base.AActivity;
 import son.nt.dota2.fragment.LoginFragment;
 import son.nt.dota2.fragment.SignUpFragment;
 import son.nt.dota2.utils.TsGaTools;
-import son.nt.dota2.utils.TsParse;
 
 public class LoginActivity extends AActivity implements LoginFragment.OnFragmentInteractionListener {
 
@@ -34,10 +33,6 @@ public class LoginActivity extends AActivity implements LoginFragment.OnFragment
         super.onCreate(savedInstanceState);
         TsGaTools.trackPages(MsConst.TRACK_START);
         setContentView(R.layout.activity_login);
-
-        //get kensburn
-        TsParse.getkensBurns();
-
     }
 
     @Override

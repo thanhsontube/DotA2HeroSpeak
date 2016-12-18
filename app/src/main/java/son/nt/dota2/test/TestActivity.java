@@ -33,7 +33,6 @@ import son.nt.dota2.musicPack.fav.MusicPackFavActivity;
 import son.nt.dota2.story.CreateStoryActivity;
 import son.nt.dota2.story.story_list.StoryListActivity;
 import son.nt.dota2.utils.Logger;
-import son.nt.dota2.utils.TsParse;
 import timber.log.Timber;
 
 public class TestActivity extends FireBaseActivity implements View.OnClickListener {
@@ -81,7 +80,6 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
         switch (view.getId()) {
             case R.id.kenburn_view :
             {
-                TsParse.getkensBurns();
                 break;
             }
             case R.id.read_hero_basic:

@@ -1,5 +1,7 @@
 package son.nt.dota2.base;
 
+import com.androidquery.AQuery;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -12,11 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidquery.AQuery;
-
 import butterknife.ButterKnife;
 import son.nt.dota2.ResourceManager;
-import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.loader.MyPath;
 import son.nt.dota2.loader.base.ContentManager;
 
@@ -31,7 +30,6 @@ public class AFragment extends Fragment {
     protected AQuery aq;
     protected ActionBar actionBar;
     protected FragmentManager fragmentManager;
-    protected TsSqlite sqlite;
 
     @Override
     public void onAttach(Activity activity) {
@@ -46,7 +44,6 @@ public class AFragment extends Fragment {
         contentManager = resource.getContentManager();
 //        mypath = resource.getMyPath();
         aq = new AQuery(context);
-        sqlite = TsSqlite.getInstance();
         actionBar = getSafeActionBar();
     }
 

@@ -22,13 +22,8 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
 import com.facebook.share.widget.LikeView;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseUser;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -46,7 +41,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,13 +51,11 @@ import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.activity.HomeActivity;
 import son.nt.dota2.base.AFragment;
-import son.nt.dota2.facebook.UserDto;
 import son.nt.dota2.firebase.DaggerGoogleApiComponent;
 import son.nt.dota2.firebase.GoogleApiClientModule;
 import son.nt.dota2.login.LoginContract;
 import son.nt.dota2.login.LoginPresenter;
 import son.nt.dota2.login.LoginRepo;
-import son.nt.dota2.parse.IUserParse;
 import son.nt.dota2.rx.SchedulerProvider;
 import son.nt.dota2.test.TestActivity;
 import son.nt.dota2.utils.KeyBoardUtils;
@@ -197,29 +189,7 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
         mSignInButton.setOnClickListener(this);
 
 
-        view.findViewById(R.id.login_enter).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser.logInInBackground(txtEmail.getText().toString(), txtPassword.getText().toString(), new LogInCallback() {
-                    @Override
-                    public void done(ParseUser parseUser, ParseException e) {
-                        if (e != null) {
-                            Toast.makeText(getActivity(), "Login Error!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            View view = getActivity().getCurrentFocus();
-                            if (view != null) {
-                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                            }
-                            Toast.makeText(getActivity(), "Hello:" + parseUser.getUsername(), Toast.LENGTH_SHORT).show();
-                            getContext().startActivity(new Intent(getContext(), HomeActivity.class));
-                            getActivity().finish();
-                        }
 
-                    }
-                });
-            }
-        });
 
     }
 
@@ -239,15 +209,7 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
         return super.onOptionsItemSelected(item);
     }
 
-    private void checkingLogin() {
-        ParseUser parseUser = ParseUser.getCurrentUser();
-        if (parseUser != null) {
-            String name = parseUser.getString("name");
-            Toast.makeText(getActivity(), "Welcome:" + name, Toast.LENGTH_SHORT).show();
-            startActivity(HomeActivity.getIntent(getActivity()));
-            getActivity().finish();
-        }
-    }
+
 
 
     private void initLayout(View view) {
@@ -359,40 +321,7 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
         }
     }
 
-    private void loginByFacebook() {
-        Logger.debug(TAG, ">>>" + "loginByFacebook");
-        ParseFacebookUtils.logInWithPublishPermissionsInBackground(this, null, new LogInCallback() {
-            @Override
-            public void done(final ParseUser user, ParseException e) {
-                Logger.debug(TAG, ">>>" + "loginByFacebook:" + e);
-                if (e != null) {
-                    Toast.makeText(getActivity(), "Login Error:" + e.toString(), Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
-                if (user == null) {
-                    Logger.debug("MyApp", ">>>Uh oh. The user cancelled the Facebook login.");
-                } else if (user.isNew()) {
-                    Logger.debug("MyApp", ">>>User signed up and logged in through Facebook!");
-                } else {
-                    Logger.debug("MyApp", ">>>User logged in through Facebook!");
-                    Logger.debug(TAG, ">>>" + "Email:" + user.getEmail() + ";name:" + user.getUsername());
-                }
-
-                if (user == null) {
-                    return;
-                }
-
-                if (ParseUser.getCurrentUser() != null && ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
-                    Logger.debug(TAG, ">>>" + "user link fb already");
-                    getUserInfo();
-                    return;
-                }
-
-
-            }
-        });
-    }
 
     private void getUserInfo() {
         Logger.debug(TAG, ">>>" + "getUserInfo");
@@ -411,22 +340,7 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
 
     }
 
-    IUserParse.Callback userCallback = new IUserParse.Callback() {
-        @Override
-        public void onCheckingUserExist(String email, boolean isExist) {
 
-        }
-
-        @Override
-        public void onUserCreated(UserDto userDto, ParseException error) {
-
-        }
-
-        @Override
-        public void onFinishResetPw(ParseException error) {
-
-        }
-    };
 
     @Override
     public void onClick(View view) {
@@ -442,7 +356,6 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
                 }
                 break;
             case R.id.login_by_facebook:
-                loginByFacebook();
 
 
                 break;

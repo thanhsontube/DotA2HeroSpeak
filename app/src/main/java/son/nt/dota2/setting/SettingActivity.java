@@ -1,5 +1,7 @@
 package son.nt.dota2.setting;
 
+import com.squareup.otto.Subscribe;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,10 +21,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.ParsePush;
-import com.squareup.otto.Subscribe;
-
-import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.ottobus_entry.GoDownload;
 import son.nt.dota2.service.SettingDownloadService;
@@ -161,18 +159,6 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if ("pref_get_push".equals(key)) {
-            boolean isSub = sharedPreferences.getBoolean("pref_get_push", true);
-            try {
-                if (isSub) {
-                    ParsePush.subscribeInBackground(MsConst.CHANNEL_COMMON);
-                } else {
-                    ParsePush.unsubscribeInBackground(MsConst.CHANNEL_COMMON);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
     }
 

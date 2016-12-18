@@ -13,10 +13,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.squareup.otto.Subscribe;
 
 import android.app.SearchManager;
@@ -144,21 +140,6 @@ public class HomeActivity extends AActivity implements
     }
 
     public void isAddMob() {
-        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Admob");
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                if (e != null) {
-                    return;
-                }
-                String enable = parseObject.getString("isEnable");
-                if (enable.equals("off")) {
-                    AdMobUtils.hide();
-                } else {
-                    AdMobUtils.show();
-                }
-            }
-        });
 
     }
 

@@ -1,5 +1,7 @@
 package son.nt.dota2.fragment;
 
+import com.squareup.otto.Subscribe;
+
 import android.app.Activity;
 import android.app.Service;
 import android.content.ComponentName;
@@ -15,12 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.squareup.otto.Subscribe;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +24,9 @@ import son.nt.dota2.R;
 import son.nt.dota2.base.AbsFragment;
 import son.nt.dota2.comments.AdapterCmts;
 import son.nt.dota2.comments.CommentDto;
-import son.nt.dota2.dto.SpeakDto;
 import son.nt.dota2.ottobus_entry.GoAdapterCmt;
 import son.nt.dota2.ottobus_entry.GoChatFragment;
 import son.nt.dota2.service.ServiceMedia;
-import son.nt.dota2.utils.NetworkUtils;
 import son.nt.dota2.utils.OttoBus;
 
 public class ChatFragment extends AbsFragment {
@@ -192,87 +186,7 @@ public class ChatFragment extends AbsFragment {
     }
 
     private void getData() {
-        recyclerView.setVisibility(View.GONE);
-        viewRefresh.setVisibility(View.GONE);
-        viewLoading.setVisibility(View.VISIBLE);
-        if (!NetworkUtils.isConnected(getActivity())) {
-            recyclerView.setVisibility(View.GONE);
-            viewRefresh.setVisibility(View.VISIBLE);
-            viewRefresh.setText("No Network Connection !\n\r" +
-                    " Click to reload");
-            viewLoading.setVisibility(View.GONE);
-            return;
-        }
 
-        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(CommentDto.class.getSimpleName());
-        query.whereEqualTo("heroID", heroID);
-        query.setLimit(200);
-        query.orderByDescending("createdAt");
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> list, ParseException e) {
-                if (e != null) {
-                    recyclerView.setVisibility(View.GONE);
-                    viewRefresh.setVisibility(View.VISIBLE);
-                    viewRefresh.setText("No Network Connection !\n\r" +
-                            " Click to reload");
-                    viewLoading.setVisibility(View.GONE);
-                    return;
-                }
-                CommentDto commentDto;
-                List<CommentDto> listCmts = new ArrayList<>();
-                for (ParseObject p : list) {
-
-                    String message = p.getString("message");
-                    String fromID = p.getString("fromID");
-                    String fromName = p.getString("fromName");
-                    long createTime = p.getLong("createTime");
-                    String image = p.getString("fromImage");
-                    String createAt = p.getString("createdAt");
-
-                    String heroText = p.getString("heroText");
-                    String heroLink = p.getString("heroLink");
-                    String heroID = p.getString("heroID");
-                    String heroGroup = p.getString("heroGroup");
-
-                    commentDto = new CommentDto();
-                    commentDto.setMessage(message);
-                    commentDto.setCreateAt(createAt);
-
-                    commentDto.setFromID(fromID);
-                    commentDto.setFromName(fromName);
-                    commentDto.setCreateTime(createTime);
-                    commentDto.setImage(image);
-
-                    SpeakDto speakDto = new SpeakDto();
-                    speakDto.heroId = heroID;
-                    speakDto.text = heroText;
-                    speakDto.voiceGroup = heroGroup;
-                    speakDto.link = heroLink;
-
-                    commentDto.setSpeakDto(speakDto);
-                    listCmts.add(commentDto);
-                }
-                swipeRefreshLayout.setRefreshing(false);
-                if (listCmts.size() == 0) {
-                    recyclerView.setVisibility(View.GONE);
-                    viewRefresh.setVisibility(View.VISIBLE);
-                    viewRefresh.setText("No comment on this Hero :( \n\r Click to reload");
-                    viewLoading.setVisibility(View.GONE);
-                } else {
-
-                    listValues.clear();
-                    listValues.addAll(listCmts);
-                    adapterCmts.notifyDataSetChanged();
-
-                    recyclerView.setVisibility(View.VISIBLE);
-                    viewRefresh.setVisibility(View.GONE);
-                    viewLoading.setVisibility(View.GONE);
-                }
-
-
-            }
-        });
     }
 
     @Subscribe

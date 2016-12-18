@@ -9,22 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterRoles;
-import son.nt.dota2.base.AObject;
 import son.nt.dota2.base.AbsFragment;
-import son.nt.dota2.dto.save.SaveRoles;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
-import son.nt.dota2.utils.FileUtil;
 
 
 public class RolesFragment extends AbsFragment {
@@ -102,46 +93,7 @@ public class RolesFragment extends AbsFragment {
     }
 
     private void update() {
-        try
-        {
-            AObject aObject = FileUtil.getObject(getActivity(), SaveRoles.class.getSimpleName());
-            if (aObject != null) {
-                SaveRoles saveRoles = (SaveRoles) aObject;
-                list.clear();
-                list.addAll(saveRoles.list);
-                adapterRoles.notifyDataSetChanged();
-                return;
-            }
-            ParseQuery<ParseObject> query = ParseQuery.getQuery(RoleDto.class.getSimpleName());
-            query.addAscendingOrder("no");
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> l, ParseException e) {
-                    if (e != null) {
-                        return;
-                    }
-                    list.clear();
-                    RoleDto dto;
-                    for (ParseObject p :l) {
-                        dto = new RoleDto();
-                        dto.name = p.getString("name");
-                        dto.slogan = p.getString("slogan");
-                        dto.linkIcon = p.getString("linkIcon");
-                        list.add(dto);
-                    }
-                    try {
-                        FileUtil.saveObject(getActivity(),new SaveRoles(list),SaveRoles.class.getSimpleName());
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
 
-                    adapterRoles.notifyDataSetChanged();
-                }
-            });
-
-        } catch (Exception e) {
-
-        }
 
     }
 

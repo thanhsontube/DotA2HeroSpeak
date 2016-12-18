@@ -19,7 +19,6 @@ import android.widget.Toast;
 import java.util.List;
 
 import son.nt.dota2.R;
-import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.gridmenu.GridMenuItem;
@@ -81,13 +80,8 @@ public class AdapterGridMenu extends RecyclerView.Adapter<AdapterGridMenu.Holder
         }
         holder.img.setImageResource(dto.iconID);
         if (dto.title.equals("Add to Playlist")) {
-            if (TsSqlite.getInstance().isInsert(speakDto.getLink())) {
-                holder.img.setImageResource(dto.tempIcon);
-                holder.txtName.setText(dto.tempTitle);
-            } else {
-                holder.img.setImageResource(dto.iconID);
-                holder.txtName.setText(dto.title);
-            }
+            holder.img.setImageResource(dto.iconID);
+            holder.txtName.setText(dto.title);
         }
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override

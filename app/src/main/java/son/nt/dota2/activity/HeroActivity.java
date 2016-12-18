@@ -1,9 +1,5 @@
 package son.nt.dota2.activity;
 
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.squareup.otto.Subscribe;
 
 import android.app.Service;
@@ -16,7 +12,6 @@ import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,12 +36,10 @@ import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.dto.CircleFeatureDto;
 import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.dto.home.HeroBasicDto;
-import son.nt.dota2.gridmenu.CommentDialog;
 import son.nt.dota2.hero.AdapterCircleFeature;
 import son.nt.dota2.hero.HeroActivityPresenter;
 import son.nt.dota2.hero.HeroContract;
 import son.nt.dota2.ottobus_entry.GoCircle;
-import son.nt.dota2.ottobus_entry.GoLoginDto;
 import son.nt.dota2.ottobus_entry.GoShare;
 import son.nt.dota2.service.PlayService2;
 import son.nt.dota2.utils.OttoBus;
@@ -153,22 +146,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
 
 
     public void isAddMob() {
-        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Admob");
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                if (e != null) {
-                    return;
-                }
-                String enable = parseObject.getString("isEnable");
-                if (enable.equals("off")) {
-                    AdMobUtils.hide();
-                } else {
-                    AdMobUtils.show();
-                }
-            }
-        });
-
+        AdMobUtils.show();
     }
 
     private void adMob() {
@@ -194,22 +172,7 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
     }
 
 
-    @Subscribe
-    public void goLogin(GoLoginDto dto) {
-        if (!dto.isLogin) {
 
-            startActivity(LoginActivity.getIntent(HeroActivity.this));
-        } else {
-            FragmentTransaction ft = getSafeFragmentManager().beginTransaction();
-            Fragment f = getSafeFragmentManager().findFragmentByTag("cmt");
-            if (f != null) {
-                ft.remove(f);
-            }
-            CommentDialog dialog = CommentDialog.createInstance(dto.speakDto);
-            ft.add(dialog, "cmt");
-            ft.commit();
-        }
-    }
 
     @Subscribe
     public void goShare(GoShare dto) {
