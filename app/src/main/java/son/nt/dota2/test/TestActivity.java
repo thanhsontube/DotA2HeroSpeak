@@ -33,6 +33,7 @@ import son.nt.dota2.musicPack.fav.MusicPackFavActivity;
 import son.nt.dota2.story.CreateStoryActivity;
 import son.nt.dota2.story.story_list.StoryListActivity;
 import son.nt.dota2.utils.Logger;
+import son.nt.dota2.utils.TsParse;
 import timber.log.Timber;
 
 public class TestActivity extends FireBaseActivity implements View.OnClickListener {
@@ -71,12 +72,18 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
         findViewById(R.id.list_story).setOnClickListener(this);
         findViewById(R.id.save_hero_basic).setOnClickListener(this);
         findViewById(R.id.read_hero_basic).setOnClickListener(this);
+        findViewById(R.id.kenburn_view).setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.kenburn_view :
+            {
+                TsParse.getkensBurns();
+                break;
+            }
             case R.id.read_hero_basic:
 
                 mAssetMng.copyDataFromAsset("hero_basic", ResourceManager.getInstance().getFolderObject())
@@ -121,8 +128,8 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
                 break;
             case R.id.save_hero_basic:
                 FireBaseUtils.saveHeroBaiscToFile();
-//                FireBaseUtils.saveAbilityToFile();
-//                FireBaseUtils.saveLordToFile();
+                FireBaseUtils.saveAbilityToFile();
+                FireBaseUtils.saveLordToFile();
                 break;
             case R.id.list_story:
                 startActivity(new Intent(this, StoryListActivity.class));

@@ -82,7 +82,8 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
     }
 
     private void loadData() {
-        mPresenter.copyData();
+        startActivity(new Intent(this, TestActivity.class));
+//        mPresenter.copyData();
 
 
 //        if (!mIsNeedLoadData) {

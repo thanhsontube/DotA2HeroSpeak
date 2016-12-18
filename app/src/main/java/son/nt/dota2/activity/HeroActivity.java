@@ -127,7 +127,6 @@ public class HeroActivity extends BaseActivity implements HeroContract.View {
         mRecyclerViewFeature.setHasFixedSize(true);
         mRecyclerViewFeature.setAdapter(mAdapterCircleFeature);
 
-//        final String selectedHero = Parcels.unwrap(getIntent().getParcelableExtra("data"));
         final String selectedHero = getIntent().getStringExtra("data");
         mPresenter.setSelectedHeroId(selectedHero);
         mPresenter.getDataToUpdateView();

@@ -21,6 +21,7 @@ import son.nt.dota2.MsConst;
 import son.nt.dota2.comments.CmtsDto;
 import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.dto.kenburns.KenBurnsImageDto;
 import son.nt.dota2.saved_class.AbilitySoundDtoSaved;
 import son.nt.dota2.saved_class.FileAbilityList;
 import son.nt.dota2.saved_class.FileHeroBasicList;
@@ -482,6 +483,25 @@ public class FireBaseUtils {
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference reference = firebaseDatabase.getReference();
                     reference.child(MsConst.TABLE_COMMENTS).push().setValue(cmtsDto);
+                }
+
+        )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+
+    }
+
+    public static void sendkenBurns(List<KenBurnsImageDto> bgImageDtos) {
+        Observable.create(subscriber -> {
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference reference = firebaseDatabase.getReference();
+                    for (KenBurnsImageDto d : bgImageDtos) {
+
+                        reference.child(MsConst.TABLE_KENBURNS).push().setValue(d);
+                    }
+
+
                 }
 
         )

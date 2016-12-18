@@ -41,6 +41,7 @@ public class MsConst {
 
 
     public static final String TABLE_COMMENTS = "10_comments_table";
+    public static final String TABLE_KENBURNS = "11_kenburns_table";
 
     public static final String TRACK_START = "/start";
     public static final String TRACK_LOGIN = "/fb_login";

@@ -19,7 +19,8 @@ import son.nt.dota2.dto.GalleryDto;
 import son.nt.dota2.dto.HeroEntry;
 import son.nt.dota2.dto.HeroRoleDto;
 import son.nt.dota2.dto.HeroSavedDto;
-import son.nt.dota2.dto.kenburns.BgImageDto;
+import son.nt.dota2.dto.kenburns.KenBurnsImageDto;
+import son.nt.dota2.firebase.FireBaseUtils;
 import timber.log.Timber;
 
 /**
@@ -124,13 +125,13 @@ public class TsParse {
                         return;
                     }
                     Logger.debug(TAG, ">>>" + "getAllHeroBasicOnGroup size:" + list.size());
-                    List<BgImageDto> bgImageDtos = new ArrayList<BgImageDto>();
+                    List<KenBurnsImageDto> bgImageDtos = new ArrayList<KenBurnsImageDto>();
                     int i = 50;
                     for (ParseObject p : list) {
 
                         String linkGif = p.getString("link");
                         String notes = p.getString("heroID");
-                        bgImageDtos.add(new BgImageDto(i, linkGif, notes));
+                        bgImageDtos.add(new KenBurnsImageDto(i, linkGif, notes));
                         i++;
 
 
@@ -138,9 +139,14 @@ public class TsParse {
 
                     }
 
-                    for (BgImageDto d : bgImageDtos) {
+                    bgImageDtos.add(new KenBurnsImageDto(1, "http://cdn.dota2.com/apps/dota2/images/comics/comic_monkeyking/en/001.png", "monkey king"));
+
+
+                    for (KenBurnsImageDto d : bgImageDtos) {
                         Timber.d(">>>" + "d:" + d.toString());
                     }
+
+//                    FireBaseUtils.sendkenBurns(bgImageDtos);
 
                     ResourceManager.getInstance().listKenburns.clear();
                     ResourceManager.getInstance().listKenburns.addAll(listKens);

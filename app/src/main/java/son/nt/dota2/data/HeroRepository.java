@@ -188,7 +188,12 @@ public class HeroRepository implements IHeroRepository {
             public void call(Subscriber<? super HeroBasicDto> subscriber) {
                 Realm realm = getRealm();
                 final HeroBasicDto group1 = realm.where(HeroBasicDto.class).equalTo("heroId", heroId).findFirst();
-                subscriber.onNext(realm.copyFromRealm(group1));
+                if (group1 == null) {
+                    subscriber.onNext(null);
+                } else {
+
+                    subscriber.onNext(realm.copyFromRealm(group1));
+                }
                 subscriber.onCompleted();
                 realm.close();
             }
@@ -494,11 +499,24 @@ public class HeroRepository implements IHeroRepository {
                     public Observable<List<HeroBasicDto>> call(String s) {
                         return getAllHeroes();
                     }
-                }).flatMap(new Func1<List<HeroBasicDto>, Observable<Boolean>>() {
+                }).flatMap(new Func1<List<HeroBasicDto>, Observable<List<AbilitySoundDto>>>() {
                     @Override
-                    public Observable<Boolean> call(List<HeroBasicDto> heroBasicDtos) {
-                        return Observable.just(heroBasicDtos == null || heroBasicDtos.isEmpty());
+                    public Observable<List<AbilitySoundDto>> call(List<HeroBasicDto> heroBasicDtos) {
 
+                        return getAllAbility();
+                    }
+                })
+                .flatMap(new Func1<List<AbilitySoundDto>, Observable<List<HeroResponsesDto>>>() {
+                    @Override
+                    public Observable<List<HeroResponsesDto>> call(List<AbilitySoundDto> abilitySoundDtos) {
+
+                        return getResponseSounds();
+                    }
+                })
+                .flatMap(new Func1<List<HeroResponsesDto>, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(List<HeroResponsesDto> heroResponsesDtos) {
+                        return Observable.just(heroResponsesDtos == null || heroResponsesDtos.isEmpty());
                     }
                 });
     }

@@ -5,6 +5,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@drawable/d_row_speak"
+              android:paddingBottom="4dp"
               android:descendantFocusability="blocksDescendants"
               android:minHeight="?actionBarSize"
               android:orientation="horizontal"
@@ -17,7 +18,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal"
-            tools:background="@mipmap/layer_image">
+            tools:background="@drawable/layer_image">
 
         <TextView
                 android:id="@+id/row_voice_no"

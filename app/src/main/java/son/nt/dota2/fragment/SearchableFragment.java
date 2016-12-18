@@ -24,6 +24,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import son.nt.dota2.R;
+import son.nt.dota2.activity.HeroActivity;
 import son.nt.dota2.adapter.AdapterSearchHero;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.data.HeroRepository;
@@ -119,7 +120,12 @@ public class SearchableFragment extends AFragment {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapterSearchHero = new AdapterSearchHero(getActivity(), list, null);
+        adapterSearchHero = new AdapterSearchHero(getActivity(), list, new AdapterSearchHero.IAdapterSearchHeroCallback() {
+            @Override
+            public void onAdapterHeroClick(HeroBasicDto heroBasicDto) {
+                HeroActivity.startActivity(getContext(), heroBasicDto.heroId);
+            }
+        });
         recyclerView.setAdapter(adapterSearchHero);
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.search_coordinator_layout);
         doSearch(query);

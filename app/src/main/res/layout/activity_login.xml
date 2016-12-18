@@ -1,55 +1,59 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="son.nt.dota2.activity.LoginActivity">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="son.nt.dota2.activity.LoginActivity">
 
     <FrameLayout
-        android:id="@+id/login_ll_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+            android:id="@+id/login_ll_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    <include layout="@layout/include_ken_burn"
+             android:fitsSystemWindows="true"
+    />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
 
         <Button
-            android:id="@+id/pre_heroList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Go to test activity" />
+                android:id="@+id/pre_heroList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Go to test activity"/>
 
         <Button
-            android:id="@+id/pre_hero_bg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pre Hero BG" />
+                android:id="@+id/pre_hero_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pre Hero BG"/>
 
         <Button
-            android:id="@+id/pre_hero_speak"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pre Hero Speak" />
+                android:id="@+id/pre_hero_speak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pre Hero Speak"/>
 
         <Button
-            android:id="@+id/pre_hero_ability"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pre Hero Ability" />
+                android:id="@+id/pre_hero_ability"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pre Hero Ability"/>
 
         <Button
-            android:id="@+id/push_common"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Test Push to common" />
+                android:id="@+id/push_common"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Test Push to common"/>
 
         <Button
-            android:id="@+id/test_roles"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Roles" />
+                android:id="@+id/test_roles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Roles"/>
 
 
     </LinearLayout>
