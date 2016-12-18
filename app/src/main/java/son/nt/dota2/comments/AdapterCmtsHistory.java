@@ -14,6 +14,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.utils.DatetimeUtils;
 
@@ -63,6 +64,9 @@ public class AdapterCmtsHistory extends RecyclerView.Adapter<AdapterCmtsHistory.
         @BindView(R.id.create_date)
         TextView createdDate;
 
+        @BindView(R.id.add_a_comment)
+        TextView addCmtView;
+
         @BindView(R.id.card_view)
         View view;
 
@@ -76,12 +80,19 @@ public class AdapterCmtsHistory extends RecyclerView.Adapter<AdapterCmtsHistory.
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         final FullCmtsDto dto = mValues.get(position);
 
-        viewHolder.name.setText(dto.getCmtsDto().getFromName());
-        viewHolder.storyName.setText(dto.getCmtsDto().getMessage());
-        viewHolder.createdDate.setText(DatetimeUtils.getTimeAgo(dto.getCmtsDto().getCreateTime(), context));
+        final CmtsDto cmtsDto = dto.getCmtsDto();
+        viewHolder.name.setText(cmtsDto.getFromName());
+        viewHolder.storyName.setText(cmtsDto.getMessage());
+        viewHolder.createdDate.setText(DatetimeUtils.getTimeAgo(cmtsDto.getCreateTime(), context));
         Glide.with(context)
-                .load(dto.getCmtsDto().getFromImage())
+                .load(cmtsDto.getFromImage())
                 .into(viewHolder.avatar);
+
+        if (cmtsDto.getType().equals(MsConst.COMMENT_TYPE_SIMPLE_STORY)) {
+            viewHolder.addCmtView.setText(" added a new comment on a story");
+        } else if (cmtsDto.getType().equals(MsConst.COMMENT_TYPE_SIMPLE_SOUND)) {
+            viewHolder.addCmtView.setText(" added a new comment on a sound");
+        }
 
     }
 

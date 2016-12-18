@@ -61,7 +61,9 @@
                   android:orientation="vertical">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:textSize="20sp"
-                  android:textColor="@color/green_A700"
+                  android:layout_marginLeft="8dp"
+                  android:textColor="@color/white"
+                  android:textStyle="bold"
                   android:id="@+id/message"
                   android:text="@string/long_text"
         />

@@ -67,6 +67,9 @@ public class AdapterStoryList extends RecyclerView.Adapter<AdapterStoryList.View
         @BindView(R.id.create_date)
         TextView createdDate;
 
+        @BindView(R.id.add_a_comment)
+        TextView addCmtView;
+
         @BindView(R.id.card_view)
         View view;
 

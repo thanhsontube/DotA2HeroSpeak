@@ -14,7 +14,7 @@ public class StoryDetailContract {
     public interface View {
         void showList(List<StoryPartDto> contents);
 
-        void updateUserView(String title, long createdTime);
+        void updateUserView(String userPicture, String username, String title, long createdTime);
     }
 
     public interface Presenter {

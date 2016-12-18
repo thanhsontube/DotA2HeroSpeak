@@ -41,8 +41,6 @@ public class StoryDetailActivity extends BaseActivity implements StoryDetailCont
     }
 
 
-
-
     public static void start(Activity activity, StoryFireBaseDto storyID) {
         Intent intent = new Intent(activity, StoryDetailActivity.class);
         intent.putExtra("data", Parcels.wrap(storyID));
@@ -71,7 +69,7 @@ public class StoryDetailActivity extends BaseActivity implements StoryDetailCont
         mPresenter.filterData();
     }
 
-    private void setupActionBar () {
+    private void setupActionBar() {
         setSupportActionBar(ButterKnife.findById(this, R.id.home_toolbar));
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -100,7 +98,7 @@ public class StoryDetailActivity extends BaseActivity implements StoryDetailCont
     }
 
     @Override
-    public void updateUserView(String title, long createdTime) {
-        mUserAddStoryView.setData(title, createdTime);
+    public void updateUserView(String userPicture, String username, String title, long createdTime) {
+        mUserAddStoryView.setData(userPicture, username, title, createdTime);
     }
 }

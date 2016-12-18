@@ -31,7 +31,7 @@ public class StoryDetailPresenter extends BasePresenter implements StoryDetailCo
     @Override
     public void filterData() {
         mView.showList(mStory.getContents());
-        mView.updateUserView (mStory.getTitle(), mStory.getCreatedTime());
+        mView.updateUserView (mStory.getUserPicture(), mStory.getUsername(), mStory.getTitle(), mStory.getCreatedTime());
 
     }
 
