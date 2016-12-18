@@ -30,10 +30,11 @@
                               android:orientation="horizontal">
                     <EditText android:layout_width="0dp"
                               android:layout_weight="1"
-                              android:layout_gravity="center"
-                              android:textSize="22sp"
+                              android:background="@drawable/box_white"
+                              android:textSize="18sp"
                               android:layout_height="wrap_content"
                               android:gravity="center"
+                              android:padding="8dp"
                               android:hint="Enter the story name"
                               android:id="@+id/story_name"/>
                     <TextView
@@ -58,23 +59,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/transparent"
-                android:paddingBottom="32dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="4dp"
                 android:id="@+id/story_rcv"/>
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_gravity="bottom|center_horizontal"
+                      android:orientation="horizontal">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/create_story_play"
+                    android:textColor="@color/amber_500"
+                    android:background="?selectableItemBackground"
+                    android:gravity="center" android:padding="16dp"
+                    android:text="Play"/>
 
-        <android.support.design.widget.FloatingActionButton
-                android:id="@+id/create_story_play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="@dimen/fab_margin"
-                app:srcCompat="@drawable/icon_played"/>
-        <android.support.design.widget.FloatingActionButton
-                android:id="@+id/create_story_stop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|start"
-                android:layout_margin="@dimen/fab_margin"
-                app:srcCompat="@drawable/icon_paused"/>
+            <TextView
+                    android:textColor="@color/amber_500"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackground"
+                    android:layout_gravity="center"
+                    android:id="@+id/create_story_stop"
+                    android:gravity="center" android:padding="16dp"
+                    android:text="Stop"/>
+        </LinearLayout>
+
 
     </android.support.design.widget.CoordinatorLayout>
 

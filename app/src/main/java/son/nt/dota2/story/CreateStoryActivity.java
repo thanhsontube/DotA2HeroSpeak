@@ -25,7 +25,7 @@ import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.di.component.app.AppComponent;
 import son.nt.dota2.dto.story.StoryPartDto;
-import son.nt.dota2.story.add_simple_story.AddSimpleStoryActivity;
+import son.nt.dota2.story.search_sound.SearchSoundActivity;
 import timber.log.Timber;
 
 public class CreateStoryActivity extends BaseActivity implements StoryContract.View {
@@ -124,17 +124,17 @@ public class CreateStoryActivity extends BaseActivity implements StoryContract.V
     AdapterCreateStory.ICreateStoryListener mICreateStoryListener = new AdapterCreateStory.ICreateStoryListener() {
         @Override
         public void onAddLeftClick() {
-            AddSimpleStoryActivity.start(CreateStoryActivity.this, MsConst.TYPE_SOUND_LEFT);
+            SearchSoundActivity.start(CreateStoryActivity.this, MsConst.TYPE_SOUND_LEFT);
         }
 
         @Override
         public void onAddRightClick() {
-            AddSimpleStoryActivity.start(CreateStoryActivity.this, MsConst.TYPE_SOUND_RIGHT);
+            SearchSoundActivity.start(CreateStoryActivity.this, MsConst.TYPE_SOUND_RIGHT);
         }
 
         @Override
         public void onAddMiddleClick() {
-            AddSimpleStoryActivity.start(CreateStoryActivity.this, MsConst.TYPE_SOUND_MIDDLE);
+            SearchSoundActivity.start(CreateStoryActivity.this, MsConst.TYPE_SOUND_MIDDLE);
         }
     };
 
