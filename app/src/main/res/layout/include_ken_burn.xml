@@ -8,13 +8,13 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="false"
         android:visibility="visible"
-        tools:background="@drawable/cheese_1" />
+    />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:scaleType="fitXY"
-        android:src="@mipmap/layer_image" />
+        android:src="@drawable/layer_image" />
 
 </merge>

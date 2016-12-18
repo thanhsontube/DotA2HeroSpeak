@@ -1,5 +1,8 @@
 package son.nt.dota2.comments;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,9 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
@@ -69,8 +69,8 @@ public class AdapterCmts extends RecyclerView.Adapter<AdapterCmts.ViewHolder> {
             Glide.with(viewHolder.avatar.getContext()).load(dto.getImage())
                     .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .fallback(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
+                    .fallback(R.drawable.ic_launcher)
+                    .error(R.drawable.ic_launcher)
                     .into(viewHolder.avatar);
         Glide.with(viewHolder.heroAvatar.getContext()).load(HeroManager.getInstance().getHero(dto.getSpeakDto().heroId).avatarThumbnail)
                 .fitCenter()

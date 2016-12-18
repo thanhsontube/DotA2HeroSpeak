@@ -1,5 +1,8 @@
 package son.nt.dota2.fragment;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.squareup.otto.Subscribe;
+
 import android.app.Activity;
 import android.app.Service;
 import android.content.ComponentName;
@@ -17,9 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -182,10 +182,10 @@ public class VoiceFragment extends AbsFragment {
                     if (mediaService.getPlayer().isPlaying()) {
 
                         mediaService.pause();
-                        ((ImageButton) autoPlay).setImageResource(R.mipmap.icon_played);
+                        ((ImageButton) autoPlay).setImageResource(R.drawable.icon_played);
                     } else {
                         mediaService.play();
-                        ((ImageButton) autoPlay).setImageResource(R.mipmap.icon_paused);
+                        ((ImageButton) autoPlay).setImageResource(R.drawable.icon_paused);
                     }
                 }
             }

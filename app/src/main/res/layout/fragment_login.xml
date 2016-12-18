@@ -18,7 +18,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:padding="50dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/ic_launcher" />
         <com.facebook.login.widget.ProfilePictureView
             android:layout_gravity="center"
             android:id="@+id/profilePicture"

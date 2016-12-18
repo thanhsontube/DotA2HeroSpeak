@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:scaleType="fitXY"
-        android:src="@mipmap/phantom_assassin_full"
         android:tag="image" />
 
     <FrameLayout

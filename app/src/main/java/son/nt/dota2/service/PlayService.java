@@ -1,5 +1,7 @@
 package son.nt.dota2.service;
 
+import org.apache.http.client.methods.HttpGet;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -10,10 +12,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-import android.util.SparseArray;
 import android.widget.Toast;
-
-import org.apache.http.client.methods.HttpGet;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +23,6 @@ import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.base.MediaItem;
-import son.nt.dota2.dto.heroSound.ISound;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.musicPack.MusicPackDetailsActivity;
 import son.nt.dota2.ottobus_entry.GoPlayer;
@@ -200,7 +198,7 @@ public class PlayService extends Service {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 102, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             mNotification = new NotificationCompat.Builder(this).setTicker(list.get(currentPosition).getTitle())
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_launcher)
                     .setContentTitle(list.get(currentPosition).getTitle())
                     .setContentText(list.get(currentPosition).getGroup())
                     .setContentInfo(getString(R.string.app_name))

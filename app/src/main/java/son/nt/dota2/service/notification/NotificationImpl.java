@@ -110,7 +110,7 @@ public class NotificationImpl implements INotification {
                 .setContentIntent(pi)//
                 .setTicker(audioFile.getTitle())//
                 .setContentTitle(audioFile.getTitle())//
-                .setSmallIcon(R.mipmap.ic_launcher)//
+                .setSmallIcon(R.drawable.ic_launcher)//
                 .setContent(remoteView)//
                 .build();
     }
