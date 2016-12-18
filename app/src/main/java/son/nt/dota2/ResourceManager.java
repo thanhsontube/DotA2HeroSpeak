@@ -48,7 +48,6 @@ public class ResourceManager {
     public ResourceManager(Context context) {
         this.context = context;
         initialize();
-        copyAssets();
     }
 
     public static ResourceManager getInstance() {
@@ -67,9 +66,17 @@ public class ResourceManager {
 
             //saving file :
             if (BuildConfig.DEBUG) {
-                mAppInternalFolder = Environment.getExternalStorageDirectory() + File.separator + ROOT + File.separator + "00_dota_internal";
+//                mAppInternalFolder = Environment.getExternalStorageDirectory() + File.separator + ROOT + File.separator + "00_dota_internal";
+                mAppInternalFolder = getContext().getFilesDir().getPath() + File.separator + ROOT + File.separator + "00_dota_internal";
+
+                if (isExternalAvailable()) {
+                    mAppInternalFolder = Environment.getExternalStorageDirectory() + File.separator + ROOT + File.separator + "00_dota_internal";
+                } else {
+                    mAppInternalFolder = getContext().getFilesDir().getPath() + File.separator + ROOT + File.separator + "00_dota_internal";
+                }
 
             } else {
+
                 mAppInternalFolder = getContext().getFilesDir().getPath() + File.separator + ROOT + File.separator + "00_dota_internal";
             }
             mAppExternalFolder = Environment.getExternalStorageDirectory() + File.separator + ROOT + File.separator + "01_dota_external";
@@ -201,7 +208,7 @@ public class ResourceManager {
 //            fNoti.mkdirs();
 //        }
 //        folderNotification = fNoti.getPath();
-        return folderNotification + File.separator  + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
+        return folderNotification + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 
     public String getPathAlarm(String link, String heroID) {
@@ -216,7 +223,7 @@ public class ResourceManager {
 //            fAlarm.mkdirs();
 //        }
 //        folderAlarm = fAlarm.getPath();
-        return folderAlarm + File.separator  + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
+        return folderAlarm + File.separator + FileUtil.createPathFromUrl(link).replace(".dat", ".mp3");
     }
 
     public String getPathDownloadMusicPack(String link) {
@@ -266,11 +273,18 @@ public class ResourceManager {
     }
 
     public String getAppInternalFolder() {
-//        mAppInternalFolder = getContext().getFilesDir().getPath();
         return mAppInternalFolder;
     }
 
-    private void copyAssets () {
+    private void copyAssets() {
         FileUtil.copyAssets(getContext(), "music", getFolderMusicPack());
+    }
+
+    private boolean isExternalAvailable() {
+        String state = Environment.getExternalStorageState();
+        if (state.equals(Environment.MEDIA_MOUNTED)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -92,7 +92,6 @@ public class NotificationImpl implements INotification {
     @Override
     public void doDetach() {
         if (service != null) {
-
             service.stopForeground(true);
         }
     }
@@ -102,16 +101,16 @@ public class NotificationImpl implements INotification {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pi = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        remoteView.setTextViewText(R.id.noti_title, audioFile.getGroup());
+        remoteView.setTextViewText(R.id.noti_title, audioFile.getTitle());
 
         builder = new NotificationCompat.Builder(context) //
                 .setContentText(audioFile.getTitle())//
                 .setOngoing(false)//
                 .setContentIntent(pi)//
                 .setTicker(audioFile.getTitle())//
-                .setContentTitle(audioFile.getTitle())//
+                .setContentTitle("Dota 2")//
                 .setSmallIcon(R.drawable.ic_launcher)//
-                .setContent(remoteView)//
+//                .setContent(remoteView)//
                 .build();
     }
 }

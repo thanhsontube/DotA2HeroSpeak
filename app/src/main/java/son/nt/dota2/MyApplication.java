@@ -29,7 +29,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ResourceManager.createInstance(getApplicationContext());
+//        ResourceManager.createInstance(getApplicationContext());
 
 //        HeroManager.createInstance(getApplicationContext());
 

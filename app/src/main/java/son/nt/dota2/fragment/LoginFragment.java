@@ -21,7 +21,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
-import com.facebook.share.widget.LikeView;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -49,18 +48,20 @@ import java.security.MessageDigest;
 import butterknife.BindView;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
+import son.nt.dota2.ResourceManager;
 import son.nt.dota2.activity.HomeActivity;
 import son.nt.dota2.base.AFragment;
+import son.nt.dota2.customview.KenBurnsView2;
 import son.nt.dota2.firebase.DaggerGoogleApiComponent;
 import son.nt.dota2.firebase.GoogleApiClientModule;
 import son.nt.dota2.login.LoginContract;
 import son.nt.dota2.login.LoginPresenter;
 import son.nt.dota2.login.LoginRepo;
 import son.nt.dota2.rx.SchedulerProvider;
-import son.nt.dota2.test.TestActivity;
 import son.nt.dota2.utils.KeyBoardUtils;
 import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.TsGaTools;
+import timber.log.Timber;
 
 public class LoginFragment extends AFragment implements View.OnClickListener,
         LoginContract.View, GoogleApiClient.OnConnectionFailedListener {
@@ -93,6 +94,9 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
 
     @BindView(R.id.sign_in_button)
     SignInButton mSignInButton;
+
+    @BindView(R.id.home_kenburns)
+    KenBurnsView2 kenBurnsView;
 
 
     LoginContract.Presenter mPresenter;
@@ -170,25 +174,14 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
 //        initData();
 //        initLayout(view);
 //        initListener();
+        updateKensburn();
         mPresenter.checkLogin();
-//        checkingLogin();
 
-
-        //todo hack
-        view.findViewById(R.id.login_welcome).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), TestActivity.class));
-//                FireBaseUtils.find(HeroBasicDto.class.getSimpleName(), "heroId", "Sven");
-            }
-        });
 
         txtForgotPassword.setOnClickListener(this);
         txtSignUp.setOnClickListener(this);
         loginWithFacebook.setOnClickListener(this);
         mSignInButton.setOnClickListener(this);
-
-
 
 
     }
@@ -209,36 +202,6 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
-    private void initLayout(View view) {
-        loginButton = (LoginButton) view.findViewById(R.id.login_button_login);
-        loginButton.setFragment(this);
-        profilePictureView = (ProfilePictureView) view.findViewById(R.id.profilePicture);
-        profileTracker = new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(Profile profile, Profile profile1) {
-                updateUI();
-            }
-        };
-        txtGuest = (TextView) view.findViewById(R.id.skip_login_button);
-
-        LikeView likeView = (LikeView) view.findViewById(R.id.login_like_view);
-        likeView.setLikeViewStyle(LikeView.Style.STANDARD);
-        likeView.setObjectIdAndType(MsConst.FB_ID_POST_TO, LikeView.ObjectType.PAGE);
-        likeView.setFragment(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        updateUI();
-//        if (FacebookManager.getInstance().isLogin()) {
-//            startActivity(HomeActivity.getIntent(getActivity()));
-//            getActivity().finish();
-//        }
-    }
 
     private void updateUI() {
         Profile profile = Profile.getCurrentProfile();
@@ -322,7 +285,6 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
     }
 
 
-
     private void getUserInfo() {
         Logger.debug(TAG, ">>>" + "getUserInfo");
         Profile profile = Profile.getCurrentProfile();
@@ -339,7 +301,6 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
         getActivity().finish();
 
     }
-
 
 
     @Override
@@ -439,6 +400,20 @@ public class LoginFragment extends AFragment implements View.OnClickListener,
     @Override
     public void showNotLogin() {
         Toast.makeText(getContext(), "Hello:" + "Login please", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void updateKensburn() {
+        if (kenBurnsView == null) {
+            Timber.e(">>>" + "\"This activity has not include KenBurn view\"");
+            return;
+        }
+        if (ResourceManager.getInstance().listKenburns.size() > 0) {
+            kenBurnsView.setResourceUrl(ResourceManager.getInstance().listKenburns);
+            kenBurnsView.startLayoutAnimation();
+        } else {
+            kenBurnsView.setResourceUrl("http://cdn.dota2.com/apps/dota2/images/comics/comic_monkeyking/en/001.png", false);
+        }
 
     }
 }

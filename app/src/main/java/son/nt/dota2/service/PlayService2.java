@@ -104,6 +104,10 @@ public class PlayService2 extends Service implements MediaServiceContract.Contro
         Timber.d(">>>" + "onDestroy");
         OttoBus.unRegister(this);
         releaseMediaPlayer();
+        if (mNotification != null) {
+
+            mNotification.doDetach();
+        }
         super.onDestroy();
     }
 
@@ -325,6 +329,7 @@ public class PlayService2 extends Service implements MediaServiceContract.Contro
         }
 
     }
+
 
     @Override
     public void downloadSoundService(ISound iSound) {

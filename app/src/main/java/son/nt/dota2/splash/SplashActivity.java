@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.R;
+import son.nt.dota2.ResourceManager;
 import son.nt.dota2.activity.LoginActivity;
 import son.nt.dota2.base.BaseActivity;
 import son.nt.dota2.data.HeroRepository;
@@ -33,6 +35,7 @@ import son.nt.dota2.dto.HeroResponsesDto;
 import son.nt.dota2.dto.ItemDto;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.test.TestActivity;
+import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.PreferenceUtil;
 import timber.log.Timber;
 
@@ -63,7 +66,7 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
     protected void onCreate(Bundle savedInstanceState) {
         Timber.d(">>>" + "onCreate 3");
         super.onCreate(savedInstanceState);
-        mPresenter = new SplashPresenter(this, new HeroRepository());
+        mPresenter = new SplashPresenter(this, new HeroRepository(this));
         mRepository = new HeroRepository();
         checkPermission();
     }
@@ -84,6 +87,12 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
 
     private void loadData() {
 //        startActivity(new Intent(this, TestActivity.class));
+        ResourceManager.createInstance(getApplicationContext());
+        try {
+            FileUtil.copyAssets(this, "music", ResourceManager.getInstance().getFolderMusicPack());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mPresenter.copyData();
 
 
@@ -123,7 +132,7 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
 ////            getItemsList();
 //    }
 
-}
+    }
 
     private void removeTABLE_HERO_NORMAL_VOICE() {
         Timber.d(">>>" + "removeTABLE_HERO_NORMAL_VOICE");
@@ -486,11 +495,15 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Timber.d(">>>" + "onRequestPermissionsResult");
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_WRITE_EXTERNAL_STORAGE: {
                 if (grantResults.length == 1 && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
                     loadData();
+                } else {
+                    Toast.makeText(this, "Need write external store for offline sounds and set ringtone/notification, please Allow it , thanks ", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
                 break;
             }

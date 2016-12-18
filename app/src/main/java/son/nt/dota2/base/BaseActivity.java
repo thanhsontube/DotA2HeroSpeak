@@ -42,6 +42,11 @@ public abstract class BaseActivity extends AppCompatActivity {
             Timber.e(">>>" + "\"This activity has not include KenBurn view\"");
             return;
         }
+        if (ResourceManager.getInstance() == null) {
+            kenBurnsView.setResourceUrl("http://cdn.dota2.com/apps/dota2/images/comics/comic_monkeyking/en/001.png", false);
+            return;
+        }
+
         if (ResourceManager.getInstance().listKenburns.size() > 0) {
             kenBurnsView.setResourceUrl(ResourceManager.getInstance().listKenburns);
             kenBurnsView.startLayoutAnimation();

@@ -45,8 +45,7 @@
 
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
@@ -129,22 +128,12 @@
 
             </LinearLayout>
 
-            <TextView
-                    android:id="@+id/login_forgot_password"
-                    style="@style/txt_red_18"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="16dp"
-                    android:background="?selectableItemBackground"
-                    android:padding="8dp"
-                    android:text="Skip Login"
-                    android:visibility="visible"/>
 
             <!--social login-->
 
             <!--Google-->
             <com.google.android.gms.common.SignInButton
+                    android:layout_marginTop="16dp"
                     android:id="@+id/sign_in_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -175,6 +164,17 @@
 
 
         </LinearLayout>
+        <TextView
+                android:id="@+id/login_forgot_password"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:background="?selectableItemBackground"
+                android:padding="8dp"
+                android:text="Skip Login"
+                android:visibility="visible"/>
 
 
     </LinearLayout>
