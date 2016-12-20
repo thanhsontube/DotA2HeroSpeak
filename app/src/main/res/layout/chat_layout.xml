@@ -8,28 +8,31 @@
         android:id="@+id/chat_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/md_deep_purple_500"
+        android:background="@color/black"
         android:orientation="vertical">
+
         <LinearLayout
-            android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="Comments" />
+                android:layout_weight="1"
+                android:text="I like these sounds"
+                android:textColor="@color/white" />
+
             <ImageView
-                android:layout_margin="8dp"
-                android:visibility="gone"
                 android:id="@+id/chat_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/com_facebook_close"/>
+                android:layout_margin="8dp"
+                android:src="@drawable/com_facebook_close"
+                android:visibility="gone" />
         </LinearLayout>
-
 
 
         <FrameLayout

@@ -1,136 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="son.nt.dota2">
+          package="son.nt.dota2">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
     <!--
       IMPORTANT: Change "com.parse.starter.permission.C2D_MESSAGE" in the lines below
       to match your app's package name + ".permission.C2D_MESSAGE".
     -->
     <permission
-        android:name="son.nt.dota2.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
+            android:name="son.nt.dota2.permission.C2D_MESSAGE"
+            android:protectionLevel="signature"/>
 
-    <uses-permission android:name="son.nt.dota2.permission.C2D_MESSAGE" />
+    <uses-permission android:name="son.nt.dota2.permission.C2D_MESSAGE"/>
 
     <application
-        android:name=".MyApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/Theme.TS">
+            android:name=".MyApplication"
+            android:allowBackup="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
 
         <!-- This meta-data tag is required to use Google Play Services. -->
         <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version"/>
 
         <provider
-            android:name=".provider.SearchableProvider"
-            android:authorities=".provider.SearchableProvider" />
+                android:name=".provider.SearchableProvider"
+                android:authorities=".provider.SearchableProvider"/>
 
         <activity
-            android:name=".activity.MainActivity"
-            android:label="@string/title_activity_main" />
-        <activity
-            android:name="com.google.android.gms.ads.AdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:theme="@android:style/Theme.Translucent" />
+                android:name="com.google.android.gms.ads.AdActivity"
+                android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+                android:theme="@android:style/Theme.Translucent"/>
 
         <service
-            android:name=".service.PrefetchService"
-            android:exported="false" />
+                android:name=".service.PrefetchService"
+                android:exported="false"/>
         <service
-            android:name=".service.DownloadIntentService"
-            android:exported="false" />
+                android:name=".service.DownloadService"
+                android:enabled="true"
+                android:exported="true"/>
         <service
-            android:name=".service.DownloadService"
-            android:enabled="true"
-            android:exported="true" />
+                android:name=".service.ServiceMedia"
+                android:enabled="true"
+                android:exported="true"/>
         <service
-            android:name=".service.ServiceMedia"
-            android:enabled="true"
-            android:exported="true" />
+                android:name=".service.PlayService"
+                android:enabled="true"
+                android:exported="true"/>
+        <service
+                android:name=".service.PlayService2"
+                android:enabled="true"
+                android:exported="true"/>
         <!-- check on build productFlavors -->
         <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/fb_id" />
+                android:name="com.facebook.sdk.ApplicationId"
+                android:value="@string/fb_id"/>
 
         <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+                android:name="com.facebook.FacebookActivity"
+                android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
         <activity android:name=".activity.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            -->
         </activity>
         <activity
-            android:name=".activity.HomeActivity"
-            android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustPan|adjustNothing">
+                android:name=".activity.HomeActivity"
+                android:launchMode="singleTop"
+                android:windowSoftInputMode="adjustPan|adjustNothing">
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>
 
             <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
+                    android:name="android.app.searchable"
+                    android:resource="@xml/searchable"/>
         </activity>
         <activity
-            android:name=".activity.HeroActivity"
-            android:label="@string/title_activity_hero"
-            android:theme="@style/Theme.Hero" />
+                android:name=".activity.HeroActivity"
+                android:label="@string/title_activity_hero"
+                android:theme="@style/Theme.Hero"/>
         <activity
-            android:name=".setting.SettingActivity"
-            android:label="User Setting"
-            android:theme="@android:style/Theme.Holo" />
-
-        <!-- parse -->
-        <service android:name="com.parse.PushService" />
-
-        <receiver android:name="com.parse.ParseBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.parse.ParsePushBroadcastReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.parse.push.intent.RECEIVE" />
-                <action android:name="com.parse.push.intent.DELETE" />
-                <action android:name="com.parse.push.intent.OPEN" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.parse.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <!--                   IMPORTANT: Change "com.parse.starter" to match your app's package name. -->
-                <category android:name="son.nt.dota2" />
-            </intent-filter>
-        </receiver>
+                android:name=".setting.SettingActivity"
+                android:label="User Setting"
+                android:theme="@android:style/Theme.Holo"/>
 
         <activity
-            android:name=".test.TestActivity"
-            android:label="@string/title_activity_test"></activity>
+                android:name=".test.TestActivity"
+                android:label="@string/title_activity_test">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity
+                android:name=".musicPack.MusicPackListActivity"
+                android:label="@string/title_activity_music_pack_list"
+                android:theme="@style/AppTheme.Normal"/>
+        <activity
+                android:name=".musicPack.MusicPackDetailsActivity"
+                android:label="@string/title_activity_music_pack_details"
+                android:launchMode="singleTop"
+                android:theme="@style/AppTheme.Normal"/>
+        <activity
+                android:name=".musicPack.fav.MusicPackFavActivity"
+                android:theme="@style/AppTheme.Normal"/>
+
+        <service
+                android:name=".service.SettingDownloadService"
+                android:enabled="true"
+                android:exported="true"/>
+
+        <activity android:name=".splash.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".story.CreateStoryActivity">
+        </activity>
+        <activity android:name=".story.add_simple_story.AddSimpleStoryActivity">
+        </activity>
+        <activity android:name=".story.choose_hero.ChooseHeroActivity">
+        </activity>
+        <activity android:name=".story.search_sound.SearchSoundActivity"/>
+        <activity android:name=".story.story_list.StoryListActivity">
+        </activity>
+        <activity android:name=".story.story_details.StoryDetailActivity">
+        </activity>
+        <activity android:name=".comments.CmtsHistoryActivity">
+        </activity>
     </application>
 
 </manifest>

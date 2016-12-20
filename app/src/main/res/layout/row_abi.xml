@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/abi_view"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:minHeight="?actionBarSize"
+              android:orientation="vertical"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:paddingTop="24dp">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+        <ImageView android:layout_width="100dp" android:layout_height="100dp"
+                   android:id="@+id/abi_img"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textColor="@color/md_orange_600"
+                  android:layout_marginLeft="8dp"
+                  android:layout_gravity="center"
+                  android:text="@string/accept"
+                  android:textSize="22sp"
+                  android:id="@+id/abi_name"/>
+        <ImageView android:layout_width="60dp" android:layout_height="60dp"
+                   android:layout_marginLeft="8dp"
+                   android:layout_gravity="center"
+                   android:padding="8dp"
+                   android:id="@+id/sound_view"
+                   android:src="@drawable/ic_sound"/>
+    </LinearLayout>
+
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:layout_marginTop="16dp"
+              android:textIsSelectable="true"
+              android:textColor="@color/md_amber_500"
+              android:id="@+id/abi_des"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:layout_marginTop="16dp"
+              android:textColor="@color/md_light_green_A700"
+              android:textIsSelectable="true"
+              android:id="@+id/abi_notes"/>
+    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+          android:background="@color/white"/>
+
+
+</LinearLayout>

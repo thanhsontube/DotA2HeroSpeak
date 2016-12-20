@@ -19,8 +19,8 @@ public class MyDataHelper extends SQLiteOpenHelper {
     public String voiceGroup;
     public String link;
     public String text;
-    public String rivalImage;
-    public String rivalName;
+    public String toHeroIcon;
+    public String toHeroName;
      */
 
     private static final String SQL_CREATE_TABLE_FAVORITE = "CREATE TABLE table_favorite" + " (" + "_id"
@@ -30,8 +30,8 @@ public class MyDataHelper extends SQLiteOpenHelper {
             + "voiceGroup text,"
             + "link text,"
             + "text text,"
-            + "rivalImage text,"
-            + "rivalName text,"
+            + "toHeroIcon text,"
+            + "toHeroName text,"
             + "saveTime text"
             + ")";
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
     android:background="@drawable/d_row_speaking"
     android:orientation="vertical"
@@ -28,6 +28,7 @@
             <TextView
                 android:id="@+id/row_chat_message"
                 style="@style/txt_white_14"
+                android:textColor="@color/amber_500"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="I love this voice so much" />
@@ -40,20 +41,22 @@
 
                 <TextView
                     android:id="@+id/row_chat_fromName"
-                    style="@style/txt_red_14"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Son Dota 2" />
+                    android:text="Son Dota 2"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/green_500" />
 
                 <TextView
                     android:id="@+id/row_chat_create_day"
-                    style="@style/txt_gray_14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:text="1 hour ago" />
+                    android:text="1 hour ago"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/green_200" />
             </LinearLayout>
 
 
@@ -76,28 +79,31 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_str_40" />
+
         <LinearLayout
-            android:layout_gravity="center_vertical"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/row_chat_hero_text"
                 style="@style/txt_white_14"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="4dp"
+                android:layout_weight="1"
                 android:text="It's not time yet !"
                 android:textStyle="italic" />
+
             <ImageView
-                android:layout_margin="8dp"
-                android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_volume_up_white_24dp"/>
+                android:layout_gravity="center_vertical"
+                android:layout_margin="8dp"
+                android:src="@drawable/ic_volume_up_white_24dp" />
 
         </LinearLayout>
 

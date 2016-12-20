@@ -20,14 +20,12 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:src="@mipmap/ken2"
                 android:id="@+id/orginal_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY" />
 
             <ImageView
-                android:src="@mipmap/ken2"
                 android:id="@+id/blured_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -37,7 +35,7 @@
     </ScrollView>
 
     <ListView
-        android:background="@mipmap/layer_image"
+        android:background="@drawable/layer_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/main_listview">
@@ -55,13 +53,13 @@
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/icon_paused"
+            android:src="@drawable/icon_paused"
             android:id="@+id/main_btn_paused" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/icon_played"
+            android:src="@drawable/icon_played"
             android:id="@+id/main_btn_played" />
     </FrameLayout>
     <TextView

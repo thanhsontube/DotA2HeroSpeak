@@ -16,7 +16,7 @@
         android:id="@+id/action_remove_fb"
         android:title="Logout"
         android:orderInCategory="4"
-        android:icon="@mipmap/icon_paused"
+        android:icon="@drawable/icon_paused"
         apps:showAsAction="always" />
 
 

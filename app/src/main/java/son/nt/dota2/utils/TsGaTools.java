@@ -1,54 +1,58 @@
 package son.nt.dota2.utils;
 
 import android.content.Context;
-import android.util.Log;
+import android.os.Bundle;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
-import son.nt.dota2.R;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 /**
  * Google Analytics V4
- * 
- * @author Sonnt
  *
+ * @author Sonnt
  */
 public class TsGaTools {
 
-	static TsGaTools tsGaToolsInstance = null;
-	static Tracker instance = null;
-	public Context context;
+    private static FirebaseAnalytics mFirebaseAnalytics;
 
-	/**
-	 * the constructor, should put it in Application
-	 * 
-	 * @param context
-	 */
+    /**
+     * the constructor, should put it in Application
+     *
+     * @param context
+     */
 
-	public static void createInstance(Context context) {
-		GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
-		instance = analytics.newTracker(context.getString(R.string.ga_id));
-		instance.enableAdvertisingIdCollection(true);
-		tsGaToolsInstance = new TsGaTools(context);
-	}
+    public static void createInstance(Context context) {
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
 
-	public TsGaTools(Context context) {
-		this.context = context;
-	}
 
-	public static Tracker getInstance() {
-		return instance;
-	}
+    }
 
-	public static void trackPages(String screenName) {
-		if (getInstance() == null) {
-			Log.e("ERROR",
-					">>>ERROR TsGaTools : you do not create a constructor in Application");
-			return;
-		}
-		getInstance().setScreenName(screenName);
-		getInstance().send(new HitBuilders.AppViewBuilder().build());
-	}
+
+    public static void trackPages(String screenName) {
+        if (mFirebaseAnalytics == null) {
+            return;
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString("ScreenName", screenName);
+        mFirebaseAnalytics.logEvent("Dota2", bundle);
+    }
+    public static void trackNav(String screenName) {
+        if (mFirebaseAnalytics == null) {
+            return;
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString("Navigation", screenName);
+        mFirebaseAnalytics.logEvent("NAV", bundle);
+    }
+
+    public static void trackHero(String screenName) {
+        if (mFirebaseAnalytics == null) {
+            return;
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString("HeroSelected", screenName);
+        mFirebaseAnalytics.logEvent("HEROES", bundle);
+    }
 }

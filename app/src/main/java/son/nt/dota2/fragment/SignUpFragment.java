@@ -15,16 +15,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.ParseException;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import son.nt.dota2.R;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.facebook.UserDto;
-import son.nt.dota2.parse.AppAPI;
-import son.nt.dota2.parse.IUserParse;
 import son.nt.dota2.utils.CommonUtil;
-import son.nt.dota2.utils.KeyBoardUtils;
 
 /**
  * Created by Sonnt on 1/19/16.
@@ -39,45 +34,44 @@ public class SignUpFragment extends AFragment {
     private String password;
     private String passwordConfirm;
 
-    @Bind(R.id.sign_up_email_next)
+    @BindView(R.id.sign_up_email_next)
     TextView txtNext;
 
-    @Bind(R.id.sign_up_email)
+    @BindView(R.id.sign_up_email)
     AppCompatEditText txtEmail;
 
-    @Bind(R.id.sign_up_your_name)
+    @BindView(R.id.sign_up_your_name)
     EditText txtYourName;
 
-    @Bind(R.id.sign_up_password)
+    @BindView(R.id.sign_up_password)
     AppCompatEditText txtPassword1St;
 
-    @Bind(R.id.sign_up_password_confirm)
+    @BindView(R.id.sign_up_password_confirm)
     AppCompatEditText txtPasswordConfirm;
 
-    @Bind(R.id.sign_up_email_til)
+    @BindView(R.id.sign_up_email_til)
     TextInputLayout textInputLayout;
 
-    @Bind(R.id.sign_up_password1st_til)
+    @BindView(R.id.sign_up_password1st_til)
     TextInputLayout textPassword1St;
 
 
-    @Bind(R.id.sign_up_password1st_til_confirm)
+    @BindView(R.id.sign_up_password1st_til_confirm)
     TextInputLayout textPasswordConfirm;
 
 
-    @Bind(R.id.sign_up_email_Clp)
+    @BindView(R.id.sign_up_email_Clp)
     ContentLoadingProgressBar contentLoadingProgressBar;
 
-    @Bind(R.id.sign_up_ll_email)
+    @BindView(R.id.sign_up_ll_email)
     View viewEmail;
-    @Bind(R.id.sign_up_ll_name)
+    @BindView(R.id.sign_up_ll_name)
     View viewYourName;
-    @Bind(R.id.sign_up_ll_password)
+    @BindView(R.id.sign_up_ll_password)
     View viewPassword;
-    @Bind(R.id.sign_up_ll_password_confirm)
+    @BindView(R.id.sign_up_ll_password_confirm)
     View viewPasswordConfirm;
 
-    AppAPI appAPI;
 
     public static SignUpFragment newInstance(String param1, String param2) {
         SignUpFragment fragment = new SignUpFragment();
@@ -99,8 +93,6 @@ public class SignUpFragment extends AFragment {
             email = getArguments().getString(ARG_PARAM1);
             password = getArguments().getString(ARG_PARAM2);
         }
-        appAPI = new AppAPI(getContext());
-        appAPI.setIUserParseCallback(callback);
     }
 
     @Override
@@ -138,7 +130,6 @@ public class SignUpFragment extends AFragment {
                 userDto.email = txtEmail.getText().toString();
                 userDto.setPassword(txtPasswordConfirm.getText().toString());
                 userDto.setName(txtYourName.getText().toString());
-                appAPI.createAccount(userDto);
 
             }
         });
@@ -161,56 +152,11 @@ public class SignUpFragment extends AFragment {
             return;
         }
 
-        appAPI.isUserExist(email);
 
 
     }
 
-    IUserParse.Callback callback
-            = new IUserParse.Callback() {
-        @Override
-        public void onCheckingUserExist(String email, boolean isExist) {
-//           if (isExist) {
-//               Toast.makeText(getActivity(), "This email is being used already! Try another email", Toast.LENGTH_SHORT).show();
-//               return;
-//           }
-//
-//           UserDto userDto = new UserDto();
-//           userDto.email = txtEmail.getText().toString();
-//           userDto.setPassword(txtPasswordConfirm.getText().toString());
-//           userDto.setName(txtYourName.getText().toString());
-//           appAPI.createAccount(new UserDto());
 
-            contentLoadingProgressBar.setVisibility(View.GONE);
-            if (isExist) {
-                textInputLayout.setEnabled(true);
-                textInputLayout.setError("Sorry! " + email + " is registered!");
-                txtNext.setEnabled(false);
-            } else {
-                textInputLayout.setEnabled(false);
-                textInputLayout.setError("");
-                txtNext.setEnabled(true);
-                KeyBoardUtils.close(getActivity());
-            }
-
-
-        }
-
-        @Override
-        public void onUserCreated(UserDto userDto, ParseException error) {
-            if (error != null) {
-                return;
-            }
-            Toast.makeText(getActivity(), "Congratulations!", Toast.LENGTH_SHORT).show();
-
-
-        }
-
-        @Override
-        public void onFinishResetPw(ParseException error) {
-
-        }
-    };
 
     TextWatcher textWatcher = new TextWatcher() {
         @Override

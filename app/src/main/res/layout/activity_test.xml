@@ -14,6 +14,87 @@
         android:orientation="vertical">
 
         <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bg"
+                android:id="@+id/kenburn_view"/>
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Read HeroBasic from Files"
+                android:id="@+id/read_hero_basic"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save HeroBasic to Files"
+                android:id="@+id/save_hero_basic"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Story list"
+                android:id="@+id/list_story"/>
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Story"
+                android:id="@+id/create_story"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Comments"
+                android:id="@+id/old_comments"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Underlord/MonKey King Abilities"
+                android:id="@+id/underlord_abilities"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Copy Abilities"
+                android:id="@+id/abilities"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Items"
+                android:id="@+id/items"/>
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hero RESPONSE"
+                android:id="@+id/hero_response"/>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="hero_upload_icons"
+            android:id="@+id/hero_upload_icons"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hero Icons"
+                android:id="@+id/hero_icons"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hero LORD"
+                android:id="@+id/hero_lord"/>
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Push Hero LORD"
+                android:id="@+id/push_hero_lord"/>
+
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="get hero info and save to object"
@@ -30,6 +111,47 @@
             android:layout_height="wrap_content"
             android:text="get Arc Ability"
             android:id="@+id/test_arc_ability"/>
+        <TextView
+            android:background="@color/green_100"
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Music Pack"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Music Packs List"
+            android:id="@+id/test_music_packs_list"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Music Packs Download"
+            android:id="@+id/test_music_packs_list_download"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Music Packs Details"
+            android:id="@+id/test_music_packs_list_details"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="READ Music Packs Details"
+            android:id="@+id/test_music_packs_list_read"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="get Music Packs 1"
+            android:id="@+id/test_music_packs_default"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="get Music Packs fav"
+            android:id="@+id/test_music_packs_fav"/>
 
     </LinearLayout>
 

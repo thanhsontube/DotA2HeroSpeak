@@ -1,6 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent"
@@ -9,18 +9,14 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/voice_recycleview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:scrollbarAlwaysDrawVerticalTrack="true"/>
-    <com.melnykov.fab.FloatingActionButton
+        android:layout_height="match_parent" />
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/voice_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:src="@mipmap/icon_played"
-        fab:fab_colorNormal="?colorPrimary"
-        fab:fab_colorPressed="?colorPrimaryDark"
-        fab:fab_colorRipple="@color/md_red_500" />
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/icon_played" />
 
 </FrameLayout>

@@ -3,51 +3,65 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home_dark_48"
-            android:title="Home" />
+                android:id="@+id/nav_home"
+                android:icon="@drawable/ic_home_dark_48"
+                android:title="Hero Voices"/>
 
         <item
-            android:id="@+id/nav_roles"
-            android:icon="@drawable/ic_roles_dark_48"
-            android:title="Hero Roles" />
+                android:id="@+id/nav_story"
+                android:icon="@drawable/ic_start_on_48"
+                android:title="Story Voice"/>
+
         <item
-            android:id="@+id/nav_playlist"
-            android:icon="@drawable/ic_playlist_dark_48"
-            android:title="My Playlist" />
+                android:id="@+id/nav_music_packs"
+                android:icon="@drawable/ic_music_pack"
+                android:title="DoTa2 Music Background"/>
+
+
         <item
-            android:visible="false"
-            android:id="@+id/nav_friends"
-            android:icon="@drawable/ic_action_settings"
-            android:title="Friends" />
+                android:id="@+id/nav_roles"
+                android:icon="@drawable/ic_roles_dark_48"
+                android:title="Hero Roles"
+                android:visible="false"/>
         <item
-            android:visible="false"
-            android:id="@+id/nav_discussion"
-            android:icon="@drawable/ic_action_settings"
-            android:title="Discussion" />
+                android:id="@+id/nav_playlist"
+                android:icon="@drawable/ic_playlist_dark_48"
+                android:title="My Playlist"/>
+        <item
+                android:id="@+id/nav_friends"
+                android:icon="@drawable/ic_action_settings"
+                android:title="Friends"
+                android:visible="false"/>
+        <item
+                android:id="@+id/nav_discussion"
+                android:icon="@drawable/ic_action_settings"
+                android:title="Discussion"
+                android:visible="false"/>
     </group>
 
     <item android:title="Others">
         <menu>
             <item
-                android:id="@+id/nav_rate"
-                android:icon="@drawable/ic_google_play_dark_48"
-                android:title="Rate/Comment/Idea" />
+                    android:id="@+id/nav_rate"
+                    android:icon="@drawable/ic_google_play_dark_48"
+                    android:title="Rate me 5 stars"/>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_share_48"
-                android:title="Share this App" />
+                    android:id="@+id/nav_share"
+                    android:icon="@drawable/ic_share_48"
+                    android:title="Share me with friends"/>
             <item
-                android:id="@+id/nav_share_fb"
-                android:icon="@drawable/ic_facebook_48"
-                android:title="Like Dota2 Hero Speak Page" />
+                    android:id="@+id/nav_share_fb"
+                    android:icon="@drawable/ic_facebook_48"
+                    android:title="Facebook Page"/>
         </menu>
     </item>
-    <item android:title="Settings">
+    <item android:title="Settings" android:visible="false">
         <menu>
-            <item android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_action_settings"
-                android:title="Settings">
+            <item
+                    android:visible="false"
+                    android:id="@+id/nav_settings"
+                    android:icon="@drawable/ic_action_settings"
+                    android:title="Settings">
 
             </item>
         </menu>

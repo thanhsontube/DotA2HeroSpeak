@@ -21,15 +21,12 @@ import son.nt.dota2.utils.Logger;
 /**
  * Created by Sonnt on 7/13/15.
  */
-public class HeroManager extends AObject{
+public class HeroManager extends AObject {
     public static final String TAG = "HeroManager";
 
     public HeroData heroData;
 
     public List<HeroEntry> listHeroes = new ArrayList<>();
-
-    public String[] groups = new String[]{"STRENGTH", "AGILITY", "INTEL"};
-
     static HeroManager INSTANCE = null;
 
     private Context context;
@@ -40,21 +37,24 @@ public class HeroManager extends AObject{
 
     public HeroManager(Context context) {
         this.context = context;
-//        initData();
+        initData();
     }
 
-    public static HeroManager getInstance () {
+    public static HeroManager getInstance() {
         return INSTANCE;
     }
 
     private void initData() {
         try {
             ResourceManager resource = ResourceManager.getInstance();
-            File fOut = new File(resource.getFolderSave(), File.separator + "data.zip");
+
+            File fOut = new File(resource.getAppInternalFolder(), File.separator + "data.zip");
+
             if (fOut.exists()) {
                 heroData = FileUtil.readHeroList(context);
                 return;
             }
+
             InputStream in = context.getAssets().open("data.zip");
             OutputStream out = new FileOutputStream(fOut, false);
             int read;
@@ -68,12 +68,15 @@ public class HeroManager extends AObject{
             in.close();
 
             //unzip
-            boolean isUnzip = FileUtil.unpackZip(resource.getFolderSave() + File.separator, "data.zip");
+            boolean isUnzip = FileUtil.unpackZip(resource.getAppInternalFolder() + File.separator, "data.zip");
             if (isUnzip) {
                 heroData = FileUtil.readHeroList(context);
 
             } else {
-                Toast.makeText(context, "Sorry, can not initialize data", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Sorry, can not initialize data, restart the app", Toast.LENGTH_LONG).show();
+                if (fOut.exists()) {
+                    fOut.delete();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,7 +93,7 @@ public class HeroManager extends AObject{
         return null;
     }
 
-    public List<HeroEntry> getTest10 () {
+    public List<HeroEntry> getTest10() {
         List<HeroEntry> list = new ArrayList<>();
         for (HeroEntry dto : listHeroes) {
             list.add(dto);
@@ -98,10 +101,10 @@ public class HeroManager extends AObject{
                 break;
             }
         }
-        return  list;
+        return list;
     }
 
-    public List<HeroEntry> getStrHeroes () {
+    public List<HeroEntry> getStrHeroes() {
         List<HeroEntry> list = new ArrayList<>();
         for (HeroEntry dto : listHeroes) {
             if (dto.group.equals("Str")) {
@@ -109,9 +112,10 @@ public class HeroManager extends AObject{
             }
         }
         Collections.shuffle(list);
-        return  list;
+        return list;
     }
-    public List<HeroEntry> getAgiHeroes () {
+
+    public List<HeroEntry> getAgiHeroes() {
         List<HeroEntry> list = new ArrayList<>();
         for (HeroEntry dto : listHeroes) {
             if (dto.group.equals("Agi")) {
@@ -119,9 +123,10 @@ public class HeroManager extends AObject{
             }
         }
         Collections.shuffle(list);
-        return  list;
+        return list;
     }
-    public List<HeroEntry> getIntelHeroes () {
+
+    public List<HeroEntry> getIntelHeroes() {
         List<HeroEntry> list = new ArrayList<>();
         for (HeroEntry dto : listHeroes) {
             if (dto.group.equals("Intel")) {
@@ -129,22 +134,22 @@ public class HeroManager extends AObject{
             }
         }
         Collections.shuffle(list);
-        return  list;
+        return list;
     }
 
-    public void initDataSelf () {
+    public void initDataSelf() {
         try {
 
             File fo = new File(ResourceManager.getInstance().getFolderObject());
             try {
                 FileUtil.deleteRecursive(fo);
 
-            }catch (Exception e) {
-                    e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             //create folder object
             ResourceManager.getInstance().getFolderObject();
-            File fileBasicHeroList = new File (ResourceManager.getInstance().folderObject, HeroSavedDto.class.getSimpleName());
+            File fileBasicHeroList = new File(ResourceManager.getInstance().folderObject, HeroSavedDto.class.getSimpleName());
             if (!fileBasicHeroList.exists()) {
                 Logger.debug(TAG, ">>>" + "COPY>>>>>>>");
                 FileUtil.copyAssets(context, fileBasicHeroList.getParent());
@@ -163,7 +168,7 @@ public class HeroManager extends AObject{
         }
     }
 
-    public List<HeroEntry> getHeroesByRole (String role) {
+    public List<HeroEntry> getHeroesByRole(String role) {
         List<HeroEntry> list = new ArrayList<>();
         for (HeroEntry p : listHeroes) {
             for (String s : p.roles) {

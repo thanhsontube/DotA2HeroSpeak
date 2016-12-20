@@ -1,5 +1,10 @@
 package son.nt.dota2.fragment;
 
+import com.androidquery.callback.AjaxStatus;
+import com.androidquery.callback.BitmapAjaxCallback;
+
+import org.apache.http.client.methods.HttpGet;
+
 import android.app.Activity;
 import android.app.Service;
 import android.content.ComponentName;
@@ -32,11 +37,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidquery.callback.AjaxStatus;
-import com.androidquery.callback.BitmapAjaxCallback;
-
-import org.apache.http.client.methods.HttpGet;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +48,6 @@ import son.nt.dota2.base.AFragment;
 import son.nt.dota2.base.Controller;
 import son.nt.dota2.customview.blur.Blur;
 import son.nt.dota2.customview.blur.ImageUtils;
-import son.nt.dota2.data.SaveDto;
-import son.nt.dota2.data.TsSqlite;
 import son.nt.dota2.dialog.DialogSetting;
 import son.nt.dota2.dto.HeroData;
 import son.nt.dota2.dto.HeroDto;
@@ -58,10 +56,9 @@ import son.nt.dota2.loader.HeroSpeakLoader;
 import son.nt.dota2.loader.MediaLoader;
 import son.nt.dota2.service.DownloadService;
 import son.nt.dota2.service.ServiceMedia;
-import son.nt.dota2.utils.DatetimeUtils;
 import son.nt.dota2.utils.FileUtil;
-import son.nt.dota2.utils.TsLog;
 import son.nt.dota2.utils.NetworkUtils;
+import son.nt.dota2.utils.TsLog;
 
 public class MainFragment extends AFragment implements View.OnClickListener {
     private static final String TAG = "MainFragment";
@@ -577,17 +574,7 @@ public class MainFragment extends AFragment implements View.OnClickListener {
                 case FB_SHARE:
                     break;
                 case FAVORITE:
-                    SaveDto saveDto = new SaveDto(heroDto.name, heroDto.avatarThubmail, dto.text, dto.link, DatetimeUtils.getTimeCurrent());
-                    long i = TsSqlite.getInstance().insert(saveDto);
-                    if (i == -2) {
-                        Toast.makeText(getActivity(), "This sentence was saved before!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getActivity(),dto.text + " saved successful", Toast.LENGTH_SHORT).show();
 
-                    }
-
-                    List<SaveDto> listSaved = TsSqlite.getInstance().getList();
-                    log.d("log>>>" + "List save size:" + listSaved.size());
                     break;
                 case COPY:
                     FileUtil.copy(context, dto.text, dto.text);

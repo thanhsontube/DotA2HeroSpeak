@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="FontRegular">
+        <item name="fontPath">fonts/DroidSans.ttf</item>
+    </style>
+
+
+    <style name="FontMedium">
+        <item name="fontPath">fonts/DroidSans-Bold.ttf</item>
+    </style>
+</resources>

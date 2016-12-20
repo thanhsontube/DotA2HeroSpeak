@@ -40,7 +40,8 @@ public class ServiceMedia extends Service {
 
     private boolean isPlayAndStopOne = false;
     AdapterVoice adapterVoice;
-    public void setAdapterVoice (AdapterVoice adapterVoice, String heroID) {
+
+    public void setAdapterVoice(AdapterVoice adapterVoice, String heroID) {
         this.adapterVoice = adapterVoice;
         this.heroID = heroID;
     }
@@ -129,11 +130,10 @@ public class ServiceMedia extends Service {
 
     }
 
-    public void playSong (int index, String heroID, boolean isItemClick) {
+    public void playSong(int index, String heroID, boolean isItemClick) {
         isPlayAndStopOne = isItemClick;
         playSong(index, heroID);
     }
-
 
 
     //TODO play song at index
@@ -151,7 +151,7 @@ public class ServiceMedia extends Service {
 
                 }
 
-                if(txtPos != null) {
+                if (txtPos != null) {
                     txtPos.setText("(" + currentPosition + ")");
                 }
                 prePos = currentPosition;
@@ -174,56 +174,20 @@ public class ServiceMedia extends Service {
         }
     }
 
-//    public void playSong2(int index) {
-//        currentPosition = index;
-//        try {
-//            player.reset();
-//            if (list.size() >= currentPosition) {
-//                if (adapter != null) {
-//                    if (currentPosition > 0) {
-//                        adapter.getItem(prePos).isPlaying = false;
-//                    }
-//                    adapter.getItem(currentPosition).isPlaying = true;
-//                    adapter.notifyDataSetChanged();
-//
-//                }
-//
-//                if(txtPos != null) {
-//                    txtPos.setText("(" + currentPosition + ")");
-//                }
-//                prePos = currentPosition;
-//                File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(list.get(index).count).replace(".mp3", ".dat"));
-//                if (file.exists()) {
-//                    player.setDataSource(file.getPath());
-//                    player.prepare();
-//                    player.start();
-//                } else {
-//                    loadSpeak(list.get(index).count);
-//                }
-//
-//
-//            }
-//        } catch (Exception e) {
-//            log.e("log>>>" + "MediaService error play song:" + currentPosition + ":" + e.toString());
-//            if (!isPlayAndStopOne) {
-//                playNextVideo();
-//            }
-//        }
-//    }
-
     public void play() {
         isPlayAndStopOne = false;
         playSong(currentPosition, heroID);
 //        player.start();
     }
 
-    public void pause () {
+    public void pause() {
         isPlayAndStopOne = true;
         if (player != null) {
             player.pause();
         }
     }
-    public void stop () {
+
+    public void stop() {
         if (player != null) {
             try {
                 player.stop();
@@ -255,10 +219,12 @@ public class ServiceMedia extends Service {
     AdapterSpeak adapter;
     TextView txtPos;
     String heroName;
-    public void setAdapter (AdapterSpeak adapter) {
+
+    public void setAdapter(AdapterSpeak adapter) {
         this.adapter = adapter;
     }
-    public void setActionBar (TextView txtPos, String heroName) {
+
+    public void setActionBar(TextView txtPos, String heroName) {
         this.txtPos = txtPos;
         this.heroName = heroName;
     }
@@ -281,7 +247,7 @@ public class ServiceMedia extends Service {
                         player.prepare();
                         player.start();
                     } catch (Exception e) {
-                       e.printStackTrace();
+                        e.printStackTrace();
                     }
                 }
 
@@ -302,7 +268,7 @@ public class ServiceMedia extends Service {
         }
     }
 
-    public void play (String link, String heroID) {
+    public void play(String link, String heroID) {
         isPlayAndStopOne = true;
         try {
             File file = new File(ResourceManager.getInstance().getPathAudio(link, heroID));
@@ -318,25 +284,6 @@ public class ServiceMedia extends Service {
             e.printStackTrace();
         }
     }
-
-//    public void playSingleLink (String count) {
-//        isPlayAndStopOne = true;
-//        try {
-//            File file = new File(ResourceManager.getInstance().folderAudio, File.separator + FileUtil.createPathFromUrl(count).replace(".mp3", ".dat"));
-//            if (file.exists()) {
-//                player.reset();
-//                player.setDataSource(file.getPath());
-//                player.prepare();
-//                player.start();
-//            } else {
-//                loadSpeak(count);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-
 
 
 }

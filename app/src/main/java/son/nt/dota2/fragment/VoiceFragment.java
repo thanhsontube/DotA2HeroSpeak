@@ -1,5 +1,8 @@
 package son.nt.dota2.fragment;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.squareup.otto.Subscribe;
+
 import android.app.Activity;
 import android.app.Service;
 import android.content.ComponentName;
@@ -7,6 +10,7 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,10 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.melnykov.fab.FloatingActionButton;
-import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -89,7 +89,7 @@ public class VoiceFragment extends AbsFragment {
         getActivity().bindService(DownloadService.getIntent(getActivity()), serviceConnectionPrefetchAudio, Service.BIND_AUTO_CREATE);
         int count = PreferenceUtil.getPreference(getActivity(), MsConst.KEY_HELP, 0);
         if (count == 0) {
-            PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, count +1);
+            PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, count + 1);
             MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
                     .positiveText("Got it")
                     .title("Long click into every row to discover lots of things \n\rGo to Menu >> Setting  to Enable/Disable Notification from app")
@@ -103,7 +103,7 @@ public class VoiceFragment extends AbsFragment {
                     .build();
             materialDialog.show();
         } else {
-            PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, count +1);
+            PreferenceUtil.setPreference(getActivity(), MsConst.KEY_HELP, count + 1);
         }
 
 
@@ -156,7 +156,6 @@ public class VoiceFragment extends AbsFragment {
     }
 
 
-
     @Override
     public void initLayout(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.voice_recycleview);
@@ -169,7 +168,6 @@ public class VoiceFragment extends AbsFragment {
         recyclerView.setAdapter(adapter);
 
         autoPlay = (FloatingActionButton) view.findViewById(R.id.voice_fab);
-        autoPlay.attachToRecyclerView(recyclerView);
 
     }
 
@@ -184,10 +182,10 @@ public class VoiceFragment extends AbsFragment {
                     if (mediaService.getPlayer().isPlaying()) {
 
                         mediaService.pause();
-                        ((ImageButton) autoPlay).setImageResource(R.mipmap.icon_played);
+                        ((ImageButton) autoPlay).setImageResource(R.drawable.icon_played);
                     } else {
                         mediaService.play();
-                        ((ImageButton) autoPlay).setImageResource(R.mipmap.icon_paused);
+                        ((ImageButton) autoPlay).setImageResource(R.drawable.icon_paused);
                     }
                 }
             }
@@ -209,8 +207,7 @@ public class VoiceFragment extends AbsFragment {
                 adapter.notifyDataSetChanged();
                 isLoaded = true;
                 startPrefetch();
-            }
-            else {
+            } else {
                 HTTPParseUtils.getInstance().withVoices(heroID);
                 HTTPParseUtils.getInstance().setCallback(new HTTPParseUtils.IParseCallBack() {
                     @Override
@@ -304,8 +301,6 @@ public class VoiceFragment extends AbsFragment {
         }
     }
 
-    private void createMenu() {
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

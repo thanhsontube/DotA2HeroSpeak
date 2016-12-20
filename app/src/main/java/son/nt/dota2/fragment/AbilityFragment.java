@@ -7,7 +7,9 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.melnykov.fab.ObservableScrollView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class AbilityFragment extends AbsFragment {
 
     ServiceMedia serviceMedia;
 
-    com.melnykov.fab.FloatingActionButton fabMuted;
+    FloatingActionButton fabMuted;
 
     public static AbilityFragment newInstance(String heroID) {
         AbilityFragment fragment = new AbilityFragment();
@@ -113,9 +114,8 @@ public class AbilityFragment extends AbsFragment {
 
     @Override
     public void initLayout(View view) {
-        fabMuted = (com.melnykov.fab.FloatingActionButton) view.findViewById(R.id.ability_muted);
-        ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.ability_scroll_view);
-        fabMuted.attachToScrollView(scrollView);
+        fabMuted = (FloatingActionButton) view.findViewById(R.id.ability_muted);
+        NestedScrollView scrollView = (NestedScrollView) view.findViewById(R.id.ability_scroll_view);
 
         boolean isAllow = PreferenceUtil.getPreference(getActivity(), MsConst.KEY_ALLOW_PLAY, false);
         if (isAllow) {

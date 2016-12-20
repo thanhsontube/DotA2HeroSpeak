@@ -15,8 +15,6 @@ import java.util.List;
 
 import son.nt.dota2.R;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
-import son.nt.dota2.ottobus_entry.GoAdapterRoles;
-import son.nt.dota2.utils.OttoBus;
 import son.nt.dota2.utils.TsGaTools;
 
 /**
@@ -26,7 +24,7 @@ public class AdapterRoles extends RecyclerView.Adapter<AdapterRoles.Holder> {
     private List<RoleDto> list;
     private Context context;
 
-    public AdapterRoles (Context  cx, List<RoleDto> list1) {
+    public AdapterRoles(Context cx, List<RoleDto> list1) {
         this.list = list1;
         this.context = cx;
     }
@@ -43,12 +41,12 @@ public class AdapterRoles extends RecyclerView.Adapter<AdapterRoles.Holder> {
         holder.txtName.setText(dto.name);
         holder.txtSlogan.setText(dto.slogan);
         Glide.with(holder.img.getContext()).load(dto.linkIcon).diskCacheStrategy(DiskCacheStrategy.ALL)
-        .fitCenter().into(holder.img);
+                .fitCenter().into(holder.img);
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TsGaTools.trackPages("/role:" + dto.name.trim());
-                OttoBus.post(new GoAdapterRoles(dto.name.trim()));
+//                OttoBus.post(new GoAdapterRoles(dto.name.trim()));
 
             }
         });
@@ -65,6 +63,7 @@ public class AdapterRoles extends RecyclerView.Adapter<AdapterRoles.Holder> {
         ImageView img;
         TextView txtName, txtSlogan;
         View view;
+
         public Holder(View view) {
             super(view);
             this.view = view.findViewById(R.id.row_roles_ll);

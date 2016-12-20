@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -5,52 +6,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/brown_500"
-    tools:context="son.nt.dota2.activity.HomeActivity">
+    tools:openDrawer="start">
 
-    <FrameLayout
+    <include layout="@layout/include_ken_burn"/>
+
+
+    <include
+        layout="@layout/home_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <son.nt.dota2.customview.KenBurnsView
-            android:id="@+id/home_kenburns"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@mipmap/layer_image"
-            android:orientation="vertical">
-
-            <include layout="@layout/home_tool_bar"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:id="@+id/home_ll_main"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <include layout="@layout/ad_mob_ll"/>
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-
-    </FrameLayout>
+        android:layout_height="match_parent" />
 
 
     <android.support.design.widget.NavigationView
-        style="@style/txt_white_14"
         android:id="@+id/home_navigation"
+        style="@style/txt_white_14"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

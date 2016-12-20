@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <ImageView
-        android:layout_gravity="center"
-        android:scaleType="fitXY"
-        android:tag="image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/phantom_assassin_full" />
+        android:layout_gravity="center"
+        android:scaleType="fitXY"
+        android:tag="image" />
 
     <FrameLayout
-        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:background="@color/transparent_gray">
 
         <TextView
-            android:layout_margin="8dp"
-            android:tag="text"
             style="@style/txt_white_18"
-            android:layout_gravity="center_horizontal|bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_margin="8dp"
+            android:tag="text"
             android:text="My Play List" />
     </FrameLayout>
 

@@ -1,46 +1,43 @@
 package son.nt.dota2.htmlcleaner;
 
-import android.content.Context;
-import android.text.TextUtils;
-
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-
 import org.apache.http.client.methods.HttpGet;
 
+import android.content.Context;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import son.nt.dota2.HeroManager;
 import son.nt.dota2.MsConst;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.dto.AbilityDto;
-import son.nt.dota2.dto.AbilityItemAffectDto;
-import son.nt.dota2.dto.AbilityLevelDto;
-import son.nt.dota2.dto.AbilityNotesDto;
 import son.nt.dota2.dto.HeroEntry;
-import son.nt.dota2.dto.HeroRoleDto;
-import son.nt.dota2.dto.HeroSavedDto;
 import son.nt.dota2.dto.HeroSpeakSaved;
 import son.nt.dota2.dto.SpeakDto;
+import son.nt.dota2.dto.musicPack.MusicPackDto;
+import son.nt.dota2.dto.musicPack.MusicPackSoundDto;
 import son.nt.dota2.dto.save.SaveBasicHeroData;
 import son.nt.dota2.dto.save.SaveHeroAbility;
+import son.nt.dota2.dto.save.SaveMusicPack;
 import son.nt.dota2.htmlcleaner.abilities.AbilitiesLoader;
 import son.nt.dota2.htmlcleaner.abilities.ArcAbilitiesLoader;
-import son.nt.dota2.htmlcleaner.bg.BgModalLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroListLoader;
 import son.nt.dota2.htmlcleaner.hero.HeroNameLoader;
+import son.nt.dota2.htmlcleaner.musicPack.MusicPackDetailsLoader;
+import son.nt.dota2.htmlcleaner.musicPack.MusicPackLoader;
 import son.nt.dota2.htmlcleaner.role.RoleDto;
 import son.nt.dota2.htmlcleaner.role.RolesLoader;
 import son.nt.dota2.htmlcleaner.voice.ArcVoiceLoader;
 import son.nt.dota2.htmlcleaner.voice.VoiceLoader;
+import son.nt.dota2.ottobus_entry.GoAdapterMusicPackDetails;
 import son.nt.dota2.utils.FileUtil;
 import son.nt.dota2.utils.Logger;
-import son.nt.dota2.utils.TsParse;
+import son.nt.dota2.utils.OttoBus;
 
 /**
  * Created by Sonnt on 7/13/15.
@@ -108,7 +105,7 @@ public class HTTPParseUtils {
                     e.printStackTrace();
                 }
 
-                if (listener!= null) {
+                if (listener != null) {
                     listener.onFinish();
                 }
 
@@ -150,7 +147,7 @@ public class HTTPParseUtils {
                     e.printStackTrace();
                 }
 
-                if (listener!= null) {
+                if (listener != null) {
                     listener.onFinish();
                 }
 
@@ -217,45 +214,8 @@ public class HTTPParseUtils {
         });
     }
 
-    public void withHeroListFromParse () {
-        Logger.debug(TAG, ">>>" + ">>>withHeroListFromParse<<<");
-        try {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
-            query.orderByAscending("no");
-            query.setLimit(200);
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> list, ParseException e) {
-                    if (e != null || list.size() == 0) {
-                        Logger.error(TAG, ">>>" + "Error getData:" + e.toString());
-                        return;
-                    }
-                    Logger.debug(TAG, ">>>" + "getData size:" + list.size());
-                    HeroManager.getInstance().listHeroes.clear();
-                    for (ParseObject p : list) {
-                        HeroManager.getInstance().listHeroes.add(TsParse.parse(p));
-                    }
+    public void withHeroListFromParse() {
 
-                    try {
-                        HeroSavedDto heroData = new HeroSavedDto();
-                        heroData.listHeroes.clear();
-                        heroData.listHeroes.addAll(HeroManager.getInstance().listHeroes);
-                        FileUtil.saveObject(context, heroData, HeroSavedDto.class.getSimpleName());
-                        if (listener != null) {
-                            listener.onFinish();
-                        }
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                    Logger.debug(TAG, ">>>" + "Str:" + HeroManager.getInstance().getStrHeroes().size());
-                    Logger.debug(TAG, ">>>" + "Agi:" + HeroManager.getInstance().getAgiHeroes().size());
-                    Logger.debug(TAG, ">>>" + "Intel:" + HeroManager.getInstance().getIntelHeroes().size());
-                }
-            });
-
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void withHeroName(final String heroId) {
@@ -300,81 +260,7 @@ public class HTTPParseUtils {
     }
 
     private void uploadAbilityToParse(final List<AbilityDto> list, final String heroName) {
-        Logger.debug(TAG, ">>>" + "-----------uploadAbilityToParse:" + heroName);
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(AbilityDto.class.getSimpleName());
-        query.whereEqualTo("heroId", heroName);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> l, ParseException e) {
-                if (e != null || l.size() > 0) {
-                    return;
-
-                }
-
-                ParseObject p = null;
-                int i = 1;
-                for (AbilityDto dto : list) {
-                    dto.heroId = heroName;
-                    p = new ParseObject(AbilityDto.class.getSimpleName());
-                    p.put("no", i);
-                    p.put("heroId", dto.heroId);
-                    p.put("abilityName", dto.name);
-                    p.put("ability", TextUtils.isEmpty(dto.ability) ? "" : dto.ability);
-                    p.put("affects", TextUtils.isEmpty(dto.affects) ? "" : dto.affects);
-                    p.put("damage", TextUtils.isEmpty(dto.damage) ? "" : dto.damage);
-                    p.put("sound", TextUtils.isEmpty(dto.sound) ? "" : dto.sound);
-                    p.put("description", TextUtils.isEmpty(dto.description) ? "" : dto.description);
-                    p.put("linkImage", TextUtils.isEmpty(dto.linkImage) ? "" : dto.linkImage);
-                    p.put("isUltimate", dto.isUltimate);
-                    p.saveInBackground();
-
-                    //upload AbilityLevelDto
-                    for (AbilityLevelDto d: dto.listAbilityPerLevel) {
-                        ParseObject p1 = new ParseObject(AbilityLevelDto.class.getSimpleName());
-                        p1.put("heroId", dto.heroId);
-                        p1.put("abilityName", dto.name);
-                        p1.put("abilityLevelName", d.name);
-                        StringBuilder value = new StringBuilder();
-                        for (int j = 0; j < d.list.size(); j ++) {
-                            value.append(d.list.get(j));
-                            if (j < d.list.size() -1) {
-                                value.append("/");
-                            }
-                        }
-                        p1.put("abilityLevelValue", value.toString());
-                        p1.saveInBackground();
-                        Logger.debug(TAG, ">>>" + "OK AbilityLevelDto");
-                    }
-
-                    //upload AbilityItemAffectDto
-                    for (AbilityItemAffectDto d : dto.listItemAffects) {
-                        ParseObject p1 = new ParseObject(AbilityItemAffectDto.class.getSimpleName());
-                        p1.put("heroId", dto.heroId);
-                        p1.put("abilityName", dto.name);
-                        p1.put("src", TextUtils.isEmpty(d.src)? "": d.src);
-                        p1.put("alt", TextUtils.isEmpty(d.alt)? "": d.alt);
-                        p1.put("text", TextUtils.isEmpty(d.text)? "": d.text);
-                        p1.saveInBackground();
-                        Logger.debug(TAG, ">>>" + "OK AbilityItemAffectDto");
-                    }
-
-                    //upload AbilityNotesDto
-                    for (AbilityNotesDto d : dto.listNotes) {
-                        ParseObject p1 = new ParseObject(AbilityNotesDto.class.getSimpleName());
-                        p1.put("heroId", dto.heroId);
-                        p1.put("abilityName", dto.name);
-                        p1.put("notes", TextUtils.isEmpty(d.notes)? "": d. notes);
-                        p1.saveInBackground();
-                        Logger.debug(TAG, ">>>" + "OK AbilityNotesDto");
-                    }
-                    i++;
-                    Logger.debug(TAG, ">>>" + "Put Parse success:" + i + ":" + dto.name);
-                }
-
-
-            }
-        });
     }
 
     //upload
@@ -388,32 +274,9 @@ public class HTTPParseUtils {
 
 
     int count = 1;
+
     private void updateStep1() {
 
-        for (final HeroEntry dto : HeroManager.getInstance().listHeroes) {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
-            query.whereEqualTo("heroId", dto.heroId);
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> list, ParseException e) {
-                    if (e != null || list.size() > 0) {
-                        return;
-
-                    }
-                    ParseObject p = new ParseObject(HeroEntry.class.getSimpleName());
-                    p.put("no", dto.no);
-                    p.put("heroId", dto.heroId);
-                    p.put("href", dto.href);
-                    p.put("group", dto.group);
-                    p.put("avatar", dto.avatarThumbnail);
-                    p.saveInBackground();
-                    Logger.debug(TAG, ">>>" + "Put updateStep1 success:" + count + ":" + dto.heroId);
-                    count++;
-                }
-            });
-
-
-        }
     }
 
     /*
@@ -423,59 +286,16 @@ public class HTTPParseUtils {
                     heroEntry.lore = entity.lore;
                     heroEntry.roles.addAll(entity.roles);
      */
-    private void updateStep2(final HeroEntry dto) {
-        Logger.debug(TAG, ">>>" + "updateStep2:" + dto.heroId);
-
-            ParseQuery<ParseObject> query = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
-            query.whereEqualTo("heroId", dto.heroId);
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> list, ParseException e) {
-                    if (e != null || list.size() > 0) {
-
-                        ParseObject p = list.get(0);
-                        String objectId = p.getObjectId();
-                        Logger.debug(TAG, ">>>" + "objectId:" + objectId);
-
-                        ParseQuery<ParseObject> mQuery = ParseQuery.getQuery(HeroEntry.class.getSimpleName());
-                        mQuery.getInBackground(objectId, new GetCallback<ParseObject>() {
-                            @Override
-                            public void done(ParseObject p, ParseException e) {
-                                p.put("fullName", dto.fullName);
-                                p.put("name", dto.name);
-                                p.put("lore", dto.lore);
-                                p.saveInBackground();
-                                Logger.debug(TAG, ">>>" + "updateStep2 OK with:" + dto.fullName);
-                            }
-                        });
-
-                    }
-                }
-            });
-
-
+    private void updateStep2(final HeroEntry dto)
+    {
 
     }
 
     private void updateHeroRole(HeroEntry heroEntry) {
-        List <HeroRoleDto> list = new ArrayList<>();
-        for (String s : heroEntry.roles) {
-            HeroRoleDto heroRoleDto = new HeroRoleDto(heroEntry.heroId, s);
-            list.add(heroRoleDto);
-        }
 
-        for (HeroRoleDto d : list) {
-            ParseObject p = new ParseObject(HeroRoleDto.class.getSimpleName());
-            p.put("heroID",d.heroId);
-            p.put("roleName",d.roleName);
-            p.saveInBackground();
-            Logger.debug(TAG, ">>>" + "Success up roles:" + d.heroId + ";role:" + d.roleName);
-
-
-        }
     }
 
-    public void withVoices (final String heroId) {
+    public void withVoices(final String heroId) {
         Logger.debug(TAG, ">>>" + "====== withVoices:" + heroId);
         String pathSpeak = String.format(VoiceLoader.PATH, heroId);
         if (pathSpeak.contains("Natures_Prophet")) {
@@ -516,7 +336,7 @@ public class HTTPParseUtils {
 
     }
 
-    public void withArcVoices (final String heroId) {
+    public void withArcVoices(final String heroId) {
         Logger.debug(TAG, ">>>" + "====== withArcVoices:" + heroId);
         String pathSpeak = String.format(VoiceLoader.PATH, heroId);
         HttpGet httpGet = new HttpGet(pathSpeak);
@@ -555,8 +375,6 @@ public class HTTPParseUtils {
     }
 
 
-
-
     public void setCallback(IParseCallBack cb) {
         this.listener = cb;
 
@@ -567,70 +385,148 @@ public class HTTPParseUtils {
     public interface IParseCallBack {
         void onFinish();
     }
-    
-    public void getAbilityFromServer (final String heroId) {
-        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(AbilityDto.class.getSimpleName());
-        query.whereEqualTo("heroId", heroId);
-        query.orderByAscending("no");
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> list, ParseException e) {
-                List<AbilityDto> listAbi = new ArrayList<AbilityDto>();
-                AbilityDto d;
-                for (ParseObject p : list) {
-                    d = new AbilityDto();
-                    d.no = p.getInt("no");
-                    d.name = p.getString("abilityName");
-                    d.ability = p.getString("ability");
-                    d.affects = p.getString("affects");
-                    d.damage = p.getString("damage");
-                    d.sound = p.getString("sound");
-                    d.description = p.getString("description");
-                    d.linkImage = p.getString("linkImage");
-                    d.isUltimate = p.getBoolean("isUltimate");
 
-                    //list AbilityLevelDto
-//                    ParseQuery<ParseObject> q = new ParseQuery<ParseObject>(AbilityLevelDto.class.getSimpleName());
-//                    q.whereEqualTo("heroId", heroId);
-//                    q.whereEqualTo("abilityName", d.name);
-//                    q.findInBackground(new FindCallback<ParseObject>() {
-//                        @Override
-//                        public void done(List<ParseObject> list, ParseException e) {
-//
-//                        }
-//                    });
-                    listAbi.add(d);
-                }
-                HeroManager.getInstance().getHero(heroId).listAbilities.clear();
-                HeroManager.getInstance().getHero(heroId).listAbilities.addAll(listAbi);
-                if (listener != null) {
-                    listener.onFinish();
-                }
-            }
-        });
+    public void getAbilityFromServer(final String heroId) {
+
     }
 
-    public void withBasicBg () {
-        Logger.debug(TAG, ">>>" + "======= withBasicBg ====");
-        HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Model_pictures");
-        ResourceManager.getInstance().getContentManager().load(new BgModalLoader(httpGet, true) {
+
+    public void withMusicPacksList() {
+        HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Music");
+        ResourceManager.getInstance().getContentManager().load(new MusicPackLoader(httpGet, true) {
             @Override
             public void onContentLoaderStart() {
             }
 
             @Override
-            public void onContentLoaderSucceed(List<HeroEntry> entity) {
-                for (HeroEntry p : entity) {
-                    Logger.debug(TAG, ">>>" + "id:" + p.heroId + ";link:" + p.bgLink);
-                    TsParse.updateBgToHeroEntry(p);
+            public void onContentLoaderSucceed(List<MusicPackDto> entity) {
+                Logger.debug(TAG, ">>> :" + "withMusicPacksList onContentLoaderSucceed:");
+
+
+                //add the default
+                MusicPackDto dto = new MusicPackDto();
+                dto.setName("Default Music Pack");
+                dto.setLinkDetails("http://dota2.gamepedia.com/Music");
+                dto.setCoverColor("#000000");
+                dto.setHref("http://images.akamai.steamusercontent.com/ugc/433773677027904120/CC1E0F736AB7FAFFC297C87732B56422FEF9BF8D/");
+                entity.add(0, dto);
+
+                OttoBus.post(new SaveMusicPack(entity));
+
+                ResourceManager.getInstance().saveMusicPack.list = entity;
+
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>> Error:" + "withMusicPacksList onContentLoaderFailed:" + e);
+            }
+        });
+    }
+
+    public void withMusicPacksDetails(String link) {
+        if (link == null) {
+            link = "http://dota2.gamepedia.com/Heroes_Within_Music_Pack";
+        }
+        HttpGet httpGet = new HttpGet(link);
+        ResourceManager.getInstance().getContentManager().load(new MusicPackDetailsLoader(httpGet, true) {
+            @Override
+            public void onContentLoaderStart() {
+            }
+
+            @Override
+            public void onContentLoaderSucceed(List<MusicPackSoundDto> entity) {
+                Logger.debug(TAG, ">>> :" + "withMusicPacksDetails onContentLoaderSucceed:");
+                OttoBus.post(new GoAdapterMusicPackDetails(entity));
+
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>> Error:" + "withMusicPacksDetails onContentLoaderFailed:" + e);
+            }
+        });
+    }
+
+    int i = 0;
+
+    public void withMusicPacksDetails2() {
+        String linkDetails = ResourceManager.getInstance().saveMusicPack.list.get(i).getLinkDetails();
+//        HttpGet httpGet = new HttpGet("http://dota2.gamepedia.com/Heroes_Within_Music_Pack");
+        HttpGet httpGet = new HttpGet(linkDetails);
+        ResourceManager.getInstance().getContentManager().load(new MusicPackDetailsLoader(httpGet, true) {
+            @Override
+            public void onContentLoaderStart() {
+            }
+
+            @Override
+            public void onContentLoaderSucceed(List<MusicPackSoundDto> entity) {
+                Logger.debug(TAG, ">>> :" + "withMusicPacksDetails onContentLoaderSucceed:" + i);
+                ResourceManager.getInstance().saveMusicPack.list.get(i).setList(entity);
+                if (i < ResourceManager.getInstance().saveMusicPack.list.size() - 1) {
+                    i++;
+                    withMusicPacksDetails2();
+                } else {
+                    Logger.debug(TAG, ">>>" + "DONE  final ");
+
+                    //update inside
+                    for (MusicPackDto dto : ResourceManager.getInstance().saveMusicPack.list)
+                    {
+                        if (dto.getList() != null)
+                        {
+                            for (MusicPackSoundDto d : dto.getList())
+                            {
+                                d.setGroup(dto.getName());
+                                d.setImage(dto.getHref());
+                                d.setItemId("music_pack_" + FileUtil.createPathFromUrl(d.getLink()));
+                            }
+                        }
+
+                    }
+                    saveObject();
+
+                    OttoBus.post(ResourceManager.getInstance().saveMusicPack);
                 }
 
             }
 
             @Override
             public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>> Error:" + "withMusicPacksDetails onContentLoaderFailed:" + e);
             }
         });
+    }
+
+    private void saveObject() {
+        try {
+            File woFile = new File(ResourceManager.getInstance().folderRingtone + File.separator + "musicPackData.json");
+            if (woFile.exists()) {
+                woFile.delete();
+            }
+            woFile.createNewFile();
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(woFile));
+            oos.writeObject(ResourceManager.getInstance().saveMusicPack);
+            oos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void readObject() {
+        try {
+            File woFile = new File(ResourceManager.getInstance().folderRingtone + File.separator + "musicPackData.json");
+            if (!woFile.exists()) {
+                return;
+            }
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(woFile));
+            SaveMusicPack wo = ((SaveMusicPack) ois.readObject());
+            ois.close();
+            Logger.debug(TAG, ">>>" + "wo:" + wo.list.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 

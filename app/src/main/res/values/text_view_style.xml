@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTextViewStyle">
-        <item name="android:fontFamily">sans-serif-condensed</item>
-    </style>
+
+    <style name="AppTextViewStyle" parent="@style/FontRegular"></style>
+
     <style name="AppTextViewStyle.Header" parent="AppTextViewStyle">
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:textColor">@android:color/black</item>
@@ -38,5 +38,26 @@
 
     <style name="AppTextViewStyle.Normal.Light" parent="AppTextViewStyle.Normal">
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="table_ability_mana">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/md_light_blue_A400</item>
+        <item name="android:layout_height">40dp</item>
+    </style>
+
+    <style name="table_ability_delays">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_height">40dp</item>
+    </style>
+
+    <style name="table_ability_level">
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 </resources>

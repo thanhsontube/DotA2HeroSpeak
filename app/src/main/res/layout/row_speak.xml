@@ -45,13 +45,13 @@
             android:layout_marginLeft="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_playing" />
+            android:src="@drawable/ic_playing" />
 
         <ImageView
             android:id="@+id/row_img_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_more" />
+            android:src="@drawable/ic_more" />
 
     </LinearLayout>
 

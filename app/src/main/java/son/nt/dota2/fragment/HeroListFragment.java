@@ -1,171 +1,148 @@
 package son.nt.dota2.fragment;
 
-import android.content.Intent;
+import com.squareup.otto.Subscribe;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
-import com.squareup.otto.Subscribe;
-import com.twotoasters.jazzylistview.JazzyHelper;
-import com.twotoasters.jazzylistview.recyclerview.JazzyRecyclerViewScrollListener;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import son.nt.dota2.HeroManager;
+import javax.inject.Inject;
+
 import son.nt.dota2.MsConst;
+import son.nt.dota2.MyApplication;
 import son.nt.dota2.R;
-import son.nt.dota2.activity.MainActivity;
-import son.nt.dota2.adapter.AdapterRcvHome;
+import son.nt.dota2.adapter.HeroListAdapter;
 import son.nt.dota2.base.AFragment;
+import son.nt.dota2.di.component.app.AppComponent;
+import son.nt.dota2.di.module.herolist.HeroListModule;
 import son.nt.dota2.dto.GalleryDto;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.home.IHeroListPage;
+import son.nt.dota2.home.herolist.HeroListContract;
+import son.nt.dota2.utils.Logger;
 import son.nt.dota2.utils.OttoBus;
-import son.nt.dota2.utils.TsGaTools;
-import son.nt.dota2.utils.TsLog;
-import son.nt.dota2.utils.TsScreen;
 
+public class HeroListFragment extends AFragment implements IHeroListPage, HeroListContract.View {
+    private static final String EXTRA_GROUP = "EXTRA_GROUP";
+    private static final String TAG = HeroListFragment.class.getSimpleName();
 
-public class HeroListFragment extends AFragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private static final String TAG = "HeroListFragment";
-    public static final int EFFECT_DEFAULT = JazzyHelper.GROW;
-    int currentEffect = EFFECT_DEFAULT;
-
-    public static final String KEY_EFFECT_DEFAULT = "KEY_EFFECT_DEFAULT";
+    @Inject
+    HeroListContract.Presenter mPresenter;
     //    private HeroList heroList;
-    private AdapterRcvHome adapterHome;
-    private List<HeroEntry> listHero = new ArrayList<>();
+    private HeroListAdapter mAdapter;
 
-    private String group = "Str";
+    private String mGroup = "Str";
     RecyclerView recyclerView;
-    StaggeredGridLayoutManager staggeredGridLayoutManager;
 
-    JazzyRecyclerViewScrollListener jazzyRecyclerViewScrollListener;
     private OnFragmentInteractionListener mListener;
-    TsLog log = new TsLog(TAG);
 
     public static HeroListFragment newInstance(String group) {
         HeroListFragment fragment = new HeroListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM2, group);
+        args.putString(EXTRA_GROUP, group);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public HeroListFragment() {
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        OttoBus.register(this);
-        if (getArguments() != null) {
-            group = getArguments().getString(ARG_PARAM2);
-            getList();
 
-        }
+        mGroup = getArguments().getString(EXTRA_GROUP);
+        setupDI();
+        OttoBus.register(this);
+        OttoBus.register(mPresenter);
     }
 
-    private void getList () {
-        if (group.equals(MsConst.GROUP_STR)) {
-            listHero = HeroManager.getInstance().getStrHeroes();
-        } else if (group.equals(MsConst.GROUP_AGI)) {
-            listHero = HeroManager.getInstance().getAgiHeroes();
-        } else if (group.equals(MsConst.GROUP_INTEL)) {
-            listHero = HeroManager.getInstance().getIntelHeroes();
-        }
+    private void setupDI() {
+        AppComponent appComponent = MyApplication.get(getContext()).getAppComponent();
+        appComponent.plus(new HeroListModule(this))
+                .inject(this);
+
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         OttoBus.unRegister(this);
+        OttoBus.unRegister(mPresenter);
+        super.onDestroy();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_hero_list, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        log.d("log>>>" + "onViewCreated heroList");
-        initData();
         initLayout(view);
         initListener();
-
+        mPresenter.setGroup(mGroup);
+        mPresenter.getHeroList();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_EFFECT_DEFAULT, currentEffect);
-    }
-
-    private void setEffect() {
-        jazzyRecyclerViewScrollListener.setTransitionEffect(currentEffect);
-    }
-
-    private void initData() {
-//        listHero.clear();
-//        listHero.addAll(getListHeros(group));
-    }
 
     private void initLayout(View view) {
-        adapterHome = new AdapterRcvHome(context, listHero);
+
+        mAdapter = new HeroListAdapter(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.home_recycle_view);
         recyclerView.setHasFixedSize(true);
-        jazzyRecyclerViewScrollListener = new JazzyRecyclerViewScrollListener();
-        setEffect();
-        recyclerView.addOnScrollListener(jazzyRecyclerViewScrollListener);
-        int row = 2;
-        if (TsScreen.isLandscape(getActivity())) {
-            row = 4;
-        }
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(row, StaggeredGridLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        recyclerView.setAdapter(adapterHome);
-
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setAdapter(mAdapter);
     }
-
-    AdapterView.OnItemClickListener onClickGrid = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            TsGaTools.trackPages("/" + listHero.get(position).name);
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.putExtra("data", listHero.get(position));
-            startActivity(intent);
-        }
-    };
 
     private void initListener() {
 
     }
 
-
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri);
+
         void heroSelected(HeroEntry HeroEntry);
     }
 
-
     @Subscribe
-    public void updateAdapter (GalleryDto galleryDto) {
-        getList();
-        adapterHome.notifyDataSetChanged();
+    public void updateAdapter(GalleryDto galleryDto) {
+        mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public String getGroup() {
+        return mGroup;
+    }
 
+    @Override
+    public String getGroupDisplayName() {
+        if (TextUtils.isEmpty(mGroup)) {
+            return "";
+        }
+        if (MsConst.GROUP_STR.equals(mGroup)) {
+            return getString(R.string.group_str);
+        }
+        if (MsConst.GROUP_AGI.equals(mGroup)) {
+            return getString(R.string.group_agi);
+        }
+        if (MsConst.GROUP_INTEL.equals(mGroup)) {
+            return getString(R.string.group_intel);
+        }
+        return null;
+    }
 
+    @Override
+    public void showHeroList(List<HeroBasicDto> heroBasicDtoList) {
+        Logger.debug(TAG, ">>>" + "showHeroList:" + heroBasicDtoList.size());
+        mAdapter.setData(heroBasicDtoList);
+    }
 }

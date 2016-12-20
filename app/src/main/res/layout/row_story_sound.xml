@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/layer_bottom"
+              android:orientation="horizontal"
+              tools:background="@color/transparent_primary">
+
+
+    <son.nt.dota2.customview.HeroProfileView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/row_avatar"
+            android:src="@drawable/pip_carry"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+
+
+    <LinearLayout android:layout_width="0dp"
+                  android:layout_margin="8dp"
+                  android:gravity="center"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:orientation="vertical">
+
+        <TextView
+                android:textColor="@color/md_green_500"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/description"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_marginTop="8dp"
+                  android:textColor="@color/md_amber_500"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/soundtext"/>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

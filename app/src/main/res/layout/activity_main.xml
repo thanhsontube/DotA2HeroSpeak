@@ -2,8 +2,8 @@
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drawer_layout"
-    android:fitsSystemWindows="true">
+    xmlns:app="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout">
 
 
     <FrameLayout
@@ -50,7 +50,7 @@
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@mipmap/layer_image"
+            android:background="@drawable/layer_image"
             android:id="@+id/left_drawer" />
 
         <com.facebook.widget.LikeView
@@ -69,7 +69,7 @@
         android:layout_width="@dimen/right_drawer_margin"
         android:layout_height="match_parent"
         android:layout_gravity="right"
-        android:background="@mipmap/layer_image">
+        android:background="@drawable/layer_image">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -94,7 +94,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:scaleType="centerCrop"
-                        android:src="@mipmap/phantom_assassin_full" />
+                    />
 
 
                     <FrameLayout
@@ -189,12 +189,18 @@
                         style="@style/txt_white_14"
                         android:text="(Post by:" />
 
-                    <son.nt.dota2.customview.RoundedImageView
+
+                    <com.makeramen.roundedimageview.RoundedImageView
                         android:id="@+id/right_post_by_avatar"
-                        android:layout_gravity="center_vertical"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@mipmap/ic_launcher" />
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="@dimen/spacing_minor"
+                        app:riv_border_color="@android:color/white"
+                        app:riv_border_width="2dp"
+                        app:riv_corner_radius="34dp"
+                        app:riv_oval="true" />
+
 
                     <TextView
                         android:layout_gravity="center_vertical"
@@ -202,7 +208,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/txt_white_14"
-                        android:text="Kens Burns )" />
+                        android:text="Kens Burns" />
                 </LinearLayout>
                 <!--log out-->
                 <com.facebook.widget.LoginButton

@@ -2,45 +2,45 @@ package son.nt.dota2.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import son.nt.dota2.base.BasePagerAdapter;
+import son.nt.dota2.dto.home.HeroBasicDto;
+import son.nt.dota2.fragment.SwipeHeroFragment;
 
 /**
  * Created by Sonnt on 7/30/15.
  */
-public class AdapterPagerHero extends BasePagerAdapter {
+public class AdapterPagerHero extends FragmentPagerAdapter {
 
-    List<Fragment> listFragments;
-    ArrayList<String> titles;
-    FragmentManager fm;
+    List<HeroBasicDto> listFragments;
 
-    public AdapterPagerHero(FragmentManager fm, List<Fragment> list, ArrayList<String> arr) {
+    public AdapterPagerHero(FragmentManager fm, List<HeroBasicDto> list) {
         super(fm);
         this.listFragments = list;
-        this.fm = fm;
-        this.titles = arr;
+    }
+
+    public void updateData(List<HeroBasicDto> list) {
+        listFragments = list;
+        notifyDataSetChanged();
     }
 
     @Override
     public Fragment getItem(int position) {
-        return listFragments.get(position);
+        return SwipeHeroFragment.newInstance(listFragments.get(position).heroId);
     }
 
-    @Override
-    public boolean isFragmentReusable(Fragment f, int position) {
-        return true;
-    }
 
     @Override
     public int getCount() {
-        return titles.size();
+        return listFragments.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return titles.get(position);
+        return listFragments.get(position).name;
     }
+
+
 }

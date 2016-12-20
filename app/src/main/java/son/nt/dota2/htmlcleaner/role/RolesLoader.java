@@ -1,10 +1,5 @@
 package son.nt.dota2.htmlcleaner.role;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-
 import org.apache.http.client.methods.HttpUriRequest;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
@@ -112,28 +107,6 @@ public abstract class RolesLoader extends ContentLoader<List<RoleDto>> {
 
     private void upLoadToParseService (final List<RoleDto> listRoles) {
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(RoleDto.class.getSimpleName());
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> l, ParseException e) {
-                if (e != null || l.size() > 0) {
-                    return;
-
-                }
-
-                for (RoleDto dto :listRoles) {
-                    Logger.debug(TAG, ">>>" + "up:" + dto.name);
-                    ParseObject parseObject = new ParseObject("RoleDto");
-                    parseObject.put("no", dto.no);
-                    parseObject.put("name", dto.name);
-                    parseObject.put("linkIcon", dto.linkIcon);
-                    parseObject.put("slogan", dto.slogan);
-                    parseObject.put("description", dto.description);
-                    parseObject.put("icon", dto.icon);
-                    parseObject.saveInBackground();
-                }
-            }
-        });
     }
 
 

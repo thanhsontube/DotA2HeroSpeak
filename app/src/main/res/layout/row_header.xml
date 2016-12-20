@@ -46,7 +46,6 @@
     <ImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:src="@mipmap/phantom_assassin_full"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="38dp"
         android:id="@+id/head_image_circle">

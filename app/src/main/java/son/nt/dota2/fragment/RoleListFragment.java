@@ -14,9 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.twotoasters.jazzylistview.JazzyHelper;
-import com.twotoasters.jazzylistview.recyclerview.JazzyRecyclerViewScrollListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,16 +22,9 @@ import son.nt.dota2.R;
 import son.nt.dota2.adapter.AdapterSearchHero;
 import son.nt.dota2.base.AFragment;
 import son.nt.dota2.dto.HeroEntry;
+import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.provider.SearchableProvider;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RoleListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RoleListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RoleListFragment extends AFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,10 +37,9 @@ public class RoleListFragment extends AFragment {
 
     RecyclerView recyclerView;
     AdapterSearchHero adapterSearchHero;
-    List<HeroEntry> list = new ArrayList<>();
+    List<HeroBasicDto> list = new ArrayList<>();
 
     CoordinatorLayout coordinatorLayout;
-    JazzyRecyclerViewScrollListener jazzyRecyclerViewScrollListener;
 
     public static RoleListFragment newInstance(String role) {
         RoleListFragment fragment = new RoleListFragment();
@@ -69,9 +58,8 @@ public class RoleListFragment extends AFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             role = getArguments().getString(ARG_PARAM1);
-            role.trim();
             list.clear();
-            list.addAll(HeroManager.getInstance().getHeroesByRole(role));
+//            list.addAll();
         }
     }
 
@@ -128,12 +116,9 @@ public class RoleListFragment extends AFragment {
     private void initLayout (View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.search_rcv);
         recyclerView.setHasFixedSize(true);
-        jazzyRecyclerViewScrollListener = new JazzyRecyclerViewScrollListener();
-        jazzyRecyclerViewScrollListener.setTransitionEffect(JazzyHelper.CURL);
-        recyclerView.addOnScrollListener(jazzyRecyclerViewScrollListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapterSearchHero = new AdapterSearchHero(getActivity(), list);
+        adapterSearchHero = new AdapterSearchHero(getActivity(), list, null);
         recyclerView.setAdapter(adapterSearchHero);
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.search_coordinator_layout);
     }

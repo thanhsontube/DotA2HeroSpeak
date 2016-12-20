@@ -1,6 +1,42 @@
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
+# built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Mac files
 .DS_Store
-/build
+
+# Java class files
+*.class
+
+# generated files
+bin/
+build/
+gen/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android Studio Files
+*.iml
+.idea/
+
+# KDE file manager metadata
+.directory
+
+# Gradle files
+.gradle/
+
+# All files under following path (R files)
+passenger-app-lib/src/test/java/android/support/v7/
+
+# Signing Files
+production.vars
+
+# Eclipse Files
+.classpath
+.project
+.settings/
+project.properties

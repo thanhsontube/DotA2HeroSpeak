@@ -1,5 +1,8 @@
 package son.nt.dota2.fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -13,14 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,43 +189,7 @@ public class IntroFragment extends AbsFragment {
     }
 
     private void update() {
-        try
-        {
-            AObject aObject = FileUtil.getObject(getActivity(), SaveRoles.class.getSimpleName());
-            if (aObject != null) {
-                SaveRoles saveRoles = (SaveRoles) aObject;
 
-                return;
-            }
-            ParseQuery<ParseObject> query = ParseQuery.getQuery(RoleDto.class.getSimpleName());
-            query.addAscendingOrder("no");
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> l, ParseException e) {
-                    if (e != null) {
-                        return;
-                    }
-                    List<RoleDto> list = new ArrayList<RoleDto>();
-                    RoleDto dto;
-                    for (ParseObject p :l) {
-                        dto = new RoleDto();
-                        dto.name = p.getString("name");
-                        dto.slogan = p.getString("slogan");
-                        dto.linkIcon = p.getString("linkIcon");
-                        list.add(dto);
-                    }
-                    try {
-                        FileUtil.saveObject(getActivity(),new SaveRoles(list),SaveRoles.class.getSimpleName());
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-
-                }
-            });
-
-        } catch (Exception e) {
-
-        }
 
     }
 }

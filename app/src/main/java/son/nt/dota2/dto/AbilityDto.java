@@ -36,4 +36,5 @@ public class AbilityDto extends AObject {
         this.affects = arr[1];
         this.damage = arr[2];
     }
+
 }

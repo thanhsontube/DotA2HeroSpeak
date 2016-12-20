@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="4dp"
     android:foreground="?android:attr/selectableItemBackground">
 
@@ -25,7 +25,7 @@
 
             <TextView
                 android:id="@+id/row_txt_no"
-                style="@style/txt_white_18"
+                style="@style/txt_white_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -37,7 +37,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="8dp"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/ic_launcher" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -48,20 +48,20 @@
 
                 <TextView
                     android:id="@+id/row_text"
-                    style="@style/txt_white_18"
+                    style="@style/txt_white_14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="My List Has 5 names on it" />
+                    android:text="My List Has 5 names on it"
+                    android:textColor="@color/amber_500" />
 
                 <TextView
                     android:id="@+id/row_saved_time"
                     style="@style/txt_gray_14"
-                    android:textColor="@color/md_yellow_200"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="12:12:12"
-                     />
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 
@@ -79,7 +79,7 @@
                 android:id="@+id/row_img_more"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@mipmap/ic_more" />
+                android:src="@drawable/ic_more" />
 
         </LinearLayout>
 

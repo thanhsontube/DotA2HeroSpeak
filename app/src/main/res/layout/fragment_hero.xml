@@ -1,62 +1,80 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="son.nt.dota2.activity.HeroActivity">
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="son.nt.dota2.activity.HeroActivity">
 
     <son.nt.dota2.customview.KenBurnsView
-        android:id="@+id/hero_ken_burns"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+            android:id="@+id/hero_ken_burns"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@mipmap/layer_image"
-        android:orientation="vertical">
+    <android.support.design.widget.CoordinatorLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/main_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/layer_image"
+            android:fitsSystemWindows="true"
+    >
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/hero_appbarlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent">
+                android:id="@+id/hero_appbarlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:paddingTop="8dp"
+                android:theme="@style/AppTheme.AppBarOverlay"
+                app:elevation="0dp">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/hero_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize" />
+                    android:id="@+id/hero_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/transparent"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <Spinner
+                        android:id="@+id/hero_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+            </android.support.v7.widget.Toolbar>
 
             <android.support.design.widget.TabLayout
-                android:id="@+id/hero_tablayout"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                app:tabMode="scrollable"
-                app:tabIndicatorColor="@color/md_red_500"
-                app:tabTextColor="@color/md_yellow_200" />
+                    android:id="@+id/hero_tablayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabMode="scrollable"
+                    app:tabSelectedTextColor="@color/amber_500"
+                    app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
+                    app:tabTextColor="@color/white"/>
 
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v4.view.ViewPager
-            android:id="@+id/hero_pager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+                android:id="@+id/hero_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    </LinearLayout>
+        <android.support.design.widget.FloatingActionButton
+                android:id="@+id/hero_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_margin="@dimen/fab_margin"
+                android:src="@android:drawable/ic_dialog_email"
+                android:visibility="gone"/>
 
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/hero_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right|end"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:src="@drawable/ic_agi_40"
-        android:visibility="gone"
-        app:backgroundTint="@color/md_red_500"
-        app:borderWidth="4dp"
-        app:fabSize="normal" />
+    </android.support.design.widget.CoordinatorLayout>
 
 </FrameLayout>
+
+
+
