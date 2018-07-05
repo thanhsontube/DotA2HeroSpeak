@@ -6,6 +6,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import son.nt.dota2.manager.FolderStructureManager;
+import son.nt.dota2.manager.IFolderStructureManager;
 
 /**
  * Created by sonnt on 10/14/16.
@@ -25,6 +27,12 @@ public class AppModule {
     @Provides
     Context provideContext() {
         return mContext;
+    }
+
+    @Singleton
+    @Provides
+    IFolderStructureManager provideFolderStructureManager () {
+        return new FolderStructureManager(mContext);
     }
 
 }

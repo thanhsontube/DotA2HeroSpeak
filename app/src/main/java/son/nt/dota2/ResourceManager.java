@@ -27,13 +27,13 @@ public class ResourceManager {
 
 
     public String mAppInternalFolder;
+    private String mAppExternalFolder;
     public String folderAudio;
     public String folderMusicPack;
     public String folderHero;
     public String folderBlur;
-    public String folderObject;
 
-    private String mAppExternalFolder;
+    public String folderObject;
 
     public String folderRingtone;
     public String folderNotification;

@@ -81,8 +81,12 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
 
     @Override
     public void startLogin() {
-        ActivityCompat.startActivity(this, LoginActivity.getIntent(this), null);
-        finish();
+
+//        ActivityCompat.startActivity(this, LoginActivity.getIntent(this), null);
+//        finish();
+
+        //todo hack
+        startActivity(new Intent(this, TestActivity.class));
     }
 
     private void loadData() {

@@ -16,6 +16,12 @@
         <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="read basic from json"
+                android:id="@+id/read_basic_json"/>
+
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Bg"
                 android:id="@+id/kenburn_view"/>
         <Button

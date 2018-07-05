@@ -15,12 +15,17 @@ import android.view.View;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import son.nt.dota2.MyApplication;
 import son.nt.dota2.R;
 import son.nt.dota2.ResourceManager;
 import son.nt.dota2.data.HeroRepository;
 import son.nt.dota2.data.IHeroRepository;
+import son.nt.dota2.di.component.test.TestComponent;
+import son.nt.dota2.di.module.test.TestModule;
 import son.nt.dota2.dto.home.HeroBasicDto;
 import son.nt.dota2.firebase.FireBaseActivity;
 import son.nt.dota2.firebase.FireBaseUtils;
@@ -28,6 +33,7 @@ import son.nt.dota2.htmlcleaner.HTTPParseUtils;
 import son.nt.dota2.jsoup.JsoupLoader;
 import son.nt.dota2.manager.AssetMng;
 import son.nt.dota2.manager.IAssetMng;
+import son.nt.dota2.manager.ISaveFetchManager;
 import son.nt.dota2.musicPack.MusicPackListActivity;
 import son.nt.dota2.musicPack.fav.MusicPackFavActivity;
 import son.nt.dota2.story.CreateStoryActivity;
@@ -43,11 +49,14 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
 
     IAssetMng mAssetMng ;
 
+    @Inject
+    ISaveFetchManager mSaveFetchManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAssetMng = new AssetMng(this);
-
+        setupDI();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         findViewById(R.id.test_get_hero).setOnClickListener(this);
         findViewById(R.id.test_arc_voice).setOnClickListener(this);
@@ -72,12 +81,25 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
         findViewById(R.id.save_hero_basic).setOnClickListener(this);
         findViewById(R.id.read_hero_basic).setOnClickListener(this);
         findViewById(R.id.kenburn_view).setOnClickListener(this);
+        findViewById(R.id.read_basic_json).setOnClickListener(this);
+
+    }
+
+    private void setupDI () {
+        TestComponent testComponent = MyApplication.get(this)
+                .getAppComponent()
+                .plus(new TestModule());
+
+        testComponent.inject(this);
 
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.read_basic_json: {
+                break;
+            }
             case R.id.kenburn_view :
             {
                 break;
@@ -98,6 +120,14 @@ public class TestActivity extends FireBaseActivity implements View.OnClickListen
                                         Timber.d(">>>" + "heroBasicDtos:" + heroBasicDtos.size());
                                         for (HeroBasicDto d : heroBasicDtos) {
                                             Timber.d(">>>" + "d:" + d.toString());
+                                            mSaveFetchManager.saveHeroBasicToJsonFile(d)
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(aBoolean -> {
+                                                Timber.d(">>>" + "Saved:" + aBoolean);
+                                            })
+                                            ;
+
                                         }
                                     });
 
